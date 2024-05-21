@@ -78,8 +78,8 @@ public class VulkanImage {
         image.createImage(builder.mipLevels, builder.width, builder.height, builder.format, builder.usage);
         image.mainImageView = createImageView(image.id, builder.format, image.aspect, builder.mipLevels);
 
-        image.sampler = SamplerManager.getTextureSampler(builder.mipLevels, builder.samplerFlags);
-
+        image.sampler = checkUsage(builder.usage, VK_IMAGE_USAGE_SAMPLED_BIT) ? SamplerManager.getTextureSampler(builder.mipLevels, builder.samplerFlags) : VK_NULL_HANDLE;
+        
         if (builder.levelViews) {
             image.levelImageViews = new long[builder.mipLevels];
 
@@ -89,6 +89,10 @@ public class VulkanImage {
         }
 
         return image;
+    }
+
+    private static boolean checkUsage(int usage, int requestedUsage) {
+        return (usage & requestedUsage)!=0;
     }
 
     public static VulkanImage createDepthImage(int format, int width, int height, int usage, boolean blur, boolean clamp) {
