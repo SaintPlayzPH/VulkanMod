@@ -8,6 +8,7 @@ import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.queue.Queue;
+import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
@@ -41,7 +42,11 @@ public class SwapChain extends Framebuffer {
     private long swapChainId = VK_NULL_HANDLE;
     private List<VulkanImage> swapChainImages;
     private VkExtent2D extent2D;
+    // A matrix that describes the transformations that should be applied
+    // to the output of the game.
     private Matrix4f pretransformMatrix = new Matrix4f();
+    // The pretransform flags that were given to the swapchain,
+    // masked (see "setupPreRotation(VkExtent2D, VkSurfaceCapabilitiesKHR)")
     private int pretransformFlags;
     public boolean isBGRAformat;
     private boolean vsync = false;
@@ -116,11 +121,9 @@ public class SwapChain extends Framebuffer {
             createInfo.imageArrayLayers(1);
             createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
 
-            Queue.QueueFamilyIndices indices = Queue.getQueueFamilies();
-
-            if (!indices.graphicsFamily.equals(indices.presentFamily)) {
+            if(QueueFamilyIndices.graphicsFamily != (QueueFamilyIndices.presentFamily)) {
                 createInfo.imageSharingMode(VK_SHARING_MODE_CONCURRENT);
-                createInfo.pQueueFamilyIndices(stack.ints(indices.graphicsFamily, indices.presentFamily));
+                createInfo.pQueueFamilyIndices(stack.ints(QueueFamilyIndices.graphicsFamily, QueueFamilyIndices.presentFamily));
             } else {
                 createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
             }
@@ -261,6 +264,14 @@ public class SwapChain extends Framebuffer {
         return this.extent2D;
     }
 
+    public Matrix4f getPretransformMatrix(){
+        return this.pretransformMatrix;
+    }
+
+    public int getPretransformFlags() {
+        return this.pretransformFlags;
+    }
+
     public VulkanImage getColorAttachment() {
         return this.swapChainImages.get(Renderer.getCurrentImage());
     }
@@ -352,6 +363,7 @@ public class SwapChain extends Framebuffer {
     }
 
     private void setupPreRotation(VkExtent2D extent, VkSurfaceCapabilitiesKHR surfaceCapabilities) {
+        // Mask off anything else that does not interest us in the transform
         pretransformFlags = surfaceCapabilities.currentTransform() &
                 (VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR |
                 VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR |
@@ -379,7 +391,6 @@ public class SwapChain extends Framebuffer {
             int originalHeight = extent.height();
             extent.width(originalHeight);
             extent.height(originalWidth);
-
         }
     }
 
@@ -390,15 +401,6 @@ public class SwapChain extends Framebuffer {
     public void setVsync(boolean vsync) {
         this.vsync = vsync;
     }
-
-    public Matrix4f getPretransformMatrix(){
-        return this.pretransformMatrix;
-    }
-
-    public int getPretransformFlags() {
-        return this.pretransformFlags;
-    }
-    
 
     public int getImagesNum() {
         return this.swapChainImages.size();
