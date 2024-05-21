@@ -173,4 +173,3 @@ public enum MemoryType {
 //        return (usage & this.flags) !=0 ? usage : this.flags;
 //    }
 }
-            
