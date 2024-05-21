@@ -40,7 +40,7 @@ import net.vulkanmod.vulkan.VRenderSystem;
 import net.vulkanmod.vulkan.memory.Buffer;
 import net.vulkanmod.vulkan.memory.IndexBuffer;
 import net.vulkanmod.vulkan.memory.IndirectBuffer;
-import net.vulkanmod.vulkan.memory.MemoryTypes;
+import net.vulkanmod.vulkan.memory.MemoryType;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -107,8 +107,11 @@ public class WorldRenderer {
         this.indirectBuffers = new IndirectBuffer[Renderer.getFramesNum()];
 
         for (int i = 0; i < this.indirectBuffers.length; ++i) {
-            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryTypes.HOST_MEM);
-//            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryTypes.GPU_MEM);
+            if (!Initializer.CONFIG.useGPUMem) {
+              this.indirectBuffers[i] = new IndirectBuffer(1048576, MemoryType.RAM_MEM);
+            } else {
+              this.indirectBuffers[i] = new IndirectBuffer(1048576, MemoryType.GPU_MEM);
+            }
         }
 
 //        uniformBuffers = new UniformBuffers(100000, MemoryTypes.GPU_MEM);
@@ -320,6 +323,7 @@ public class WorldRenderer {
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
+            VRenderSystem.depthMask(!isTranslucent);
             terrainRenderType.setCutoutUniform();
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
@@ -464,5 +468,4 @@ public class WorldRenderer {
         if (indirectBuffers != null)
             Arrays.stream(indirectBuffers).forEach(Buffer::freeBuffer);
     }
-
 }
