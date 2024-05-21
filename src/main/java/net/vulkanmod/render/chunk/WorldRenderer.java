@@ -41,10 +41,11 @@ import net.vulkanmod.vulkan.memory.Buffer;
 import net.vulkanmod.vulkan.memory.IndexBuffer;
 import net.vulkanmod.vulkan.memory.IndirectBuffer;
 import net.vulkanmod.vulkan.memory.MemoryType;
+import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-
+import org.lwjgl.vulkan.VK11;
 import java.util.*;
 
 public class WorldRenderer {
@@ -78,7 +79,7 @@ public class WorldRenderer {
     private double yTransparentOld;
     private double zTransparentOld;
 
-    IndirectBuffer[] indirectBuffers;
+    IndirectBuffer[] indirectBuffers = null;
 
     public RenderRegionBuilder renderRegionCache;
 
@@ -98,6 +99,7 @@ public class WorldRenderer {
             if (this.indirectBuffers.length != Renderer.getFramesNum())
                 allocateIndirectBuffers();
         });
+        addOnAllChangedCallback(Queue.GraphicsQueue::trimCmdPool);
     }
 
     private void allocateIndirectBuffers() {
