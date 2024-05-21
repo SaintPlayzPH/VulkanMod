@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "vulkanmod",
-  "version": "0.4.1",
+  "version": "0.4.2-modified_v3-unofficial",
 
   "name": "VulkanMod",
-  "description": "Bring Vulkan to Minecraft!",
+  "description": "Bring Vulkan to Minecraft. Originally by: §b§nCollateral§r, Modified by: §e§nSaintPlayzPH§r. Please note that this modified VulkanMod is not intended to be published publicly on platforms such as §c§nYouTube§r or through links like §6§nMediafire§r. It may contain malware, so avoid downloading it from unofficial sources that contain ads.",
   "authors": [
     "Collateral"
   ],
@@ -30,5 +30,10 @@
     "fabricloader": ">=0.14.14",
     "minecraft": ["1.20.3", "1.20.4"],
     "java": ">=17"
-  }
+  },
+  "jars": [
+    {
+      "file": "META-INF/jars/lib-arm64-shaderc+libvma.jar"
+    }
+  ]
 }
