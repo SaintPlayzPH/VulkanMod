@@ -4,12 +4,12 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 
 ### Why?
 - Highly experimental project that overhauls and modernizes the internal renderer for Minecraft. <br>
-- Updates the renderer from OpenGL 3.2 to Vulkan 1.2.  <br>
+- Updates the renderer from OpenGL 3.2 to Vulkan 1.2 with partial 1.1.  <br>
 - Provides a potential reference for a future-proof Vulkan codebase for Minecraft Java. <br>
 - Utilizes the VulkanAPI to allow for capabilities not always possible with OpenGL. <br>
 - Including reduced CPU Overhead and use of newer, modern hardware capabilities. <br>
 
-### Demonstration Video:
+### Demonstration Video (by xCollateral):
 
 [![Demostration Video](http://img.youtube.com/vi/sbr7UxcAmOE/0.jpg)](https://youtu.be/sbr7UxcAmOE)
 
@@ -70,8 +70,13 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 >- [ ] Shader support
 >- [ ] Removed Herobrine
 
+### Known Issue with VKMod on PojavLauncher:
+- Rendering bug with ASR enabled.
 
 ## Notes
 - This mod is still in development, please report issues in the [issue tab](https://github.com/xCollateral/VulkanMod/issues) with logs attached!
 - This mode isn't just "minecraft on vulkan" (e.g: [zink](https://docs.mesa3d.org/drivers/zink.html) ), it is a full rewrite of the minecraft renderer.
+- This will not support 32-bit devices (e.g. Desktops, Mobile, etc...).
+- This will not be published publicly (e.g YouTube, Mediafire, etc...).
+- This modification of VulkanMod is UNOFFICIAL.
 
