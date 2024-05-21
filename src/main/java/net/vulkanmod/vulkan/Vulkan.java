@@ -5,13 +5,13 @@ import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.framebuffer.SwapChain;
 import net.vulkanmod.vulkan.memory.Buffer;
 import net.vulkanmod.vulkan.memory.MemoryManager;
-import net.vulkanmod.vulkan.memory.MemoryTypes;
 import net.vulkanmod.vulkan.memory.StagingBuffer;
 import net.vulkanmod.vulkan.queue.Queue;
+import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import net.vulkanmod.vulkan.shader.Pipeline;
 import net.vulkanmod.vulkan.util.VUtil;
-import net.vulkanmod.vulkan.util.VkResult;
 import org.joml.Matrix4f;
+import net.vulkanmod.vulkan.util.VkResult;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
@@ -23,7 +23,6 @@ import java.nio.LongBuffer;
 import java.util.*;
 
 import static java.util.stream.Collectors.toSet;
-import static net.vulkanmod.vulkan.queue.Queue.getQueueFamilies;
 import static net.vulkanmod.vulkan.util.VUtil.asPointerBuffer;
 import static org.lwjgl.glfw.GLFWVulkan.glfwCreateWindowSurface;
 import static org.lwjgl.glfw.GLFWVulkan.glfwGetRequiredInstanceExtensions;
@@ -147,7 +146,7 @@ public class Vulkan {
         DeviceManager.init(instance);
 
         createVma();
-        MemoryTypes.createMemoryTypes();
+        // MemoryTypes.createMemoryTypes();
 
         createCommandPool();
         allocateImmediateCmdBuffer();
@@ -165,8 +164,9 @@ public class Vulkan {
 
         stagingBuffers = new StagingBuffer[Renderer.getFramesNum()];
 
-        for (int i = 0; i < stagingBuffers.length; ++i) {
-            stagingBuffers[i] = new StagingBuffer(30 * 1024 * 1024);
+
+        for(int i = 0; i < stagingBuffers.length; ++i) {
+            stagingBuffers[i] = new StagingBuffer(33554432);
         }
     }
 
@@ -229,7 +229,7 @@ public class Vulkan {
             appInfo.applicationVersion(VK_MAKE_VERSION(1, 0, 0));
             appInfo.pEngineName(stack.UTF8Safe("VulkanMod Engine"));
             appInfo.engineVersion(VK_MAKE_VERSION(1, 0, 0));
-            appInfo.apiVersion(VK_API_VERSION_1_2);
+            appInfo.apiVersion(VK_API_VERSION_1_1);
 
             VkInstanceCreateInfo createInfo = VkInstanceCreateInfo.calloc(stack);
 
@@ -331,7 +331,7 @@ public class Vulkan {
             allocatorCreateInfo.device(DeviceManager.vkDevice);
             allocatorCreateInfo.pVulkanFunctions(vulkanFunctions);
             allocatorCreateInfo.instance(instance);
-            allocatorCreateInfo.vulkanApiVersion(VK_API_VERSION_1_2);
+            allocatorCreateInfo.vulkanApiVersion(VK_API_VERSION_1_1);
 
             PointerBuffer pAllocator = stack.pointers(VK_NULL_HANDLE);
 
@@ -346,11 +346,9 @@ public class Vulkan {
 
         try (MemoryStack stack = stackPush()) {
 
-            Queue.QueueFamilyIndices queueFamilyIndices = getQueueFamilies();
-
             VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.calloc(stack);
             poolInfo.sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO);
-            poolInfo.queueFamilyIndex(queueFamilyIndices.graphicsFamily);
+            poolInfo.queueFamilyIndex(QueueFamilyIndices.graphicsFamily);
             poolInfo.flags(VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 
             LongBuffer pCommandPool = stack.mallocLong(1);
@@ -459,16 +457,15 @@ public class Vulkan {
         return swapChain;
     }
 
-    public static long getCommandPool() {
-        return commandPool;
-    }
-
     public static Matrix4f getPretransformMatrix() {
         return swapChain.getPretransformMatrix();
     }
-    
     public static int getPretransformFlags() {
         return swapChain.getPretransformFlags();
+    }
+
+    public static long getCommandPool() {
+        return commandPool;
     }
 
     public static StagingBuffer getStagingBuffer() {

@@ -56,7 +56,7 @@ public class Drawer {
             );
         }
         this.vertexBuffers = new VertexBuffer[framesNum];
-        Arrays.setAll(this.vertexBuffers, i -> new VertexBuffer(INITIAL_VB_SIZE, MemoryTypes.HOST_MEM));
+        Arrays.setAll(this.vertexBuffers, i -> new VertexBuffer(INITIAL_VB_SIZE, MemoryType.BAR_MEM));
 
         if (this.uniformBuffers != null) {
             Arrays.stream(this.uniformBuffers).iterator().forEachRemaining(
@@ -64,7 +64,7 @@ public class Drawer {
             );
         }
         this.uniformBuffers = new UniformBuffer[framesNum];
-        Arrays.setAll(this.uniformBuffers, i -> new UniformBuffer(INITIAL_UB_SIZE, MemoryTypes.HOST_MEM));
+        Arrays.setAll(this.uniformBuffers, i -> new UniformBuffer(INITIAL_UB_SIZE, MemoryType.BAR_MEM));
     }
 
     public void resetBuffers(int currentFrame) {
@@ -108,7 +108,6 @@ public class Drawer {
         }
 
         if (indexCount > 0) {
-            autoIndexBuffer.checkCapacity(vertexCount);
 
             drawIndexed(vertexBuffer, autoIndexBuffer.getIndexBuffer(), indexCount);
         } else {
