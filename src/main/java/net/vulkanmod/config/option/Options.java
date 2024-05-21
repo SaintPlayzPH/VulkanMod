@@ -92,7 +92,7 @@ public abstract class Options {
                                 },
                                 () -> minecraftOptions.fullscreen().get()),
                         new RangeOption(Component.translatable("Max Framerate"),
-                                10, 260, 10,
+                                10, 260, 5,
                                 value -> Component.nullToEmpty(value == 260 ? "Unlimited" : String.valueOf(value)),
                                 value -> {
                                     minecraftOptions.framerateLimit().set(value);
@@ -146,13 +146,13 @@ public abstract class Options {
         return new OptionBlock[] {
                 new OptionBlock("", new Option<?>[]{
                         new RangeOption(Component.translatable("Render Distance"),
-                                2, 32, 1,
+                                2, 64, 1,
                                 (value) -> {
                                     minecraftOptions.renderDistance().set(value);
                                 },
                                 () -> minecraftOptions.renderDistance().get()),
                         new RangeOption(Component.translatable("Simulation Distance"),
-                                5, 32, 1,
+                                5, 64, 1,
                                 (value) -> {
                                     minecraftOptions.simulationDistance().set(value);
                                 },
@@ -228,6 +228,13 @@ public abstract class Options {
                                 50, 500, 25,
                                 value -> minecraftOptions.entityDistanceScaling().set(value * 0.01),
                                 () -> minecraftOptions.entityDistanceScaling().get().intValue() * 100),
+                        new SwitchOption(Component.translatable("Enable Post-Effect"),
+                                 value -> {
+                                    config.postEffect = value;
+                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                },
+                                () -> config.postEffect)
+                                .setTooltip(Component.translatable("Enables Certain Effect e.g. Glowing Effect, Spectating Some Entity")),
                         new CyclingOption<>(Component.translatable("Mipmap Levels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
@@ -259,6 +266,19 @@ public abstract class Options {
                                     return Component.nullToEmpty(t);
                                 })
                                 .setTooltip(Component.translatable("vulkanmod.options.advCulling.tooltip")),
+                        new SwitchOption(Component.translatable("Animations"),
+                                value -> config.animations = value,
+                                () -> config.animations),
+                        new SwitchOption(Component.translatable("Render Sky"),
+                                value -> config.renderSky = value,
+                                () -> config.renderSky),
+                        new SwitchOption(Component.translatable("Use GPU Memory"),
+                                value -> {
+                                    config.useGPUMem = value;
+                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                },
+                                () -> config.useGPUMem)
+                                .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Mmemory for allocation.")),
                         new SwitchOption(Component.translatable("Entity Culling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
@@ -266,7 +286,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Indirect Draw"),
                                 value -> config.indirectDraw = value,
                                 () -> config.indirectDraw)
-                                .setTooltip(Component.translatable("vulkanmod.options.indirectDraw.tooltip")),
+                                .setTooltip(Component.translatable("vulkanmod.options.indirectDraw.tooltip"))
                 })
         };
 
@@ -276,12 +296,20 @@ public abstract class Options {
         return new OptionBlock[] {
                 new OptionBlock("", new Option[] {
                         new RangeOption(Component.translatable("Render queue size"),
-                                2, 5, 1,
+                                1, 8, 1,
                                 value -> {
                                     config.frameQueueSize = value;
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
+                        new SwitchOption(Component.translatable("Show Android Memory Info"),
+                                value -> config.showAndroidRAM = value,
+                                () -> config.showAndroidRAM)
+                                .setTooltip(Component.translatable("Shows your Android Memory Info on debug screen.")),
+                        new SwitchOption(Component.translatable("Show Pojav Info"),
+                                value -> config.pojavInfo = value,
+                                () -> config.pojavInfo)
+                                .setTooltip(Component.translatable("Shows Pojav Info on debug screen.")),
                         new CyclingOption<>(Component.translatable("Device selector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
