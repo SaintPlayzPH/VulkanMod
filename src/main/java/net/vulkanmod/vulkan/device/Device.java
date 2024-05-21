@@ -26,7 +26,8 @@ public class Device {
     public final String vendorIdString;
     public final String deviceName;
     public final String driverVersion;
-    public final String vkVersion;
+    public final String vkDriverVersion;
+    public final String vkInstanceLoaderVersion;
 
     public final VkPhysicalDeviceFeatures2 availableFeatures;
     public final VkPhysicalDeviceVulkan11Features availableFeatures11;
@@ -46,8 +47,9 @@ public class Device {
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
-        this.vkVersion = decDefVersion(getVkVer());
-
+        this.vkDriverVersion = decDefVersion(properties.apiVersion());
+        this.vkInstanceLoaderVersion = decDefVersion(getVkVer());
+        
         this.availableFeatures = VkPhysicalDeviceFeatures2.calloc();
         this.availableFeatures.sType$Default();
 
@@ -113,8 +115,8 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            if (VK_VERSION_MINOR(vkVer1) < 2) {
-                throw new RuntimeException("Vulkan 1.2 not supported: Only Has: %s".formatted(decDefVersion(vkVer1)));
+            if (VK_VERSION_MINOR(vkVer1) < 1) {
+                throw new RuntimeException("Vulkan 1.1 not supported: Only Has: %s".formatted(decDefVersion(vkVer1)));
             }
             return vkVer1;
         }
