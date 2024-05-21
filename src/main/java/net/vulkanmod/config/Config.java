@@ -15,14 +15,21 @@ import java.util.Collections;
 public class Config {
 
     public int frameQueueSize = 2;
+    public boolean showAndroidRAM = true;
+    public boolean pojavInfo = false;
     public VideoModeSet.VideoMode videoMode = VideoModeManager.getFirstAvailable().getVideoMode();
     public boolean windowedFullscreen = false;
 
     public int advCulling = 2;
     public boolean indirectDraw = false;
 
+    public boolean perRenderTypeAreaBuffers = true;
     public boolean uniqueOpaqueLayer = true;
     public boolean entityCulling = true;
+    public boolean animations = true;
+    public boolean renderSky = true;
+    public boolean useGPUMem = false;
+    public boolean postEffect = false;
     public int device = -1;
 
     public int ambientOcclusion = 1;
