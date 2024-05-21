@@ -17,6 +17,7 @@ import net.vulkanmod.vulkan.framebuffer.RenderPass;
 import net.vulkanmod.vulkan.memory.MemoryManager;
 import net.vulkanmod.vulkan.pass.DefaultMainPass;
 import net.vulkanmod.vulkan.pass.MainPass;
+import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import net.vulkanmod.vulkan.shader.Pipeline;
 import net.vulkanmod.vulkan.shader.PipelineState;
@@ -104,6 +105,10 @@ public class Renderer {
         device = Vulkan.getVkDevice();
         framesNum = Initializer.CONFIG.frameQueueSize;
         imagesNum = getSwapChain().getImagesNum();
+	addOnResizeCallback(() -> {
+            VK11.vkTrimCommandPool(device, Vulkan.getCommandPool(), 0);
+            Queue.GraphicsQueue.trimCmdPool();
+        });
     }
 
     public static void setLineWidth(float width) {
