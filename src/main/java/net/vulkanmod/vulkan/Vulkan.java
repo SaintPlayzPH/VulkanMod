@@ -11,6 +11,7 @@ import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.Pipeline;
 import net.vulkanmod.vulkan.util.VUtil;
 import net.vulkanmod.vulkan.util.VkResult;
+import org.joml.Matrix4f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
@@ -35,7 +36,7 @@ import static org.lwjgl.vulkan.EXTDebugUtils.*;
 import static org.lwjgl.vulkan.KHRDynamicRendering.VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_2;
+import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_1;
 
 public class Vulkan {
 
@@ -460,6 +461,14 @@ public class Vulkan {
 
     public static long getCommandPool() {
         return commandPool;
+    }
+
+    public static Matrix4f getPretransformMatrix() {
+        return swapChain.getPretransformMatrix();
+    }
+    
+    public static int getPretransformFlags() {
+        return swapChain.getPretransformFlags();
     }
 
     public static StagingBuffer getStagingBuffer() {
