@@ -109,7 +109,6 @@ public class SectionGraph {
                 }
             }
 
-            this.sectionQueue.ensureCapacity(list.size());
             for (RenderSection chunkInfo : list) {
                 this.sectionQueue.add(chunkInfo);
             }
@@ -170,7 +169,7 @@ public class SectionGraph {
                 continue;
 
             if (!renderSection.isCompletelyEmpty()) {
-                renderSection.getChunkArea().sectionQueue.add(renderSection);
+                renderSection.getChunkArea().addDrawCmds(renderSection.getDrawParametersArray());
                 this.chunkAreaQueue.add(renderSection.getChunkArea());
                 this.nonEmptyChunks++;
             }
@@ -200,10 +199,10 @@ public class SectionGraph {
         byte frustumRes = renderSection.getChunkArea().inFrustum(renderSection.frustumIndex);
         if (frustumRes > FrustumIntersection.INTERSECT) {
             return true;
-        } else if (frustumRes == FrustumIntersection.INTERSECT) {
-            if (!frustum.testFrustum(renderSection.xOffset, renderSection.yOffset, renderSection.zOffset,
-                    renderSection.xOffset + 16, renderSection.yOffset + 16, renderSection.zOffset + 16))
-                return true;
+        }
+        if (frustumRes == FrustumIntersection.INTERSECT) {
+            return !frustum.testFrustum(renderSection.xOffset, renderSection.yOffset, renderSection.zOffset,
+                    renderSection.xOffset + 16, renderSection.yOffset + 16, renderSection.zOffset + 16);
         }
         return false;
     }
@@ -247,7 +246,7 @@ public class SectionGraph {
             if (notInFrustum(renderSection)) continue;
 
             if (!renderSection.isCompletelyEmpty()) {
-                renderSection.getChunkArea().sectionQueue.add(renderSection);
+                renderSection.getChunkArea().addDrawCmds(renderSection.getDrawParametersArray());
                 this.chunkAreaQueue.add(renderSection.getChunkArea());
                 this.nonEmptyChunks++;
             }
@@ -307,4 +306,4 @@ public class SectionGraph {
         return String.format("Chunks: %d(%d)/%d D: %d, %s", this.nonEmptyChunks, sections, totalSections, renderDistance, tasksInfo);
     }
 }
-
+            
