@@ -1,5 +1,6 @@
 package net.vulkanmod.render.chunk.buffer;
 
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.render.chunk.ChunkArea;
 import net.vulkanmod.render.chunk.RenderSection;
@@ -36,6 +37,13 @@ public class DrawBuffers {
         this.index = index;
         this.origin = origin;
         this.minHeight = minHeight;
+    }
+
+    public void allocateBuffers() {
+        if (!Initializer.CONFIG.perRenderTypeAreaBuffers)
+            vertexBuffer = new AreaBuffer(AreaBuffer.Usage.VERTEX, 2097152 /*RenderType.BIG_BUFFER_SIZE>>1*/, VERTEX_SIZE);
+
+        this.allocated = true;
     }
 
     public void upload(RenderSection section, UploadBuffer buffer, TerrainRenderType renderType) {
