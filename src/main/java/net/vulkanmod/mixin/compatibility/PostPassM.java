@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.PostPass;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
 import org.joml.Matrix4f;
@@ -44,6 +45,7 @@ public class PostPassM {
      */
     @Overwrite
     public void process(float f) {
+        if (Initializer.CONFIG.postEffect) {
         this.inTarget.unbindWrite();
         float g = (float)this.outTarget.width;
         float h = (float)this.outTarget.height;
@@ -99,4 +101,5 @@ public class PostPassM {
 
         VRenderSystem.enableCull();
     }
+}
 }
