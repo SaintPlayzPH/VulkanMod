@@ -1,5 +1,6 @@
 package net.vulkanmod.render.chunk.util;
 
+import net.vulkanmod.Initializer;
 import net.minecraft.core.Direction;
 import org.lwjgl.system.MemoryUtil;
 
@@ -45,7 +46,7 @@ public class Util {
     }
 
     public static int align(int i, int alignment) {
-        if (alignment == 0)
+        if (Initializer.CONFIG.postEffect && alignment == 0)
             return i;
 
         int r = i % alignment;
