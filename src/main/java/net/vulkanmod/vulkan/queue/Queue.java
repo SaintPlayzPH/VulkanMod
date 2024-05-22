@@ -22,7 +22,7 @@ public enum Queue {
     PresentQueue(QueueFamilyIndices.presentFamily, false, 0);
     private CommandPool.CommandBuffer currentCmdBuffer;
     private final CommandPool commandPool;
-
+    private final int familyIndex;
 
     private final VkQueue queue;
 
@@ -30,25 +30,22 @@ public enum Queue {
         return this.commandPool.beginCommands();
     }
 
-    Queue(int familyIndex) {
-        this(familyIndex, true, 0);
-    }
-
     Queue(int familyIndex, boolean initCommandPool, int queueIndex) {
         try (MemoryStack stack = MemoryStack.stackPush())
         {
             PointerBuffer pQueue = stack.mallocPointer(1);
-            vkGetDeviceQueue(DeviceManager.vkDevice, familyIndex, queueIndex, pQueue);
-            this.queue = new VkQueue(pQueue.get(0), DeviceManager.vkDevice);
+            this.familyIndex = familyIndex;
+            vkGetDeviceQueue(DeviceManager.device, this.familyIndex, queueIndex, pQueue);
+            this.queue = new VkQueue(pQueue.get(0), DeviceManager.device);
 
-            this.commandPool = initCommandPool ? new CommandPool(familyIndex) : null;
+            this.commandPool = initCommandPool ? new CommandPool(this.familyIndex) : null;
         }
     }
 
-    public synchronized long submitCommands(CommandPool.CommandBuffer commandBuffer) {
+    public long submitCommands(CommandPool.CommandBuffer commandBuffer) {
         return this.commandPool.submitCommands(commandBuffer, queue);
     }
-
+    
     public VkQueue queue() { return this.queue; }
 
     public void cleanUp() {
@@ -111,10 +108,22 @@ public enum Queue {
         }
     }
 
-    public void uploadBufferCmds(CommandPool.CommandBuffer commandBuffer, long srcBuffer, long dstBuffer, VkBufferCopy.Buffer vkBufferCopies) {
-        vkCmdCopyBuffer(commandBuffer.getHandle(), srcBuffer, dstBuffer, vkBufferCopies);
-    }
+    public void uploadBufferCmds(CommandPool.CommandBuffer commandBuffer, long srcBuffer, Long2ObjectMap.FastEntrySet<ObjectArrayFIFOQueue<SubCopyCommand>> dstBuffers) {
 
+        try(MemoryStack stack = stackPush()) {
+            for (var a : dstBuffers) {
+                ObjectArrayFIFOQueue<SubCopyCommand> subCmdUploads = a.getValue();
+                VkBufferCopy.Buffer vkBufferCopies = VkBufferCopy.malloc(subCmdUploads.size(), stack);
+                for (var subCpy : vkBufferCopies) {
+                    SubCopyCommand subCopyCommand = subCmdUploads.dequeue();
+                    subCpy.set(subCopyCommand.srcOffset(), subCopyCommand.dstOffset(), subCopyCommand.bufferSize());
+                }
+
+                vkCmdCopyBuffer(commandBuffer.getHandle(), srcBuffer, a.getLongKey(), vkBufferCopies);
+            }
+        }
+    }
+    
     public void startRecording() {
         currentCmdBuffer = beginCommands();
     }
