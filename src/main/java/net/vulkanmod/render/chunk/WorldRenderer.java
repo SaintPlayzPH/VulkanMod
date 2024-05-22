@@ -318,7 +318,8 @@ public class WorldRenderer {
         Renderer renderer = Renderer.getInstance();
         GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
         renderer.bindGraphicsPipeline(pipeline);
-        Renderer.getDrawer().bindAutoIndexBuffer(Renderer.getCommandBuffer(), 7);
+        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
 
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
