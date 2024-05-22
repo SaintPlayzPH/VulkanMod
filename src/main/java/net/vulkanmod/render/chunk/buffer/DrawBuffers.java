@@ -29,7 +29,7 @@ public class DrawBuffers {
     private final int minHeight;
 
     private boolean allocated = false;
-    AreaBuffer indexBuffer;
+    AreaBuffer vertexBuffer, indexBuffer;
     private final EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers = new EnumMap<>(TerrainRenderType.class);
 
     //Need ugly minHeight Parameter to fix custom world heights (exceeding 384 Blocks in total)
@@ -76,11 +76,9 @@ public class DrawBuffers {
         buffer.release();
     }
 
-    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType renderType) {
-        this.allocated = true;
-
+    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
         return this.vertexBuffers.computeIfAbsent(
-                renderType, renderType1 -> new AreaBuffer(AreaBuffer.Usage.VERTEX, renderType.initialSize, VERTEX_SIZE));
+                r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
     }
 
     public AreaBuffer getAreaBuffer(TerrainRenderType r) {
@@ -177,15 +175,20 @@ public class DrawBuffers {
         if (!this.allocated)
             return;
 
-        this.vertexBuffers.values().forEach(AreaBuffer::freeBuffer);
-        this.vertexBuffers.clear();
+        if (this.vertexBuffer == null) {
+            this.vertexBuffers.values().forEach(AreaBuffer::freeBuffer);
+        } else
+            this.vertexBuffer.freeBuffer();
 
+        this.vertexBuffers.clear();
         if (this.indexBuffer != null)
             this.indexBuffer.freeBuffer();
-        this.indexBuffer = null;
 
+        this.vertexBuffer = null;
+        this.indexBuffer = null;
         this.allocated = false;
     }
+    
 
     public boolean isAllocated() {
         return !this.vertexBuffers.isEmpty();
