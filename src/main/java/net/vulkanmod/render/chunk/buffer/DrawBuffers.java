@@ -191,6 +191,10 @@ public class DrawBuffers {
         return !this.vertexBuffers.isEmpty();
     }
 
+    public AreaBuffer getVertexBuffer() {
+        return vertexBuffer;
+    }
+
     public EnumMap<TerrainRenderType, AreaBuffer> getVertexBuffers() {
         return vertexBuffers;
     }
