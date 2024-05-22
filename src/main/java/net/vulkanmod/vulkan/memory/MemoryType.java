@@ -25,12 +25,13 @@ public enum MemoryType {
     private final int flags;
 
     MemoryType(boolean useVRAM, int... optimalFlags) {
+        long tempMaxSize = 0;
+        int tempFlags = 0;
+        final boolean useVRAM1 = useVRAM || !hasHeapFlag(0);
 
-//        this.maxSize = maxSize;
-//        this.resizableBAR = size > 0xD600000;
-        //Some devices don't have a separate RAM only/Non-Device local heap
-        final int VRAMFlag = useVRAM ? VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT : hasHeapFlag(0) ? 0 : VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
         for (int optimalFlagMask : optimalFlags) {
+            final String requiredFlagString = getMemoryTypeFlags(optimalFlagMask);
+            Initializer.LOGGER.info("Requesting Flags: " + requiredFlagString + "...");
             for (VkMemoryType memoryType : DeviceManager.memoryProperties.memoryTypes()) {
 
                 VkMemoryHeap memoryHeap = DeviceManager.memoryProperties.memoryHeaps(memoryType.heapIndex());
@@ -38,46 +39,47 @@ public enum MemoryType {
                 final int extractedFlags = optimalFlagMask & availableFlags;
                 final boolean hasRequiredFlags = extractedFlags == optimalFlagMask;
 
-                final boolean hasMemType = useVRAM == ((availableFlags & VRAMFlag) != 0);
+                if (availableFlags != 0) {
+                    Initializer.LOGGER.info(
+                            "AvailableFlags: " + getMemoryTypeFlags(availableFlags) + "\t --> " + "SelectedFlags: " + getMemoryTypeFlags(extractedFlags));
+                }
+
+                final boolean hasMemType = useVRAM1 == ((availableFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) != 0);
                 if (hasRequiredFlags && hasMemType) {
-                    this.maxSize = memoryHeap.size();
-                    this.flags = optimalFlagMask;
+                    tempMaxSize = memoryHeap.size();
+                    tempFlags = optimalFlagMask;
 
-                    Initializer.LOGGER.info(this.name()+"\n"
-                            + "     Memory Heap Index/Bank: "+ memoryType.heapIndex() +"\n"
-                            + "     IsVRAM: "+ memoryHeap.flags() +"\n"
-                            + "     MaxSize: " + this.maxSize+ " Bytes" +"\n"
+                    Initializer.LOGGER.info("Found Requested Flags for: " + this.name() + "\n"
+                            + "     Memory Heap Index/Bank: " + memoryType.heapIndex() + "\n"
+                            + "     IsVRAM: " + memoryHeap.flags() + "\n"
+                            + "     MaxSize: " + tempMaxSize + " Bytes" + "\n"
                             + "     AvailableFlags:" + getMemoryTypeFlags(availableFlags) + "\n"
-                            + "     EnabledFlags:" + getMemoryTypeFlags(optimalFlagMask));
-//                    this.mappable = ((this.flags = optimalFlagMask) & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0;
-
+                            + "     EnabledFlags:" + requiredFlagString);
+                    this.maxSize = tempMaxSize;
+                    this.flags = tempFlags;
                     return;
                 }
             }
-//            optimalFlagMask ^= optimalFlags[currentFlagCount]; //remove each Property bit, based on varargs priority ordering from right to left
+            Initializer.LOGGER.error(requiredFlagString + " Not Found, using next Fallback");
         }
 
-        throw new RuntimeException("Unsupported MemoryType: "+this.name() + ": Try updating your driver and/or Vulkan version");
+        // Set default values to avoid crash
+        this.maxSize = tempMaxSize;
+        this.flags = tempFlags;
 
-//        VkMemoryType memoryType = DeviceManager.memoryProperties.memoryTypes(0);
-//        VkMemoryHeap memoryHeap = DeviceManager.memoryProperties.memoryHeaps(0);
-//        this.maxSize = memoryHeap.size();
-//        this.flags = memoryType.propertyFlags();
-//            return;
-//
-//
-
+        Initializer.LOGGER.error("Unsupported MemoryType: " + this.name() + ": Try updating your driver and/or Vulkan version");
+        throw new RuntimeException("Unsupported MemoryType: " + this.name() + ": Try updating your driver and/or Vulkan version");
     }
 
-    private String getMemoryTypeFlags(int memFlags)
-    {
-        final int[] x = new int[]{1,2,4,8,16};
+    private String getMemoryTypeFlags(int memFlags) {
+        if (memFlags == 0) return " | NONE/SKIPPING";
+        final int[] x = new int[]{VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+                VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT};
         StringBuilder memTypeFlags = new StringBuilder();
         for (int memFlag : x) {
-            boolean hasMemFlag = (memFlag & memFlags)!=0;
-            if(hasMemFlag)
-            {
-                switch (memFlag){
+            boolean hasMemFlag = (memFlag & memFlags) != 0;
+            if (hasMemFlag) {
+                switch (memFlag) {
                     case VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT -> memTypeFlags.append(" | DEVICE_LOCAL");
                     case VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT -> memTypeFlags.append(" | HOST_VISIBLE");
                     case VK_MEMORY_PROPERTY_HOST_COHERENT_BIT -> memTypeFlags.append(" | HOST_COHERENT");
@@ -88,6 +90,16 @@ public enum MemoryType {
         }
         return memTypeFlags.toString();
     }
+
+    private static boolean hasHeapFlag(int heapFlag) {
+        for (VkMemoryHeap memoryHeap : DeviceManager.memoryProperties.memoryHeaps()) {
+            if (memoryHeap.flags() == heapFlag) return true;
+        }
+        return false;
+    }
+
+    // Other methods remain unchanged...
+}
 
     private static boolean hasHeapFlag(int heapFlag) {
         for(VkMemoryHeap memoryHeap : DeviceManager.memoryProperties.memoryHeaps()) {
