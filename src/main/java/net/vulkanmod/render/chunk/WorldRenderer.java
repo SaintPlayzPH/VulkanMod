@@ -38,14 +38,13 @@ import net.vulkanmod.render.vertex.TerrainRenderType;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
 import net.vulkanmod.vulkan.memory.Buffer;
-import net.vulkanmod.vulkan.memory.IndexBuffer;
 import net.vulkanmod.vulkan.memory.IndirectBuffer;
 import net.vulkanmod.vulkan.memory.MemoryType;
 import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.lwjgl.vulkan.VK11;
+
 import java.util.*;
 
 public class WorldRenderer {
@@ -79,7 +78,7 @@ public class WorldRenderer {
     private double yTransparentOld;
     private double zTransparentOld;
 
-    IndirectBuffer[] indirectBuffers = null;
+    IndirectBuffer[] indirectBuffers;
 
     public RenderRegionBuilder renderRegionCache;
 
@@ -95,11 +94,11 @@ public class WorldRenderer {
 
         BlockRenderer.setBlockColors(this.minecraft.getBlockColors());
 
+        Renderer.getInstance().addOnResizeCallback(Queue::trimCmdPools);
         Renderer.getInstance().addOnResizeCallback(() -> {
             if (this.indirectBuffers.length != Renderer.getFramesNum())
                 allocateIndirectBuffers();
         });
-        addOnAllChangedCallback(Queue.GraphicsQueue::trimCmdPool);
     }
 
     private void allocateIndirectBuffers() {
@@ -108,15 +107,20 @@ public class WorldRenderer {
 
         this.indirectBuffers = new IndirectBuffer[Renderer.getFramesNum()];
 
+
         for (int i = 0; i < this.indirectBuffers.length; ++i) {
+
             if (!Initializer.CONFIG.useGPUMem) {
+        for(int i = 0; i < this.indirectBuffers.length; ++i) {
               this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.RAM_MEM);
+            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.BAR_MEM);
             } else {
+//            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.GPU_MEM);
               this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.GPU_MEM);
             }
         }
 
-//        uniformBuffers = new UniformBuffers(100000, MemoryTypes.GPU_MEM);
+//        uniformBuffers = new UniformBuffers(100000, MemoryType.GPU_MEM);
     }
 
     public static WorldRenderer init(RenderBuffers renderBuffers) {
@@ -318,14 +322,11 @@ public class WorldRenderer {
         Renderer renderer = Renderer.getInstance();
         GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
         renderer.bindGraphicsPipeline(pipeline);
-
-        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+        Renderer.getDrawer().bindAutoIndexBuffer(Renderer.getCommandBuffer(), 7);
 
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            VRenderSystem.depthMask(!isTranslucent);
             terrainRenderType.setCutoutUniform();
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
@@ -470,4 +471,5 @@ public class WorldRenderer {
         if (indirectBuffers != null)
             Arrays.stream(indirectBuffers).forEach(Buffer::freeBuffer);
     }
+
 }
