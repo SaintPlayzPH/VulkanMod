@@ -39,7 +39,7 @@ public class DrawBuffers {
     }
 
     public void upload(RenderSection section, UploadBuffer buffer, TerrainRenderType renderType) {
-        DrawParameters drawParameters = section.getDrawParameters(renderType);
+        DrawParameters drawParameters = section.getOrAllocDrawParameters(renderType);
         int vertexOffset = drawParameters.vertexOffset;
         int firstIndex = -1;
 
@@ -50,7 +50,9 @@ public class DrawBuffers {
             drawParameters.baseInstance = encodeSectionOffset(section.xOffset(), section.yOffset(), section.zOffset());
         }
 
-        if (!buffer.autoIndices) {
+        final boolean b = !buffer.indexOnly;
+        final boolean b1 = !buffer.autoIndices;
+        if (b) {
             if (this.indexBuffer == null)
                 this.indexBuffer = new AreaBuffer(AreaBuffer.Usage.INDEX, 786432 /*RenderType.SMALL_BUFFER_SIZE*/, INDEX_SIZE);
 
@@ -59,6 +61,7 @@ public class DrawBuffers {
         }
 
         drawParameters.indexCount = buffer.indexCount;
+        drawParameters.instanceCount = vertexOffset==-1? 0: 1;
         drawParameters.firstIndex = firstIndex;
         drawParameters.vertexOffset = vertexOffset;
 
@@ -101,7 +104,7 @@ public class DrawBuffers {
         vkCmdPushConstants(commandBuffer, pipeline.getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, byteBuffer);
     }
 
-    public void buildDrawBatchesIndirect(IndirectBuffer indirectBuffer, StaticQueue<RenderSection> queue, TerrainRenderType terrainRenderType) {
+    public void buildDrawBatchesIndirect(IndirectBuffer indirectBuffer, StaticQueue<DrawParameters> queue, TerrainRenderType terrainRenderType) {
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
 
@@ -113,11 +116,7 @@ public class DrawBuffers {
             int drawCount = 0;
             for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
 
-                final RenderSection section = iterator.next();
-                final DrawParameters drawParameters = section.getDrawParameters(terrainRenderType);
-
-                if (drawParameters.indexCount <= 0)
-                    continue;
+                final DrawParameters drawParameters = iterator.next();
 
                 long ptr = bufferPtr + (drawCount * 20L);
                 MemoryUtil.memPutInt(ptr, drawParameters.indexCount);
@@ -140,16 +139,12 @@ public class DrawBuffers {
 
     }
 
-    public void buildDrawBatchesDirect(StaticQueue<RenderSection> queue, TerrainRenderType renderType) {
+    public void buildDrawBatchesDirect(StaticQueue<DrawParameters> queue, TerrainRenderType renderType) {
         boolean isTranslucent = renderType == TerrainRenderType.TRANSLUCENT;
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
 
         for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
-            final RenderSection section = iterator.next();
-            final DrawParameters drawParameters = section.getDrawParameters(renderType);
-
-            if (drawParameters.indexCount <= 0)
-                continue;
+            final DrawParameters drawParameters = iterator.next();
 
             final int firstIndex = drawParameters.firstIndex == -1 ? 0 : drawParameters.firstIndex;
             vkCmdDrawIndexed(commandBuffer, drawParameters.indexCount, drawParameters.instanceCount, firstIndex, drawParameters.vertexOffset, drawParameters.baseInstance);
