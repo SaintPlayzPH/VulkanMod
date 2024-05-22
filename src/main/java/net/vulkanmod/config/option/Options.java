@@ -290,6 +290,18 @@ public abstract class Options {
                                 },
                                 () -> config.useGPUMem)
                                 .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Memory for allocation.")),
+                        new SwitchOption(Component.translatable("Per RenderType AreaBuffers"),
+                                value -> {
+                                    config.perRenderTypeAreaBuffers = value;
+                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                },
+                                () -> config.perRenderTypeAreaBuffers)
+                                .setTooltip(Component.nullToEmpty("""
+                        (WARNING: EXPERIMENTAL)
+                        
+                        Potentially improves performance of Chunk Rendering
+                        
+                        Very Architecture specific: May have no effect on some Devices""")),
                         new SwitchOption(Component.translatable("Entity Culling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
