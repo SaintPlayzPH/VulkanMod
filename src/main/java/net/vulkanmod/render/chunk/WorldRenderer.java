@@ -108,15 +108,11 @@ public class WorldRenderer {
         this.indirectBuffers = new IndirectBuffer[Renderer.getFramesNum()];
 
 
-        for (int i = 0; i < this.indirectBuffers.length; ++i) {
-
-            if (!Initializer.CONFIG.useGPUMem) {
         for(int i = 0; i < this.indirectBuffers.length; ++i) {
-              this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.RAM_MEM);
-            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.BAR_MEM);
-            } else {
-//            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.GPU_MEM);
-              this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.GPU_MEM);
+            if (!Initializer.CONFIG.useGPUMem) {
+                this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.RAM_MEM);
+              } else {
+                this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.GPU_MEM);
             }
         }
 
