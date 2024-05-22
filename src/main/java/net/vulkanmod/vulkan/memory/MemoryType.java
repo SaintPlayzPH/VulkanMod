@@ -25,13 +25,14 @@ public enum MemoryType {
     private final int flags;
 
     MemoryType(boolean useVRAM, int... optimalFlags) {
-        long tempMaxSize = 0;
-        int tempFlags = 0;
-        final boolean useVRAM1 = useVRAM || !hasHeapFlag(0);
 
+//        this.maxSize = maxSize;
+//        this.resizableBAR = size > 0xD600000;
+
+        final boolean useVRAM1 = useVRAM || !hasHeapFlag(0);
         for (int optimalFlagMask : optimalFlags) {
             final String requiredFlagString = getMemoryTypeFlags(optimalFlagMask);
-            Initializer.LOGGER.info("Requesting Flags: " + requiredFlagString + "...");
+            Initializer.LOGGER.info("Requesting Flags: "+ requiredFlagString + "...");
             for (VkMemoryType memoryType : DeviceManager.memoryProperties.memoryTypes()) {
 
                 VkMemoryHeap memoryHeap = DeviceManager.memoryProperties.memoryHeaps(memoryType.heapIndex());
@@ -39,47 +40,51 @@ public enum MemoryType {
                 final int extractedFlags = optimalFlagMask & availableFlags;
                 final boolean hasRequiredFlags = extractedFlags == optimalFlagMask;
 
-                if (availableFlags != 0) {
-                    Initializer.LOGGER.info(
-                            "AvailableFlags: " + getMemoryTypeFlags(availableFlags) + "\t --> " + "SelectedFlags: " + getMemoryTypeFlags(extractedFlags));
-                }
+                if(availableFlags!=0)  Initializer.LOGGER.info(
+                        "AvailableFlags: " + getMemoryTypeFlags(availableFlags) + "\t --> " + "SelectedFlags: " + getMemoryTypeFlags(extractedFlags));
 
                 final boolean hasMemType = useVRAM1 == ((availableFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) != 0);
                 if (hasRequiredFlags && hasMemType) {
-                    tempMaxSize = memoryHeap.size();
-                    tempFlags = optimalFlagMask;
+                    this.maxSize = memoryHeap.size();
+                    this.flags = optimalFlagMask;
 
-                    Initializer.LOGGER.info("Found Requested Flags for: " + this.name() + "\n"
-                            + "     Memory Heap Index/Bank: " + memoryType.heapIndex() + "\n"
-                            + "     IsVRAM: " + memoryHeap.flags() + "\n"
-                            + "     MaxSize: " + tempMaxSize + " Bytes" + "\n"
+                    Initializer.LOGGER.info("Found Requested Flags for: "+this.name()+"\n"
+                            + "     Memory Heap Index/Bank: "+ memoryType.heapIndex() +"\n"
+                            + "     IsVRAM: "+ memoryHeap.flags() +"\n"
+                            + "     MaxSize: " + this.maxSize+ " Bytes" +"\n"
                             + "     AvailableFlags:" + getMemoryTypeFlags(availableFlags) + "\n"
                             + "     EnabledFlags:" + requiredFlagString);
-                    this.maxSize = tempMaxSize;
-                    this.flags = tempFlags;
+//                    this.mappable = ((this.flags = optimalFlagMask) & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0;
+
                     return;
                 }
             }
             Initializer.LOGGER.error(requiredFlagString + " Not Found, using next Fallback");
+//            optimalFlagMask ^= optimalFlags[currentFlagCount]; //remove each Property bit, based on varargs priority ordering from right to left
         }
 
-        // Set default values to avoid crash
-        this.maxSize = tempMaxSize;
-        this.flags = tempFlags;
+        throw new RuntimeException("Unsupported MemoryType: "+this.name() + ": Try updating your driver and/or Vulkan version");
 
-        Initializer.LOGGER.error("Unsupported MemoryType: " + this.name() + ": Try updating your driver and/or Vulkan version");
-        throw new RuntimeException("Unsupported MemoryType: " + this.name() + ": Try updating your driver and/or Vulkan version");
+//        VkMemoryType memoryType = DeviceManager.memoryProperties.memoryTypes(0);
+//        VkMemoryHeap memoryHeap = DeviceManager.memoryProperties.memoryHeaps(0);
+//        this.maxSize = memoryHeap.size();
+//        this.flags = memoryType.propertyFlags();
+//            return;
+//
+//
+
     }
 
-    private String getMemoryTypeFlags(int memFlags) {
-        if (memFlags == 0) return " | NONE/SKIPPING";
-        final int[] x = new int[]{VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-                VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, VK_MEMORY_PROPERTY_HOST_CACHED_BIT, VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT};
+    private String getMemoryTypeFlags(int memFlags)
+    {
+        if(memFlags==0) return " | NONE/SKIPPING";
+        final int[] x = new int[]{1,2,4,8,16};
         StringBuilder memTypeFlags = new StringBuilder();
         for (int memFlag : x) {
-            boolean hasMemFlag = (memFlag & memFlags) != 0;
-            if (hasMemFlag) {
-                switch (memFlag) {
+            boolean hasMemFlag = (memFlag & memFlags)!=0;
+            if(hasMemFlag)
+            {
+                switch (memFlag){
                     case VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT -> memTypeFlags.append(" | DEVICE_LOCAL");
                     case VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT -> memTypeFlags.append(" | HOST_VISIBLE");
                     case VK_MEMORY_PROPERTY_HOST_COHERENT_BIT -> memTypeFlags.append(" | HOST_COHERENT");
@@ -92,56 +97,80 @@ public enum MemoryType {
     }
 
     private static boolean hasHeapFlag(int heapFlag) {
-        for (VkMemoryHeap memoryHeap : DeviceManager.memoryProperties.memoryHeaps()) {
-            if (memoryHeap.flags() == heapFlag) return true;
+        for(VkMemoryHeap memoryHeap : DeviceManager.memoryProperties.memoryHeaps()) {
+            if(memoryHeap.flags()==heapFlag) return true;
         }
         return false;
     }
 
-    void createBuffer(Buffer buffer, int size) {
-        // Allow resizable bar heaps to bypass the staging buffer
+    void createBuffer(Buffer buffer, int size)
+    {
+
+        //Allow resizable bar heaps to bypass the staging buffer
         final int usage = buffer.usage | (this.mappable() ? 0 : VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
 
         MemoryManager.getInstance().createBuffer(buffer, size, usage, this.flags);
-        this.usedBytes += size;
+        this.usedBytes+=size;
     }
 
-    void copyToBuffer(Buffer buffer, int bufferSize, ByteBuffer byteBuffer) {
-        if (!this.mappable()) {
-            StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
-            stagingBuffer.copyBuffer(bufferSize, byteBuffer);
-            DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), buffer.getUsedBytes(), bufferSize);
-        } else {
-            VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), bufferSize, buffer.getUsedBytes());
-        }
+//    void addSubCopy(Buffer buffer, long bufferSize, ByteBuffer byteBuffer)
+//    {
+//        StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
+//
+//        var a = new SubCopyCommand()
+//        if(subCpyContiguous)
+//    }
+//
+//    void executeSubCopy(Buffer srcBuffer, Buffer dstBuffer)
+//    {
+//
+//    }
+    void copyToBuffer(Buffer buffer, int bufferSize, ByteBuffer byteBuffer)
+    {
+         if(!this.mappable()){
+             StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
+             stagingBuffer.copyBuffer(bufferSize, byteBuffer);
+             DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), buffer.getUsedBytes(), bufferSize);
+         }
+         else VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), bufferSize, buffer.getUsedBytes());
     }
 
-    void freeBuffer(Buffer buffer) {
+
+    void freeBuffer(Buffer buffer)
+    {
         MemoryManager.getInstance().addToFreeable(buffer);
-        this.usedBytes -= buffer.bufferSize;
+        this.usedBytes-=buffer.bufferSize;
     }
 
-    public void uploadBuffer(Buffer buffer, ByteBuffer byteBuffer, int dstOffset) {
-        if (!this.mappable()) {
-            int bufferSize = byteBuffer.remaining();
-            StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
-            stagingBuffer.copyBuffer(bufferSize, byteBuffer);
 
-            DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), dstOffset, bufferSize);
-        } else {
-            VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), byteBuffer.remaining(), dstOffset);
-        }
+//    abstract void copyToBuffer(Buffer buffer, long bufferSize, ByteBuffer byteBuffer);
+//    abstract void copyFromBuffer(Buffer buffer, long bufferSize, ByteBuffer byteBuffer);
+
+    /**
+     * Replace data from byte 0
+     */
+    public void uploadBuffer(Buffer buffer, ByteBuffer byteBuffer, int dstOffset)
+    {
+      if(!this.mappable())
+      {
+          int bufferSize = byteBuffer.remaining();
+          StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
+          stagingBuffer.copyBuffer(bufferSize, byteBuffer);
+
+          DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), dstOffset, bufferSize);
+      }
+
+      else VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), byteBuffer.remaining(), dstOffset);
     }
 
-    final boolean mappable() {
-        return (this.flags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0;
-    }
+    final boolean mappable() { return (this.flags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0; }
 
-    public int usedBytes() {
-        return (int) (this.usedBytes >> 20);
-    }
+    public int usedBytes() { return (int) (this.usedBytes >> 20); }
 
-    public int maxSize() {
-        return (int) (this.maxSize >> 20);
-    }
+    public int maxSize() { return (int) (this.maxSize >> 20); }
+
+//    public int checkUsage(int usage) {
+//        return (usage & this.flags) !=0 ? usage : this.flags;
+//    }
 }
+                                          
