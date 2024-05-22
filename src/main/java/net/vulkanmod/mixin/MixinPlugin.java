@@ -22,10 +22,15 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        // Log the target class name and mixin class name for debugging
+        Initializer.LOGGER.info("Evaluating mixin for target class: " + targetClassName + ", mixin class: " + mixinClassName);
+        
         if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") || 
             mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostPassM")) {
-            // Check if CONFIG is initialized
-            return Initializer.CONFIG != null && Initializer.CONFIG.postEffect;
+            // Check if CONFIG is initialized and postEffect is true
+            boolean shouldApply = Initializer.CONFIG != null && Initializer.CONFIG.postEffect;
+            Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApply);
+            return shouldApply;
         }
         return true; // Apply all other mixins by default
     }
