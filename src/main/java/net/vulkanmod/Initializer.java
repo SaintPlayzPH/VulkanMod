@@ -11,44 +11,53 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 
 public class Initializer implements ClientModInitializer {
-	public static final Logger LOGGER = LogManager.getLogger("VulkanMod");
+    public static final Logger LOGGER = LogManager.getLogger("VulkanMod");
 
-	private static String VERSION;
-	public static Config CONFIG;
+    private static String VERSION;
+    public static Config CONFIG;
 
-	@Override
-	public void onInitializeClient() {
+    // Static block to ensure CONFIG is initialized early
+    static {
+        initializeConfig();
+    }
 
-		VERSION = FabricLoader.getInstance()
-				.getModContainer("vulkanmod")
-				.get()
-				.getMetadata()
-				.getVersion().getFriendlyString();
+    @Override
+    public void onInitializeClient() {
+        VERSION = FabricLoader.getInstance()
+                .getModContainer("vulkanmod")
+                .get()
+                .getMetadata()
+                .getVersion().getFriendlyString();
 
-		LOGGER.info("== VulkanMod ==");
+        LOGGER.info("== VulkanMod ==");
 
-		Platform.init();
-		VideoModeManager.init();
+        Platform.init();
+        VideoModeManager.init();
+    }
 
-		var configPath = FabricLoader.getInstance()
-				.getConfigDir()
-				.resolve("vulkanmod_settings.json");
+    private static void initializeConfig() {
+        var configPath = FabricLoader.getInstance()
+                .getConfigDir()
+                .resolve("vulkanmod_settings.json");
 
-		CONFIG = loadConfig(configPath);
-	}
+        CONFIG = loadConfig(configPath);
+    }
 
-	private static Config loadConfig(Path path) {
-		Config config = Config.load(path);
+    private static Config loadConfig(Path path) {
+        Config config = Config.load(path);
 
-		if(config == null) {
-			config = new Config();
-			config.write();
-		}
+        if (config == null) {
+            config = new Config();
+            config.write();
+        }
 
-		return config;
-	}
+        // Log the loaded configuration
+        LOGGER.info("Loaded config: postEffect = " + config.postEffect);
 
-	public static String getVersion() {
-		return VERSION;
-	}
+        return config;
+    }
+
+    public static String getVersion() {
+        return VERSION;
+    }
 }
