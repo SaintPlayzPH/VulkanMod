@@ -13,7 +13,6 @@ import java.util.List;
 
 @Mixin(PostChain.class)
 public abstract class PostChainM {
-    if (Initializer.CONFIG.postEffect) {
 
     @Shadow @Final private List<PostPass> passes;
 
@@ -27,7 +26,7 @@ public abstract class PostChainM {
      */
     @Overwrite
     public void process(float f) {
-        if (Initializer.CONFIG.postEffect) {
+        if(Initializer.CONFIG.postEffect) {
         if (f < this.lastStamp) {
             this.time += 1.0F - this.lastStamp;
             this.time += f;
