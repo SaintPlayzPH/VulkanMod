@@ -35,8 +35,8 @@ public enum Queue {
         {
             PointerBuffer pQueue = stack.mallocPointer(1);
             this.familyIndex = familyIndex;
-            vkGetDeviceQueue(DeviceManager.device, this.familyIndex, queueIndex, pQueue);
-            this.queue = new VkQueue(pQueue.get(0), DeviceManager.device);
+            vkGetDeviceQueue(DeviceManager.vkDevice, this.familyIndex, queueIndex, pQueue);
+            this.queue = new VkQueue(pQueue.get(0), DeviceManager.vkDevice);
 
             this.commandPool = initCommandPool ? new CommandPool(this.familyIndex) : null;
         }
