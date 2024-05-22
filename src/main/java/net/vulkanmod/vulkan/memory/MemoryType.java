@@ -98,83 +98,50 @@ public enum MemoryType {
         return false;
     }
 
-    // Other methods remain unchanged...
-}
-
-    private static boolean hasHeapFlag(int heapFlag) {
-        for(VkMemoryHeap memoryHeap : DeviceManager.memoryProperties.memoryHeaps()) {
-            if(memoryHeap.flags()==heapFlag) return true;
-        }
-        return false;
-    }
-
-    void createBuffer(Buffer buffer, int size)
-    {
-
-        //Allow resizable bar heaps to bypass the staging buffer
+    void createBuffer(Buffer buffer, int size) {
+        // Allow resizable bar heaps to bypass the staging buffer
         final int usage = buffer.usage | (this.mappable() ? 0 : VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
 
         MemoryManager.getInstance().createBuffer(buffer, size, usage, this.flags);
-        this.usedBytes+=size;
+        this.usedBytes += size;
     }
 
-//    void addSubCopy(Buffer buffer, long bufferSize, ByteBuffer byteBuffer)
-//    {
-//        StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
-//
-//        var a = new SubCopyCommand()
-//        if(subCpyContiguous)
-//    }
-//
-//    void executeSubCopy(Buffer srcBuffer, Buffer dstBuffer)
-//    {
-//
-//    }
-    void copyToBuffer(Buffer buffer, int bufferSize, ByteBuffer byteBuffer)
-    {
-         if(!this.mappable()){
-             StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
-             stagingBuffer.copyBuffer(bufferSize, byteBuffer);
-             DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), buffer.getUsedBytes(), bufferSize);
-         }
-         else VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), bufferSize, buffer.getUsedBytes());
+    void copyToBuffer(Buffer buffer, int bufferSize, ByteBuffer byteBuffer) {
+        if (!this.mappable()) {
+            StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
+            stagingBuffer.copyBuffer(bufferSize, byteBuffer);
+            DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), buffer.getUsedBytes(), bufferSize);
+        } else {
+            VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), bufferSize, buffer.getUsedBytes());
+        }
     }
 
-
-    void freeBuffer(Buffer buffer)
-    {
+    void freeBuffer(Buffer buffer) {
         MemoryManager.getInstance().addToFreeable(buffer);
-        this.usedBytes-=buffer.bufferSize;
+        this.usedBytes -= buffer.bufferSize;
     }
 
+    public void uploadBuffer(Buffer buffer, ByteBuffer byteBuffer, int dstOffset) {
+        if (!this.mappable()) {
+            int bufferSize = byteBuffer.remaining();
+            StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
+            stagingBuffer.copyBuffer(bufferSize, byteBuffer);
 
-//    abstract void copyToBuffer(Buffer buffer, long bufferSize, ByteBuffer byteBuffer);
-//    abstract void copyFromBuffer(Buffer buffer, long bufferSize, ByteBuffer byteBuffer);
-
-    /**
-     * Replace data from byte 0
-     */
-    public void uploadBuffer(Buffer buffer, ByteBuffer byteBuffer, int dstOffset)
-    {
-      if(!this.mappable())
-      {
-          int bufferSize = byteBuffer.remaining();
-          StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
-          stagingBuffer.copyBuffer(bufferSize, byteBuffer);
-
-          DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), dstOffset, bufferSize);
-      }
-
-      else VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), byteBuffer.remaining(), dstOffset);
+            DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), dstOffset, bufferSize);
+        } else {
+            VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), byteBuffer.remaining(), dstOffset);
+        }
     }
 
-    final boolean mappable() { return (this.flags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0; }
+    final boolean mappable() {
+        return (this.flags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) != 0;
+    }
 
-    public int usedBytes() { return (int) (this.usedBytes >> 20); }
+    public int usedBytes() {
+        return (int) (this.usedBytes >> 20);
+    }
 
-    public int maxSize() { return (int) (this.maxSize >> 20); }
-
-//    public int checkUsage(int usage) {
-//        return (usage & this.flags) !=0 ? usage : this.flags;
-//    }
+    public int maxSize() {
+        return (int) (this.maxSize >> 20);
+    }
 }
