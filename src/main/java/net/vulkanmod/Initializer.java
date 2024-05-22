@@ -52,7 +52,7 @@ public class Initializer implements ClientModInitializer {
         }
 
         // Log the loaded configuration
-        LOGGER.info("Loaded config: postEffect = " + config.postEffect);
+        LOGGER.info("Loaded config: glowEffectFix = " + config.glowEffectFix);
 
         return config;
     }
