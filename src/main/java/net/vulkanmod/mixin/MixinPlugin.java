@@ -28,7 +28,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") || 
             mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostPassM")) {
             // Check if CONFIG is initialized and postEffect is true
-            boolean shouldApply = Initializer.CONFIG != null && Initializer.CONFIG.postEffect;
+            boolean shouldApply = Initializer.CONFIG != null && !Initializer.CONFIG.glowEffectFix;
             Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApply);
             return shouldApply;
         }
