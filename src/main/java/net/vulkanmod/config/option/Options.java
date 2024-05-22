@@ -231,10 +231,15 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Enable Post-Effect"),
                                  value -> {
                                     config.postEffect = value;
-                                    Minecraft.getInstance().levelRenderer.allChanged();
                                 },
                                 () -> config.postEffect)
-                                .setTooltip(Component.translatable("Enables Certain Effect 'e.g. Glowing Effect'. Restart Is Required to take effect!")),
+                                .setTooltip(Component.translatable("Enables Certain Effect 'e.g. Glowing Effect'.")),
+                        new SwitchOption(Component.translatable("Fix Glowing Effect Bug"),
+                                 value -> {
+                                    config.glowEffectFix = value;
+                                },
+                                () -> config.glowEffectFix)
+                                .setTooltip(Component.translatable("Fixes bugs with Glowing Effect. Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Mipmap Levels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
@@ -267,18 +272,24 @@ public abstract class Options {
                                 })
                                 .setTooltip(Component.translatable("vulkanmod.options.advCulling.tooltip")),
                         new SwitchOption(Component.translatable("Animations"),
-                                value -> config.animations = value,
-                                () -> config.animations),
+                                value -> {
+                                    config.animations = value;
+                                },
+                                () -> config.animations)
+                                .setTooltip(Component.translatable("Makes the animated textures to animate. Disabling this prevents them from animating and may improve performance a bit.")),
                         new SwitchOption(Component.translatable("Render Sky"),
-                                value -> config.renderSky = value,
-                                () -> config.renderSky),
+                                value -> {
+                                    config.renderSky = value;
+                                },
+                                () -> config.renderSky)
+                                .setTooltip(Component.translatable("Renders the sky. Disabling this may improve performance a bit.")),
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;
                                     Minecraft.getInstance().levelRenderer.allChanged();
                                 },
                                 () -> config.useGPUMem)
-                                .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Mmemory for allocation.")),
+                                .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Memory for allocation.")),
                         new SwitchOption(Component.translatable("Entity Culling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
