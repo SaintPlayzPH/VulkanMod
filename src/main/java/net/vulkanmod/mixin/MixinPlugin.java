@@ -24,9 +24,10 @@ public class MixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") || 
             mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostPassM")) {
-            return Initializer.CONFIG.postEffect;
+            // Check if CONFIG is initialized
+            return Initializer.CONFIG != null && Initializer.CONFIG.postEffect;
         }
-        return true;
+        return true; // Apply all other mixins by default
     }
 
     @Override
