@@ -127,6 +127,21 @@ public class Drawer {
         vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
     }
 
+    public void bindAutoIndexBuffer(VkCommandBuffer commandBuffer, int drawMode) {
+        AutoIndexBuffer autoIndexBuffer;
+        switch (drawMode) {
+            case 7 -> autoIndexBuffer = this.quadsIndexBuffer;
+            case 6 -> autoIndexBuffer = this.linesIndexBuffer;
+            case 5 -> autoIndexBuffer = this.debugLineStripIndexBuffer;
+            case 4 -> autoIndexBuffer = this.triangleFanIndexBuffer;
+            case 3 -> autoIndexBuffer = this.triangleStripIndexBuffer;
+            default -> throw new RuntimeException("unknown drawType");
+        }
+        IndexBuffer indexBuffer = autoIndexBuffer.getIndexBuffer();
+
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer.getId(), indexBuffer.getOffset(), VK_INDEX_TYPE_UINT16);
+    }
+
     public void draw(VertexBuffer vertexBuffer, int vertexCount) {
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
 
