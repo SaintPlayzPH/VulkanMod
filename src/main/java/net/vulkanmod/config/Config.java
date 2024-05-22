@@ -30,6 +30,7 @@ public class Config {
     public boolean renderSky = true;
     public boolean useGPUMem = false;
     public boolean postEffect = false;
+    public int minImageCount = 3;
     public int device = -1;
 
     public int ambientOcclusion = 1;
