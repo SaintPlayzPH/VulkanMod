@@ -234,7 +234,7 @@ public abstract class Options {
                                     Minecraft.getInstance().levelRenderer.allChanged();
                                 },
                                 () -> config.postEffect)
-                                .setTooltip(Component.translatable("Enables Certain Effect (e.g. Glowing Effect). Restart Is Required to take effect!"),
+                                .setTooltip(Component.translatable("Enables Certain Effect 'e.g. Glowing Effect'. Restart Is Required to take effect!"),
                         new CyclingOption<>(Component.translatable("Mipmap Levels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
@@ -246,7 +246,7 @@ public abstract class Options {
                                 .setTranslator(value -> Component.nullToEmpty(value.toString()))
                 })
         };
-    }
+}
 
     public static OptionBlock[] getOptimizationOpts() {
         return new OptionBlock[] {
