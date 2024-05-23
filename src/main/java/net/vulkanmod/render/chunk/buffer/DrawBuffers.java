@@ -123,11 +123,11 @@ public class DrawBuffers {
 
             int drawCount = 0;
             for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
+            final RenderSection section = iterator.next();
+            final DrawParameters drawParameters = section.getDrawParameters(renderType);
 
-                final DrawParameters drawParameters = section.getDrawParameters(renderType);
-
-                if (drawParameters.indexCount <= 0)
-                    continue;
+            if (drawParameters.indexCount <= 0)
+                continue;
                 
                 long ptr = bufferPtr + (drawCount * 20L);
                 MemoryUtil.memPutInt(ptr, drawParameters.indexCount);
@@ -152,6 +152,7 @@ public class DrawBuffers {
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
 
         for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
+            final RenderSection section = iterator.next();
             final DrawParameters drawParameters = section.getDrawParameters(renderType);
 
             if (drawParameters.indexCount <= 0)
