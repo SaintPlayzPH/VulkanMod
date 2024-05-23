@@ -28,11 +28,9 @@ public class Config {
     public boolean entityCulling = true;
     public boolean animations = true;
     public boolean renderSky = true;
-    public boolean useGPUMem = false;
     public boolean postEffect = true;
     public boolean glowEffectFix = true;
     public boolean SPIRVOpts = false;
-    public boolean transDepthWrite = false;
     public int minImageCount = 3;
     public int device = -1;
 
