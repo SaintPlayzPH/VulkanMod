@@ -316,10 +316,11 @@ public class WorldRenderer {
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
         
+        Renderer renderer = Renderer.getInstance();
+        
         if (Initializer.CONFIG.transDepthWrite) {
             final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
         } else {
-            Renderer renderer = Renderer.getInstance();
             GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
             renderer.bindGraphicsPipeline(pipeline);
             IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
@@ -330,8 +331,7 @@ public class WorldRenderer {
         if (allowedRenderTypes.contains(terrainRenderType)) {
             if (Initializer.CONFIG.transDepthWrite) {
                 VRenderSystem.depthMask(!isTranslucent);
-
-                Renderer renderer = Renderer.getInstance();
+                
                 GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
                 renderer.bindGraphicsPipeline(pipeline);
 
@@ -347,9 +347,12 @@ public class WorldRenderer {
                 DrawBuffers drawBuffers = chunkArea.drawBuffers;
 
                 if (drawBuffers.getAreaBuffer(terrainRenderType) != null && queue.size() > 0) {
-
-                    drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
-                    
+                    if (Initializer.CONFIG.transDepthWrite) {
+                        drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
+                    } else {
+                        drawBuffers.bindBuffers(Renderer.getCommandBuffer(), pipeline, terrainRenderType, camX, camY, camZ);
+                        renderer.uploadAndBindUBOs(pipeline);
+                    }
                     if (indirectDraw)
                         drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
                     else
