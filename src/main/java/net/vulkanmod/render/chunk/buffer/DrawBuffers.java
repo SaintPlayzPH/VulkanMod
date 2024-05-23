@@ -16,7 +16,6 @@ import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkCommandBuffer;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.EnumMap;
 
 import static org.lwjgl.vulkan.VK10.*;
@@ -33,7 +32,6 @@ public class DrawBuffers {
     AreaBuffer vertexBuffer, indexBuffer;
     private final EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers = new EnumMap<>(TerrainRenderType.class);
     
-    //Need ugly minHeight Parameter to fix custom world heights (exceeding 384 Blocks in total)
     public DrawBuffers(int index, Vector3i origin, int minHeight) {
         this.index = index;
         this.origin = origin;
@@ -48,6 +46,11 @@ public class DrawBuffers {
     }
 
     public void upload(RenderSection section, UploadBuffer buffer, TerrainRenderType renderType) {
+        // Ensure buffers are allocated before using them
+        if (!this.allocated) {
+            allocateBuffers();
+        }
+        
         DrawParameters drawParameters = section.getDrawParameters(renderType);
         int vertexOffset = drawParameters.vertexOffset;
         int firstIndex = -1;
@@ -79,7 +82,6 @@ public class DrawBuffers {
                 renderType, renderType1 -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, renderType.initialSize, VERTEX_SIZE) : this.vertexBuffer);
     }
     
-
     public AreaBuffer getAreaBuffer(TerrainRenderType r) {
         return this.vertexBuffers.get(r);
     }
@@ -141,11 +143,8 @@ public class DrawBuffers {
 
             indirectBuffer.recordCopyCmd(byteBuffer.position(0));
 
-
             vkCmdDrawIndexedIndirect(Renderer.getCommandBuffer(), indirectBuffer.getId(), indirectBuffer.getOffset(), drawCount, 20);
         }
-
-
     }
 
     public void buildDrawBatchesDirect(StaticQueue<RenderSection> queue, TerrainRenderType renderType) {
@@ -175,7 +174,6 @@ public class DrawBuffers {
         if (terrainRenderType == TerrainRenderType.TRANSLUCENT) {
             vkCmdBindIndexBuffer(commandBuffer, this.indexBuffer.getId(), 0, VK_INDEX_TYPE_UINT16);
         }
-
     }
 
     public void releaseBuffers() {
@@ -233,4 +231,3 @@ public class DrawBuffers {
         }
     }
 }
-                                    
