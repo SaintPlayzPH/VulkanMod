@@ -323,11 +323,12 @@ public class WorldRenderer {
             VRenderSystem.depthMask(!isTranslucent);
 
             Renderer renderer = Renderer.getInstance();
-
             GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
             renderer.bindGraphicsPipeline(pipeline);
-            Renderer.getDrawer().bindAutoIndexBuffer(commandBuffer, 7);
 
+            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+            Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+            
             renderer.uploadAndBindUBOs(pipeline);
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
