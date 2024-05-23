@@ -222,5 +222,6 @@ public class DrawBuffers {
             this.firstIndex = -1;
             this.vertexOffset = -1;
         }
-        }
+    }
+}
     
