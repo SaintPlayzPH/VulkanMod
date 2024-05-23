@@ -316,11 +316,11 @@ public class WorldRenderer {
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
         
-        Renderer renderer = Renderer.getInstance();
         
         if (Initializer.CONFIG.transDepthWrite) {
             final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
         } else {
+            Renderer renderer = Renderer.getInstance();
             GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
             renderer.bindGraphicsPipeline(pipeline);
             IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
