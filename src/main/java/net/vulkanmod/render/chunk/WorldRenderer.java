@@ -320,15 +320,18 @@ public class WorldRenderer {
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            VRenderSystem.depthMask(!isTranslucent);
+            if (Initializer.CONFIG.transDepthWrite) {
+                VRenderSystem.depthMask(!isTranslucent);
 
-            Renderer renderer = Renderer.getInstance();
-            GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
-            renderer.bindGraphicsPipeline(pipeline);
+                Renderer renderer = Renderer.getInstance();
+                GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+                renderer.bindGraphicsPipeline(pipeline);
 
-            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-            Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
-            
+                IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+                Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+            } else {
+                terrainRenderType.setCutoutUniform();
+            }
             renderer.uploadAndBindUBOs(pipeline);
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
@@ -347,9 +350,15 @@ public class WorldRenderer {
             }
         }
 
-        if (indirectDraw && (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE)) {
-            indirectBuffers[currentFrame].submitUploads();
-//            uniformBuffers.submitUploads();
+        if (Initializer.CONFIG.transDepthWrite) {
+            if (indirectDraw && (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE)) {
+                indirectBuffers[currentFrame].submitUploads();
+//              uniformBuffers.submitUploads();
+            } else {
+            if (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE) {
+                indirectBuffers[currentFrame].submitUploads();
+//              uniformBuffers.submitUploads();
+            }
         }
 
         this.minecraft.getProfiler().pop();
