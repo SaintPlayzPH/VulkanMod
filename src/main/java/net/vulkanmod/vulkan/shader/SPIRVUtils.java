@@ -1,6 +1,7 @@
 package net.vulkanmod.vulkan.shader;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.vulkanmod.Initializer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.NativeResource;
@@ -25,8 +26,7 @@ import static org.lwjgl.util.shaderc.Shaderc.*;
 
 public class SPIRVUtils {
     private static final boolean DEBUG = false;
-    private static final boolean OPTIMIZATIONS = true;
-
+    
     private static long compiler;
     private static long options;
 
@@ -56,8 +56,11 @@ public class SPIRVUtils {
             throw new RuntimeException("Failed to create compiler options");
         }
 
-        if(OPTIMIZATIONS)
+        if(Initializer.CONFIG.SPIRVOpts) {
+            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_zero);
+        } else {
             shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
+        }
 
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
