@@ -1,5 +1,6 @@
 package net.vulkanmod.render.chunk.buffer;
 
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.render.chunk.ChunkArea;
 import net.vulkanmod.render.chunk.RenderSection;
@@ -73,7 +74,7 @@ public class DrawBuffers {
         buffer.release();
     }
 
-    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
+    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType renderType) {
         return this.vertexBuffers.computeIfAbsent(
                 renderType, renderType1 -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, renderType.initialSize, VERTEX_SIZE) : this.vertexBuffer);
     }
