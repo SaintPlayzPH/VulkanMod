@@ -369,6 +369,13 @@ public class WorldRenderer {
             }
         }
 
+        if (!Initializer.CONFIG.transDepthWrite) {
+            if (!indirectDraw) {
+                VRenderSystem.setChunkOffset(0, 0, 0);
+                renderer.pushConstants(pipeline);
+            }
+        }
+
         this.minecraft.getProfiler().pop();
         renderType.clearRenderState();
 
