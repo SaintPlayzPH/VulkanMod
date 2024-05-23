@@ -32,6 +32,7 @@ public class Config {
     public boolean postEffect = true;
     public boolean glowEffectFix = true;
     public boolean SPIRVOpts = false;
+    public boolean transDepthWrite = false;
     public int minImageCount = 3;
     public int device = -1;
 
