@@ -290,6 +290,13 @@ public abstract class Options {
                                 },
                                 () -> config.useGPUMem)
                                 .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Memory for allocation.")),
+                        new SwitchOption(Component.translatable("Disable SPIR-V Optimizations"),
+                                value -> {
+                                    config.SPIRVOpts = value;
+                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                },
+                                () -> config.SPIRVOpts)
+                                .setTooltip(Component.translatable("This option allows you to bypass any automatic optimization processes related to SPIR-V, providing greater control over the compilation process and potentially retaining more explicit control over performance tweaks or debugging.")),
                         new SwitchOption(Component.translatable("Entity Culling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
