@@ -169,7 +169,7 @@ public class DrawBuffers {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var vertexBuffer = getAreaBuffer(terrainRenderType);
             nvkCmdBindVertexBuffers(commandBuffer, 0, 1, stack.npointer(vertexBuffer.getId()), stack.npointer(0));
-            updateChunkAreaOrigin(commandBuffer, pipeline, camX, camY, camZ, stack.mallocFloat(32));
+            updateChunkAreaOrigin(commandBuffer, pipeline, camX, camY, camZ, stack);
         }
 
         if (terrainRenderType == TerrainRenderType.TRANSLUCENT) {
