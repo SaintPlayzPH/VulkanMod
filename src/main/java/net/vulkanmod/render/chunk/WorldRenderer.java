@@ -321,7 +321,7 @@ public class WorldRenderer {
         VkCommandBuffer commandBuffer = null;
         
         if (Initializer.CONFIG.transDepthWrite) {
-            final commandBuffer = Renderer.getCommandBuffer();
+            commandBuffer = Renderer.getCommandBuffer();
         } else {
             renderer = Renderer.getInstance();
             pipeline = PipelineManager.getTerrainShader(terrainRenderType);
