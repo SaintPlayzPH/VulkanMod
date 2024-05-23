@@ -41,6 +41,10 @@ public enum TerrainRenderType {
         };
     }
 
+    public void setCutoutUniform() {
+        VRenderSystem.alphaCutout = this.alphaCutout;
+    }
+
     public static RenderType getRenderType(TerrainRenderType renderType) {
         return switch (renderType) {
             case SOLID -> RenderType.solid();
