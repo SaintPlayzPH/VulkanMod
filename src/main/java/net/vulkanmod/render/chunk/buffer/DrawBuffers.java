@@ -124,12 +124,7 @@ public class DrawBuffers {
             int drawCount = 0;
             for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
 
-                final RenderSection section = iterator.next();
-                final DrawParameters drawParameters = section.getDrawParameters(terrainRenderType);
-
-                if (drawParameters.indexCount <= 0)
-                    continue;
-
+                final DrawParameters drawParameters = iterator.next();
                 long ptr = bufferPtr + (drawCount * 20L);
                 MemoryUtil.memPutInt(ptr, drawParameters.indexCount);
                 MemoryUtil.memPutInt(ptr + 4, drawParameters.instanceCount);
@@ -153,12 +148,7 @@ public class DrawBuffers {
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
 
         for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
-            final RenderSection section = iterator.next();
-            final DrawParameters drawParameters = section.getDrawParameters(renderType);
-
-            if (drawParameters.indexCount <= 0)
-                continue;
-
+            final DrawParameters drawParameters = iterator.next();
             final int firstIndex = drawParameters.firstIndex == -1 ? 0 : drawParameters.firstIndex;
             vkCmdDrawIndexed(commandBuffer, drawParameters.indexCount, drawParameters.instanceCount, firstIndex, drawParameters.vertexOffset, drawParameters.baseInstance);
         }
