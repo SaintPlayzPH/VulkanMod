@@ -321,10 +321,10 @@ public class WorldRenderer {
         VkCommandBuffer commandBuffer = null;
         
         if (Initializer.CONFIG.transDepthWrite) {
-            final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
+            final commandBuffer = Renderer.getCommandBuffer();
         } else {
-            Renderer renderer = Renderer.getInstance();
-            GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+            renderer = Renderer.getInstance();
+            pipeline = PipelineManager.getTerrainShader(terrainRenderType);
             renderer.bindGraphicsPipeline(pipeline);
             IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
             Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
@@ -335,8 +335,8 @@ public class WorldRenderer {
             if (Initializer.CONFIG.transDepthWrite) {
                 VRenderSystem.depthMask(!isTranslucent);
                 
-                Renderer renderer = Renderer.getInstance();
-                GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+                renderer = Renderer.getInstance();
+                pipeline = PipelineManager.getTerrainShader(terrainRenderType);
                 renderer.bindGraphicsPipeline(pipeline);
                 IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
                 Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
