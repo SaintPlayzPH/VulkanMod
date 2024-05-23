@@ -337,10 +337,10 @@ public class WorldRenderer {
 
                 IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
                 Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+                renderer.uploadAndBindUBOs(pipeline);
             } else {
                 terrainRenderType.setCutoutUniform();
             }
-            renderer.uploadAndBindUBOs(pipeline);
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
                 var queue = chunkArea.sectionQueue;
