@@ -23,7 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.vulkanmod.Initializer;
+//import net.vulkanmod.Initializer;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.render.chunk.buffer.DrawBuffers;
 import net.vulkanmod.render.chunk.build.BlockRenderer;
@@ -45,8 +45,7 @@ import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.lwjgl.vulkan.VK11;
-import org.lwjgl.vulkan.VkCommandBuffer;
+
 import java.util.*;
 
 public class WorldRenderer {
@@ -96,7 +95,6 @@ public class WorldRenderer {
 
         BlockRenderer.setBlockColors(this.minecraft.getBlockColors());
 
-        Renderer.getInstance().addOnResizeCallback(Queue::trimCmdPools);
         Renderer.getInstance().addOnResizeCallback(() -> {
             if (this.indirectBuffers.length != Renderer.getFramesNum())
                 allocateIndirectBuffers();
@@ -110,11 +108,8 @@ public class WorldRenderer {
         this.indirectBuffers = new IndirectBuffer[Renderer.getFramesNum()];
 
         for (int i = 0; i < this.indirectBuffers.length; ++i) {
-            if (!Initializer.CONFIG.useGPUMem) {
-              this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.RAM_MEM);
-            } else {
-              this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.GPU_MEM);
-            }
+            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryType.RAM_MEM);
+//            this.indirectBuffers[i] = new IndirectBuffer(1000000, MemoryTypes.GPU_MEM);
         }
 
 //        uniformBuffers = new UniformBuffers(100000, MemoryTypes.GPU_MEM);
@@ -316,45 +311,29 @@ public class WorldRenderer {
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
 
-        Renderer renderer = null;
-        GraphicsPipeline pipeline = null;
-        VkCommandBuffer commandBuffer = null;
-        
-        if (Initializer.CONFIG.transDepthWrite) {
-            commandBuffer = Renderer.getCommandBuffer();
-        } else {
-            renderer = Renderer.getInstance();
-            pipeline = PipelineManager.getTerrainShader(terrainRenderType);
-            renderer.bindGraphicsPipeline(pipeline);
-            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-            Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
-        }
+        Renderer renderer = Renderer.getInstance();
+        GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+        renderer.bindGraphicsPipeline(pipeline);
+
+        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            if (Initializer.CONFIG.transDepthWrite) {
-                VRenderSystem.depthMask(!isTranslucent);
-                
-                renderer = Renderer.getInstance();
-                pipeline = PipelineManager.getTerrainShader(terrainRenderType);
-                renderer.bindGraphicsPipeline(pipeline);
-                IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-                Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
-            } else {
-                terrainRenderType.setCutoutUniform();
-            }
+            terrainRenderType.setCutoutUniform();
+
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
                 var queue = chunkArea.sectionQueue;
                 DrawBuffers drawBuffers = chunkArea.drawBuffers;
 
+                renderer.uploadAndBindUBOs(pipeline);
                 if (drawBuffers.getAreaBuffer(terrainRenderType) != null && queue.size() > 0) {
-                    if (Initializer.CONFIG.transDepthWrite) {
-                        drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
-                    } else {
-                        drawBuffers.bindBuffers(Renderer.getCommandBuffer(), pipeline, terrainRenderType, camX, camY, camZ);
-                        renderer.uploadAndBindUBOs(pipeline);
-                    }
+
+                    drawBuffers.bindBuffers(Renderer.getCommandBuffer(), pipeline, terrainRenderType, camX, camY, camZ);
+                    renderer.uploadAndBindUBOs(pipeline);
+
                     if (indirectDraw)
                         drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
                     else
@@ -363,23 +342,15 @@ public class WorldRenderer {
             }
         }
 
-        if (Initializer.CONFIG.transDepthWrite) {
-            if (indirectDraw && (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE)) {
-                indirectBuffers[currentFrame].submitUploads();
-//              uniformBuffers.submitUploads();
-            }
-            } else {
-            if (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE) {
-                indirectBuffers[currentFrame].submitUploads();
-//              uniformBuffers.submitUploads();
-            }
+        if (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE) {
+            indirectBuffers[currentFrame].submitUploads();
+//            uniformBuffers.submitUploads();
         }
 
-        if (!Initializer.CONFIG.transDepthWrite) {
-            if (!indirectDraw) {
-                VRenderSystem.setChunkOffset(0, 0, 0);
-                renderer.pushConstants(pipeline);
-            }
+        //Need to reset push constants in case the pipeline will still be used for rendering
+        if (!indirectDraw) {
+            VRenderSystem.setChunkOffset(0, 0, 0);
+            renderer.pushConstants(pipeline);
         }
 
         this.minecraft.getProfiler().pop();
@@ -493,5 +464,7 @@ public class WorldRenderer {
     public void cleanUp() {
         if (indirectBuffers != null)
             Arrays.stream(indirectBuffers).forEach(Buffer::freeBuffer);
-        }
     }
+
+    }
+    
