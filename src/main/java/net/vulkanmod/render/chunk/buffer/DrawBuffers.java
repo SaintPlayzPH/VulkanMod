@@ -153,7 +153,7 @@ public class DrawBuffers {
 
         for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
             final RenderSection section = iterator.next();
-            final DrawParameters drawParameters = section.getDrawParameters(renderType);
+            final DrawParameters drawParameters = section.getDrawParameters(terrainRenderType);
 
             if (drawParameters.indexCount <= 0)
                 continue;
