@@ -297,6 +297,12 @@ public abstract class Options {
                                 },
                                 () -> config.SPIRVOpts)
                                 .setTooltip(Component.translatable("This option allows you to bypass any automatic optimization processes related to SPIR-V, providing greater control over the compilation process and potentially retaining more explicit control over performance tweaks or debugging.")),
+                        new SwitchOption(Component.translatable("Disable Depth Writes if Translucent"),
+                                value -> {
+                                    config.transDepthWrite = value;
+                                },
+                                () -> config.transDepthWrite)
+                                .setTooltip(Component.translatable("Disables Depth Writes if it's a translucent. May cause visual glitches.")),
                         new SwitchOption(Component.translatable("Entity Culling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
