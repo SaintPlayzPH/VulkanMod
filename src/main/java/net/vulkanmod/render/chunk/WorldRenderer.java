@@ -46,6 +46,7 @@ import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.lwjgl.vulkan.VK11;
+import org.lwjgl.vulkan.VkCommandBuffer;
 import java.util.*;
 
 public class WorldRenderer {
@@ -314,20 +315,20 @@ public class WorldRenderer {
         final boolean indirectDraw = Initializer.CONFIG.indirectDraw;
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
-
-        Renderer renderer = Renderer.getInstance();
-        GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
-        renderer.bindGraphicsPipeline(pipeline);
-
-        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
-
+        
+        final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
             VRenderSystem.depthMask(!isTranslucent);
-            terrainRenderType.setCutoutUniform();
+            Renderer renderer = Renderer.getInstance();
+            GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+            renderer.bindGraphicsPipeline(pipeline);
 
+            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+            Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+
+            renderer.uploadAndBindUBOs(pipeline);
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
                 var queue = chunkArea.sectionQueue;
