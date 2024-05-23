@@ -3,6 +3,7 @@ package net.vulkanmod.render.chunk.build;
 import com.google.common.collect.Queues;
 import net.vulkanmod.render.chunk.ChunkArea;
 import net.vulkanmod.render.chunk.RenderSection;
+import net.vulkanmod.render.chunk.buffer.UploadManager;
 import net.vulkanmod.render.chunk.buffer.DrawBuffers;
 import net.vulkanmod.render.chunk.build.task.ChunkTask;
 import net.vulkanmod.render.chunk.build.task.CompileResult;
@@ -11,7 +12,8 @@ import net.vulkanmod.render.chunk.build.thread.BuilderResources;
 import net.vulkanmod.render.vertex.TerrainRenderType;
 
 import org.jetbrains.annotations.Nullable;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.Queue;
 
 public class TaskDispatcher {
@@ -148,14 +150,26 @@ public class TaskDispatcher {
 
     private void doSectionUpdate(CompileResult compileResult) {
         RenderSection section = compileResult.renderSection;
-        DrawBuffers drawBuffers = section.getChunkArea().getDrawBuffers();
+        ChunkArea renderArea = section.getChunkArea();
+        DrawBuffers drawBuffers = renderArea.getDrawBuffers();
 
         if(compileResult.fullUpdate) {
-            compileResult.renderedLayers.forEach((key, uploadBuffer) -> drawBuffers.upload(section, uploadBuffer, key));
+            var renderLayers = compileResult.renderedLayers;
+            for(TerrainRenderType renderType : TerrainRenderType.VALUES) {
+                UploadBuffer uploadBuffer = renderLayers.get(renderType);
+
+                if(uploadBuffer != null) {
+                    drawBuffers.upload(section, uploadBuffer, renderType);
+                } else {
+                    section.getDrawParameters(renderType).reset(renderArea, renderType);
+                }
+            }
+
             compileResult.updateSection();
         }
         else {
-            drawBuffers.upload(section, compileResult.renderedLayers.get(TerrainRenderType.TRANSLUCENT), TerrainRenderType.TRANSLUCENT);
+            UploadBuffer uploadBuffer = compileResult.renderedLayers.get(TerrainRenderType.TRANSLUCENT);
+            drawBuffers.upload(section, uploadBuffer, TerrainRenderType.TRANSLUCENT);
         }
     }
 
