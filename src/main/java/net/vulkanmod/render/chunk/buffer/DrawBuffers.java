@@ -15,6 +15,7 @@ import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.vulkan.VkCommandBuffer;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.EnumMap;
 
 import static org.lwjgl.vulkan.VK10.*;
@@ -28,14 +29,21 @@ public class DrawBuffers {
     private final int minHeight;
 
     private boolean allocated = false;
-    AreaBuffer indexBuffer;
+    AreaBuffer vertexBuffer, indexBuffer;
     private final EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers = new EnumMap<>(TerrainRenderType.class);
-
+    
     //Need ugly minHeight Parameter to fix custom world heights (exceeding 384 Blocks in total)
     public DrawBuffers(int index, Vector3i origin, int minHeight) {
         this.index = index;
         this.origin = origin;
         this.minHeight = minHeight;
+    }
+
+    public void allocateBuffers() {
+        if (!Initializer.CONFIG.perRenderTypeAreaBuffers)
+            vertexBuffer = new AreaBuffer(AreaBuffer.Usage.VERTEX, 2097152 /*RenderType.BIG_BUFFER_SIZE>>1*/, VERTEX_SIZE);
+
+        this.allocated = true;
     }
 
     public void upload(RenderSection section, UploadBuffer buffer, TerrainRenderType renderType) {
@@ -65,12 +73,11 @@ public class DrawBuffers {
         buffer.release();
     }
 
-    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType renderType) {
-        this.allocated = true;
-
+    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
         return this.vertexBuffers.computeIfAbsent(
-                renderType, renderType1 -> new AreaBuffer(AreaBuffer.Usage.VERTEX, renderType.initialSize, VERTEX_SIZE));
+                renderType, renderType1 -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, renderType.initialSize, VERTEX_SIZE) : this.vertexBuffer);
     }
+    
 
     public AreaBuffer getAreaBuffer(TerrainRenderType r) {
         return this.vertexBuffers.get(r);
@@ -161,7 +168,7 @@ public class DrawBuffers {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var vertexBuffer = getAreaBuffer(terrainRenderType);
             nvkCmdBindVertexBuffers(commandBuffer, 0, 1, stack.npointer(vertexBuffer.getId()), stack.npointer(0));
-            updateChunkAreaOrigin(commandBuffer, pipeline, camX, camY, camZ, stack);
+            updateChunkAreaOrigin(commandBuffer, pipeline, camX, camY, camZ, stack.mallocFloat(32));
         }
 
         if (terrainRenderType == TerrainRenderType.TRANSLUCENT) {
@@ -174,18 +181,26 @@ public class DrawBuffers {
         if (!this.allocated)
             return;
 
-        this.vertexBuffers.values().forEach(AreaBuffer::freeBuffer);
-        this.vertexBuffers.clear();
+        if (this.vertexBuffer == null) {
+            this.vertexBuffers.values().forEach(AreaBuffer::freeBuffer);
+        } else
+            this.vertexBuffer.freeBuffer();
 
+        this.vertexBuffers.clear();
         if (this.indexBuffer != null)
             this.indexBuffer.freeBuffer();
-        this.indexBuffer = null;
 
+        this.vertexBuffer = null;
+        this.indexBuffer = null;
         this.allocated = false;
     }
 
     public boolean isAllocated() {
-        return !this.vertexBuffers.isEmpty();
+        return allocated;
+    }
+
+    public AreaBuffer getVertexBuffer() {
+        return vertexBuffer;
     }
 
     public EnumMap<TerrainRenderType, AreaBuffer> getVertexBuffers() {
