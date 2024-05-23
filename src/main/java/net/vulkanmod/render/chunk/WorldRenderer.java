@@ -329,8 +329,7 @@ public class WorldRenderer {
             renderer.bindGraphicsPipeline(pipeline);
             Renderer.getDrawer().bindAutoIndexBuffer(commandBuffer, 7);
             Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
-
-            renderer.uploadAndBindUBOs(pipeline);
+            
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
                 var queue = chunkArea.sectionQueue.get(terrainRenderType);
