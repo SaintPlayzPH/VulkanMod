@@ -483,6 +483,8 @@ public abstract class Pipeline {
 
     public static class Builder {
 
+        final EnumSet<SpecConstant> specConstants = EnumSet.noneOf(SpecConstant.class);
+        
         public static GraphicsPipeline createGraphicsPipeline(VertexFormat format, String path) {
             Pipeline.Builder pipelineBuilder = new Pipeline.Builder(format, path);
             pipelineBuilder.parseBindingsJSON();
@@ -574,6 +576,7 @@ public abstract class Pipeline {
             JsonArray jsonManualUbos = GsonHelper.getAsJsonArray(jsonObject, "ManualUBOs", null);
             JsonArray jsonSamplers = GsonHelper.getAsJsonArray(jsonObject, "samplers", null);
             JsonArray jsonPushConstants = GsonHelper.getAsJsonArray(jsonObject, "PushConstants", null);
+            JsonArray jsonSpecConstants = GsonHelper.getAsJsonArray(jsonObject, "SpecConstants", null);
 
             if (jsonUbos != null) {
                 for (JsonElement jsonelement : jsonUbos) {
@@ -593,6 +596,24 @@ public abstract class Pipeline {
 
             if (jsonPushConstants != null) {
                 this.parsePushConstantNode(jsonPushConstants);
+            }
+
+            if(jsonSpecConstants != null) {
+                this.parseSpecConstantNode(jsonSpecConstants);
+            }
+        }
+
+        private void parseSpecConstantNode(JsonArray jsonSpecConstants) {
+//            AlignedStruct.Builder builder = new AlignedStruct.Builder();
+
+            for(JsonElement jsonelement : jsonSpecConstants) {
+                JsonObject jsonobject2 = GsonHelper.convertToJsonObject(jsonelement, "SC");
+
+                String name = GsonHelper.getAsString(jsonobject2, "name");
+//                String type2 = GsonHelper.getAsString(jsonobject2, "type");
+
+
+                this.specConstants.add(SpecConstant.getNamed(name));
             }
         }
 
