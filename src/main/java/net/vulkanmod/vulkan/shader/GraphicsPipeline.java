@@ -16,8 +16,6 @@ import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.EnumSet;
 
-import static net.vulkanmod.vulkan.shader.PipelineState.*;
-import static net.vulkanmod.vulkan.shader.PipelineState.DEFAULT_COLORMASK;
 import static org.lwjgl.system.MemoryStack.stackGet;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
@@ -46,11 +44,9 @@ public class GraphicsPipeline extends Pipeline {
         createPipelineLayout();
         createShaderModules(builder.vertShaderSPIRV, builder.fragShaderSPIRV);
 
-        if(builder.renderPass != null) {
-            this.state = new PipelineState(DEFAULT_BLEND_STATE, DEFAULT_DEPTH_STATE, DEFAULT_LOGICOP_STATE, DEFAULT_COLORMASK, builder.renderPass);
-            graphicsPipelines.computeIfAbsent(state,
+        if (builder.renderPass != null)
+            graphicsPipelines.computeIfAbsent(PipelineState.DEFAULT,
                     this::createGraphicsPipeline);
-        }
 
         createDescriptorSets(Renderer.getFramesNum());
 
