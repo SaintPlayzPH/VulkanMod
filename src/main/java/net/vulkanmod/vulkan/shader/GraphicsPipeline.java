@@ -379,7 +379,7 @@ public class GraphicsPipeline extends Pipeline {
         {
             if(graphicsPipelines.size()>1)
             {
-                graphicsPipelines.values().forEach(pipeline -> vkDestroyPipeline(DeviceManager.device, pipeline, null));
+                graphicsPipelines.values().forEach(pipeline -> vkDestroyPipeline(DeviceManager.vkDevice, pipeline, null));
                 graphicsPipelines.clear();
             }
             this.graphicsPipelines.put(this.state, this.createGraphicsPipeline(this.state));
