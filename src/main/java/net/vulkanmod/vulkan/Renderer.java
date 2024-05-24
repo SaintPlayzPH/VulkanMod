@@ -108,7 +108,7 @@ public class Renderer {
         framesNum = Initializer.CONFIG.frameQueueSize;
         imagesNum = getSwapChain().getImagesNum();
 	addOnResizeCallback(() -> {
-            VK11.vkTrimCommandPool(vkDevice, Vulkan.getCommandPool(), 0);
+            VK11.vkTrimCommandPool(device, Vulkan.getCommandPool(), 0);
             Queue.GraphicsQueue.trimCmdPool();
         });
     }
