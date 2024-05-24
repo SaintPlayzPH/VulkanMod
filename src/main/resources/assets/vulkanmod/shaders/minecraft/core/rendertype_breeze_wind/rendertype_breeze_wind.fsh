@@ -1,4 +1,5 @@
 #version 450
+layout (constant_id = 0) const bool USE_FOG = true;
 
 #include "fog.glsl"
 
@@ -22,5 +23,5 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = color * linear_fog_fade(vertexDistance, FogStart, FogEnd);
+    fragColor = USE_FOG ? color * linear_fog_fade(vertexDistance, FogStart, FogEnd) : color;
 }
