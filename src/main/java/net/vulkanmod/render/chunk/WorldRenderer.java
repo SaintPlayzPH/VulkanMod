@@ -3,25 +3,33 @@ package net.vulkanmod.render.chunk;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexMultiConsumer;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.render.PipelineManager;
@@ -426,6 +434,60 @@ public class WorldRenderer {
         }
     }
 
+    public void renderLevel(PoseStack poseStack, float partialTicks, long finishTimeNano, boolean isRunningOffline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix) {
+    this.minecraft.getProfiler().push("render");
+
+    Vec3 cameraPos = camera.getPosition();
+    this.cameraPos = cameraPos;
+
+    this.minecraft.getProfiler().push("sky");
+    this.renderSky(poseStack, partialTicks, camera);
+    this.minecraft.getProfiler().popPush("fog");
+    this.setupFog(camera, partialTicks, isRunningOffline);
+
+    this.minecraft.getProfiler().popPush("terrain_setup");
+    this.setupRenderer(camera, this.minecraft.renderBuffers().fixedBuffers().frustum(), false, this.minecraft.player.isSpectator());
+
+    this.minecraft.getProfiler().popPush("render_terrain");
+    this.renderTerrain(poseStack, camera, partialTicks, finishTimeNano, lightTexture, projectionMatrix);
+
+    this.minecraft.getProfiler().popPush("render_smart_leaves");
+    this.renderSmartLeaves(cameraPos);
+
+    this.minecraft.getProfiler().pop();
+    this.minecraft.getProfiler().pop();
+    }
+
+    private void renderSmartLeaves(Vec3 cameraPos) {
+    BlockAndTintGetter level = this.getLevel();
+    int cameraX = BlockPos.containing(cameraPos).getX();
+    int cameraY = BlockPos.containing(cameraPos).getY();
+    int cameraZ = BlockPos.containing(cameraPos).getZ();
+
+    for (BlockPos blockPos : BlockPos.betweenClosed(cameraX - renderDistance, cameraY - renderDistance, cameraZ - renderDistance, cameraX + renderDistance, cameraY + renderDistance, cameraZ + renderDistance)) {
+        BlockState state = level.getBlockState(blockPos);
+        if (state.getBlock() instanceof LeavesBlock) {
+            boolean isSmart = state.getValue(BlockStateProperties.DISTANCE) == 1;
+            if (isSmart) {
+                level.getProfiler().push("smart_leaf");
+                this.renderLeafCulling(level, blockPos, state);
+                level.getProfiler().pop();
+            }
+        }
+        }
+    }
+
+    private void renderLeafCulling(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        BlockRendererDispatcher blockRendererDispatcher = Minecraft.getInstance().getBlockRenderer();
+        BlockModelShaper blockModelShaper = blockRendererDispatcher.getBlockModelShaper();
+        BakedModel bakedModel = blockModelShaper.getBlockModel(state);
+        PoseStack poseStack = new PoseStack();
+        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+        VertexConsumer vertexConsumer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.translucent());
+        BlockModelRenderer blockModelRenderer = blockRendererDispatcher.getBlockModelRenderer();
+        blockModelRenderer.renderModel(level, bakedModel, state, pos, poseStack, vertexConsumer, true, level.getRandom(), state.getSeed(pos), OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+    }
+    
     public void scheduleGraphUpdate() {
         this.graphNeedsUpdate = true;
     }
