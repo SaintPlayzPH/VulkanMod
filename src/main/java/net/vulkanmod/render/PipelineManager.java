@@ -80,6 +80,7 @@ public abstract class PipelineManager {
         if (Initializer.CONFIG.postEffect) {
             return fastBlitPipeline;
         }
+        return null;
     }
 
     public static void destroyPipelines() {
