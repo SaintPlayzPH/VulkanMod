@@ -26,6 +26,7 @@ public class GraphicsPipeline extends Pipeline {
 
     private final EnumSet<SPIRVUtils.SpecConstant> specConstants;
 
+    private final VertexFormat vertexFormat;
     private long vertShaderModule = 0;
     private long fragShaderModule = 0;
     private PipelineState state;
