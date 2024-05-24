@@ -234,7 +234,7 @@ public abstract class Options {
                                     Minecraft.getInstance().delayTextureReload();
                                 },
                                 () -> config.postEffect)
-                                .setTooltip(Component.translatable("Enables Certain Effect 'e.g. Glowing Effect'.")),
+                                .setTooltip(Component.translatable("Enables Post Effect 'e.g. Glowing Effect, etc...'. Disabling this may improve performance!")),
                         new SwitchOption(Component.translatable("Fix Glowing Effect Bug"),
                                  value -> {
                                     config.glowEffectFix = value;
