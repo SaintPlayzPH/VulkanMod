@@ -7,10 +7,10 @@ import net.minecraft.util.math.Direction;
 import net.vulkanmod.Initializer;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(value = LeavesBlockM.class, priority = 1900)
+@Mixin(value = LeavesBlock.class, priority = 1900)
 public abstract class MixinLeavesBlock extends Block {
 
-    public LeavesBlockM(Settings settings) {
+    public MixinLeavesBlock(Settings settings) {
         super(settings);
     }
 
