@@ -79,7 +79,7 @@ public abstract class PipelineManager {
 
     public static void destroyPipelines() {
         terrainShaderEarlyZ.cleanUp();
-        terrainShader.cleanUp();{
+        terrainShader.cleanUp();
         fastBlitPipeline.cleanUp();
     }
 }
