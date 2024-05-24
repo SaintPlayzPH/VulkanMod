@@ -231,7 +231,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Enable Post-Effect"),
                                  value -> {
                                     config.postEffect = value;
-                                    Minecraft.getInstance().delayTextureReload();
+                                   // Minecraft.getInstance().delayTextureReload();
                                 },
                                 () -> config.postEffect)
                                 .setTooltip(Component.translatable("Enables Post Effect 'e.g. Glowing Effect, etc...'. Disabling this may improve performance!")),
