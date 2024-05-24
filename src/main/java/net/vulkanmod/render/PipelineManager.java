@@ -73,7 +73,9 @@ public abstract class PipelineManager {
         return terrainShaderEarlyZ;
     }
 
-    public static GraphicsPipeline getFastBlitPipeline() { return fastBlitPipeline; }
+    public static GraphicsPipeline getFastBlitPipeline() {
+        return fastBlitPipeline;
+    }
 
     public static void destroyPipelines() {
         terrainShaderEarlyZ.cleanUp();

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.util.GsonHelper;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
@@ -540,8 +541,17 @@ public abstract class Pipeline {
         }
 
         public void compileShaders(String name, String vsh, String fsh) {
-            this.vertShaderSPIRV = compileShader(String.format("%s.vsh", name), vsh, ShaderKind.VERTEX_SHADER);
-            this.fragShaderSPIRV = compileShader(String.format("%s.fsh", name), fsh, ShaderKind.FRAGMENT_SHADER);
+            if (Initializer.CONFIG.postEffect) {
+                this.vertShaderSPIRV = compileShader(String.format("%s.vsh", name), vsh, ShaderKind.VERTEX_SHADER);
+                this.fragShaderSPIRV = compileShader(String.format("%s.fsh", name), fsh, ShaderKind.FRAGMENT_SHADER);
+            }
+        }
+
+        public void compileShaders(String vsh, String fsh) {
+            if (!Initializer.CONFIG.postEffect) {
+                this.vertShaderSPIRV = compileShader("vertex shader", vsh, ShaderKind.VERTEX_SHADER);
+                this.fragShaderSPIRV = compileShader("fragment shader", fsh, ShaderKind.FRAGMENT_SHADER);
+            }
         }
 
         public void parseBindingsJSON() {
