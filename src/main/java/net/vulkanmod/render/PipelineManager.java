@@ -2,6 +2,7 @@ package net.vulkanmod.render;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.build.thread.ThreadBuilderPack;
 import net.vulkanmod.render.vertex.CustomVertexFormat;
 import net.vulkanmod.render.vertex.TerrainRenderType;
@@ -39,7 +40,9 @@ public abstract class PipelineManager {
     private static void createBasicPipelines() {
         terrainShaderEarlyZ = createPipeline("terrain","terrain", "terrain_Z", TERRAIN_VERTEX_FORMAT);
         terrainShader = createPipeline("terrain", "terrain", "terrain", TERRAIN_VERTEX_FORMAT);
-        fastBlitPipeline = createPipeline("blit", "blit", "blit", CustomVertexFormat.NONE);
+        if (Initializer.CONFIG.postEffect) {
+            fastBlitPipeline = createPipeline("blit", "blit", "blit", CustomVertexFormat.NONE);
+        }
     }
 
     private static GraphicsPipeline createPipeline(String baseName, String vertName, String fragName,VertexFormat vertexFormat) {
@@ -73,11 +76,17 @@ public abstract class PipelineManager {
         return terrainShaderEarlyZ;
     }
 
-    public static GraphicsPipeline getFastBlitPipeline() { return fastBlitPipeline; }
+    public static GraphicsPipeline getFastBlitPipeline() {
+        if (Initializer.CONFIG.postEffect) {
+            return fastBlitPipeline;
+        }
+    }
 
     public static void destroyPipelines() {
         terrainShaderEarlyZ.cleanUp();
         terrainShader.cleanUp();
-        fastBlitPipeline.cleanUp();
+        if (Initializer.CONFIG.postEffect) {
+            fastBlitPipeline.cleanUp();
+        }
     }
 }
