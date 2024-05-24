@@ -38,8 +38,7 @@ import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import static net.vulkanmod.vulkan.shader.SPIRVUtils.compileShader;
-import static net.vulkanmod.vulkan.shader.SPIRVUtils.compileShaderAbsoluteFile;
+import static net.vulkanmod.vulkan.shader.SPIRVUtils.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 
