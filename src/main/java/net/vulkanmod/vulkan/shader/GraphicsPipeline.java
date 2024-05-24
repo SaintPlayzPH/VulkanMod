@@ -16,6 +16,8 @@ import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.EnumSet;
 
+import static net.vulkanmod.vulkan.shader.PipelineState.*;
+import static net.vulkanmod.vulkan.shader.PipelineState.DEFAULT_COLORMASK;
 import static org.lwjgl.system.MemoryStack.stackGet;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
