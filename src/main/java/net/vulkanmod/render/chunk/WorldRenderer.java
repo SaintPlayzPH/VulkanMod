@@ -95,13 +95,13 @@ public class WorldRenderer {
 
         BlockRenderer.setBlockColors(this.minecraft.getBlockColors());
 
+        Renderer.getInstance().addOnResizeCallback(Queue::trimCmdPools);
         Renderer.getInstance().addOnResizeCallback(() -> {
             if (this.indirectBuffers.length != Renderer.getFramesNum())
                 allocateIndirectBuffers();
         });
-        addOnAllChangedCallback(Queue.GraphicsQueue::trimCmdPool);
     }
-
+    
     private void allocateIndirectBuffers() {
         if (this.indirectBuffers != null)
             Arrays.stream(this.indirectBuffers).forEach(Buffer::freeBuffer);
