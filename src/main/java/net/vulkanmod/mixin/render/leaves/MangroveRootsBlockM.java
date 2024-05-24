@@ -6,9 +6,9 @@ import net.vulkanmod.Initializer;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(value = MangroveRootsBlockM.class, priority = 1900)
-public abstract class MangroveRootsBlockM extends Block {
+public abstract class MixinMangroveRootsBlock extends Block {
 
-    public MangroveRootsBlockM(Settings settings) {
+    public MixinMangroveRootsBlock(Settings settings) {
         super(settings);
     }
 
