@@ -32,6 +32,7 @@ public class Config {
     public boolean postEffect = true;
     public boolean glowEffectFix = true;
     public boolean renderFog = true;
+    public int tintBuilder = 1;
     public int minImageCount = 3;
     public int device = -1;
 
