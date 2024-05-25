@@ -258,6 +258,18 @@ public abstract class Options {
                                 },
                                 () -> config.glowEffectFix)
                                 .setTooltip(Component.translatable("Fixes bugs with Glowing Effect. Restarting the game is required to take effect!")),
+                        new CyclingOption<>(Component.translatable("Biome Tint Builder"),
+                                new Integer[]{1, 2},
+                                value -> config.tintBuilder = value,
+                                () -> config.tintBuilder)
+                                .setTranslator(value -> {
+                                    String t = switch (value) {
+                                        case 1 -> "Old";
+                                        case 2 -> "New";
+                                        default -> "vulkanmod.options.unknown";
+                                    };
+                                    return Component.translatable(t);
+                                }),
                         new CyclingOption<>(Component.translatable("options.mipmapLevels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
