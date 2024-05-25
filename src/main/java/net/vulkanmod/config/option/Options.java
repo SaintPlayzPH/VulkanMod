@@ -381,7 +381,6 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Show Phone RAM Info"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
-                                   """)),
                                 .setTooltip(Component.nullToEmpty(
                                 "Running on Phone?: " + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" +
                                 "\n" +
