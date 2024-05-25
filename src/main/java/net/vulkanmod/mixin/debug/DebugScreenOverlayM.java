@@ -65,8 +65,8 @@ public abstract class DebugScreenOverlayM {
         if (isRunningOnAndroid()) {
             proc = true;
         }
-       
-        strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), 64));
+
+        strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
         strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
         strings.add(String.format("Allocated: % 2d%% %03dMB", totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
         strings.add(String.format("Off-heap: " + getOffHeapMemory() + "MB"));
@@ -82,7 +82,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
         strings.add("");
-        strings.add("VulkanMod Modified By: §eSaintPlayzPH§r");
+        strings.add("\u0056\u0075\u006c\u006b\u0061\u006e\u004d\u006f\u0064\u0020\u004d\u006f\u0064\u0069\u0066\u0069\u0065\u0064\u0020\u0042\u0079\u003a\u0020\u00a7\u0065\u0053\u0061\u0069\u006e\u0074\u0050\u006c\u0061\u0079\u007a\u0050\u0048\u00a7\u0072");
         if (isRunningOnAndroid() && Initializer.CONFIG.pojavInfo) {
             strings.add("");
             strings.add("Running on Pojav: §aYes§r");
@@ -100,7 +100,7 @@ public abstract class DebugScreenOverlayM {
         }
         if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
             strings.add("");
-            strings.add("Android Memory Info:");
+            strings.add("Phone RAM Info:");
             strings.add(AndroidRAMInfo.getMemoryInfo());
             strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
             strings.add(AndroidRAMInfo.getBuffersInfo());
@@ -110,7 +110,7 @@ public abstract class DebugScreenOverlayM {
     }
     
     private static boolean isRunningOnAndroid() {
-        if (System.getenv("POJAV_RENDERER") != null) {
+        if (System.getenv("\u0050\u004F\u004A\u0041\u0056\u005F\u0052\u0045\u004E\u0044\u0045\u0052") != null) {
             return true;
         } else {
             return false;
