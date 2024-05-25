@@ -16,6 +16,9 @@ import org.lwjgl.system.MemoryStack;
 
 import java.util.stream.IntStream;
 
+import static net.vulkanmod.vulkan.Vulkan.*;
+import static net.vulkanmod.vulkan.device.DeviceManager.vkDevice;
+
 public abstract class Options {
     static net.minecraft.client.Options minecraftOptions = Minecraft.getInstance().options;
     static Config config = Initializer.CONFIG;
