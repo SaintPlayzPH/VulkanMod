@@ -12,12 +12,12 @@ public class AndroidRAMInfo {
             long memFree = 0;
             long memTotal = 0;
 
-            try (BufferedReader br = new BufferedReader(new FileReader("\u002F\u0070\u0072\u006F\u0063\u002F\u006D\u0065\u006D\u0069\u006E\u0066\u006F"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.startsWith("\u004D\u0065\u006D\u0054\u006F\u0074\u0061\u006C")) {
+                    if (line.startsWith("MemTotal")) {
                         memTotal = extractMemoryValue(line);
-                    } else if (line.startsWith("\u004D\u0065\u006D\u0041\u0076\u0061\u0069\u006C\u0061\u0062\u006C\u0065")) {
+                    } else if (line.startsWith("MemAvailable")) {
                         memFree = extractMemoryValue(line);
                     }
                 }
@@ -42,12 +42,12 @@ public class AndroidRAMInfo {
             long memFree = 0;
             long memTotal = 0;
 
-            try (BufferedReader br = new BufferedReader(new FileReader("\u002F\u0070\u0072\u006F\u0063\u002F\u006D\u0065\u006D\u0069\u006E\u0066\u006F"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.startsWith("\u004D\u0065\u006D\u0054\u006F\u0074\u0061\u006C")) {
+                    if (line.startsWith("MemTotal")) {
                         memTotal = extractMemoryValue(line);
-                    } else if (line.startsWith("\u004D\u0065\u006D\u0041\u0076\u0061\u0069\u006C\u0061\u0062\u006C\u0065")) {
+                    } else if (line.startsWith("MemAvailable")) {
                         memFree = extractMemoryValue(line);
                     }
                 }
@@ -85,10 +85,10 @@ public class AndroidRAMInfo {
         if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
             long memBuffer = 0;
 
-            try (BufferedReader br = new BufferedReader(new FileReader("\u002F\u0070\u0072\u006F\u0063\u002F\u006D\u0065\u006D\u0069\u006E\u0066\u006F"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.startsWith("\u0042\u0075\u0066\u0066\u0065\u0072\u0073")) {
+                    if (line.startsWith("Buffers")) {
                         memBuffer = extractMemoryValue(line);
                         break;
                     }
@@ -114,6 +114,6 @@ public class AndroidRAMInfo {
     }
 
     private static boolean isRunningOnAndroid() {
-        return System.getenv("\u0050\u004F\u004A\u0041\u0056\u005F\u0052\u0045\u004E\u0044\u0045\u0052") != null;
+        return System.getenv("POJAV_RENDERER") != null;
     }
 }
