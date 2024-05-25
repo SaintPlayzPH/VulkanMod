@@ -260,7 +260,10 @@ public abstract class Options {
                                 .setTooltip(Component.translatable("Fixes bugs with Glowing Effect. Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Biome Tint Builder"),
                                 new Integer[]{1, 2},
-                                value -> config.tintBuilder = value,
+                                value -> {
+                                    config.tintBuilder = value;
+                                    minecraft.levelRenderer.allChanged();
+                                },
                                 () -> config.tintBuilder)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
