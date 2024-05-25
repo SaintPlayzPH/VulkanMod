@@ -36,7 +36,7 @@ public abstract class Options {
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
             boolean hasInfiniteSwapChain = maxImageCount == 0;
-            maxImages = hasInfiniteSwapChain ? 60 : maxImageCount;
+            maxImages = hasInfiniteSwapChain ? 48 : maxImageCount;
         }
     }
     
@@ -383,9 +383,9 @@ public abstract class Options {
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
                                    """)),
                                 .setTooltip(Component.nullToEmpty(
-                                    "Running on Phone?: " + isRunningOnPhone() ? "§aYes§r" : "§cNo§r" + "\n"+
-                                    "\n"+
-                                    "Shows your Phone RAM Info on debug screen.")),
+                                "Running on Phone?: " + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" +
+                                "\n" +
+                                "Shows your Phone RAM Info on debug screen.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
