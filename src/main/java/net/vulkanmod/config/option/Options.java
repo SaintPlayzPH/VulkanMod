@@ -10,7 +10,9 @@ import net.vulkanmod.config.video.VideoModeSet;
 import net.vulkanmod.config.gui.OptionBlock;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
+import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
+import org.lwjgl.system.MemoryStack;
 
 import java.util.stream.IntStream;
 
@@ -20,6 +22,21 @@ public abstract class Options {
     static Window window = Minecraft.getInstance().getWindow();
     public static boolean fullscreenDirty = false;
 
+    private static final int minImages;
+
+    private static final int maxImages;
+
+    static {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(Vulkan.getVkDevice().getPhysicalDevice(), stack);
+            minImages = surfaceProperties.capabilities.minImageCount();
+            int maxImageCount = surfaceProperties.capabilities.maxImageCount();
+
+            boolean hasInfiniteSwapChain = maxImageCount == 0;
+            maxImages = hasInfiniteSwapChain ? 64 : maxImageCount;
+        }
+    }
+    
     public static OptionBlock[] getVideoOpts() {
         var videoMode = config.videoMode;
         var videoModeSet = VideoModeManager.getFromVideoMode(videoMode);
@@ -333,6 +350,16 @@ public abstract class Options {
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
+                        new RangeOption(Component.translatable("SwapChain Images"), minImages,
+                                maxImages, 1,
+                                value -> {
+                                    config.minImageCount = value;
+                                    Renderer.scheduleSwapChainUpdate();
+                                }, () -> config.minImageCount)
+                                .setTooltip(Component.nullToEmpty("""
+                                Sets the number of Swapchain images
+                                Optimised automatically for best performance
+                                This can be reduced to minimise input lag but at the cost of decreased FPS""")),
                         new SwitchOption(Component.translatable("Show Android Memory Info"),
                                 value -> config.showAndroidRAM = value,
                                 () -> config.showAndroidRAM)
