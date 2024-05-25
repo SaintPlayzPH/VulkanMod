@@ -22,9 +22,11 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
+    private static boolean isRunningOnPhone() {
+        return System.getenv("POJAV_RENDERER") != null;
+    }
 
     private static final int minImages;
-
     private static final int maxImages;
 
     static {
@@ -34,7 +36,7 @@ public abstract class Options {
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
             boolean hasInfiniteSwapChain = maxImageCount == 0;
-            maxImages = hasInfiniteSwapChain ? 60 : maxImageCount;
+            maxImages = hasInfiniteSwapChain ? 48 : maxImageCount;
         }
     }
     
@@ -257,7 +259,7 @@ public abstract class Options {
                                     config.glowEffectFix = value;
                                 },
                                 () -> config.glowEffectFix)
-                                .setTooltip(Component.translatable("Fixes bugs with Glowing Effect. Restarting the game is required to take effect!")),
+                                .setTooltip(Component.translatable("Fixes bugs with Glowing Effect (Entity Outline). Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Biome Tint Builder"),
                                 new Integer[]{1, 2},
                                 value -> {
@@ -376,10 +378,13 @@ public abstract class Options {
                                 Optimised automatically for best performance
                                 This can be reduced to minimise input lag but at the cost of decreased FPS
                                 Setting to highest number possibly crash the game""")),
-                        new SwitchOption(Component.translatable("Show Android Memory Info"),
-                                value -> config.showAndroidRAM = value,
-                                () -> config.showAndroidRAM)
-                                .setTooltip(Component.translatable("Shows your Android Memory Info on debug screen.")),
+                        new SwitchOption(Component.translatable("Show Phone RAM Info"),
+                                value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
+                                () -> isRunningOnPhone() && config.showAndroidRAM)
+                                .setTooltip(Component.nullToEmpty(
+                                "Running on Phone?: " + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" +
+                                "\n" +
+                                "Shows your Phone RAM Info on debug screen.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
@@ -405,6 +410,5 @@ public abstract class Options {
                                 )))
                 })
         };
-
     }
 }
