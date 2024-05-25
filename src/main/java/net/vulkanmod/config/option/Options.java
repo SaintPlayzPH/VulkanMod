@@ -17,9 +17,7 @@ import org.lwjgl.system.MemoryStack;
 import java.util.stream.IntStream;
 
 public abstract class Options {
-    static net.minecraft.client.Options minecraftOptions = Minecraft.getInstance().options;
     static Config config = Initializer.CONFIG;
-    static Window window = Minecraft.getInstance().getWindow();
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
@@ -52,7 +50,7 @@ public abstract class Options {
         var refreshRates = videoModeSet.getRefreshRates();
 
         CyclingOption<Integer> RefreshRate = (CyclingOption<Integer>) new CyclingOption<>(
-                Component.translatable("Refresh Rate"),
+                Component.translatable("vulkanmod.options.refreshRate"),
                 refreshRates.toArray(new Integer[0]),
                 (value) -> {
                     VideoModeManager.selectedVideoMode.refreshRate = value;
@@ -65,7 +63,7 @@ public abstract class Options {
                 .setTranslator(refreshRate -> Component.nullToEmpty(refreshRate.toString()));
 
         Option<VideoModeSet> resolutionOption = new CyclingOption<>(
-                Component.translatable("Resolution"),
+                Component.translatable("options.fullscreen.resolution"),
                 VideoModeManager.getVideoResolutions(),
                 (value) -> {
                     VideoModeManager.selectedVideoMode = value.getVideoMode(RefreshRate.getNewValue());
@@ -93,7 +91,7 @@ public abstract class Options {
             RefreshRate.setNewValue(refreshRates1.get(refreshRates1.size() - 1));
         });
 
-        return new OptionBlock[] {
+        return new OptionBlock[]{
                 new OptionBlock("", new Option<?>[]{
                         resolutionOption,
                         RefreshRate,
@@ -103,25 +101,27 @@ public abstract class Options {
                                     fullscreenDirty = true;
                                 },
                                 () -> config.windowedFullscreen),
-                        new SwitchOption(Component.translatable("Fullscreen"),
+                        new SwitchOption(Component.translatable("options.fullscreen"),
                                 value -> {
                                     minecraftOptions.fullscreen().set(value);
 //                            window.toggleFullScreen();
                                     fullscreenDirty = true;
                                 },
                                 () -> minecraftOptions.fullscreen().get()),
-                        new RangeOption(Component.translatable("Max Framerate"),
-                                10, 260, 5,
-                                value -> Component.nullToEmpty(value == 260 ? "Unlimited" : String.valueOf(value)),
+                        new RangeOption(Component.translatable("options.framerateLimit"),
+                                10, 260, 10,
+                                value -> Component.nullToEmpty(value == 260 ?
+                                        Component.translatable("options.framerateLimit.max").getString() :
+                                        String.valueOf(value)),
                                 value -> {
                                     minecraftOptions.framerateLimit().set(value);
                                     window.setFramerateLimit(value);
                                 },
                                 () -> minecraftOptions.framerateLimit().get()),
-                        new SwitchOption(Component.translatable("VSync"),
+                        new SwitchOption(Component.translatable("options.vsync"),
                                 value -> {
                                     minecraftOptions.enableVsync().set(value);
-                                    minecraft.getWindow().updateVsync(value);
+                                    window.updateVsync(value);
                                 },
                                 () -> minecraftOptions.enableVsync().get()),
                 }),
@@ -136,9 +136,8 @@ public abstract class Options {
                                     minecraftOptions.guiScale().set(value);
                                     minecraft.resizeDisplay();
                                 },
-                                () -> minecraftOptions.guiScale().get())
-                                .setTranslator(value -> value == 0 ? Component.literal("Auto") : Component.literal(value.toString())),
-                        new RangeOption(Component.translatable("Brightness"),
+                                () -> (minecraftOptions.guiScale().get())),
+                        new RangeOption(Component.translatable("options.gamma"),
                                 0, 100, 1,
                                 value -> {
                                     if (value == 0) return Component.translatable("options.gamma.min");
@@ -150,15 +149,15 @@ public abstract class Options {
                                 () -> (int) (minecraftOptions.gamma().get() * 100.0)),
                 }),
                 new OptionBlock("", new Option<?>[]{
-                        new SwitchOption(Component.translatable("View Bobbing"),
+                        new SwitchOption(Component.translatable("options.viewBobbing"),
                                 (value) -> minecraftOptions.bobView().set(value),
                                 () -> minecraftOptions.bobView().get()),
-                        new CyclingOption<>(Component.translatable("Attack Indicator"),
+                        new CyclingOption<>(Component.translatable("options.attackIndicator"),
                                 AttackIndicatorStatus.values(),
                                 value -> minecraftOptions.attackIndicator().set(value),
                                 () -> minecraftOptions.attackIndicator().get())
                                 .setTranslator(value -> Component.translatable(value.getKey())),
-                        new SwitchOption(Component.translatable("Autosave Indicator"),
+                        new SwitchOption(Component.translatable("options.autosaveIndicator"),
                                 value -> minecraftOptions.showAutosaveIndicator().set(value),
                                 () -> minecraftOptions.showAutosaveIndicator().get()),
                 })
@@ -166,44 +165,39 @@ public abstract class Options {
     }
 
     public static OptionBlock[] getGraphicsOpts() {
-        return new OptionBlock[] {
+        return new OptionBlock[]{
                 new OptionBlock("", new Option<?>[]{
-                        new RangeOption(Component.translatable("Render Distance"),
-                                2, 64, 1,
-                                (value) -> {
-                                    minecraftOptions.renderDistance().set(value);
-                                },
+                        new RangeOption(Component.translatable("options.renderDistance"),
+                                2, 32, 1,
+                                (value) -> minecraftOptions.renderDistance().set(value),
                                 () -> minecraftOptions.renderDistance().get()),
-                        new RangeOption(Component.translatable("Simulation Distance"),
-                                5, 64, 1,
-                                (value) -> {
-                                    minecraftOptions.simulationDistance().set(value);
-                                },
+                        new RangeOption(Component.translatable("options.simulationDistance"),
+                                5, 32, 1,
+                                (value) -> minecraftOptions.simulationDistance().set(value),
                                 () -> minecraftOptions.simulationDistance().get()),
-                        new CyclingOption<>(Component.translatable("Chunk Builder Mode"),
-
+                        new CyclingOption<>(Component.translatable("options.prioritizeChunkUpdates"),
                                 PrioritizeChunkUpdates.values(),
                                 value -> minecraftOptions.prioritizeChunkUpdates().set(value),
                                 () -> minecraftOptions.prioritizeChunkUpdates().get())
                                 .setTranslator(value -> Component.translatable(value.getKey())),
                 }),
                 new OptionBlock("", new Option<?>[]{
-                        new CyclingOption<>(Component.translatable("Graphics"),
+                        new CyclingOption<>(Component.translatable("options.graphics"),
                                 new GraphicsStatus[]{GraphicsStatus.FAST, GraphicsStatus.FANCY},
                                 value -> minecraftOptions.graphicsMode().set(value),
                                 () -> minecraftOptions.graphicsMode().get())
                                 .setTranslator(graphicsMode -> Component.translatable(graphicsMode.getKey())),
-                        new CyclingOption<>(Component.translatable("Particles"),
+                        new CyclingOption<>(Component.translatable("options.particles"),
                                 new ParticleStatus[]{ParticleStatus.MINIMAL, ParticleStatus.DECREASED, ParticleStatus.ALL},
                                 value -> minecraftOptions.particles().set(value),
                                 () -> minecraftOptions.particles().get())
                                 .setTranslator(particlesMode -> Component.translatable(particlesMode.getKey())),
-                        new CyclingOption<>(Component.translatable("Clouds"),
+                        new CyclingOption<>(Component.translatable("options.renderClouds"),
                                 CloudStatus.values(),
                                 value -> minecraftOptions.cloudStatus().set(value),
                                 () -> minecraftOptions.cloudStatus().get())
                                 .setTranslator(value -> Component.translatable(value.getKey())),
-                        new CyclingOption<>(Component.translatable("Smooth Lighting"),
+                        new CyclingOption<>(Component.translatable("options.ao"),
                                 new Integer[]{LightMode.FLAT, LightMode.SMOOTH, LightMode.SUB_BLOCK},
                                 (value) -> {
                                     if (value > LightMode.FLAT)
@@ -217,21 +211,20 @@ public abstract class Options {
                                 },
                                 () -> Initializer.CONFIG.ambientOcclusion)
                                 .setTranslator(value -> switch (value) {
-                                    case LightMode.FLAT -> Component.literal("Off");
-                                    case LightMode.SMOOTH -> Component.literal("On");
-                                    case LightMode.SUB_BLOCK -> Component.literal("On (Sub-block)");
-                                    default -> Component.literal("Unk");
+                                    case LightMode.FLAT -> Component.translatable("options.off");
+                                    case LightMode.SMOOTH -> Component.translatable("options.on");
+                                    case LightMode.SUB_BLOCK -> Component.translatable("vulkanmod.options.ao.subBlock");
+                                    default -> Component.translatable("vulkanmod.options.unknown");
                                 })
-                                .setTooltip(Component.nullToEmpty("""
-                                On (Sub-block): Enables smooth lighting for non full block (experimental).""")),
-                        new SwitchOption(Component.translatable("Unique opaque layer"),
+                                .setTooltip(Component.translatable("vulkanmod.options.ao.subBlock.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.uniqueOpaqueLayer"),
                                 value -> {
                                     config.uniqueOpaqueLayer = value;
                                     minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.uniqueOpaqueLayer)
                                 .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
-                        new RangeOption(Component.translatable("Biome Blend Radius"),
+                        new RangeOption(Component.translatable("options.biomeBlendRadius"),
                                 0, 7, 1,
                                 value -> {
                                     int v = value * 2 + 1;
@@ -244,10 +237,10 @@ public abstract class Options {
                                 () -> minecraftOptions.biomeBlendRadius().get()),
                 }),
                 new OptionBlock("", new Option<?>[]{
-                        new SwitchOption(Component.translatable("Entity Shadows"),
+                        new SwitchOption(Component.translatable("options.entityShadows"),
                                 value -> minecraftOptions.entityShadows().set(value),
                                 () -> minecraftOptions.entityShadows().get()),
-                        new RangeOption(Component.translatable("Entity Distance"),
+                        new RangeOption(Component.translatable("options.entityDistanceScaling"),
                                 50, 500, 25,
                                 value -> minecraftOptions.entityDistanceScaling().set(value * 0.01),
                                 () -> minecraftOptions.entityDistanceScaling().get().intValue() * 100),
@@ -264,7 +257,7 @@ public abstract class Options {
                                 },
                                 () -> config.glowEffectFix)
                                 .setTooltip(Component.translatable("Fixes bugs with Glowing Effect. Restarting the game is required to take effect!")),
-                        new CyclingOption<>(Component.translatable("Mipmap Levels"),
+                        new CyclingOption<>(Component.translatable("options.mipmapLevels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
                                     minecraftOptions.mipmapLevels().set(value);
