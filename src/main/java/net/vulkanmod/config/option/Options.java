@@ -376,10 +376,10 @@ public abstract class Options {
                                 Optimised automatically for best performance
                                 This can be reduced to minimise input lag but at the cost of decreased FPS
                                 Setting to highest number possibly crash the game""")),
-                        new SwitchOption(Component.translatable("Show Android Memory Info"),
-                                value -> config.showAndroidRAM = value,
-                                () -> config.showAndroidRAM)
-                                .setTooltip(Component.translatable("Shows your Android Memory Info on debug screen.")),
+                        new SwitchOption(Component.translatable("Show Phone RAM Info"),
+                                value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
+                                () -> isRunningOnPhone() && config.showAndroidRAM)
+                                .setTooltip(Component.translatable("Running on Phone: " + isRunningOnPhone() + ". Shows your Phone RAM on debug screen.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
@@ -406,5 +406,11 @@ public abstract class Options {
                 })
         };
 
+    private static final boolean isRunningOnPhone() {
+        if (System.getenv("POJAV_RENDERER") != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
