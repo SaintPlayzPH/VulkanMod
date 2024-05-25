@@ -17,6 +17,7 @@ import org.lwjgl.system.MemoryStack;
 import java.util.stream.IntStream;
 
 public abstract class Options {
+    public static boolean fullscreenDirty = false;
     static Config config = Initializer.CONFIG;
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
