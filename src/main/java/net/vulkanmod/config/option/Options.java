@@ -274,19 +274,19 @@ public abstract class Options {
     public static OptionBlock[] getOptimizationOpts() {
         return new OptionBlock[] {
                 new OptionBlock("", new Option[] {
-                        new CyclingOption<>(Component.translatable("Advanced Chunk Culling"),
+                        new CyclingOption<>(Component.translatable("vulkanmod.options.advCulling"),
                                 new Integer[]{1, 2, 3, 10},
                                 value -> config.advCulling = value,
                                 () -> config.advCulling)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
-                                        case 1 -> "Aggressive";
-                                        case 2 -> "Normal";
-                                        case 3 -> "Conservative";
-                                        case 10 -> "Off";
-                                        default -> "Unk";
+                                        case 1 -> "vulkanmod.options.advCulling.aggressive";
+                                        case 2 -> "vulkanmod.options.advCulling.normal";
+                                        case 3 -> "vulkanmod.options.advCulling.conservative";
+                                        case 10 -> "options.off";
+                                        default -> "vulkanmod.options.unknown";
                                     };
-                                    return Component.nullToEmpty(t);
+                                    return Component.translatable(t);
                                 })
                                 .setTooltip(Component.translatable("vulkanmod.options.advCulling.tooltip")),
                         new SwitchOption(Component.translatable("Animations"),
@@ -327,11 +327,11 @@ public abstract class Options {
                                 Potentially improves performance of Chunk Rendering
                         
                                 Very Architecture specific: May have no effect on some Devices""")),
-                        new SwitchOption(Component.translatable("Entity Culling"),
+                        new SwitchOption(Component.translatable("vulkanmod.options.entityCulling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
                                 .setTooltip(Component.translatable("vulkanmod.options.entityCulling.tooltip")),
-                        new SwitchOption(Component.translatable("Indirect Draw"),
+                        new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = value,
                                 () -> config.indirectDraw)
                                 .setTooltip(Component.translatable("vulkanmod.options.indirectDraw.tooltip"))
@@ -343,7 +343,7 @@ public abstract class Options {
     public static OptionBlock[] getOtherOpts() {
         return new OptionBlock[] {
                 new OptionBlock("", new Option[] {
-                        new RangeOption(Component.translatable("Render queue size"),
+                        new RangeOption(Component.translatable("vulkanmod.options.frameQueue"),
                                 1, 8, 1,
                                 value -> {
                                     config.frameQueueSize = value;
@@ -359,7 +359,8 @@ public abstract class Options {
                                 .setTooltip(Component.nullToEmpty("""
                                 Sets the number of Swapchain images
                                 Optimised automatically for best performance
-                                This can be reduced to minimise input lag but at the cost of decreased FPS""")),
+                                This can be reduced to minimise input lag but at the cost of decreased FPS
+                                Setting to highest number possibly crash the game""")),
                         new SwitchOption(Component.translatable("Show Android Memory Info"),
                                 value -> config.showAndroidRAM = value,
                                 () -> config.showAndroidRAM)
@@ -368,7 +369,7 @@ public abstract class Options {
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
                                 .setTooltip(Component.translatable("Shows Pojav Info on debug screen.")),
-                        new CyclingOption<>(Component.translatable("Device selector"),
+                        new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
                                 () -> config.device)
@@ -376,28 +377,19 @@ public abstract class Options {
                                     String t;
 
                                     if (value == -1)
-                                        t = "Auto";
+                                        t = "options.guiScale.auto";
                                     else
                                         t = DeviceManager.suitableDevices.get(value).deviceName;
 
-                                    return Component.nullToEmpty(t);
+                                    return Component.translatable(t);
                                 })
-                                .setTooltip(Component.nullToEmpty(
-                                String.format("Current device: %s", DeviceManager.device.deviceName)))
+                                .setTooltip(
+                                Component.nullToEmpty("%s: %s".formatted(
+                                        Component.translatable("vulkanmod.options.deviceSelector.tooltip").getString(),
+                                        DeviceManager.device.deviceName
+                                )))
                 })
         };
 
-    }
-
-    static Integer[] getGuiScaleValues() {
-        int max = window.calculateScale(0, Minecraft.getInstance().isEnforceUnicode());
-
-        Integer[] values = new Integer[max];
-
-        for (int i = 0; i < max; i++) {
-            values[i] = i;
-        }
-
-        return values;
     }
 }
