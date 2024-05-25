@@ -31,6 +31,7 @@ public class Config {
     public boolean useGPUMem = false;
     public boolean postEffect = true;
     public boolean glowEffectFix = true;
+    public boolean renderFog = true;
     public int minImageCount = 3;
     public int device = -1;
 

@@ -284,6 +284,13 @@ public abstract class Options {
                                 },
                                 () -> config.renderSky)
                                 .setTooltip(Component.translatable("Renders the sky. Disabling this may improve performance a bit.")),
+                        new SwitchOption(Component.translatable("Render Fog"),
+                                value -> {
+                                    config.renderFog = value;
+                                    Renderer.recompile = true;
+                                },
+                                () -> config.renderFog)
+                                .setTooltip(Component.translatable("Renders the fog. Disabling this may improve performance a bit.")),
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;

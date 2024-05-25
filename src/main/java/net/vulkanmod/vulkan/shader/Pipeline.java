@@ -34,11 +34,13 @@ import java.nio.LongBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
 import static net.vulkanmod.vulkan.shader.SPIRVUtils.compileShader;
 import static net.vulkanmod.vulkan.shader.SPIRVUtils.compileShaderAbsoluteFile;
+import static net.vulkanmod.vulkan.shader.SPIRVUtils.SpecConstant;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 
@@ -483,6 +485,8 @@ public abstract class Pipeline {
 
     public static class Builder {
 
+        final EnumSet<SpecConstant> specConstants = EnumSet.noneOf(SpecConstant.class);
+        
         public static GraphicsPipeline createGraphicsPipeline(VertexFormat format, String path) {
             Pipeline.Builder pipelineBuilder = new Pipeline.Builder(format, path);
             pipelineBuilder.parseBindingsJSON();
@@ -574,6 +578,7 @@ public abstract class Pipeline {
             JsonArray jsonManualUbos = GsonHelper.getAsJsonArray(jsonObject, "ManualUBOs", null);
             JsonArray jsonSamplers = GsonHelper.getAsJsonArray(jsonObject, "samplers", null);
             JsonArray jsonPushConstants = GsonHelper.getAsJsonArray(jsonObject, "PushConstants", null);
+            JsonArray jsonSpecConstants = GsonHelper.getAsJsonArray(jsonObject, "SpecConstants", null);
 
             if (jsonUbos != null) {
                 for (JsonElement jsonelement : jsonUbos) {
@@ -593,6 +598,24 @@ public abstract class Pipeline {
 
             if (jsonPushConstants != null) {
                 this.parsePushConstantNode(jsonPushConstants);
+            }
+
+            if(jsonSpecConstants != null) {
+                this.parseSpecConstantNode(jsonSpecConstants);
+            }
+        }
+
+        private void parseSpecConstantNode(JsonArray jsonSpecConstants) {
+//            AlignedStruct.Builder builder = new AlignedStruct.Builder();
+
+            for(JsonElement jsonelement : jsonSpecConstants) {
+                JsonObject jsonobject2 = GsonHelper.convertToJsonObject(jsonelement, "SC");
+
+                String name = GsonHelper.getAsString(jsonobject2, "name");
+//                String type2 = GsonHelper.getAsString(jsonobject2, "type");
+
+
+                this.specConstants.add(SpecConstant.getNamed(name));
             }
         }
 

@@ -1,4 +1,5 @@
 #version 450
+layout (constant_id = 0) const bool USE_FOG = true;
 
 vec4 linear_fog(vec4 inColor, float vertexDistance, float fogStart, float fogEnd, vec4 fogColor) {
     if (vertexDistance <= fogStart) {
@@ -21,7 +22,7 @@ layout(location = 1) in float vertexDistance;
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    fragColor = linear_fog(vertexColor, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = USE_FOG ? linear_fog(vertexColor, vertexDistance, FogStart, FogEnd, FogColor) : vertexColor;
 }
 
 /*

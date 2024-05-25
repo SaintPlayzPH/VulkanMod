@@ -1,4 +1,5 @@
 #version 450
+layout (constant_id = 0) const bool USE_FOG = true;
 
 float linear_fog_fade(float vertexDistance, float fogStart, float fogEnd) {
     if (vertexDistance <= fogStart) {
@@ -29,7 +30,7 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = color * linear_fog_fade(vertexDistance, FogStart, FogEnd);
+    fragColor = USE_FOG ? color * linear_fog_fade(vertexDistance, FogStart, FogEnd) : color;
 }
 
 /*

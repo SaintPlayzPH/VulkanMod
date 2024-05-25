@@ -14,6 +14,7 @@ import org.lwjgl.vulkan.*;
 
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.EnumSet;
 
 import static org.lwjgl.system.MemoryStack.stackGet;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -23,10 +24,12 @@ public class GraphicsPipeline extends Pipeline {
 
     private final Object2LongMap<PipelineState> graphicsPipelines = new Object2LongOpenHashMap<>();
 
-    private final VertexFormat vertexFormat;
+    private final EnumSet<SPIRVUtils.SpecConstant> specConstants;
 
+    private final VertexFormat vertexFormat;
     private long vertShaderModule = 0;
     private long fragShaderModule = 0;
+    private PipelineState state;
 
     GraphicsPipeline(Builder builder) {
         super(builder.shaderPath);
@@ -35,6 +38,7 @@ public class GraphicsPipeline extends Pipeline {
         this.imageDescriptors = builder.imageDescriptors;
         this.pushConstants = builder.pushConstants;
         this.vertexFormat = builder.vertexFormat;
+        this.specConstants = builder.specConstants;
 
         createDescriptorSetLayout();
         createPipelineLayout();
@@ -54,6 +58,7 @@ public class GraphicsPipeline extends Pipeline {
     }
 
     private long createGraphicsPipeline(PipelineState state) {
+        this.state = state;
 
         try (MemoryStack stack = stackPush()) {
 
@@ -61,12 +66,21 @@ public class GraphicsPipeline extends Pipeline {
 
             VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.calloc(2, stack);
 
+            VkSpecializationMapEntry.Buffer specEntrySet =  VkSpecializationMapEntry.malloc(specConstants.size(), stack);
+
+
+            boolean equals = !this.specConstants.isEmpty();
+            VkSpecializationInfo specInfo = equals ? VkSpecializationInfo.malloc(stack)
+                    .pMapEntries(specEntrySet)
+                    .pData(enumSpecConstants(stack, specEntrySet)) : null;
+
             VkPipelineShaderStageCreateInfo vertShaderStageInfo = shaderStages.get(0);
 
             vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
             vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
             vertShaderStageInfo.module(vertShaderModule);
             vertShaderStageInfo.pName(entryPoint);
+            vertShaderStageInfo.pSpecializationInfo(specInfo);
 
             VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(1);
 
@@ -74,6 +88,7 @@ public class GraphicsPipeline extends Pipeline {
             fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
             fragShaderStageInfo.module(fragShaderModule);
             fragShaderStageInfo.pName(entryPoint);
+            fragShaderStageInfo.pSpecializationInfo(specInfo);
 
             // ===> VERTEX STAGE <===
 
@@ -204,6 +219,29 @@ public class GraphicsPipeline extends Pipeline {
         }
     }
 
+    private ByteBuffer enumSpecConstants(MemoryStack stack, VkSpecializationMapEntry.Buffer specEntrySet) {
+        int i = 0;
+        int x = 0;
+        ByteBuffer byteBuffer = stack.malloc(specConstants.size()*Integer.BYTES);
+
+        for(var specDef : specConstants)
+        {
+            specEntrySet.get(i)
+                    .constantID(specDef.ordinal())
+                    .offset(x)
+                    .size(4);
+
+            byteBuffer.putInt(i, specDef.getValue());
+            i++; x+=4;
+        }
+        return byteBuffer;
+    }
+
+    //Vulkan spec mandates that VkBool32 must always be aligned to uint32_t, which is 4 Bytes
+    private static ByteBuffer alignedVkBool32(MemoryStack stack, int i) {
+        return stack.malloc(Integer.BYTES).putInt(0, i); //Malloc as Int is always Unaligned, so asIntBuffer doesn't help here afaik
+    }
+    
     private void createShaderModules(SPIRVUtils.SPIRV vertSpirv, SPIRVUtils.SPIRV fragSpirv) {
         this.vertShaderModule = createShaderModule(vertSpirv.bytecode());
         this.fragShaderModule = createShaderModule(fragSpirv.bytecode());
@@ -332,6 +370,25 @@ public class GraphicsPipeline extends Pipeline {
         return attributeDescriptions.rewind();
     }
 
+    public void updateSpecConstant(SPIRVUtils.SpecConstant specConstant)
+    {
+
+        if(this.specConstants.contains(specConstant))
+        {
+            if(graphicsPipelines.size()>1)
+            {
+                graphicsPipelines.values().forEach(pipeline -> vkDestroyPipeline(DeviceManager.vkDevice, pipeline, null));
+                graphicsPipelines.clear();
+            }
+            this.graphicsPipelines.put(this.state, this.createGraphicsPipeline(this.state));
+        }
+//        PIPELINES.remove(this);
+//        Renderer.getInstance().removeUsedPipeline(this);
+//        this.graphicsPipelines.remove(this.state);
+//        PIPELINES.add(this);
+//        Renderer.getInstance().addUsedPipeline(this);
+    }
+    
     public void cleanUp() {
         vkDestroyShaderModule(DeviceManager.vkDevice, vertShaderModule, null);
         vkDestroyShaderModule(DeviceManager.vkDevice, fragShaderModule, null);
