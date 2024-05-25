@@ -22,12 +22,8 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
-    private static final boolean isRunningOnPhone() {
-        if (System.getenv("\u0050\u004F\u004A\u0041\u0056\u005F\u0052\u0045\u004E\u0044\u0045\u0052") != null) {
-            return true;
-        } else {
-            return false;
-        }
+    private static boolean isRunningOnAndroid() {
+        return System.getenv("POJAV_RENDERER") != null;
     }
 
     private static final int minImages;
