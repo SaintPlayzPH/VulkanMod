@@ -22,9 +22,15 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
+    private static final boolean isRunningOnPhone() {
+        if (System.getenv("\u0050\u004F\u004A\u0041\u0056\u005F\u0052\u0045\u004E\u0044\u0045\u0052") != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     private static final int minImages;
-
     private static final int maxImages;
 
     static {
@@ -379,7 +385,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Show Phone RAM Info"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
-                                .setTooltip(Component.translatable("Running on Phone: " + isRunningOnPhone() + ". Shows your Phone RAM on debug screen.")),
+                                .setTooltip(Component.translatable("Running on Phone: " + (isRunningOnPhone() ? "Yes" : "No") + ". Shows your Phone RAM on debug screen.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
@@ -405,12 +411,5 @@ public abstract class Options {
                                 )))
                 })
         };
-
-    private static final boolean isRunningOnPhone() {
-        if (System.getenv("POJAV_RENDERER") != null) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }
