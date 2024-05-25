@@ -22,7 +22,7 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
-    private static boolean isRunningOnAndroid() {
+    private static boolean isRunningOnPhone() {
         return System.getenv("POJAV_RENDERER") != null;
     }
 
@@ -259,7 +259,7 @@ public abstract class Options {
                                     config.glowEffectFix = value;
                                 },
                                 () -> config.glowEffectFix)
-                                .setTooltip(Component.translatable("Fixes bugs with Glowing Effect. Restarting the game is required to take effect!")),
+                                .setTooltip(Component.translatable("Fixes bugs with Glowing Effect (Entity Outline). Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Biome Tint Builder"),
                                 new Integer[]{1, 2},
                                 value -> {
@@ -381,7 +381,10 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Show Phone RAM Info"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
-                                .setTooltip(Component.translatable("Running on Phone: " + (isRunningOnPhone() ? "Yes" : "No") + ". Shows your Phone RAM on debug screen.")),
+                                .setTooltip(Component.nullToEmpty("""
+                                      Running on Phone: ${isRunningOnPhone() ? "§aYes§r" : "§cNo§r"}
+                                      Shows your Phone RAM on debug screen
+                                   """)),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
