@@ -134,7 +134,6 @@ public abstract class Options {
                                 },
                                 value -> {
                                     minecraftOptions.guiScale().set(value);
-                                    Minecraft.getInstance().resizeDisplay();
                                     minecraft.resizeDisplay();
                                 },
                                 () -> minecraftOptions.guiScale().get())
