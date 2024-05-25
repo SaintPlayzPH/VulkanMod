@@ -10,6 +10,7 @@ import net.vulkanmod.config.video.VideoModeSet;
 import net.vulkanmod.config.gui.OptionBlock;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
+import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import org.lwjgl.system.MemoryStack;
 
@@ -27,7 +28,8 @@ public abstract class Options {
 
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(physicalDevice, stack);
+            VkDevice device = Vulkan.getVkDevice();
+            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(device.getPhysicalDevice(), stack);
             minImages = surfaceProperties.capabilities.minImageCount();
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
