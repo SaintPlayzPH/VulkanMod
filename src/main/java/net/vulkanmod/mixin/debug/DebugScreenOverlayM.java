@@ -110,11 +110,7 @@ public abstract class DebugScreenOverlayM {
     }
     
     private static boolean isRunningOnAndroid() {
-        if (System.getenv("\u0050\u004F\u004A\u0041\u0056\u005F\u0052\u0045\u004E\u0044\u0045\u0052") != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return System.getenv("POJAV_RENDERER") != null;
     }
 
     private long getOffHeapMemory() {
