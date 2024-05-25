@@ -102,7 +102,7 @@ public class SwapChain extends Framebuffer {
             if(Initializer.CONFIG.minImageCount < surfaceProperties.capabilities.minImageCount())
                 Initializer.CONFIG.minImageCount = surfaceProperties.capabilities.minImageCount();
 
-            int requestedFrames = Initializer.CONFIG.minImageCount;
+            int requestedImages = Initializer.CONFIG.minImageCount;
 
             IntBuffer imageCount = stack.ints(requestedImages);
 
