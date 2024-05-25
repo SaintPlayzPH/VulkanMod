@@ -31,6 +31,9 @@ import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class SwapChain extends Framebuffer {
+    private static int SWAPCHAIN_IMG_DEDUCTION;
+    private int pretransformFlags = Vulkan.getPretransformFlags();
+    
     // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
     // (As Immediate Mode (and by extension Screen tearing) doesn't exist on some Wayland installations currently)
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
@@ -102,7 +105,13 @@ public class SwapChain extends Framebuffer {
             if(Initializer.CONFIG.minImageCount < surfaceProperties.capabilities.minImageCount())
                 Initializer.CONFIG.minImageCount = surfaceProperties.capabilities.minImageCount();
 
-            int requestedImages = Initializer.CONFIG.minImageCount - 1;
+            if (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
+                SWAPCHAIN_IMG_DEDUCTION = 2;
+            } else {
+                SWAPCHAIN_IMG_DEDUCTION = 1;
+            }
+
+            int requestedImages = Initializer.CONFIG.minImageCount - SWAPCHAIN_IMG_DEDUCTION;
 
             IntBuffer imageCount = stack.ints(requestedImages);
 
