@@ -27,7 +27,7 @@ public abstract class Options {
 
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(DeviceManager.device.getPhysicalDevice(), stack);
+            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(DeviceManager.device.pickPhysicalDevice(), stack);
             minImages = surfaceProperties.capabilities.minImageCount();
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
