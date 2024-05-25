@@ -349,7 +349,7 @@ public abstract class Options {
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
-                        new RangeOption(Component.translatable("SwapChain Images", minImages,
+                        new RangeOption(Component.translatable("SwapChain Images"), minImages,
                                 maxImages, 1,
                                 value -> {
                                     config.minImageCount = value;
