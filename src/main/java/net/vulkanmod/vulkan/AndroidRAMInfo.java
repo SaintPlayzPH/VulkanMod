@@ -15,7 +15,7 @@ public class AndroidRAMInfo {
             try (BufferedReader br = new BufferedReader(new FileReader("\u002F\u0070\u0072\u006F\u0063\u002F\u006D\u0065\u006D\u0069\u006E\u0066\u006F"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.startsWith("\u004D\u0065\u006D\u0054\u006F\u0074\u0061\u006C"")) {
+                    if (line.startsWith("\u004D\u0065\u006D\u0054\u006F\u0074\u0061\u006C")) {
                         memTotal = extractMemoryValue(line);
                     } else if (line.startsWith("\u004D\u0065\u006D\u0041\u0076\u0061\u0069\u006C\u0061\u0062\u006C\u0065")) {
                         memFree = extractMemoryValue(line);
@@ -45,7 +45,7 @@ public class AndroidRAMInfo {
             try (BufferedReader br = new BufferedReader(new FileReader("\u002F\u0070\u0072\u006F\u0063\u002F\u006D\u0065\u006D\u0069\u006E\u0066\u006F"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.startsWith("\u004D\u0065\u006D\u0054\u006F\u0074\u0061\u006C"")) {
+                    if (line.startsWith("\u004D\u0065\u006D\u0054\u006F\u0074\u0061\u006C")) {
                         memTotal = extractMemoryValue(line);
                     } else if (line.startsWith("\u004D\u0065\u006D\u0041\u0076\u0061\u0069\u006C\u0061\u0062\u006C\u0065")) {
                         memFree = extractMemoryValue(line);
