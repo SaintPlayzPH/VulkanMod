@@ -16,9 +16,6 @@ import org.lwjgl.system.MemoryStack;
 
 import java.util.stream.IntStream;
 
-import static net.vulkanmod.vulkan.Vulkan.*;
-import static net.vulkanmod.vulkan.device.DeviceManager.vkDevice;
-
 public abstract class Options {
     static net.minecraft.client.Options minecraftOptions = Minecraft.getInstance().options;
     static Config config = Initializer.CONFIG;
@@ -31,8 +28,7 @@ public abstract class Options {
 
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            VkDevice device = Vulkan.getVkDevice();
-            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(device.getPhysicalDevice(), stack);
+            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(Vulkan.getVkDevice().getPhysicalDevice(), stack);
             minImages = surfaceProperties.capabilities.minImageCount();
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
