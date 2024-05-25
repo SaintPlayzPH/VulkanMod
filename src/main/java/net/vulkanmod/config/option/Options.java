@@ -10,7 +10,6 @@ import net.vulkanmod.config.video.VideoModeSet;
 import net.vulkanmod.config.gui.OptionBlock;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
-import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import org.lwjgl.system.MemoryStack;
 
@@ -28,7 +27,7 @@ public abstract class Options {
 
     static {
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            Device.SurfaceProperties surfaceProperties = Device.querySurfaceProperties(device.getPhysicalDevice(), stack);
+            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(device.getPhysicalDevice(), stack);
             minImages = surfaceProperties.capabilities.minImageCount();
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
@@ -350,7 +349,7 @@ public abstract class Options {
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
-                        new RangeOption("SwapChain Images", minImages,
+                        new RangeOption(Component.translatable("SwapChain Images", minImages,
                                 maxImages, 1,
                                 value -> {
                                     config.minImageCount = value;
