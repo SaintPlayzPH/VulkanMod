@@ -34,7 +34,7 @@ public abstract class Options {
             int maxImageCount = surfaceProperties.capabilities.maxImageCount();
 
             boolean hasInfiniteSwapChain = maxImageCount == 0;
-            maxImages = hasInfiniteSwapChain ? 32 : maxImageCount;
+            maxImages = hasInfiniteSwapChain ? 60 : maxImageCount;
         }
     }
     
