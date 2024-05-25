@@ -20,7 +20,9 @@ public abstract class Options {
     static net.minecraft.client.Options minecraftOptions = Minecraft.getInstance().options;
     static Config config = Initializer.CONFIG;
     static Window window = Minecraft.getInstance().getWindow();
-    public static boolean fullscreenDirty = false;
+    static Minecraft minecraft = Minecraft.getInstance();
+    static Window window = minecraft.getWindow();
+    static net.minecraft.client.Options minecraftOptions = minecraft.options;
 
     private static final int minImages;
 
@@ -119,16 +121,21 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("VSync"),
                                 value -> {
                                     minecraftOptions.enableVsync().set(value);
-                                    Minecraft.getInstance().getWindow().updateVsync(value);
+                                    minecraft.getWindow().updateVsync(value);
                                 },
                                 () -> minecraftOptions.enableVsync().get()),
                 }),
                 new OptionBlock("", new Option<?>[]{
-                        new CyclingOption<>(Component.translatable("Gui Scale"),
-                                getGuiScaleValues(),
-                                (value) -> {
+                        new RangeOption(Component.translatable("options.guiScale"),
+                                0, window.calculateScale(0, minecraft.isEnforceUnicode()), 1,
+                                value -> {
+                                    if (value == 0) return Component.translatable("options.guiScale.auto");
+                                    return Component.literal(String.valueOf(value));
+                                },
+                                value -> {
                                     minecraftOptions.guiScale().set(value);
                                     Minecraft.getInstance().resizeDisplay();
+                                    minecraft.resizeDisplay();
                                 },
                                 () -> minecraftOptions.guiScale().get())
                                 .setTranslator(value -> value == 0 ? Component.literal("Auto") : Component.literal(value.toString())),
@@ -207,7 +214,7 @@ public abstract class Options {
 
                                     Initializer.CONFIG.ambientOcclusion = value;
 
-                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                    minecraft.levelRenderer.allChanged();
                                 },
                                 () -> Initializer.CONFIG.ambientOcclusion)
                                 .setTranslator(value -> switch (value) {
@@ -221,7 +228,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Unique opaque layer"),
                                 value -> {
                                     config.uniqueOpaqueLayer = value;
-                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                    minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.uniqueOpaqueLayer)
                                 .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
@@ -233,7 +240,7 @@ public abstract class Options {
                                 },
                                 (value) -> {
                                     minecraftOptions.biomeBlendRadius().set(value);
-                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                    minecraft.levelRenderer.allChanged();
                                 },
                                 () -> minecraftOptions.biomeBlendRadius().get()),
                 }),
@@ -248,7 +255,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Enable Post-Effect"),
                                  value -> {
                                     config.postEffect = value;
-                                    Minecraft.getInstance().delayTextureReload();
+                                    minecraft.delayTextureReload();
                                 },
                                 () -> config.postEffect)
                                 .setTooltip(Component.translatable("Enables Post Effect 'e.g. Glowing Effect, etc...'. Disabling this may improve performance!")),
@@ -262,8 +269,8 @@ public abstract class Options {
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {
                                     minecraftOptions.mipmapLevels().set(value);
-                                    Minecraft.getInstance().updateMaxMipLevel(value);
-                                    Minecraft.getInstance().delayTextureReload();
+                                    minecraft.updateMaxMipLevel(value);
+                                    minecraft.delayTextureReload();
                                 },
                                 () -> minecraftOptions.mipmapLevels().get())
                                 .setTranslator(value -> Component.nullToEmpty(value.toString()))
@@ -311,14 +318,14 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;
-                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                    minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.useGPUMem)
                                 .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Memory for allocation.")),
                         new SwitchOption(Component.translatable("Per RenderType AreaBuffers"),
                                 value -> {
                                     config.perRenderTypeAreaBuffers = value;
-                                    Minecraft.getInstance().levelRenderer.allChanged();
+                                    minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.perRenderTypeAreaBuffers)
                                 .setTooltip(Component.nullToEmpty("""
