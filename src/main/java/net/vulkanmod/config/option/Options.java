@@ -381,10 +381,11 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("Show Phone RAM Info"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
-                                .setTooltip(Component.nullToEmpty("""
-                                      Running on Phone: ${isRunningOnPhone() ? "§aYes§r" : "§cNo§r"}
-                                      Shows your Phone RAM on debug screen
                                    """)),
+                                .setTooltip(Component.nullToEmpty(
+                                    "Running on Phone?: " + isRunningOnPhone() ? "§aYes§r" : "§cNo§r" + "\n"+
+                                    "\n"+
+                                    "Shows your Phone RAM Info on debug screen.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
