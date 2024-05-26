@@ -392,40 +392,44 @@ public class WorldRenderer {
         this.minecraft.getProfiler().pop();
     }
 
+
+
     public void renderBlockEntities(PoseStack poseStack, double camX, double camY, double camZ,
-                                    Long2ObjectMap<SortedSet<BlockDestructionProgress>> destructionProgress, float gameTime) {
-        Profiler2 profiler = Profiler2.getMainProfiler();
-        profiler.pop();
-        profiler.push("block-entities");
+                                Long2ObjectMap<SortedSet<BlockDestructionProgress>> destructionProgress, float gameTime) {
+    Profiler2 profiler = Profiler2.getMainProfiler();
+    profiler.push("block-entities");
 
-        MultiBufferSource bufferSource = this.renderBuffers.bufferSource();
+    MultiBufferSource bufferSource = this.renderBuffers.bufferSource();
 
-        for (RenderSection renderSection : this.sectionGraph.getSectionQueue()) {
-            List<BlockEntity> list = renderSection.getCompiledSection().getBlockEntities();
-            if (!list.isEmpty()) {
-                for (BlockEntity blockEntity : list) {
-                    BlockPos blockPos = blockEntity.getBlockPos();
-                    MultiBufferSource bufferSource1 = bufferSource;
-                    poseStack.pushPose();
-                    poseStack.translate((double) blockPos.getX() - camX, (double) blockPos.getY() - camY, (double) blockPos.getZ() - camZ);
-                    SortedSet<BlockDestructionProgress> sortedset = destructionProgress.get(blockPos.asLong());
-                    if (sortedset != null && !sortedset.isEmpty()) {
-                        int j1 = sortedset.last().getProgress();
-                        if (j1 >= 0) {
-                            PoseStack.Pose pose = poseStack.last();
-                            VertexConsumer vertexconsumer = new SheetedDecalTextureGenerator(this.renderBuffers.crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(j1)), pose.pose(), pose.normal(), 1.0f);
-                            bufferSource1 = (renderType) -> {
-                                VertexConsumer vertexConsumer2 = bufferSource.getBuffer(renderType);
-                                return renderType.affectsCrumbling() ? VertexMultiConsumer.create(vertexconsumer, vertexConsumer2) : vertexConsumer2;
-                            };
-                        }
+    for (RenderSection renderSection : this.sectionGraph.getSectionQueue()) {
+        List<BlockEntity> list = renderSection.getCompiledSection().getBlockEntities();
+        if (!list.isEmpty()) {
+            for (BlockEntity blockEntity : list) {
+                BlockPos blockPos = blockEntity.getBlockPos();
+                MultiBufferSource bufferSource1 = bufferSource;
+                poseStack.pushPose();
+                poseStack.translate(blockPos.getX() - camX, blockPos.getY() - camY, blockPos.getZ() - camZ);
+                SortedSet<BlockDestructionProgress> sortedset = destructionProgress.get(blockPos.asLong());
+                if (sortedset != null && !sortedset.isEmpty()) {
+                    int progress = sortedset.last().getProgress();
+                    if (progress >= 0) {
+                        PoseStack.Pose pose = poseStack.last();
+                        VertexConsumer vertexconsumer = new SheetedDecalTextureGenerator(
+                                this.renderBuffers.crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)),
+                                pose.pose(), pose.normal(), 1.0f);
+                        bufferSource1 = (renderType) -> {
+                            VertexConsumer vertexConsumer2 = bufferSource.getBuffer(renderType);
+                            return renderType.affectsCrumbling() ? VertexMultiConsumer.create(vertexconsumer, vertexConsumer2) : vertexConsumer2;
+                        };
                     }
-
-                    this.minecraft.getBlockEntityRenderDispatcher().render(blockEntity, gameTime, poseStack, bufferSource1);
-                    poseStack.popPose();
                 }
+
+                this.minecraft.getBlockEntityRenderDispatcher().render(blockEntity, gameTime, poseStack, bufferSource1);
+                poseStack.popPose();
             }
         }
+    }
+    profiler.pop();
     }
 
     public void scheduleGraphUpdate() {
