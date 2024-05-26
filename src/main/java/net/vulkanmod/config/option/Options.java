@@ -262,7 +262,7 @@ public abstract class Options {
                                 () -> config.glowEffectFix)
                                 .setTooltip(Component.translatable("Fixes bugs with Glowing Effect (Entity Outline). Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Biome Tint Builder"),
-                                new Integer[]{1, 2},
+                                new Integer[]{1, 2, 3},
                                 value -> {
                                     config.tintBuilder = value;
                                     minecraft.levelRenderer.allChanged();
@@ -272,6 +272,7 @@ public abstract class Options {
                                     String t = switch (value) {
                                         case 1 -> "Old";
                                         case 2 -> "New";
+                                        case 3 -> "Merged";
                                         default -> "vulkanmod.options.unknown";
                                     };
                                     return Component.translatable(t);
