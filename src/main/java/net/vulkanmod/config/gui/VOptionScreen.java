@@ -231,7 +231,7 @@ public class VOptionScreen extends Screen {
 
         this.renderBackground(guiGraphics, 0, 0, 0);
 
-        ResourceLocation icon = new ResourceLocation("vulkanmod", "Vlogo_transparent.png");
+        ResourceLocation icon = new ResourceLocation("vulkanmod", "vlogo_transparent.png");
         int size = Minecraft.getInstance().font.lineHeight * 4;
 
         guiGraphics.blit(icon, 30, 4, 0f, 0f, size, size, size, size);
