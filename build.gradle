@@ -18,7 +18,6 @@ project.ext.macosNatives = "natives-macos"
 project.ext.macosArmNatives = "natives-macos-arm64"
 
 dependencies {
-    include(implementation("org.checkerframework:checker:3.21.0"))
     include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
     include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
     include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives"))
