@@ -2,6 +2,7 @@ package net.vulkanmod.vulkan.memory;
 
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.buffer.AreaBuffer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.texture.VulkanImage;
@@ -106,10 +107,6 @@ public class MemoryManager {
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
-            if(result != VK_SUCCESS) {
-                throw new RuntimeException("Failed to create buffer:" + result);
-            }
-
         }
     }
 
