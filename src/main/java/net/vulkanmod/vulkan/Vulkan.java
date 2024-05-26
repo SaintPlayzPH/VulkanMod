@@ -461,6 +461,10 @@ public class Vulkan {
         return swapChain.getPretransformMatrix();
     }
     public static int getPretransformFlags() {
+        if (swapChain == null) {
+            System.err.println("Warning: Swapchain is null, returning default pretransform flags.");
+            return 0;
+        }
         return swapChain.getPretransformFlags();
     }
 
