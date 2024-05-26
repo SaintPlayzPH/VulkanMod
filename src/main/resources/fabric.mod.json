@@ -34,9 +34,6 @@
   "jars": [
     {
       "file": "META-INF/jars/lib-arm64-shaderc+libvma.jar"
-    },
-    {
-      "file": "META-INF/jars/checker_qual.jar"
     }
   ]
 }
