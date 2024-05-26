@@ -69,16 +69,6 @@ public class VFrustum {
     }
 
     public boolean isVisible(AABB aABB) {
-        return this.cubeInFrustum(aABB.minX, aABB.minY, aABB.minZ, aABB.maxX, aABB.maxY, aABB.maxZ);
-    }
-
-    private boolean cubeInFrustum(double d, double e, double f, double g, double h, double i) {
-        double j = d - this.camX;
-        double k = e - this.camY;
-        double l = f - this.camZ;
-        double m = g - this.camX;
-        double n = h - this.camY;
-        double o = i - this.camZ;
-        return this.frustum.testAab((float) j, (float) k, (float) l, (float) m, (float) n, (float) o);
+        return this.testFrustum(aABB.minX, aABB.minY, aABB.minZ, aABB.maxX, aABB.maxY, aABB.maxZ);
     }
 }
