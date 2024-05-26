@@ -7,7 +7,6 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.vulkanmod.config.gui.GuiRenderer;
-import net.vulkanmod.config.option.Option;
 import net.vulkanmod.config.option.RangeOption;
 import net.vulkanmod.vulkan.util.ColorUtil;
 import org.lwjgl.glfw.GLFW;
