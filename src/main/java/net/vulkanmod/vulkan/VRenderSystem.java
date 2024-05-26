@@ -100,8 +100,9 @@ public abstract class VRenderSystem {
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
-        Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
-        FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
+        mat.get(projectionMatrix.buffer());
+    	Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
+        ByteBuffer projMatrixBuffer = projectionMatrix.buffer();
         // This allows us to skip allocating an object
         // if the matrix is known to be an identity matrix.
         // Tbh idk if the jvm will just optimize out the allocation but i can't be sure
