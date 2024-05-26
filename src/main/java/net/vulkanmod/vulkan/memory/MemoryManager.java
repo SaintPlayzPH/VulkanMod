@@ -107,6 +107,9 @@ public class MemoryManager {
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
+            if(result != VK_SUCCESS) {
+                throw new RuntimeException("Failed to create buffer:" + result);
+            }
         }
     }
 
