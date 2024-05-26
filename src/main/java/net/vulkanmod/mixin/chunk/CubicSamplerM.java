@@ -3,7 +3,6 @@ package net.vulkanmod.mixin.chunk;
 import net.minecraft.util.CubicSampler;
 import net.minecraft.world.phys.Vec3;
 import net.vulkanmod.vulkan.VRenderSystem;
-import org.checkerframework.dataflow.qual.Pure;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -34,11 +33,11 @@ public class CubicSamplerM
     @Unique
     private static final int anInt = 6;
     @Unique
-    @Pure private static float fastLerp(float f, float g, float h) {
+    private static float fastLerp(float f, float g, float h) {
         return org.joml.Math.fma(f, h - g, g);
     }
     @Unique
-    @Pure private static double fastLerp(double f, double g, double h) {
+    private static double fastLerp(double f, double g, double h) {
         return org.joml.Math.fma(f, h - g, g);
     }
     /**
