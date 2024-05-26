@@ -29,8 +29,8 @@ public abstract class Options {
         return System.getenv("POJAV_RENDERER") != null;
     }
 
-    private static final int minImages;
-    private static final int maxImages;
+    private static final int minImageCount;
+    private static final int maxImageCount;
 
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
