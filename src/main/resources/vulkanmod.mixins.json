@@ -9,7 +9,7 @@
   "client": [
     "window.WindowMixin",
     "window.WindowAccessor",
-
+    "chunk.CubicSamplerM",
     "chunk.DirectionMixin",
     "chunk.FrustumMixin",
     "chunk.LevelRendererMixin",
