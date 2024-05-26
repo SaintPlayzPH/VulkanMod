@@ -77,6 +77,8 @@ public class TintCache {
             calculateLayerV1(y);
         } else if (Initializer.CONFIG.tintBuilder == 2) {
             calculateLayerV2(y);
+        } else if (Initializer.CONFIG.tintBuilder == 3) {
+            calculateLayerMerged(y);
         }
     }
 
