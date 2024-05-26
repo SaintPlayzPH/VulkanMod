@@ -11,10 +11,12 @@ import net.vulkanmod.config.gui.OptionBlock;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.device.DeviceManager;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
 import java.util.stream.IntStream;
+
+import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 
 public abstract class Options {
     public static boolean fullscreenDirty = false;
@@ -31,12 +33,10 @@ public abstract class Options {
 
     static {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(Vulkan.getVkDevice().getPhysicalDevice(), stack);
-            minImages = surfaceProperties.capabilities.minImageCount();
-            int maxImageCount = surfaceProperties.capabilities.maxImageCount();
-
-            boolean hasInfiniteSwapChain = maxImageCount == 0;
-            maxImages = hasInfiniteSwapChain ? 48 : maxImageCount;
+            final VkSurfaceCapabilitiesKHR capabilities = VkSurfaceCapabilitiesKHR.malloc(stack);
+            vkGetPhysicalDeviceSurfaceCapabilitiesKHR(DeviceManager.physicalDevice, Vulkan.getSurface(), capabilities);
+            minImageCount = capabilities.minImageCount();
+            maxImageCount = Math.min(capabilities.maxImageCount(), 32);
         }
     }
     
@@ -367,17 +367,16 @@ public abstract class Options {
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
-                        new RangeOption(Component.translatable("SwapChain Images"), minImages,
-                                maxImages, 1,
+                        new RangeOption(Component.translatable("SwapChain Images"), minImageCount,
+                                maxImageCount, 1,
                                 value -> {
-                                    config.minImageCount = value;
+                                    config.imageCount = value;
                                     Renderer.scheduleSwapChainUpdate();
-                                }, () -> config.minImageCount)
+                                }, () -> config.imageCount)
                                 .setTooltip(Component.nullToEmpty("""
                                 Sets the number of Swapchain images
                                 Optimised automatically for best performance
-                                This can be reduced to minimise input lag but at the cost of decreased FPS
-                                Setting to highest number possibly crash the game""")),
+                                This can be reduced to minimise input lag but at the cost of decreased FPS""")),
                         new SwitchOption(Component.translatable("Show Phone RAM Info"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
