@@ -31,9 +31,6 @@ import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class SwapChain extends Framebuffer {
-    private int pretransformFlagsDat = Vulkan.getPretransformFlags();
-    private static int SWAPCHAIN_IMG_DEDUCTION;
-    
     // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
     // (As Immediate Mode (and by extension Screen tearing) doesn't exist on some Wayland installations currently)
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
@@ -102,13 +99,7 @@ public class SwapChain extends Framebuffer {
 
             // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
             // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            if (pretransformFlagsDat == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlagsDat == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
-                SWAPCHAIN_IMG_DEDUCTION = 2;
-            } else {
-                SWAPCHAIN_IMG_DEDUCTION = 1;
-            }
-            
-            int requestedImages = Math.max(Initializer.CONFIG.imageCount - SWAPCHAIN_IMG_DEDUCTION, surfaceProperties.capabilities.minImageCount());
+            int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
 
             IntBuffer imageCount = stack.ints(requestedImages);
 
