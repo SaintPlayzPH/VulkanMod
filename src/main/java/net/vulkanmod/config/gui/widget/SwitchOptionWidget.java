@@ -71,9 +71,9 @@ public class SwitchOptionWidget extends OptionWidget<SwitchOption> {
     }
 
     protected void updateDisplayedValue() {
-        this.displayedValue = option.getNewValue() ?
-                Component.translatable("options.on") :
-                Component.translatable("options.off");
+        this.displayedValue = option.getNewValue()
+                ? Component.translatable("options.on")
+                : Component.translatable("options.off");
     }
 
     @Override
