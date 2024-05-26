@@ -22,19 +22,19 @@ public class AndroidRAMInfo {
                     }
                 }
             } catch (IOException e) {
-                Initializer.LOGGER.error("Can't obtain Memory info!");
-                return "Memory: Unavailable";
+                Initializer.LOGGER.error("Can't obtain RAM info!");
+                return "RAM: Unavailable";
             }
 
             if (memTotal != 0 && memFree != 0) {
                 double memTotalMB = memTotal / 1024.0;
                 double usedMemoryMB = (memTotal - memFree) / 1024.0;
-                return "Memory: " + String.format("%.2f", usedMemoryMB) + "/" + String.format("%.2f", memTotalMB) + " MB";
+                return "RAM: " + String.format("%.2f", usedMemoryMB) + "/" + String.format("%.2f", memTotalMB) + " MB";
             } else {
-                return "Memory: Unavailable";
+                return "RAM: Unavailable";
             }
         }
-        return "Memory: Unavailable";
+        return "RAM: Unavailable";
     }
 
     public static String getAvailableMemoryInfo() {
@@ -52,8 +52,8 @@ public class AndroidRAMInfo {
                     }
                 }
             } catch (IOException e) {
-                Initializer.LOGGER.error("Can't obtain Available Memory info!");
-                return "Available Memory: Unavailable";
+                Initializer.LOGGER.error("Can't obtain Available RAM info!");
+                return "Available RAM: Unavailable";
             }
 
             if (memTotal != 0 && memFree != 0) {
@@ -73,12 +73,12 @@ public class AndroidRAMInfo {
                 } else {
                     colorPerc = "";
                 }
-                 return "Available Memory: " + String.format("%.2f", memFreeMB) + " MB / "  + colorPerc + freeMemoryPercentage + "%";
+                 return "Available RAM: " + String.format("%.2f", memFreeMB) + " MB / "  + colorPerc + freeMemoryPercentage + "%";
             } else {
-                return "Available Memory: Ran Out of Available Memory";
+                return "Available RAM: Ran Out of Available Memory";
             }
         }
-        return "Available Memory: Unavailable";
+        return "Available RAM: Unavailable";
     }
 
     public static String getBuffersInfo() {

@@ -100,6 +100,7 @@ public abstract class VRenderSystem {
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
+        mat.get(projectionMatrix.buffer.asFloatBuffer());
         Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
         FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
         // This allows us to skip allocating an object
