@@ -95,33 +95,35 @@ public abstract class VRenderSystem {
     }
 
     public static void applyModelViewMatrix(Matrix4f mat) {
-        mat.get(modelViewMatrix.buffer.asFloatBuffer());
+        mat.getToAddress(modelViewMatrix.ptr());
         //MemoryUtil.memPutFloat(MemoryUtil.memAddress(modelViewMatrix), 1);
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
-        Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
-        FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
+        mat.getToAddress(projectionMatrix.ptr());
+
+
+    	Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
+        long projMatrixBuffer = projectionMatrix.ptr();
         // This allows us to skip allocating an object
         // if the matrix is known to be an identity matrix.
         // Tbh idk if the jvm will just optimize out the allocation but i can't be sure
         // as java is sometimes pretty pedantic about object allocations.
         if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
-        	mat.get(projMatrixBuffer);
+        	mat.getToAddress(projMatrixBuffer);
         } else {
-        	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
+        	mat.mulLocal(pretransformMatrix, new Matrix4f()).getToAddress(projMatrixBuffer);
         }
     }
 
     public static void calculateMVP() {
-        org.joml.Matrix4f MV = new org.joml.Matrix4f(modelViewMatrix.buffer.asFloatBuffer());
-        org.joml.Matrix4f P = new org.joml.Matrix4f(projectionMatrix.buffer.asFloatBuffer());
-
-        P.mul(MV).get(MVP.buffer);
+        org.joml.Matrix4f MV = new org.joml.Matrix4f().setFromAddress(modelViewMatrix.ptr());
+        org.joml.Matrix4f P = new org.joml.Matrix4f().setFromAddress(projectionMatrix.ptr());
+        P.mul(MV).getToAddress(MVP.ptr());
     }
 
     public static void setTextureMatrix(Matrix4f mat) {
-        mat.get(TextureMatrix.buffer.asFloatBuffer());
+        mat.getToAddress(TextureMatrix.ptr());
     }
 
     public static MappedBuffer getTextureMatrix() {
