@@ -3,11 +3,13 @@ package net.vulkanmod.config.gui;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.config.gui.widget.VAbstractWidget;
@@ -229,7 +231,10 @@ public class VOptionScreen extends Screen {
 
         this.renderBackground(guiGraphics, 0, 0, 0);
 
-        GuiRenderer.drawString(this.font, Component.translatable("vulkanmod.options.title"), 20, 14, 0xffffffff);
+        ResourceLocation icon = new ResourceLocation("vulkanmod", "vlogo_transparent.png");
+        int size = Minecraft.getInstance().font.lineHeight * 4;
+
+        guiGraphics.blit(icon, 30, 4, 0f, 0f, size, size, size, size);
 
         VOptionList currentList = this.optionPages.get(this.currentListIdx).getOptionList();
         currentList.updateState(mouseX, mouseY);
