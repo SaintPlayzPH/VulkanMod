@@ -4,12 +4,12 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
-public record MappedBuffer( ByteBuffer buffer, long ptr) {
-
+public record MappedBuffer(ByteBuffer buffer, long ptr) {
 
     public static MappedBuffer createFromBuffer(ByteBuffer buffer) {
         return new MappedBuffer(buffer, MemoryUtil.memAddress0(buffer));
     }
+
     public static MappedBuffer getMappedBuffer(ByteBuffer buffer, long ptr) {
         return new MappedBuffer(buffer, ptr);
     }
@@ -33,5 +33,10 @@ public record MappedBuffer( ByteBuffer buffer, long ptr) {
 
     public int getInt(int idx) {
         return VUtil.UNSAFE.getInt(ptr + idx);
+    }
+    
+    // Getter method for ByteBuffer
+    public ByteBuffer getBuffer() {
+        return buffer;
     }
 }
