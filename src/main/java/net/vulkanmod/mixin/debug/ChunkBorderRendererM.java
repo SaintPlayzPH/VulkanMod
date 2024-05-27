@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.ChunkBorderRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
+import org.joml.Matrix4fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -29,7 +30,7 @@ public class ChunkBorderRendererM {
     @Overwrite
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, double d, double e, double f) {
         PoseStack poseStack2 = RenderSystem.getModelViewStack();
-        poseStack2.pushPose();
+        poseStack2.pushMatrix();
         poseStack2.mulPoseMatrix(poseStack.last().pose());
         RenderSystem.applyModelViewMatrix();
 
