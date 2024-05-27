@@ -46,7 +46,7 @@ public class DrawUtil {
         RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
         Matrix4fStack posestack = RenderSystem.getModelViewStack();
         posestack.pushMatrix();
-        posestack.setIdentity();
+        posestack.identity();
         RenderSystem.applyModelViewMatrix();
         posestack.popMatrix();
 
