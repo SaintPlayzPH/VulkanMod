@@ -63,14 +63,12 @@ public abstract class LevelRendererMixin {
     private EntityRenderDispatcher entityRenderDispatcher;
 
     @Shadow
-    protected abstract boolean shouldShowEntityOutlines();
-
-    @Shadow
     public abstract void needsUpdate();
 
     @Shadow
     public abstract void renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f);
 
+    @Unique
     private WorldRenderer worldRenderer;
 
     @Unique
@@ -97,6 +95,10 @@ public abstract class LevelRendererMixin {
         this.worldRenderer.renderBlockEntities(poseStack, pos.x(), pos.y(), pos.z(), this.destructionProgress, f);
     }
 
+    @Overwrite
+    public boolean shouldShowEntityOutlines() {
+        return Initializer.CONFIG.entityOutline; //Temp Fix: Disable Glowing due to flickering artifacts with Post effect detection
+    }
     /**
      * @author
      * @reason
