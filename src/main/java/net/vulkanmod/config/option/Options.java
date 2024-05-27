@@ -333,7 +333,7 @@ public abstract class Options {
                                     Renderer.recompile = true;
                                 },
                                 () -> config.entityOutline)
-                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance."),
+                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance.")),
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;
