@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -212,7 +211,7 @@ public class VOptionScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawableHelper guiGraphics, int i, int j, float f) {
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
         if (this.client.world == null) {
             this.renderBackgroundTexture(0);
         }
