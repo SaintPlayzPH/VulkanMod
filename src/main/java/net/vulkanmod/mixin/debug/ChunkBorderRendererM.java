@@ -33,8 +33,8 @@ public class ChunkBorderRendererM {
     @Overwrite
     public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, double d, double e, double f) {
         Matrix4fStack poseStack2 = RenderSystem.getModelViewStack();
-        poseStack2.pushPose();
-        poseStack2.mulPose(poseStack.last().pose());
+        poseStack2.pushMatrix();
+        poseStack2.mul(poseStack.last().pose());
         RenderSystem.applyModelViewMatrix();
 
         RenderSystem.enableDepthTest();
@@ -118,7 +118,7 @@ public class ChunkBorderRendererM {
         RenderSystem.lineWidth(2.0F);
 
         RenderSystem.depthMask(true);
-        poseStack2.popPose();
+        poseStack2.popMatrix();
         RenderSystem.applyModelViewMatrix();
     }
 }
