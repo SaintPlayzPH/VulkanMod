@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.ChunkBorderRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
-import org.lwjgl.util.vector.Matrix4fStack;
+import org.joml.Matrix4fStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
