@@ -43,11 +43,11 @@ public class DrawUtil {
         if (Initializer.CONFIG.postEffect) {
         Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F);
         RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
-        PoseStack posestack = RenderSystem.getModelViewStack();
-        posestack.pushPose();
+        Matrix4fStack posestack = RenderSystem.getModelViewStack();
+        posestack.pushMatrix();
         posestack.setIdentity();
         RenderSystem.applyModelViewMatrix();
-        posestack.popPose();
+        posestack.popMatrix();
 
         ShaderInstance shaderInstance = Minecraft.getInstance().gameRenderer.blitShader;
 //        RenderSystem.setShader(() -> shaderInstance);
