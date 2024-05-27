@@ -127,9 +127,9 @@ public class ShaderInstanceM implements ShaderMixed {
             this.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
         }
 
-        if (this.INVERSE_VIEW_ROTATION_MATRIX != null) {
-            this.INVERSE_VIEW_ROTATION_MATRIX.set(RenderSystem.getInverseViewRotationMatrix());
-        }
+        //if (this.INVERSE_VIEW_ROTATION_MATRIX != null) {
+          //  this.INVERSE_VIEW_ROTATION_MATRIX.set(RenderSystem.getInverseViewRotationMatrix());
+        //}
 
         if (this.COLOR_MODULATOR != null) {
             this.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
