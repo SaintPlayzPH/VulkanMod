@@ -327,6 +327,13 @@ public abstract class Options {
                                 },
                                 () -> config.renderFog)
                                 .setTooltip(Component.translatable("Renders the fog. Disabling this may improve performance a bit.")),
+                        new SwitchOption(Component.translatable("Render Entity Outline"),
+                                value -> {
+                                    config.entityOutline = value;
+                                    Renderer.recompile = true;
+                                },
+                                () -> config.entityOutline)
+                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance."),
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;
