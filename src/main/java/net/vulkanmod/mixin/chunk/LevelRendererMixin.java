@@ -26,6 +26,7 @@ import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Unique;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -63,14 +64,12 @@ public abstract class LevelRendererMixin {
     private EntityRenderDispatcher entityRenderDispatcher;
 
     @Shadow
-    protected abstract boolean shouldShowEntityOutlines();
-
-    @Shadow
     public abstract void needsUpdate();
 
     @Shadow
     public abstract void renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f);
 
+    @Unique
     private WorldRenderer worldRenderer;
 
     @Unique
@@ -97,6 +96,10 @@ public abstract class LevelRendererMixin {
         this.worldRenderer.renderBlockEntities(poseStack, pos.x(), pos.y(), pos.z(), this.destructionProgress, f);
     }
 
+    @Overwrite
+    public boolean shouldShowEntityOutlines() {
+        return false; //Temp Fix: Disable Glowing due to flickering artifacts with Post effect detection
+    }
     /**
      * @author
      * @reason
