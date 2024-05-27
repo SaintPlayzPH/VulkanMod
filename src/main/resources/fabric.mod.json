@@ -1,12 +1,18 @@
 {
   "schemaVersion": 1,
   "id": "vulkanmod",
-  "version": "0.4.2-modified_v4.3-unstable",
+  "version": "0.4.2-modified_v4.4-unstable",
 
   "name": "VulkanMod",
-  "description": "Bring Vulkan to Minecraft. Originally by: §b§nCollateral§r, Modified by: §e§nSaintPlayzPH§r. Please note that this modified VulkanMod is not intended to be published publicly on platforms such as §c§nYouTube§r or through links like §6§nMediafire§r. It may contain malware, so avoid downloading it from unofficial sources that contain ads.",
+  "description": "Bring Vulkan to Minecraft. Originally by: §b§nCollateral§r, Modified by: §e§nSaintPlayzPH§r. Please note that this modified VulkanMod is not intended to be published publicly on platforms such as §c§nYouTube§r or through links like §6§nMediafire§r. If you download it from other §c§nYouTubers§r or §e§nUploader§r with ads with their own link, be careful as it may contain malware.",
   "authors": [
     "Collateral"
+  ],
+  "contributors": [
+    "SaintPlayzPH (modifier)",
+    "seji1 (settings improvements)",
+    "thr3343 (some optimization code)",
+    "artDev (pojav fix code)"
   ],
   "contact": {
     "homepage": "",
