@@ -329,11 +329,10 @@ public abstract class Options {
                                 .setTooltip(Component.translatable("Renders the fog. Disabling this may improve performance a bit.")),
                         new SwitchOption(Component.translatable("Render Entity Outline"),
                                 value -> {
-                                    config.entityOutline = value;
-                                    Renderer.recompile = true;
+                                    config.entityOutline = Initializer.CONFIG.postEffect ? value : false;
                                 },
-                                () -> config.entityOutline)
-                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance.")),
+                                () -> Initializer.CONFIG.postEffect && config.entityOutline)
+                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance." + (Initializer.CONFIG.postEffect ? "" : " Requires §cEnable Post-Effect§r to be enabled!"))),
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;
