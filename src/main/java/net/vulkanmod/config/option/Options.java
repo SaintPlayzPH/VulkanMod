@@ -332,7 +332,7 @@ public abstract class Options {
                                     config.entityOutline = Initializer.CONFIG.postEffect ? value : false;
                                 },
                                 () -> Initializer.CONFIG.postEffect && config.entityOutline)
-                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance." + (Initializer.CONFIG.postEffect ? "" : " Requires §cEnable Post-Effect§r to be enabled!"))),
+                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance." + (Initializer.CONFIG.postEffect ? "" : " Requires §cEnable Post-Effect§r option to be enabled!"))),
                         new SwitchOption(Component.translatable("Use GPU Memory"),
                                 value -> {
                                     config.useGPUMem = value;
