@@ -8,7 +8,7 @@ import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
-import org.joml.Vector3f;
+import org.joml.Quaternion;
 import org.joml.Matrix4f;
 import org.lwjgl.vulkan.VK11;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -51,8 +51,17 @@ public class DrawUtil {
         posestack.pushPose();
         posestack.setIdentity();
 
-        // Apply a 90-degree clockwise rotation
-        posestack.mulPose(Vector3f.YP.rotationDegrees(-90));
+        // Define a rotation matrix for a 90-degree clockwise rotation around the Y axis
+        Matrix4f rotationMatrix = new Matrix4f().rotateY((float) Math.toRadians(-90));
+
+// Apply the rotation matrix to the model view stack
+        posestack.mulPose(new Quaternion(rotationMatrix));
+
+       // Alternatively, if the library supports applying a transformation matrix directly to the model view stack:
+       // posestack.mulPose(new MatrixStack.Entry(rotationMatrix));
+
+        RenderSystem.applyModelViewMatrix();
+        posestack.popPose();
 
         RenderSystem.applyModelViewMatrix();
         posestack.popPose();
