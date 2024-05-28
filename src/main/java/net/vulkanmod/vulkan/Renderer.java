@@ -57,6 +57,7 @@ public class Renderer {
 
     private static boolean swapChainUpdate = false;
     public static boolean skipRendering, useMode = false;
+    private static boolean effectActive,renderPassUpdate,hasCalled = false;
     public static boolean recompile;
 
     public static void initRenderer() {
@@ -212,6 +213,13 @@ public class Renderer {
             recompile = false;
         }
 
+	if(renderPassUpdate)
+        {
+            useMode=effectActive;
+            Initializer.LOGGER.error("Using RenderPass: "+ (useMode ? "Post Effect" : "Default"));
+            renderPassUpdate = false;
+	}
+
         if (swapChainUpdate) {
             recreateSwapChain();
             swapChainUpdate = false;
@@ -240,7 +248,7 @@ public class Renderer {
         resetDescriptors();
 
         currentCmdBuffer = commandBuffers.get(currentFrame);
-        vkResetCommandBuffer(currentCmdBuffer, 0);
+       // vkResetCommandBuffer(currentCmdBuffer, 0);
         recordingCmds = true;
 
         try (MemoryStack stack = stackPush()) {
@@ -272,7 +280,7 @@ public class Renderer {
                 throw new RuntimeException("Failed to begin recording command buffer:" + err);
             }
 
-            mainPass.begin(commandBuffer, stack);
+            LegacyMainPass.PASS.begin(commandBuffer, stack);
 
             vkCmdSetDepthBias(commandBuffer, 0.0F, 0.0F, 0.0F);
 
@@ -289,7 +297,19 @@ public class Renderer {
         Profiler2 p = Profiler2.getMainProfiler();
         p.push("End_rendering");
 
-        mainPass.end(currentCmdBuffer);
+        LegacyMainPass.PASS.end(currentCmdBuffer);
+
+        if(!hasCalled) {
+            if(effectActive) {
+                scheduleRenderPassUpdate();
+            }
+            effectActive = false;
+        }
+        if(renderPassUpdate) {
+            this.endRenderPass();
+            GlFramebuffer.bindFramebuffer(0,0); //Avoid NPE when switching post effect modes
+        }
+        hasCalled=false;
 
         submitFrame();
         recordingCmds = false;
@@ -410,7 +430,7 @@ public class Renderer {
         usedPipelines.add(pipeline);
     }
 
-    public void removeUsedPipeline(Pipeline pipeline) {
+    public void removeUsedPipeline(GraphicsPipeline pipeline) {
         usedPipelines.remove(pipeline);
     }
 
@@ -504,12 +524,12 @@ public class Renderer {
         return boundRenderPass;
     }
 
-    public void setMainPass(MainPass mainPass) {
-        this.mainPass = mainPass;
-    }
+   // public void setMainPass(MainPass mainPass) {
+ //       this.mainPass = mainPass;
+ //   }
 
     public MainPass getMainPass() {
-        return this.mainPass;
+        return LegacyMainPass.PASS;
     }
 
     public void addOnResizeCallback(Runnable runnable) {
@@ -528,7 +548,10 @@ public class Renderer {
 
         if (boundPipeline == handle) {
             return;
-        }
+	}
+	
+	if(boundRenderPass == null)
+            LegacyMainPass.PASS.mainTargetBindWrite();
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, handle);
         boundPipeline = handle;
@@ -664,6 +687,8 @@ public class Renderer {
     }
 
     public static void resetViewport() {
+	if(!effectActive) scheduleRenderPassUpdate();
+        effectActive=hasCalled=true;
         try (MemoryStack stack = stackPush()) {
             int width = getSwapChain().getWidth();
             int height = getSwapChain().getHeight();
@@ -788,5 +813,9 @@ public class Renderer {
 
     public static void scheduleSwapChainUpdate() {
         swapChainUpdate = true;
+    }
+
+    public static void scheduleRenderPassUpdate() {
+	renderPassUpdate = true;
     }
 }
