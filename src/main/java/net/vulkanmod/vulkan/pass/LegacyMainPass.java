@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.framebuffer.Framebuffer;
+import net.vulkanmod.vulkan.framebuffer.RenderPass;
 import net.vulkanmod.vulkan.framebuffer.SwapChain;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -15,15 +17,16 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class LegacyMainPass implements MainPass {
     public static final LegacyMainPass PASS = new LegacyMainPass();
+    private RenderPass mainRenderPass;
 
     @Override
     public void begin(VkCommandBuffer commandBuffer, MemoryStack stack) {
         if(!Renderer.useMode)
         {
-            SwapChain swapChain = Vulkan.getSwapChain();
-            swapChain.colorAttachmentLayout(stack, commandBuffer, Renderer.getCurrentImage());
-
-            swapChain.beginRenderPass(commandBuffer, stack);
+            SwapChain framebuffer = Vulkan.getSwapChain();
+            framebuffer.colorAttachmentLayout(stack, commandBuffer, Renderer.getCurrentImage());
+            
+            framebuffer.beginRenderPass(commandBuffer, this.mainRenderPass, stack);
             Renderer.getInstance().setBoundFramebuffer(swapChain);
 
             VkViewport.Buffer pViewport = swapChain.viewport(stack);
@@ -60,10 +63,10 @@ public class LegacyMainPass implements MainPass {
                 RenderTarget mainTarget = Minecraft.getInstance().getMainRenderTarget();
                 mainTarget.bindRead();
 
-                SwapChain swapChain = Vulkan.getSwapChain();
-                swapChain.colorAttachmentLayout(stack, commandBuffer, Renderer.getCurrentImage());
-
-                swapChain.beginRenderPass(commandBuffer, stack);
+                SwapChain framebuffer = Vulkan.getSwapChain();
+                framebuffer.colorAttachmentLayout(stack, commandBuffer, Renderer.getCurrentImage());
+            
+                framebuffer.beginRenderPass(commandBuffer, this.mainRenderPass, stack);
                 Renderer.getInstance().setBoundFramebuffer(swapChain);
 
                 VkViewport.Buffer pViewport = swapChain.viewport(stack);
