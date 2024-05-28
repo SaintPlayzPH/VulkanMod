@@ -95,18 +95,7 @@ public abstract class VRenderSystem {
     }
 
     public static void applyModelViewMatrix(Matrix4f mat) {
-        Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
-        FloatBuffer modelMatrixBuffer = modelViewMatrix.buffer.asFloatBuffer();
-        // This allows us to skip allocating an object
-        // if the matrix is known to be an identity matrix.
-        // Tbh idk if the jvm will just optimize out the allocation but i can't be sure
-        // as java is sometimes pretty pedantic about object allocations.
-     //   if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
-        //	mat.get(modelMatrixBuffer);
-      //  } else {
-        	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(modelMatrixBuffer);
-        //MemoryUtil.memPutFloat(MemoryUtil.memAddress(modelViewMatrix), 1);
-       // }
+        mat.get(modelViewMatrix.buffer.asFloatBuffer());
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
@@ -116,11 +105,11 @@ public abstract class VRenderSystem {
         // if the matrix is known to be an identity matrix.
         // Tbh idk if the jvm will just optimize out the allocation but i can't be sure
         // as java is sometimes pretty pedantic about object allocations.
-     //   if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
+        if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
         	mat.get(projMatrixBuffer);
-     //   } else {
-      //  	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
-    //   }
+        } else {
+        	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
+       }
     }
     
     public static void calculateMVP() {
