@@ -97,7 +97,7 @@ public abstract class LevelRendererMixin {
 
     @Overwrite
     public boolean shouldShowEntityOutlines() {
-        return Initializer.CONFIG.entityOutline; //Temp Fix: Disable Glowing due to flickering artifacts with Post effect detection
+        return Initializer.CONFIG.postEffect && Initializer.CONFIG.entityOutline;
     }
     /**
      * @author
