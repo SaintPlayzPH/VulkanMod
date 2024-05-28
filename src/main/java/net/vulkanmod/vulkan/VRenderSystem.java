@@ -125,6 +125,18 @@ public abstract class VRenderSystem {
         }
     }
 
+    public static void debugPrintMatrix(Matrix4f matrix, String name) {
+        FloatBuffer fb = matrix.get(new float[16]);
+        Initializer.LOGGER.warn(name + " Matrix:");
+        for (int i = 0; i < 4; i++) {
+            Initializer.LOGGER.warn(fb.get(i*4) + ", " + fb.get(i*4+1) + ", " + fb.get(i*4+2) + ", " + fb.get(i*4+3));
+        }
+    }
+
+    // debug
+    Initializer.LOGGER.warn(modelViewMatrix, "ModelView");
+    Initializer.LOGGER.warn(projectionMatrix, "Projection");
+    
     public static void calculateMVP() {
         org.joml.Matrix4f MV = new org.joml.Matrix4f(modelViewMatrix.buffer.asFloatBuffer());
         org.joml.Matrix4f P = new org.joml.Matrix4f(projectionMatrix.buffer.asFloatBuffer());
