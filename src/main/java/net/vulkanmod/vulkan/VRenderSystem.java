@@ -17,7 +17,6 @@ import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.vulkan.VK10.*;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 public abstract class VRenderSystem {
@@ -80,15 +79,17 @@ public abstract class VRenderSystem {
         VRenderSystem.window = window;
     }
 
-    public static ByteBuffer getChunkOffset() {
-        return ChunkOffset.buffer;
-    }
-
     public static int maxSupportedTextureSize() {
         return DeviceManager.deviceProperties.limits().maxImageDimension2D();
     }
 
     public static void applyMVP(Matrix4f MV, Matrix4f P) {
+        applyModelViewMatrix(MV);
+        applyProjectionMatrix(P);
+        calculateMVP();
+    }
+
+    public static void applyMVP2(Matrix4f MV, Matrix4f P) {
         applyModelViewMatrix(MV);
         applyProjectionMatrix(P);
         calculateMVP();
@@ -198,6 +199,18 @@ public abstract class VRenderSystem {
         };
     }
 
+    public static void translateMVP(float x, float y, float z) {
+        org.joml.Matrix4f MVP_ = new org.joml.Matrix4f().setFromAddress(MVP.ptr());
+
+        MVP_.translate(x, y, z).getToAddress(MVP.ptr());
+    }
+    
+    public static void calculateMVP2(float x, float y, float z) {
+        org.joml.Matrix4f MVP_ = new org.joml.Matrix4f(MVP.buffer().asFloatBuffer());
+
+        MVP_.translate(x, y, z).get(MVP.buffer());
+    }
+    
     public static void setLineWidth(final float width) {
         if (canSetLineWidth) {
             Renderer.setLineWidth(width);
