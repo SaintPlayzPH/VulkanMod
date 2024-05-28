@@ -29,7 +29,16 @@ public class DrawUtil {
         renderer.uploadAndBindUBOs(blitPipeline);
 
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
-        VK11.vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+
+        // Define vertices for a 90-degree rotated quad
+        float[] vertices = {
+            1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f
+        };
+
+        // Draw the rotated quad
+        VK11.vkCmdDraw(commandBuffer, vertices.length / 3, 1, 0, 0);
 
         RenderSystem.enableCull();
     }
