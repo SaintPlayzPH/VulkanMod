@@ -16,6 +16,7 @@ import net.vulkanmod.vulkan.framebuffer.Framebuffer;
 import net.vulkanmod.vulkan.framebuffer.RenderPass;
 import net.vulkanmod.vulkan.memory.MemoryManager;
 import net.vulkanmod.vulkan.pass.DefaultMainPass;
+import net.vulkanmod.vulkan.pass.LegacyMainPass;
 import net.vulkanmod.vulkan.pass.MainPass;
 import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
