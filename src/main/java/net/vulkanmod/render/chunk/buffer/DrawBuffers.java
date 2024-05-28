@@ -109,7 +109,8 @@ public class DrawBuffers {
         byteBuffer.putFloat(4, -yOffset);
         byteBuffer.putFloat(8, -zOffset);
 
-        vkCmdPushConstants(commandBuffer, pipeline.getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, byteBuffer);
+        vkCmdPushConstants(commandBuffer, pipeline.getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, byteBuffer, VRenderSystem.getMVP().ptr());
+        VRenderSystem.translateMVP(xOffset, yOffset, zOffset);
     }
 
     public void buildDrawBatchesIndirect(IndirectBuffer indirectBuffer, StaticQueue<RenderSection> queue, TerrainRenderType terrainRenderType) {
