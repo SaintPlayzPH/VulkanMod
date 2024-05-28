@@ -116,11 +116,11 @@ public abstract class VRenderSystem {
         // if the matrix is known to be an identity matrix.
         // Tbh idk if the jvm will just optimize out the allocation but i can't be sure
         // as java is sometimes pretty pedantic about object allocations.
-        if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
+     //   if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
         	mat.get(projMatrixBuffer);
-        } else {
-        	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
-        }
+     //   } else {
+      //  	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
+    //   }
     }
     
     public static void calculateMVP() {
