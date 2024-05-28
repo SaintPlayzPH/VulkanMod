@@ -15,8 +15,8 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 public class DrawUtil {
 
     public static void blitToScreen() {
-//      defualtBlit();
-        fastBlit();
+      defualtBlit();
+        //fastBlit();
     }
 
     public static void fastBlit() {
