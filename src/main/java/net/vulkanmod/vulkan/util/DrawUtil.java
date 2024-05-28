@@ -8,6 +8,7 @@ import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
+import org.joml.Vector3f;
 import org.joml.Matrix4f;
 import org.lwjgl.vulkan.VK11;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -49,6 +50,10 @@ public class DrawUtil {
         PoseStack posestack = RenderSystem.getModelViewStack();
         posestack.pushPose();
         posestack.setIdentity();
+
+        // Apply a 90-degree clockwise rotation
+        posestack.mulPose(Vector3f.YP.rotationDegrees(-90));
+
         RenderSystem.applyModelViewMatrix();
         posestack.popPose();
 
