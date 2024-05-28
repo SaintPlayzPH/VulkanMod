@@ -224,6 +224,9 @@ public class SwapChain extends Framebuffer {
     }
 
     public void beginRenderPass(VkCommandBuffer commandBuffer, RenderPass renderPass, MemoryStack stack) {
+        if (renderPass == null) {
+            return;
+        }
         if (!DYNAMIC_RENDERING) {
             long[] framebufferId = this.FBO_map.computeIfAbsent(renderPass.id, renderPass1 -> createFramebuffers(renderPass));
             renderPass.beginRenderPass(commandBuffer, framebufferId[Renderer.getCurrentImage()], stack);
