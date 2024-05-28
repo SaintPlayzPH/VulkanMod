@@ -8,7 +8,6 @@ import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
-import org.joml.Quaternion;
 import org.joml.Matrix4f;
 import org.lwjgl.vulkan.VK11;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -16,8 +15,8 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 public class DrawUtil {
 
     public static void blitToScreen() {
-      defualtBlit();
-        //fastBlit();
+//        defualtBlit();
+        fastBlit();
     }
 
     public static void fastBlit() {
@@ -30,16 +29,7 @@ public class DrawUtil {
         renderer.uploadAndBindUBOs(blitPipeline);
 
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
-
-        // Define vertices for a 90-degree rotated quad
-        float[] vertices = {
-            1.0f, -1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f
-        };
-
-        // Draw the rotated quad
-        VK11.vkCmdDraw(commandBuffer, vertices.length / 3, 1, 0, 0);
+        VK11.vkCmdDraw(commandBuffer, 3, 1, 0, 0);
 
         RenderSystem.enableCull();
     }
@@ -50,19 +40,6 @@ public class DrawUtil {
         PoseStack posestack = RenderSystem.getModelViewStack();
         posestack.pushPose();
         posestack.setIdentity();
-
-        // Define a rotation matrix for a 90-degree clockwise rotation around the Y axis
-        Matrix4f rotationMatrix = new Matrix4f().rotateY((float) Math.toRadians(-90));
-
-// Apply the rotation matrix to the model view stack
-        posestack.mulPose(new Quaternion(rotationMatrix));
-
-       // Alternatively, if the library supports applying a transformation matrix directly to the model view stack:
-       // posestack.mulPose(new MatrixStack.Entry(rotationMatrix));
-
-        RenderSystem.applyModelViewMatrix();
-        posestack.popPose();
-
         RenderSystem.applyModelViewMatrix();
         posestack.popPose();
 
