@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.vulkanmod.Initializer;
 import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.vulkan.Renderer;
@@ -16,14 +15,11 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 public class DrawUtil {
 
     public static void blitToScreen() {
-//        defualtBlit();
-        if (Initializer.CONFIG.postEffect) {
+//      defualtBlit();
         fastBlit();
-    }
     }
 
     public static void fastBlit() {
-        if (Initializer.CONFIG.postEffect) {
         GraphicsPipeline blitPipeline = PipelineManager.getFastBlitPipeline();
 
         RenderSystem.disableCull();
@@ -37,10 +33,8 @@ public class DrawUtil {
 
         RenderSystem.enableCull();
     }
-    }
 
     public static void defualtBlit() {
-        if (Initializer.CONFIG.postEffect) {
         Matrix4f matrix4f = new Matrix4f().setOrtho(0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F);
         RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
         PoseStack posestack = RenderSystem.getModelViewStack();
@@ -73,5 +67,4 @@ public class DrawUtil {
         renderer.uploadAndBindUBOs(pipeline);
         Renderer.getDrawer().draw(buffer.vertexBuffer(), parameters.mode(), parameters.format(), parameters.vertexCount());
     }
-}
 }
