@@ -134,8 +134,8 @@ public abstract class VRenderSystem {
     }
 
     // debug
-    Initializer.LOGGER.warn(modelViewMatrix, "ModelView");
-    Initializer.LOGGER.warn(projectionMatrix, "Projection");
+    Initializer.LOGGER.warn(modelViewMatrix + "ModelView");
+    Initializer.LOGGER.warn(projectionMatrix + "Projection");
     
     public static void calculateMVP() {
         org.joml.Matrix4f MV = new org.joml.Matrix4f(modelViewMatrix.buffer.asFloatBuffer());
