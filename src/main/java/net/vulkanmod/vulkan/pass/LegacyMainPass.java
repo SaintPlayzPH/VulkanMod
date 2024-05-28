@@ -24,15 +24,17 @@ public class LegacyMainPass implements MainPass {
         if(!Renderer.useMode)
         {
             SwapChain framebuffer = Vulkan.getSwapChain();
-            framebuffer.colorAttachmentLayout(stack, commandBuffer, Renderer.getCurrentImage());
+
+            VulkanImage colorAttachment = framebuffer.getColorAttachment();
+            colorAttachment.transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
             
             framebuffer.beginRenderPass(commandBuffer, this.mainRenderPass, stack);
-            Renderer.getInstance().setBoundFramebuffer(swapChain);
+            Renderer.getInstance().setBoundFramebuffer(framebuffer);
 
-            VkViewport.Buffer pViewport = swapChain.viewport(stack);
+            VkViewport.Buffer pViewport = framebuffer.viewport(stack);
             vkCmdSetViewport(commandBuffer, 0, pViewport);
 
-            VkRect2D.Buffer pScissor = swapChain.scissor(stack);
+            VkRect2D.Buffer pScissor = framebuffer.scissor(stack);
             vkCmdSetScissor(commandBuffer, 0, pScissor);
         }
     }
@@ -64,19 +66,20 @@ public class LegacyMainPass implements MainPass {
                 mainTarget.bindRead();
 
                 SwapChain framebuffer = Vulkan.getSwapChain();
-                framebuffer.colorAttachmentLayout(stack, commandBuffer, Renderer.getCurrentImage());
+                VulkanImage colorAttachment = framebuffer.getColorAttachment();
+                colorAttachment.transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
             
                 framebuffer.beginRenderPass(commandBuffer, this.mainRenderPass, stack);
-                Renderer.getInstance().setBoundFramebuffer(swapChain);
+                Renderer.getInstance().setBoundFramebuffer(framebuffer);
 
-                VkViewport.Buffer pViewport = swapChain.viewport(stack);
+                VkViewport.Buffer pViewport = framebuffer.viewport(stack);
                 vkCmdSetViewport(commandBuffer, 0, pViewport);
 
-                VkRect2D.Buffer pScissor = swapChain.scissor(stack);
+                VkRect2D.Buffer pScissor = framebuffer.scissor(stack);
                 vkCmdSetScissor(commandBuffer, 0, pScissor);
 
                 VRenderSystem.disableBlend();
-                Minecraft.getInstance().getMainRenderTarget().blitToScreen(swapChain.getWidth(), swapChain.getHeight());
+                Minecraft.getInstance().getMainRenderTarget().blitToScreen(framebuffer.getWidth(), framebuffer.getHeight());
             }
         }
 
