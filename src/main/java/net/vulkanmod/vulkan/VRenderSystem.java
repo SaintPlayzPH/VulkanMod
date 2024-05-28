@@ -95,23 +95,21 @@ public abstract class VRenderSystem {
     }
 
     public static void applyModelViewMatrix(Matrix4f mat) {
-        mat.get(modelViewMatrix.buffer.asFloatBuffer());
         Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
         FloatBuffer modelMatrixBuffer = modelViewMatrix.buffer.asFloatBuffer();
         // This allows us to skip allocating an object
         // if the matrix is known to be an identity matrix.
         // Tbh idk if the jvm will just optimize out the allocation but i can't be sure
         // as java is sometimes pretty pedantic about object allocations.
-        if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
-        	mat.get(modelMatrixBuffer);
-        } else {
+     //   if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
+        //	mat.get(modelMatrixBuffer);
+      //  } else {
         	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(modelMatrixBuffer);
         //MemoryUtil.memPutFloat(MemoryUtil.memAddress(modelViewMatrix), 1);
-        }
+       // }
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
-        mat.get(projectionMatrix.buffer.asFloatBuffer());
         Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
         FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
         // This allows us to skip allocating an object
@@ -124,18 +122,6 @@ public abstract class VRenderSystem {
         	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
         }
     }
-
-    public static void debugPrintMatrix(Matrix4f matrix, String name) {
-        FloatBuffer fb = matrix.get(new float[16]);
-        Initializer.LOGGER.warn(name + " Matrix:");
-        for (int i = 0; i < 4; i++) {
-            Initializer.LOGGER.warn(fb.get(i*4) + ", " + fb.get(i*4+1) + ", " + fb.get(i*4+2) + ", " + fb.get(i*4+3));
-        }
-    }
-
-    // debug
-    Initializer.LOGGER.warn(modelViewMatrix + "ModelView");
-    Initializer.LOGGER.warn(projectionMatrix + "Projection");
     
     public static void calculateMVP() {
         org.joml.Matrix4f MV = new org.joml.Matrix4f(modelViewMatrix.buffer.asFloatBuffer());
