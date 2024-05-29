@@ -91,6 +91,10 @@ public class VulkanImage {
         return image;
     }
 
+    private static boolean checkUsage(int usage, int requestedUsage) {
+        return (usage & requestedUsage)!=0;
+    }
+
     public static VulkanImage createDepthImage(int format, int width, int height, int usage, boolean blur, boolean clamp) {
         VulkanImage image = VulkanImage.builder(width, height)
                 .setFormat(format)
