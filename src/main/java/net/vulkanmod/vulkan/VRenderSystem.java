@@ -88,8 +88,8 @@ public abstract class VRenderSystem {
         return DeviceManager.deviceProperties.limits().maxImageDimension2D();
     }
 
-    public static void copyMVP(Matrix4f MV) {;
-        MV.get(MVP.ptr);
+    public static void copyMVP(Matrix4f P) {;
+        P.get(MVP.buffer);
     }
 
     public static void applyMVP(Matrix4f MV, Matrix4f P) {
