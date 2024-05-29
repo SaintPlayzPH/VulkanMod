@@ -26,15 +26,16 @@ import static net.vulkanmod.vulkan.util.VUtil.UINT32_MAX;
 import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
 import static org.lwjgl.system.MemoryStack.stackGet;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.vulkan.GOOGLEDisplayTiming.VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME;
 import static org.lwjgl.vulkan.GOOGLEDisplayTiming.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
+
+
 public class SwapChain extends Framebuffer {
-    private VkGetRefreshCycleDurationGOOGLE vkGetRefreshCycleDurationGOOGLE;
-    private VkGetPastPresentationTimingGOOGLE vkGetPastPresentationTimingGOOGLE;
+    private long vkGetRefreshCycleDurationGOOGLE;
+    private long vkGetPastPresentationTimingGOOGLE;
     // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
     // (As Immediate Mode (and by extension Screen tearing) doesn't exist on some Wayland installations currently)
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
@@ -63,6 +64,13 @@ public class SwapChain extends Framebuffer {
         this.hasDepthAttachment = true;
 
         recreate();
+        VkDevice device = Vulkan.getVkDevice();
+        vkGetRefreshCycleDurationGOOGLE = vkGetDeviceProcAddr(device, "vkGetRefreshCycleDurationGOOGLE");
+        vkGetPastPresentationTimingGOOGLE = vkGetDeviceProcAddr(device, "vkGetPastPresentationTimingGOOGLE");
+
+        if (vkGetRefreshCycleDurationGOOGLE == 0 || vkGetPastPresentationTimingGOOGLE == 0) {
+            throw new RuntimeException("Failed to load VK_GOOGLE_display_timing extension functions");
+        }
     }
 
     public void recreate() {
