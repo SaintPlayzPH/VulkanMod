@@ -34,8 +34,6 @@ import static org.lwjgl.vulkan.VK10.*;
 
 
 public class SwapChain extends Framebuffer {
-    private long vkGetRefreshCycleDurationGOOGLE;
-    private long vkGetPastPresentationTimingGOOGLE;
     // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
     // (As Immediate Mode (and by extension Screen tearing) doesn't exist on some Wayland installations currently)
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
@@ -80,52 +78,12 @@ public class SwapChain extends Framebuffer {
         }
 
         if (!DYNAMIC_RENDERING) {
-            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffer(getVkDevice(), id, null)));
+            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffergetVkDevice(), id, null)));
             this.FBO_map.clear();
         }
 
         createSwapChain();
         queryDisplayTiming();
-    }
-
-    private void queryDisplayTiming() {
-        try (MemoryStack stack = stackPush()) {
-            VkDevice device = Vulkan.getVkDevice();
-
-            // Query refresh cycle duration
-            VkRefreshCycleDurationGOOGLE refreshCycleDuration = VkRefreshCycleDurationGOOGLE.malloc(stack);
-            if (vkGetRefreshCycleDurationGOOGLE(device, swapChainId, refreshCycleDuration) == VK_SUCCESS) {
-                System.out.println("Refresh cycle duration: " + refreshCycleDuration.refreshDuration());
-            } else {
-                System.err.println("Failed to get refresh cycle duration.");
-            }
-
-            // Query past presentation timings
-            IntBuffer timingCount = stack.mallocInt(1);
-            if (vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, null) != VK_SUCCESS) {
-                System.err.println("Failed to get past presentation timing count.");
-                return;
-            }
-
-            int count = timingCount.get(0);
-            if (count > 0) {
-                VkPastPresentationTimingGOOGLE.Buffer timings = VkPastPresentationTimingGOOGLE.malloc(count, stack);
-                if (vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, timings) == VK_SUCCESS) {
-                    for (int i = 0; i < count; i++) {
-                        VkPastPresentationTimingGOOGLE timing = timings.get(i);
-                        Initializer.LOGGER.info("PresentID: " + timing.presentID());
-                        Initializer.LOGGER.info("DesiredPresentTime: " + timing.desiredPresentTime());
-                        Initializer.LOGGER.info("ActualPresentTime: " + timing.actualPresentTime());
-                        Initializer.LOGGER.info("EarliestPresentTime: " + timing.earliestPresentTime());
-                        Initializer.LOGGER.info("PresentMargin: " + timing.presentMargin());
-                    }
-                } else {
-                    Initializer.LOGGER.error("Failed to get past presentation timings.");
-                }
-            } else {
-                Initializer.LOGGER.error("No past presentation timings available.");
-            }
-        }
     }
 
     private void createSwapChain() {
@@ -225,6 +183,49 @@ public class SwapChain extends Framebuffer {
         createGlIds();
         createDepthResources();
         queryDisplayTiming();
+    }
+
+    private void queryDisplayTiming() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            VkDevice device = Vulkan.getVkDevice();
+
+            // Query refresh cycle duration
+            VkRefreshCycleDurationGOOGLE refreshCycleDuration = VkRefreshCycleDurationGOOGLE.malloc(stack);
+            int result = GOOGLEDisplayTiming.vkGetRefreshCycleDurationGOOGLE(device, swapChainId, refreshCycleDuration);
+            if (result == VK_SUCCESS) {
+                Initializer.LOGGER.error("Refresh cycle duration: " + refreshCycleDuration.refreshDuration());
+            } else {
+                Initializer.LOGGER.error("Failed to get refresh cycle duration: " + result);
+            }
+
+            // Query past presentation timings
+            IntBuffer timingCount = stack.mallocInt(1);
+            result = GOOGLEDisplayTiming.vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, null);
+            if (result != VK_SUCCESS) {
+                Initializer.LOGGER.error("Failed to get past presentation timing count: " + result);
+                return;
+            }
+
+            int count = timingCount.get(0);
+            if (count > 0) {
+                VkPastPresentationTimingGOOGLE.Buffer timings = VkPastPresentationTimingGOOGLE.malloc(count, stack);
+                result = GOOGLEDisplayTiming.vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, timings);
+                if (result == VK_SUCCESS) {
+                    for (int i = 0; i < count; i++) {
+                        VkPastPresentationTimingGOOGLE timing = timings.get(i);
+                        Initializer.LOGGER.info("PresentID: " + timing.presentID());
+                        Initializer.LOGGER.info("DesiredPresentTime: " + timing.desiredPresentTime());
+                        Initializer.LOGGER.info("ActualPresentTime: " + timing.actualPresentTime());
+                        Initializer.LOGGER.info("EarliestPresentTime: " + timing.earliestPresentTime());
+                        Initializer.LOGGER.info("PresentMargin: " + timing.presentMargin());
+                    }
+                } else {
+                    Initializer.LOGGER.error("Failed to get past presentation timings: " + result);
+                }
+            } else {
+                Initializer.LOGGER.error("No past presentation timings available.");
+            }
+        }
     }
 
     private void createGlIds() {
