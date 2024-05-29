@@ -262,7 +262,7 @@ public abstract class Options {
                                 () -> config.glowEffectFix)
                                 .setTooltip(Component.translatable("Fixes bugs with Glowing Effect (Entity Outline). Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Biome Tint Builder"),
-                                new Integer[]{1, 2, 3},
+                                new Integer[]{1, 2},
                                 value -> {
                                     config.tintBuilder = value;
                                     minecraft.levelRenderer.allChanged();
@@ -272,7 +272,6 @@ public abstract class Options {
                                     String t = switch (value) {
                                         case 1 -> "Old";
                                         case 2 -> "New";
-                                        case 3 -> "Merged";
                                         default -> "vulkanmod.options.unknown";
                                     };
                                     return Component.translatable(t);
@@ -333,13 +332,6 @@ public abstract class Options {
                                 },
                                 () -> Initializer.CONFIG.postEffect && config.entityOutline)
                                 .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance." + (Initializer.CONFIG.postEffect ? "" : " Requires §cEnable Post-Effect§r option to be enabled!"))),
-                        new SwitchOption(Component.translatable("Use GPU Memory"),
-                                value -> {
-                                    config.useGPUMem = value;
-                                    minecraft.levelRenderer.allChanged();
-                                },
-                                () -> config.useGPUMem)
-                                .setTooltip(Component.translatable("Experimental: Use GPU Memory instead of RAM Memory for allocation.")),
                         new SwitchOption(Component.translatable("Per RenderType AreaBuffers"),
                                 value -> {
                                     config.perRenderTypeAreaBuffers = value;
