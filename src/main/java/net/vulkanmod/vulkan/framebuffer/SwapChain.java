@@ -9,6 +9,7 @@ import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.texture.VulkanImage;
+import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
@@ -40,6 +41,10 @@ public class SwapChain extends Framebuffer {
     private long swapChainId = VK_NULL_HANDLE;
     private List<VulkanImage> swapChainImages;
     private VkExtent2D extent2D;
+    private Matrix4f pretransformMatrix = new Matrix4f();
+    // The pretransform flags that were given to the swapchain,
+    // masked (see "setupPreRotation(VkExtent2D, VkSurfaceCapabilitiesKHR)")
+    private int pretransformFlags;
     public boolean isBGRAformat;
     private boolean vsync = false;
 
@@ -255,6 +260,14 @@ public class SwapChain extends Framebuffer {
 
     public VkExtent2D getExtent() {
         return this.extent2D;
+    }
+
+    public Matrix4f getPretransformMatrix(){
+        return this pretransformMatrix;
+    }
+
+    public int getPretransformFlags() {
+        return this.pretransformFlags;
     }
 
     public VulkanImage getColorAttachment() {
