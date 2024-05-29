@@ -352,13 +352,13 @@ public abstract class Options {
                                 Potentially improves performance of Chunk Rendering
                         
                                 Very Architecture specific: May have no effect on some Devices""")),
-                        new SwitchOption(Component.translatable("Use Image Usage Sampled Bit"),
+                        new SwitchOption(Component.translatable("Exclude Sampled Usage"),
                                 value -> {
-                                    config.useImageSampled = value;
+                                    config.dontUseImageSampled = value;
                                     minecraft.levelRenderer.allChanged();
                                 },
-                                () -> config.useImageSampled)
-                                .setTooltip(Component.translatable("When Image Usage Sampled Bit is enabled, the image can be used for both rendering and shader-based sampling, but it may introduce performance overhead. When disabled, the image is optimized solely for rendering, potentially improving performance.")),
+                                () -> config.dontUseImageSampled)
+                                .setTooltip(Component.translatable("When enabled, this option optimizes the image solely for rendering operations, enhancing efficiency, and avoiding potential compression issues, particularly on mobile platforms. However, it restricts the image to being solely a render target, thus prohibiting direct sampling in shaders.")),
                         new SwitchOption(Component.translatable("vulkanmod.options.entityCulling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
