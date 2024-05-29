@@ -120,6 +120,8 @@ public class RangeOptionWidget extends OptionWidget<RangeOption> {
 
     @Override
     public void onRelease(double mouseX, double mouseY) {
-        super.playDownSound(Minecraft.getInstance().getSoundManager());
+        if (this.controlHovered) {
+            super.playDownSound(Minecraft.getInstance().getSoundManager());
+        }
     }
 }
