@@ -198,9 +198,6 @@ public class GraphicsPipeline extends Pipeline {
             pipelineInfo.basePipelineIndex(-1);
 
             if (!Vulkan.DYNAMIC_RENDERING) {
-                if (state.renderPass == null) {
-                    return;
-                }
                 pipelineInfo.renderPass(state.renderPass.getId());
                 pipelineInfo.subpass(0);
             } else {
