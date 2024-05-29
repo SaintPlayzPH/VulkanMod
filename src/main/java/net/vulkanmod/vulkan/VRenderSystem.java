@@ -89,7 +89,7 @@ public abstract class VRenderSystem {
     }
 
     public static void copyMVP(Matrix4f MV) {;
-        MV.get(MVP.buffer);
+        MV.get(MVP.ptr);
     }
 
     public static void applyMVP(Matrix4f MV, Matrix4f P) {
