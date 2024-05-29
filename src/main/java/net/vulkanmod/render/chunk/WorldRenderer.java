@@ -363,7 +363,7 @@ public class WorldRenderer {
         this.minecraft.getProfiler().pop();
         renderType.clearRenderState();
 
-        VRenderSystem.copyMVP(RenderSystem.getModelViewMatrix());
+        VRenderSystem.copyMVP(RenderSystem.getProjectionMatrix());
     }
 
     private void sortTranslucentSections(double camX, double camY, double camZ) {
