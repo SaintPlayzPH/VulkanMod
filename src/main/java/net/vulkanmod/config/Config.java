@@ -33,7 +33,7 @@ public class Config {
     public boolean glowEffectFix = true;
     public boolean renderFog = true;
     public boolean entityOutline = true;
-    public boolean useImageSampled = false;
+    public boolean dontUseImageSampled = false;
     public int tintBuilder = 1;
     public int imageCount = 3;
     public int device = -1;
