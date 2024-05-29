@@ -78,6 +78,7 @@ public class SwapChain extends Framebuffer {
         }
 
         createSwapChain();
+        logSupportedExtensions(DeviceManager.getPhysicalDevice());
         initGoogleDisplayTiming(Vulkan.getVkDevice());
         queryDisplayTiming();
     }
@@ -181,7 +182,45 @@ public class SwapChain extends Framebuffer {
         queryDisplayTiming();
     }
 
-    private void initGoogleDisplayTiming(VkDevice device) {
+    private void logSupportedExtensions(VkPhysicalDevice physicalDevice) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer extensionCount = stack.mallocInt(1);
+            vkEnumerateDeviceExtensionProperties(physicalDevice, (String) null, extensionCount, null);
+
+            VkExtensionProperties.Buffer availableExtensions = VkExtensionProperties.mallocStack(extensionCount.get(0), stack);
+            vkEnumerateDeviceExtensionProperties(physicalDevice, (String) null, extensionCount, availableExtensions);
+
+            Initializer.LOGGER.info("Available Device Extensions:");
+            for (int i = 0; i < availableExtensions.capacity(); i++) {
+                Initializer.LOGGER.info(availableExtensions.get(i).extensionNameString());
+            }
+        }
+    }
+
+    private boolean isExtensionSupported(String extensionName, VkExtensionProperties.Buffer availableExtensions) {
+        for (int i = 0; i < availableExtensions.capacity(); i++) {
+            if (availableExtensions.get(i).extensionNameString().equals(extensionName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+   private void initGoogleDisplayTiming(VkDevice device) {
+    // Check if the VK_GOOGLE_display_timing extension is supported
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer extensionCount = stack.mallocInt(1);
+            vkEnumerateDeviceExtensionProperties(DeviceManager.getPhysicalDevice(), (String) null, extensionCount, null);
+
+            VkExtensionProperties.Buffer availableExtensions = VkExtensionProperties.mallocStack(extensionCount.get(0), stack);
+            vkEnumerateDeviceExtensionProperties(DeviceManager.getPhysicalDevice(), (String) null, extensionCount, availableExtensions);
+
+            if (!isExtensionSupported(VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME, availableExtensions)) {
+                Initializer.LOGGER.error("VK_GOOGLE_display_timing extension is not supported.");
+                return;
+            }
+        }
+
         vkGetRefreshCycleDurationGOOGLE = VK10.vkGetDeviceProcAddr(device, "vkGetRefreshCycleDurationGOOGLE");
         vkGetPastPresentationTimingGOOGLE = VK10.vkGetDeviceProcAddr(device, "vkGetPastPresentationTimingGOOGLE");
 
