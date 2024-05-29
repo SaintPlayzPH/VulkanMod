@@ -717,6 +717,7 @@ public class Renderer {
 
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
+    }
 
     public static void resetViewport() {
         try (MemoryStack stack = stackPush()) {
