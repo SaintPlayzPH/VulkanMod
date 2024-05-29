@@ -674,6 +674,8 @@ public class Renderer {
             viewport.y(height);
             viewport.width(width);
             viewport.height(-height);
+	    viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
 	    
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
     	}
