@@ -62,12 +62,6 @@ public class SwapChain extends Framebuffer {
         this.hasDepthAttachment = true;
 
         recreate();
-        VkDevice device = Vulkan.getVkDevice();
-        vkGetRefreshCycleDurationGOOGLE = vkGetDeviceProcAddr(device, "vkGetRefreshCycleDurationGOOGLE");
-        vkGetPastPresentationTimingGOOGLE = vkGetDeviceProcAddr(device, "vkGetPastPresentationTimingGOOGLE");
-
-        if (vkGetRefreshCycleDurationGOOGLE == 0 || vkGetPastPresentationTimingGOOGLE == 0) {
-            throw new RuntimeException("Failed to load VK_GOOGLE_display_timing extension functions");
         }
     }
 
@@ -192,16 +186,16 @@ public class SwapChain extends Framebuffer {
             // Query refresh cycle duration
             VkRefreshCycleDurationGOOGLE refreshCycleDuration = VkRefreshCycleDurationGOOGLE.malloc(stack);
             int result = GOOGLEDisplayTiming.vkGetRefreshCycleDurationGOOGLE(device, swapChainId, refreshCycleDuration);
-            if (result == VK_SUCCESS) {
-                Initializer.LOGGER.error("Refresh cycle duration: " + refreshCycleDuration.refreshDuration());
+            if (result == VK10.VK_SUCCESS) {
+                Initializer.LOGGER.info("Refresh cycle duration: " + refreshCycleDuration.refreshDuration());
             } else {
                 Initializer.LOGGER.error("Failed to get refresh cycle duration: " + result);
             }
 
             // Query past presentation timings
             IntBuffer timingCount = stack.mallocInt(1);
-            result = GOOGLEDisplayTiming.vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, null);
-            if (result != VK_SUCCESS) {
+            result = GOOGLEDisplayTiming.vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, (VkPastPresentationTimingGOOGLE.Buffer) null);
+            if (result != VK10.VK_SUCCESS) {
                 Initializer.LOGGER.error("Failed to get past presentation timing count: " + result);
                 return;
             }
@@ -210,7 +204,7 @@ public class SwapChain extends Framebuffer {
             if (count > 0) {
                 VkPastPresentationTimingGOOGLE.Buffer timings = VkPastPresentationTimingGOOGLE.malloc(count, stack);
                 result = GOOGLEDisplayTiming.vkGetPastPresentationTimingGOOGLE(device, swapChainId, timingCount, timings);
-                if (result == VK_SUCCESS) {
+                if (result == VK10.VK_SUCCESS) {
                     for (int i = 0; i < count; i++) {
                         VkPastPresentationTimingGOOGLE timing = timings.get(i);
                         Initializer.LOGGER.info("PresentID: " + timing.presentID());
@@ -223,7 +217,7 @@ public class SwapChain extends Framebuffer {
                     Initializer.LOGGER.error("Failed to get past presentation timings: " + result);
                 }
             } else {
-                Initializer.LOGGER.error("No past presentation timings available.");
+                Initializer.LOGGER.info("No past presentation timings available.");
             }
         }
     }
