@@ -77,8 +77,6 @@ public class TintCache {
             calculateLayerV1(y);
         } else if (Initializer.CONFIG.tintBuilder == 2) {
             calculateLayerV2(y);
-        } else if (Initializer.CONFIG.tintBuilder == 3) {
-            calculateLayerMerged(y);
         }
     }
 
@@ -155,51 +153,6 @@ public class TintCache {
             BoxBlur.blur(layer.grass, temp, SECTION_WIDTH, blendRadius);
             BoxBlur.blur(layer.foliage, temp, SECTION_WIDTH, blendRadius);
             BoxBlur.blur(layer.water, temp, SECTION_WIDTH, blendRadius);
-        }
-
-        layer.invalidated = false;
-    }
-
-    private void calculateLayerMerged(int y) {
-        int absY = (secY << 4) + y + WorldRenderer.getLevel().getMinBuildHeight();
-        Level level = WorldRenderer.getLevel();
-        Layer layer = layers[y];
-
-        BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
-        Biome initialBiome = level.getBiome(blockPos.set(minX, absY, minZ)).value();
-
-        boolean mixedBiomes = false;
-        mixedBiomes |= initialBiome != level.getBiome(blockPos.set(maxX, absY, minZ)).value();
-        mixedBiomes |= initialBiome != level.getBiome(blockPos.set(minX, absY, maxZ)).value();
-        mixedBiomes |= initialBiome != level.getBiome(blockPos.set(maxX, absY, maxZ)).value();
-
-        if (!mixedBiomes) {
-            for (int absX = minX; absX < maxX; absX++) {
-                for (int absZ = minZ; absZ < maxZ; absZ++) {
-                    final int idx = (absX - minX) + (absZ - minZ) * totalWidth;
-                    layer.grass[idx] = initialBiome.getGrassColor(absX, absZ);
-                    layer.foliage[idx] = initialBiome.getFoliageColor();
-                    layer.water[idx] = initialBiome.getWaterColor();
-                }
-            }
-        } else {
-            for (int absX = minX; absX < maxX; absX++) {
-                for (int absZ = minZ; absZ < maxZ; absZ++) {
-                    blockPos.set(absX, absY, absZ);
-                    Biome biome = level.getBiome(blockPos).value();
-
-                    final int idx = (absX - minX) + (absZ - minZ) * totalWidth;
-                    layer.grass[idx] = biome.getGrassColor(absX, absZ);
-                    layer.foliage[idx] = biome.getFoliageColor();
-                    layer.water[idx] = biome.getWaterColor();
-                }
-            }
-
-            if (blendRadius > 0) {
-                BoxBlur.blur(layer.grass, temp, SECTION_WIDTH, blendRadius);
-                BoxBlur.blur(layer.foliage, temp, SECTION_WIDTH, blendRadius);
-                BoxBlur.blur(layer.water, temp, SECTION_WIDTH, blendRadius);
-            }
         }
 
         layer.invalidated = false;
