@@ -115,7 +115,7 @@ public class VulkanImage {
 
             VulkanImage image = VulkanImage.builder(1, 1)
                     .setFormat(DefaultFormat)
-                    .setUsage(Initializer.CONFIG.useImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+                    .setUsage(!Initializer.CONFIG.dontUseImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT)
                     .setLinearFiltering(false)
                     .setClamp(false)
                     .createVulkanImage();
