@@ -51,6 +51,8 @@ public class SwapChain extends Framebuffer {
     private int pretransformFlags;
     public boolean isBGRAformat;
     private boolean vsync = false;
+    private long vkGetRefreshCycleDurationGOOGLE;
+    private long vkGetPastPresentationTimingGOOGLE;
 
     private int[] glIds;
 
@@ -77,6 +79,7 @@ public class SwapChain extends Framebuffer {
         }
 
         createSwapChain();
+        initGoogleDisplayTiming(Vulkan.getVkDevice());
         queryDisplayTiming();
     }
 
@@ -177,6 +180,15 @@ public class SwapChain extends Framebuffer {
         createGlIds();
         createDepthResources();
         queryDisplayTiming();
+    }
+
+    private void initGoogleDisplayTiming(VkDevice device) {
+        vkGetRefreshCycleDurationGOOGLE = VK10.vkGetDeviceProcAddr(device, "vkGetRefreshCycleDurationGOOGLE");
+        vkGetPastPresentationTimingGOOGLE = VK10.vkGetDeviceProcAddr(device, "vkGetPastPresentationTimingGOOGLE");
+
+        if (vkGetRefreshCycleDurationGOOGLE == 0 || vkGetPastPresentationTimingGOOGLE == 0) {
+            Initializer.LOGGER.error("Failed to get device proc addresses for Google display timing.");
+        }
     }
 
     private void queryDisplayTiming() {
