@@ -187,10 +187,17 @@ public class SwapChain extends Framebuffer {
 
         if (vkGetRefreshCycleDurationGOOGLE == 0 || vkGetPastPresentationTimingGOOGLE == 0) {
             Initializer.LOGGER.error("Failed to get device proc addresses for Google display timing.");
+        } else {
+            Initializer.LOGGER.info("Successfully initialized Google display timing function pointers.");
         }
     }
 
     private void queryDisplayTiming() {
+        if (vkGetRefreshCycleDurationGOOGLE == 0 || vkGetPastPresentationTimingGOOGLE == 0) {
+            Initializer.LOGGER.error("Google display timing function pointers are not initialized.");
+            return;
+        }
+
         try (MemoryStack stack = MemoryStack.stackPush()) {
             VkDevice device = Vulkan.getVkDevice();
 
