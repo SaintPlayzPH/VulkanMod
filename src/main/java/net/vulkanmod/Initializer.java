@@ -33,6 +33,18 @@ public class Initializer implements ClientModInitializer {
 
         Platform.init();
         VideoModeManager.init();
+
+        // Detect Android
+        String osName = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
+        
+        if (osName != null && osName.toLowerCase().contains("android")) {
+            LOGGER.info("Running on Android!");
+            LOGGER.info("Android version: " + osVersion);
+        } else {
+            LOGGER.info("Not running on Android.");
+            LOGGER.info("Operating System: " + osName);
+        }
     }
 
     private static void initializeConfig() {
@@ -60,4 +72,4 @@ public class Initializer implements ClientModInitializer {
     public static String getVersion() {
         return VERSION;
     }
-}
+    }
