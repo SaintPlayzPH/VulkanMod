@@ -64,7 +64,6 @@ public class SwapChain extends Framebuffer {
         this.hasDepthAttachment = true;
 
         recreate();
-        }
     }
 
     public void recreate() {
