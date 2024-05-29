@@ -51,9 +51,6 @@ public class Initializer implements ClientModInitializer {
             config.write();
         }
 
-        // Log the loaded configuration
-        LOGGER.info("Loaded config: glowEffectFix = " + config.glowEffectFix);
-
         return config;
     }
 
