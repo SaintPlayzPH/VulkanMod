@@ -255,12 +255,12 @@ public abstract class Options {
                                 },
                                 () -> config.postEffect)
                                 .setTooltip(Component.translatable("Enables Post Effect 'e.g. Glowing Effect, etc...'. Disabling this may improve performance!")),
-                        new SwitchOption(Component.translatable("Fix Glowing Effect Bug"),
+                        new SwitchOption(Component.translatable("Fix Post-Effect Bug"),
                                  value -> {
-                                    config.glowEffectFix = value;
+                                    config.postEffectFix = value;
                                 },
-                                () -> config.glowEffectFix)
-                                .setTooltip(Component.translatable("Fixes bugs with Glowing Effect (Entity Outline). Restarting the game is required to take effect!")),
+                                () -> config.postEffectFix)
+                                .setTooltip(Component.translatable("Fixes few bugs with Post-Effect especially when using ASR but Post-effect still renders weird if ASR is enabled. Restarting the game is required to take effect!")),
                         new CyclingOption<>(Component.translatable("Biome Tint Builder"),
                                 new Integer[]{1, 2},
                                 value -> {
@@ -328,9 +328,9 @@ public abstract class Options {
                                 .setTooltip(Component.translatable("Renders the fog. Disabling this may improve performance a bit.")),
                         new SwitchOption(Component.translatable("Render Entity Outline"),
                                 value -> {
-                                    config.entityOutline = Initializer.CONFIG.postEffect ? value : false;
+                                    config.entityOutline = config.postEffect ? value : false;
                                 },
-                                () -> Initializer.CONFIG.postEffect && config.entityOutline)
+                                () -> config.postEffect && config.entityOutline)
                                 .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance." + (Initializer.CONFIG.postEffect ? "" : " Requires §cEnable Post-Effect§r option to be enabled!"))),
                         new SwitchOption(Component.translatable("Per RenderType AreaBuffers"),
                                 value -> {
