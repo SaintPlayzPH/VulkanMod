@@ -263,7 +263,7 @@ public class SwapChain extends Framebuffer {
     }
 
     public Matrix4f getPretransformMatrix(){
-        return this pretransformMatrix;
+        return this.pretransformMatrix;
     }
 
     public int getPretransformFlags() {
