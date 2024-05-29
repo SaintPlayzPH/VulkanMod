@@ -78,7 +78,7 @@ public class SwapChain extends Framebuffer {
         }
 
         if (!DYNAMIC_RENDERING) {
-            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffergetVkDevice(), id, null)));
+            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffer(getVkDevice(), id, null)));
             this.FBO_map.clear();
         }
 
