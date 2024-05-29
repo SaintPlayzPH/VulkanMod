@@ -11,6 +11,7 @@ import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.Pipeline;
 import net.vulkanmod.vulkan.util.VUtil;
 import net.vulkanmod.vulkan.util.VkResult;
+import org.joml.Matrix4f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.vma.VmaAllocatorCreateInfo;
@@ -444,6 +445,13 @@ public class Vulkan {
             Renderer.scheduleSwapChainUpdate();
             swapChain.setVsync(b);
         }
+    }
+
+    public static Matrix4f getPretransformMatrix() {
+        return swapChain.getPretransformMatrix();
+    }
+    public static int getPretransformFlags() {
+        return swapChain.getPretransformFlags();
     }
 
     public static int getDefaultDepthFormat() {
