@@ -28,7 +28,6 @@ public class Config {
     public boolean entityCulling = true;
     public boolean animations = true;
     public boolean renderSky = true;
-    public boolean useGPUMem = false;
     public boolean postEffect = true;
     public boolean glowEffectFix = true;
     public boolean renderFog = true;
