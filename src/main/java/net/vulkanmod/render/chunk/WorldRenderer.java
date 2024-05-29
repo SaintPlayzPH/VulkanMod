@@ -327,7 +327,6 @@ public class WorldRenderer {
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            VRenderSystem.depthMask(!isTranslucent);
             terrainRenderType.setCutoutUniform();
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
