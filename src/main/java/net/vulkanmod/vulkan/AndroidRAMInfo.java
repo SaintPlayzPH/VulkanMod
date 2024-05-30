@@ -29,13 +29,8 @@ public class AndroidRAMInfo {
         }
     }
 
-    public static void clearMemoryInfo() {
-        memFree = 0;
-        memTotal = 0;
-        memBuffers = 0;
-    }
-
     public static String getMemoryInfo() {
+        getAllMemoryInfo();
         if (memTotal != 0 && memFree != 0) {
             double memTotalMB = memTotal / 1024.0;
             double usedMemoryMB = (memTotal - memFree) / 1024.0;
@@ -46,6 +41,7 @@ public class AndroidRAMInfo {
     }
 
     public static String getAvailableMemoryInfo() {
+        getAllMemoryInfo();
         if (memTotal != 0 && memFree != 0) {
             double memFreeMB = memFree / 1024.0;
             long freeMemoryPercentage = (memFree * 100) / memTotal;
@@ -70,6 +66,7 @@ public class AndroidRAMInfo {
     }
 
     public static String getBuffersInfo() {
+        getAllMemoryInfo();
         if (memBuffers != 0) {
             double buffersMB = memBuffers / 1024.0;
             return "Buffers: " + String.format("%.2f", buffersMB) + " MB";
