@@ -15,15 +15,15 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class CommandPool {
-    private long id;
-    private final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
-    private final Queue<CommandBuffer> availableCmdBuffers = new ArrayDeque<>();
+    public long id;
+    public final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
+    public final Queue<CommandBuffer> availableCmdBuffers = new ArrayDeque<>();
 
     public CommandPool(int queueFamilyIndex) {
         createCommandPool(queueFamilyIndex);
     }
 
-    private void createCommandPool(int familyIndex) {
+    public void createCommandPool(int familyIndex) {
         try (MemoryStack stack = stackPush()) {
             VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.calloc(stack)
                     .sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
@@ -112,10 +112,10 @@ public class CommandPool {
     }
 
     public class CommandBuffer {
-        private final VkCommandBuffer handle;
-        private final long fence;
-        private boolean submitted;
-        private boolean recording;
+        public final VkCommandBuffer handle;
+        public final long fence;
+        public boolean submitted;
+        public boolean recording;
 
         public CommandBuffer(VkCommandBuffer handle, long fence) {
             this.handle = handle;
