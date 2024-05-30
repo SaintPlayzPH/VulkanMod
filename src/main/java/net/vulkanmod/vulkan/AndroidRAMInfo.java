@@ -11,15 +11,15 @@ public class AndroidRAMInfo {
     private static long memFree = 0;
     private static long memTotal = 0;
     private static long memBuffers = 0;
-    private static float updateDelay;
+    private int updateDelay;
 
     private static final Lock lock = new ReentrantLock();
 
     static {
         if (Initializer.CONFIG.ramInfoUpdate == 0) {
-            updateDelay = 0.01f;
+            updateDelay = 10;
         } else {
-            updateDelay = Initializer.CONFIG.ramInfoUpdate;
+            updateDelay = Initializer.CONFIG.ramInfoUpdate * 100;
         }
 
         // Start the background thread to update memory info every second
@@ -27,7 +27,7 @@ public class AndroidRAMInfo {
             while (true) {
                 getAllMemoryInfo();
                 try {
-                    Thread.sleep((long) (updateDelay * 100)); // Converted to milliseconds
+                    Thread.sleep(updateDelay); // Converted to milliseconds
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
