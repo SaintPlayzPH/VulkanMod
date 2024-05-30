@@ -58,6 +58,9 @@ public class GraphicsPipeline extends Pipeline {
     }
 
     private long createGraphicsPipeline(PipelineState state) {
+        if (state.renderPass == null)
+            return;
+        
         this.state = state;
 
         try (MemoryStack stack = stackPush()) {
@@ -198,9 +201,6 @@ public class GraphicsPipeline extends Pipeline {
             pipelineInfo.basePipelineIndex(-1);
 
             if (!Vulkan.DYNAMIC_RENDERING) {
-                if (state.renderPass == null) {
-                    return;
-                }
                 pipelineInfo.renderPass(state.renderPass.getId());
                 pipelineInfo.subpass(0);
             } else {
