@@ -17,7 +17,7 @@ public class AndroidRAMInfo {
 
     static {
         if (Initializer.CONFIG.ramInfoUpdate == 0) {
-            updateDelay = 0.01;
+            updateDelay = 0.01f;
         } else {
             updateDelay = Initializer.CONFIG.ramInfoUpdate;
         }
@@ -27,7 +27,7 @@ public class AndroidRAMInfo {
             while (true) {
                 getAllMemoryInfo();
                 try {
-                    Thread.sleep(updateDelay * 100);
+                    Thread.sleep((long) (updateDelay * 100)); // Converted to milliseconds
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
