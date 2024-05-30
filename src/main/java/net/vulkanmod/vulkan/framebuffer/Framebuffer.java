@@ -144,11 +144,12 @@ public class Framebuffer {
     }
 
     public VkRect2D.Buffer scissor(MemoryStack stack) {
-        return VkRect2D.malloc(1, stack)
-                .offset().set(0, 0)
-                .extent().set(this.width, this.height);
+        VkRect2D.Buffer scissor = VkRect2D.mallocStack(1, stack);
+        scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
+        scissor.extent(VkExtent2D.callocStack(stack).set(this.width, this.height));
+        return scissor;
     }
-
+    
     public void cleanUp() {
         cleanUp(true);
     }
