@@ -25,7 +25,7 @@ public class UploadManager {
     private CommandPool.CommandBuffer commandBuffer;
     private final Set<Long> dstBuffers = new HashSet<>();
 
-    private UploadManager() {
+    public UploadManager() {
         // Private constructor to enforce singleton pattern
     }
 
