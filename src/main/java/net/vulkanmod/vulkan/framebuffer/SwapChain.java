@@ -34,7 +34,6 @@ import static org.lwjgl.vulkan.VK10.*;
 
 
 public class SwapChain extends Framebuffer {
-    private static VkDevice DEVICE;
     // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
     // (As Immediate Mode (and by extension Screen tearing) doesn't exist on some Wayland installations currently)
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
@@ -79,7 +78,7 @@ public class SwapChain extends Framebuffer {
         }
 
         createSwapChain();
-        logSupportedExtensions(DEVICE.getPhysicalDevice());
+        logSupportedExtensions(Vulkan.getVkDevice());
         initGoogleDisplayTiming(Vulkan.getVkDevice());
         queryDisplayTiming();
     }
@@ -211,10 +210,10 @@ public class SwapChain extends Framebuffer {
     // Check if the VK_GOOGLE_display_timing extension is supported
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer extensionCount = stack.mallocInt(1);
-            vkEnumerateDeviceExtensionProperties(DEVICE.getPhysicalDevice(), (String) null, extensionCount, null);
+            vkEnumerateDeviceExtensionProperties(Vulkan.getVkDevice(), (String) null, extensionCount, null);
 
             VkExtensionProperties.Buffer availableExtensions = VkExtensionProperties.mallocStack(extensionCount.get(0), stack);
-            vkEnumerateDeviceExtensionProperties(DEVICE.getPhysicalDevice(), (String) null, extensionCount, availableExtensions);
+            vkEnumerateDeviceExtensionProperties(Vulkan.getVkDevice(), (String) null, extensionCount, availableExtensions);
 
             if (!isExtensionSupported(VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME, availableExtensions)) {
                 Initializer.LOGGER.error("VK_GOOGLE_display_timing extension is not supported.");
