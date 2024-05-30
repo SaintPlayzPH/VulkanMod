@@ -5,50 +5,37 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 
 public class IndexBuffer extends Buffer {
+    private static final int DEFAULT_INITIAL_SIZE = 1024; // Default initial size for the buffer
 
-//    public IndexType indexType = IndexType.SHORT;
-
-    public IndexBuffer(int size, MemoryType type) {
+    public IndexBuffer(MemoryType type) {
         super(VK_BUFFER_USAGE_INDEX_BUFFER_BIT, type);
-        this.createBuffer(size);
     }
 
     public void copyBuffer(ByteBuffer buffer) {
         int size = buffer.remaining();
 
-        //debug
-//        this.idxs = new short[buffer.remaining() / 2];
-//        buffer.asShortBuffer().get(idxs);
+        if (size > remainingCapacity()) {
+            resizeBuffer(Math.max(size, this.bufferSize * 2)); // Resize if necessary
+        }
 
-        if(size > this.bufferSize - this.usedBytes) {
-            //TODO
-            throw new RuntimeException("trying to write buffer beyond max size.");
-            //createIndexBuffer(vertexSize, vertexCount, byteBuffer);
-        }
-        else {
-            this.type.copyToBuffer(this, size, buffer);
-            offset = usedBytes;
-            usedBytes += size;
-        }
+        type.copyToBuffer(this, size, buffer);
+
+        offset = usedBytes;
+        usedBytes += size;
+    }
+
+    private int remainingCapacity() {
+        return this.bufferSize - this.usedBytes;
     }
 
     private void resizeBuffer(int newSize) {
+        // Free the existing buffer
         this.type.freeBuffer(this);
+
+        // Create a new buffer with the new size
         this.createBuffer(newSize);
 
-//        System.out.println("resized vertexBuffer to: " + newSize);
+        // Reset used bytes since it's a new buffer
+        usedBytes = 0;
     }
-
-    public enum IndexType {
-        SHORT(2),
-        INT(4);
-
-        public final int size;
-
-        IndexType(int size) {
-            this.size = size;
-        }
-    }
-
-
 }
