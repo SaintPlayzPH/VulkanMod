@@ -8,15 +8,18 @@ import java.util.Map;
 import net.vulkanmod.Initializer;
 
 public class AndroidRAMInfo {
-    
-    public static String getMemoryInfo() {
-        if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
-            Map<String, Long> memoryInfo = readMemoryInfo();
 
+    private static Map<String, Long> memoryInfo = null;
+
+    public static String getMemoryInfo() {
+        if (shouldShowRAMInfo()) {
+            if (memoryInfo == null) {
+                memoryInfo = readMemoryInfo();
+            }
             if (memoryInfo != null) {
                 long memTotal = memoryInfo.getOrDefault("MemTotal", 0L);
                 long memFree = memoryInfo.getOrDefault("MemAvailable", 0L);
-                
+
                 if (memTotal != 0 && memFree != 0) {
                     double memTotalMB = memTotal / 1024.0;
                     double usedMemoryMB = (memTotal - memFree) / 1024.0;
@@ -29,13 +32,14 @@ public class AndroidRAMInfo {
     }
 
     public static String getAvailableMemoryInfo() {
-        if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
-            Map<String, Long> memoryInfo = readMemoryInfo();
-
+        if (shouldShowRAMInfo()) {
+            if (memoryInfo == null) {
+                memoryInfo = readMemoryInfo();
+            }
             if (memoryInfo != null) {
                 long memTotal = memoryInfo.getOrDefault("MemTotal", 0L);
                 long memFree = memoryInfo.getOrDefault("MemAvailable", 0L);
-                
+
                 if (memTotal != 0 && memFree != 0) {
                     double memFreeMB = memFree / 1024.0;
                     long freeMemoryPercentage = (memFree * 100) / memTotal;
@@ -49,12 +53,13 @@ public class AndroidRAMInfo {
     }
 
     public static String getBuffersInfo() {
-        if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
-            Map<String, Long> memoryInfo = readMemoryInfo();
-
+        if (shouldShowRAMInfo()) {
+            if (memoryInfo == null) {
+                memoryInfo = readMemoryInfo();
+            }
             if (memoryInfo != null) {
                 long memBuffer = memoryInfo.getOrDefault("Buffers", 0L);
-                
+
                 if (memBuffer != 0) {
                     double buffersMB = memBuffer / 1024.0;
                     return String.format("Buffers: %.2f MB", buffersMB);
@@ -92,6 +97,10 @@ public class AndroidRAMInfo {
         if (percentage >= 6) return "§c";
         if (percentage >= 0) return "§4";
         return "";
+    }
+
+    private static boolean shouldShowRAMInfo() {
+        return isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM;
     }
 
     private static boolean isRunningOnAndroid() {
