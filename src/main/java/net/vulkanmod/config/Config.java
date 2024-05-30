@@ -34,6 +34,7 @@ public class Config {
     public boolean entityOutline = true;
     public boolean dontUseImageSampled = false;
     public int tintBuilder = 1;
+    public int ramInfoUpdate = 1;
     public int imageCount = 3;
     public int device = -1;
 
