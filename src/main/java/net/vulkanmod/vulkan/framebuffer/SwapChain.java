@@ -171,6 +171,28 @@ public class SwapChain extends Framebuffer {
 
         createGlIds();
         createDepthResources();
+        if (isGoogleDisplayTimingSupported()) {
+            Initializer.LOGGER.info("VK_GOOGLE_display_timing is supported.");
+        } else {
+            Initializer.LOGGER.info("VK_GOOGLE_display_timing is not supported.");
+        }
+    }
+
+    private boolean isGoogleDisplayTimingSupported() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer extensionCount = stack.ints(0);
+            vkEnumerateDeviceExtensionProperties(Vulkan.getVkDevice().getPhysicalDevice(), (String) null, extensionCount, null);
+
+            VkExtensionProperties.Buffer availableExtensions = VkExtensionProperties.mallocStack(extensionCount.get(0), stack);
+            vkEnumerateDeviceExtensionProperties(Vulkan.getVkDevice().getPhysicalDevice(), (String) null, extensionCount, availableExtensions);
+
+            for (int i = 0; i < availableExtensions.capacity(); i++) {
+                if (VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME.equals(availableExtensions.get(i).extensionNameString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void createGlIds() {
