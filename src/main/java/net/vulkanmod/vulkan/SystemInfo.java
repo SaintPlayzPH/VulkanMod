@@ -12,49 +12,38 @@ public class SystemInfo {
     public static final String cpuInfo;
 
     static {
-        if (isRunningOnAndroid()) {
+        boolean isAndroid = isRunningOnAndroid();
+        if (isAndroid) {
             if (!procObtain) {
                 Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
                 procObtain = true;
             }
-            cpuInfo = getProcessorName();
+            cpuInfo = getProcessorNameForAndroid();
         } else {
             if (!cpuObtain) {
                 Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
                 cpuObtain = true;
             }
             CentralProcessor centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
-            cpuInfo = String.format("%s", centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
+            cpuInfo = centralProcessor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
         }
     }
 
-    private static String getProcessorName() {
-        if (isRunningOnAndroid()) {
-            boolean errorLogged = false;
-
-            try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line.startsWith("Hardware")) {
-                        return line.split(":\\s+", 2)[1];
-                    }
-                }
-            } catch (IOException e) {
-                if (!errorLogged) {
-                    String cpuInfo = "Unknown";
-                    Initializer.LOGGER.error("Can't read your Mobile processor. Setting to Unknown!");
-                    errorLogged = true;
+    private static String getProcessorNameForAndroid() {
+        try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("Hardware")) {
+                    return line.split(":\\s+", 2)[1];
                 }
             }
+        } catch (IOException e) {
+            Initializer.LOGGER.error("Can't obtain your Mobile processor name!");
         }
         return "Unknown";
     }
 
     private static boolean isRunningOnAndroid() {
-        if (System.getenv("POJAV_RENDERER") != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return System.getenv("POJAV_RENDERER") != null;
     }
 }
