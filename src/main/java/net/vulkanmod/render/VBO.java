@@ -51,7 +51,7 @@ public class VBO {
             if (this.vertexBuffer != null)
                 this.vertexBuffer.freeBuffer();
 
-            this.vertexBuffer = new VertexBuffer(data.remaining(), MemoryType.GPU_MEM);
+            this.vertexBuffer = new VertexBuffer(MemoryType.GPU_MEM);
             this.vertexBuffer.copyToVertexBuffer(parameters.format().getVertexSize(), parameters.vertexCount(), data);
 
         }
