@@ -391,6 +391,23 @@ public abstract class Options {
                                 "Running on Phone?: " + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" +
                                 "\n" +
                                 "Shows your Phone RAM Info on debug screen.")),
+                        new RangeOption(Component.translatable("Phone RAM Info update delay"), 1, 10, 1,
+                                value -> {
+                                    if (value == 1) return Component.translatable("0.1s");
+                                    else if (value == 2) return Component.translatable("0.2s");
+                                    else if (value == 3) return Component.translatable("0.3s");
+                                    else if (value == 4) return Component.translatable("0.4s");
+                                    else if (value == 5) return Component.translatable("0.5s");
+                                    else if (value == 6) return Component.translatable("0.6s");
+                                    else if (value == 7) return Component.translatable("0.7s");
+                                    else if (value == 8) return Component.translatable("0.8s");
+                                    else if (value == 9) return Component.translatable("0.9s");
+                                    else if (value == 10) return Component.translatable("1s");
+                                    return Component.literal(String.valueOf(value));
+                                },
+                                value -> config.ramInfoUpdate = value,
+                                () -> config.ramInfoUpdate)
+                                .setTooltip(Component.translatable("Sets the number of updates when the RAM info updates information.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
