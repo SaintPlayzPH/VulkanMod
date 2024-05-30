@@ -9,18 +9,18 @@ import org.lwjgl.vulkan.*;
 import java.nio.LongBuffer;
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Queue;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class CommandPool {
-    long id;
-
+    private long id;
     private final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
-    private final java.util.Queue<CommandBuffer> availableCmdBuffers = new ArrayDeque<>();
+    private final Queue<CommandBuffer> availableCmdBuffers = new ArrayDeque<>();
 
     public CommandPool(int queueFamilyIndex) {
-        this.createCommandPool(queueFamilyIndex);
+        createCommandPool(queueFamilyIndex);
     }
 
     private void createCommandPool(int familyIndex) {
@@ -57,7 +57,9 @@ public class CommandPool {
 
                 for (int i = 0; i < size; ++i) {
                     LongBuffer pFence = stack.mallocLong(1);
-                    vkCreateFence(Vulkan.getVkDevice(), fenceInfo, null, pFence);
+                    if (vkCreateFence(Vulkan.getVkDevice(), fenceInfo, null, pFence) != VK_SUCCESS) {
+                        throw new RuntimeException("Failed to create fence");
+                    }
                     CommandBuffer commandBuffer = new CommandBuffer(new VkCommandBuffer(pCommandBuffer.get(i), Vulkan.getVkDevice()), pFence.get(0));
                     commandBuffers.add(commandBuffer);
                     availableCmdBuffers.add(commandBuffer);
@@ -69,7 +71,10 @@ public class CommandPool {
                     .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
                     .flags(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
-            vkBeginCommandBuffer(commandBuffer.handle, beginInfo);
+            if (vkBeginCommandBuffer(commandBuffer.handle, beginInfo) != VK_SUCCESS) {
+                throw new RuntimeException("Failed to begin recording command buffer");
+            }
+            commandBuffer.recording = true;
             return commandBuffer;
         }
     }
@@ -77,35 +82,40 @@ public class CommandPool {
     public long submitCommands(CommandBuffer commandBuffer, VkQueue queue) {
         try (MemoryStack stack = stackPush()) {
             long fence = commandBuffer.fence;
-            vkEndCommandBuffer(commandBuffer.handle);
+            if (vkEndCommandBuffer(commandBuffer.handle) != VK_SUCCESS) {
+                throw new RuntimeException("Failed to end recording command buffer");
+            }
             vkResetFences(Vulkan.getVkDevice(), fence);
 
             VkSubmitInfo submitInfo = VkSubmitInfo.calloc(stack)
                     .sType(VK_STRUCTURE_TYPE_SUBMIT_INFO)
                     .pCommandBuffers(stack.pointers(commandBuffer.handle));
 
-            vkQueueSubmit(queue, submitInfo, fence);
+            if (vkQueueSubmit(queue, submitInfo, fence) != VK_SUCCESS) {
+                throw new RuntimeException("Failed to submit command buffer");
+            }
+            commandBuffer.submitted = true;
             return fence;
         }
     }
 
     public void addToAvailable(CommandBuffer commandBuffer) {
-        this.availableCmdBuffers.add(commandBuffer);
+        commandBuffer.reset();
+        availableCmdBuffers.add(commandBuffer);
     }
 
     public void cleanUp() {
         for (CommandBuffer commandBuffer : commandBuffers) {
             vkDestroyFence(Vulkan.getVkDevice(), commandBuffer.fence, null);
         }
-        vkResetCommandPool(Vulkan.getVkDevice(), id, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
         vkDestroyCommandPool(Vulkan.getVkDevice(), id, null);
     }
 
     public class CommandBuffer {
-        VkCommandBuffer handle;
-        long fence;
-        boolean submitted;
-        boolean recording;
+        private final VkCommandBuffer handle;
+        private final long fence;
+        private boolean submitted;
+        private boolean recording;
 
         public CommandBuffer(VkCommandBuffer handle, long fence) {
             this.handle = handle;
@@ -129,9 +139,12 @@ public class CommandPool {
         }
 
         public void reset() {
-            this.submitted = false;
-            this.recording = false;
-            addToAvailable(this);
+            if (submitted) {
+                vkWaitForFences(Vulkan.getVkDevice(), fence, true, VUtil.UINT64_MAX);
+                vkResetCommandBuffer(handle, 0);
+                submitted = false;
+            }
+            recording = false;
         }
     }
 }
