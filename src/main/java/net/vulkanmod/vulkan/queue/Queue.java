@@ -32,8 +32,8 @@ public enum Queue {
             PointerBuffer pQueue = stack.mallocPointer(1);
             vkGetDeviceQueue(DeviceManager.vkDevice, familyIndex, queueIndex, pQueue);
             this.queue = new VkQueue(pQueue.get(0), DeviceManager.vkDevice);
+            this.commandPool = initCommandPool ? new CommandPool(familyIndex) : null;
         }
-        this.commandPool = initCommandPool ? new CommandPool(familyIndex) : null;
     }
 
     public CommandPool.CommandBuffer beginCommands() {
@@ -99,9 +99,9 @@ public enum Queue {
         }
     }
 
-    public void uploadBufferCmds(CommandPool.CommandBuffer commandBuffer, long srcBuffer, Long2ObjectMap.FastEntrySet<ObjectArrayFIFOQueue<SubCopyCommand>> dstBuffers) {
+    public void uploadBufferCmds(CommandPool.CommandBuffer commandBuffer, long srcBuffer, Long2ObjectMap<ObjectArrayFIFOQueue<SubCopyCommand>> dstBuffers) {
         try (MemoryStack stack = stackPush()) {
-            for (var entry : dstBuffers) {
+            for (var entry : dstBuffers.long2ObjectEntrySet()) {
                 ObjectArrayFIFOQueue<SubCopyCommand> subCmdUploads = entry.getValue();
                 VkBufferCopy.Buffer vkBufferCopies = VkBufferCopy.malloc(subCmdUploads.size(), stack);
                 for (var subCpy : vkBufferCopies) {
