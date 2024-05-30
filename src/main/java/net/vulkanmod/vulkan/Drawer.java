@@ -56,7 +56,7 @@ public class Drawer {
             );
         }
         this.vertexBuffers = new VertexBuffer[framesNum];
-        Arrays.setAll(this.vertexBuffers, i -> new VertexBuffer(INITIAL_VB_SIZE, MemoryType.BAR_MEM));
+        Arrays.setAll(this.vertexBuffers, i -> new VertexBuffer(MemoryType.BAR_MEM));
 
         if (this.uniformBuffers != null) {
             Arrays.stream(this.uniformBuffers).iterator().forEachRemaining(
