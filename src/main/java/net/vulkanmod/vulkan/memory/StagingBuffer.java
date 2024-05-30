@@ -25,6 +25,14 @@ public class StagingBuffer extends Buffer {
         this.usedBytes += size;
     }
 
+    public void align(int alignment) {
+        int alignedValue = (this.usedBytes + alignment - 1) & ~(alignment - 1);
+        if (alignedValue > this.bufferSize) {
+            resizeBuffer(alignedValue);
+        }
+        this.usedBytes = alignedValue;
+    }
+
     private void resizeBuffer(int newSize) {
         MemoryManager.getInstance().addToFreeable(this);
         this.createBuffer(newSize);
