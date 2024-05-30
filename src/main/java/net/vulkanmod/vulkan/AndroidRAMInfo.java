@@ -1,106 +1,84 @@
-package net.vulkanmod.vulkan;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import net.vulkanmod.Initializer;
 
 public class AndroidRAMInfo {
+    private static long memFree = 0;
+    private static long memTotal = 0;
+    private static long memBuffers = 0;
 
-    private static Map<String, Long> memoryInfo = null;
+    public static void getAllMemoryInfo() {
+        if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
+            try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.startsWith("MemTotal")) {
+                        memTotal = extractMemoryValue(line);
+                    } else if (line.startsWith("MemAvailable")) {
+                        memFree = extractMemoryValue(line);
+                    } else if (line.startsWith("Buffers")) {
+                        memBuffers = extractMemoryValue(line);
+                    }
+                }
+            } catch (IOException e) {
+                Initializer.LOGGER.error("Can't obtain Memory info: " + e.getMessage());
+            }
+        }
+    }
+
+    public static void clearMemoryInfo() {
+        memFree = 0;
+        memTotal = 0;
+        memBuffers = 0;
+    }
 
     public static String getMemoryInfo() {
-        if (shouldShowRAMInfo()) {
-            if (memoryInfo == null) {
-                memoryInfo = readMemoryInfo();
-            }
-            if (memoryInfo != null) {
-                long memTotal = memoryInfo.getOrDefault("MemTotal", 0L);
-                long memFree = memoryInfo.getOrDefault("MemAvailable", 0L);
-
-                if (memTotal != 0 && memFree != 0) {
-                    double memTotalMB = memTotal / 1024.0;
-                    double usedMemoryMB = (memTotal - memFree) / 1024.0;
-                    return String.format("RAM: %.2f/%.2f MB", usedMemoryMB, memTotalMB);
-                }
-            }
-            return "RAM: Unavailable";
+        if (memTotal != 0 && memFree != 0) {
+            double memTotalMB = memTotal / 1024.0;
+            double usedMemoryMB = (memTotal - memFree) / 1024.0;
+            return "Memory: " + String.format("%.2f", usedMemoryMB) + "/" + String.format("%.2f", memTotalMB) + " MB";
+        } else {
+            return "Memory: Unavailable";
         }
-        return "RAM: Unavailable";
     }
 
     public static String getAvailableMemoryInfo() {
-        if (shouldShowRAMInfo()) {
-            if (memoryInfo == null) {
-                memoryInfo = readMemoryInfo();
+        if (memTotal != 0 && memFree != 0) {
+            double memFreeMB = memFree / 1024.0;
+            long freeMemoryPercentage = (memFree * 100) / memTotal;
+            String colorPerc;
+            if (freeMemoryPercentage > 20) {
+                colorPerc = "§a";
+            } else if (freeMemoryPercentage >= 16 && freeMemoryPercentage <= 20) {
+                colorPerc = "§e";
+            } else if (freeMemoryPercentage >= 11 && freeMemoryPercentage <= 15) {
+                colorPerc = "§6";
+            } else if (freeMemoryPercentage >= 6 && freeMemoryPercentage <= 10) {
+                colorPerc = "§c";
+            } else if (freeMemoryPercentage >= 0 && freeMemoryPercentage <= 5) {
+                colorPerc = "§4";
+            } else {
+                colorPerc = "";
             }
-            if (memoryInfo != null) {
-                long memTotal = memoryInfo.getOrDefault("MemTotal", 0L);
-                long memFree = memoryInfo.getOrDefault("MemAvailable", 0L);
-
-                if (memTotal != 0 && memFree != 0) {
-                    double memFreeMB = memFree / 1024.0;
-                    long freeMemoryPercentage = (memFree * 100) / memTotal;
-                    String colorPerc = getColorCodeForMemoryPercentage(freeMemoryPercentage);
-                    return String.format("Available RAM: %.2f MB / %s%d%%", memFreeMB, colorPerc, freeMemoryPercentage);
-                }
-            }
-            return "Available RAM: Unavailable";
+            return "Available Memory: " + String.format("%.2f", memFreeMB) + " MB / "  + colorPerc + freeMemoryPercentage + "%";
+        } else {
+            return "Available Memory: Unavailable";
         }
-        return "Available RAM: Unavailable";
     }
 
     public static String getBuffersInfo() {
-        if (shouldShowRAMInfo()) {
-            if (memoryInfo == null) {
-                memoryInfo = readMemoryInfo();
-            }
-            if (memoryInfo != null) {
-                long memBuffer = memoryInfo.getOrDefault("Buffers", 0L);
-
-                if (memBuffer != 0) {
-                    double buffersMB = memBuffer / 1024.0;
-                    return String.format("Buffers: %.2f MB", buffersMB);
-                }
-                return "Buffers: No Buffers";
-            }
-            return "Buffers: Unavailable";
+        if (memBuffers != 0) {
+            double buffersMB = memBuffers / 1024.0;
+            return "Buffers: " + String.format("%.2f", buffersMB) + " MB";
+        } else {
+            return "Buffers: No Buffers";
         }
-        return "Buffers: Unavailable";
     }
 
-    private static Map<String, Long> readMemoryInfo() {
-        Map<String, Long> memoryInfo = new HashMap<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("MemTotal") || line.startsWith("MemAvailable") || line.startsWith("Buffers")) {
-                    String[] parts = line.split("\\s+");
-                    memoryInfo.put(parts[0].replace(":", ""), Long.parseLong(parts[1]));
-                }
-            }
-        } catch (IOException e) {
-            Initializer.LOGGER.error("Can't obtain RAM info!");
-            return null;
-        }
-
-        return memoryInfo;
-    }
-
-    private static String getColorCodeForMemoryPercentage(long percentage) {
-        if (percentage > 20) return "§a";
-        if (percentage >= 16) return "§e";
-        if (percentage >= 11) return "§6";
-        if (percentage >= 6) return "§c";
-        if (percentage >= 0) return "§4";
-        return "";
-    }
-
-    private static boolean shouldShowRAMInfo() {
-        return isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM;
+    private static long extractMemoryValue(String memoryLine) {
+        String[] parts = memoryLine.split("\\s+");
+        return Long.parseLong(parts[1]);
     }
 
     private static boolean isRunningOnAndroid() {
