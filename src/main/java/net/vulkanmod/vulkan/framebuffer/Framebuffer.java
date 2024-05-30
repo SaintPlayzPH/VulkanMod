@@ -80,38 +80,44 @@ public class Framebuffer {
     }
 
     public void resize(int newWidth, int newHeight) {
+        if (this.width == newWidth && this.height == newHeight) return; // Avoid unnecessary resize
+
         this.width = newWidth;
         this.height = newHeight;
+
         this.cleanUp();
         this.createImages();
     }
 
     private long createFramebuffer(RenderPass renderPass) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            LongBuffer attachments;
-            if (colorAttachment != null && depthAttachment != null) {
-                attachments = stack.longs(colorAttachment.getImageView(), depthAttachment.getImageView());
-            } else if (colorAttachment != null) {
-                attachments = stack.longs(colorAttachment.getImageView());
-            } else {
-                throw new IllegalStateException("No attachments found");
-            }
+            LongBuffer attachments = createAttachmentsBuffer(stack);
 
             LongBuffer pFramebuffer = stack.mallocLong(1);
 
-            VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.calloc(stack);
-            framebufferInfo.sType$Default();
-            framebufferInfo.renderPass(renderPass.getId());
-            framebufferInfo.width(this.width);
-            framebufferInfo.height(this.height);
-            framebufferInfo.layers(1);
-            framebufferInfo.pAttachments(attachments);
+            VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.calloc(stack)
+                    .sType$Default()
+                    .renderPass(renderPass.getId())
+                    .width(this.width)
+                    .height(this.height)
+                    .layers(1)
+                    .pAttachments(attachments);
 
             if (vkCreateFramebuffer(Vulkan.getVkDevice(), framebufferInfo, null, pFramebuffer) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create framebuffer");
             }
 
             return pFramebuffer.get(0);
+        }
+    }
+
+    private LongBuffer createAttachmentsBuffer(MemoryStack stack) {
+        if (colorAttachment != null && depthAttachment != null) {
+            return stack.longs(colorAttachment.getImageView(), depthAttachment.getImageView());
+        } else if (colorAttachment != null) {
+            return stack.longs(colorAttachment.getImageView());
+        } else {
+            throw new IllegalStateException("No attachments found");
         }
     }
 
@@ -128,23 +134,19 @@ public class Framebuffer {
     }
 
     public VkViewport.Buffer viewport(MemoryStack stack) {
-        VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
-        viewport.x(0.0f);
-        viewport.y(this.height);
-        viewport.width(this.width);
-        viewport.height(-this.height);
-        viewport.minDepth(0.0f);
-        viewport.maxDepth(1.0f);
-
-        return viewport;
+        return VkViewport.malloc(1, stack)
+                .x(0.0f)
+                .y(this.height)
+                .width(this.width)
+                .height(-this.height)
+                .minDepth(0.0f)
+                .maxDepth(1.0f);
     }
 
     public VkRect2D.Buffer scissor(MemoryStack stack) {
-        VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-        scissor.offset().set(0, 0);
-        scissor.extent().set(this.width, this.height);
-
-        return scissor;
+        return VkRect2D.malloc(1, stack)
+                .offset().set(0, 0)
+                .extent().set(this.width, this.height);
     }
 
     public void cleanUp() {
@@ -250,13 +252,13 @@ public class Framebuffer {
             return this;
         }
 
-        public Builder setLinearFiltering(boolean b) {
-            this.linearFiltering = b;
+        public Builder setLinearFiltering(boolean linearFiltering) {
+            this.linearFiltering = linearFiltering;
             return this;
         }
 
-        public Builder setDepthLinearFiltering(boolean b) {
-            this.depthLinearFiltering = b;
+        public Builder setDepthLinearFiltering(boolean depthLinearFiltering) {
+            this.depthLinearFiltering = depthLinearFiltering;
             return this;
         }
     }
