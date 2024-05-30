@@ -391,9 +391,10 @@ public abstract class Options {
                                 "Running on Phone?: " + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" +
                                 "\n" +
                                 "Shows your Phone RAM Info on debug screen.")),
-                        new RangeOption(Component.translatable("Phone RAM Info update delay"), 1, 10, 1,
+                        new RangeOption(Component.translatable("Phone RAM Info update delay"), 0, 10, 1,
                                 value -> {
-                                    if (value == 1) return Component.translatable("0.1s");
+                                    if (value == 0) return Component.translatable("0.01s");
+                                    else if (value == 1) return Component.translatable("0.1s");
                                     else if (value == 2) return Component.translatable("0.2s");
                                     else if (value == 3) return Component.translatable("0.3s");
                                     else if (value == 4) return Component.translatable("0.4s");
@@ -407,7 +408,7 @@ public abstract class Options {
                                 },
                                 value -> config.ramInfoUpdate = value,
                                 () -> config.ramInfoUpdate)
-                                .setTooltip(Component.translatable("Sets the number of seconds when the RAM info updates information. Higher values can help performance a bit.")),
+                                .setTooltip(Component.translatable("Sets the number of seconds when the RAM info updates information. Setting too low can affect performance.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
