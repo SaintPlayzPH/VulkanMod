@@ -79,7 +79,7 @@ public class SwapChain extends Framebuffer {
         }
 
         createSwapChain();
-        logSupportedExtensions(VkDevice.getPhysicalDevice());
+        logSupportedExtensions(DEVICE.getPhysicalDevice());
         initGoogleDisplayTiming(Vulkan.getVkDevice());
         queryDisplayTiming();
     }
