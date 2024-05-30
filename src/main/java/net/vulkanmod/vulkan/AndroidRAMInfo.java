@@ -13,15 +13,15 @@ public class AndroidRAMInfo {
     private static long memBuffers = 0;
     private static float updateDelay;
 
-    if (Initializer.CONFIG.ramInfoUpdate == 0) {
-        updateDelay = 0.01;
-    } else {
-        updateDelay = Initializer.CONFIG.ramInfoUpdate;
-    }
-
     private static final Lock lock = new ReentrantLock();
 
     static {
+        if (Initializer.CONFIG.ramInfoUpdate == 0) {
+            updateDelay = 0.01;
+        } else {
+            updateDelay = Initializer.CONFIG.ramInfoUpdate;
+        }
+
         // Start the background thread to update memory info every second
         Thread memoryUpdateThread = new Thread(() -> {
             while (true) {
@@ -96,7 +96,7 @@ public class AndroidRAMInfo {
                 } else {
                     colorPerc = "";
                 }
-                return "Available Memory: " + String.format("%.2f", memFreeMB) + " MB / "  + colorPerc + freeMemoryPercentage + "%";
+                return "Available Memory: " + String.format("%.2f", memFreeMB) + " MB / " + colorPerc + freeMemoryPercentage + "%";
             } else {
                 return "Available Memory: Unavailable";
             }
