@@ -48,9 +48,9 @@ public class AreaBuffer {
 
         Buffer buffer;
         if(this.usage == Usage.VERTEX.index) {
-            buffer = new VertexBuffer(bufferSize, MEMORY_TYPE);
+            buffer = new VertexBuffer(MEMORY_TYPE);
         } else {
-            buffer = new IndexBuffer(bufferSize, MEMORY_TYPE);
+            buffer = new IndexBuffer(MEMORY_TYPE);
         }
         return buffer;
     }
