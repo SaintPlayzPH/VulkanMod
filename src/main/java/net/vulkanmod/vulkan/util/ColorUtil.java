@@ -23,7 +23,6 @@ public class ColorUtil {
     public static class ARGB {
         public static int pack(float r, float g, float b, float a) {
             int color = floatToInt(a) << 24 | floatToInt(r) << 16 | floatToInt(g) << 8 | floatToInt(b);
-
             return color;
         }
 
@@ -51,9 +50,7 @@ public class ColorUtil {
 
     public static class RGBA {
         public static int pack(float r, float g, float b, float a) {
-//            int color = floatToInt(r) << 24 | floatToInt(g) << 16 | floatToInt(b) << 8 | floatToInt(a);
             int color = floatToInt(a) << 24 | floatToInt(b) << 16 | floatToInt(g) << 8 | floatToInt(r);
-
             return color;
         }
 
@@ -89,26 +86,30 @@ public class ColorUtil {
     }
 
     interface ColorConsumer {
-
         void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a);
         void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a);
         void setRGBA_Buffer(ByteBuffer buffer, float r, float g, float b, float a);
+    }
 
-        default void putColor(MappedBuffer buffer, float r, float g, float b, float a) {
+    public static class DefaultColorConsumer implements ColorConsumer {
+        @Override
+        public void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a) {
             buffer.putFloat(0, r);
             buffer.putFloat(4, g);
             buffer.putFloat(8, b);
             buffer.putFloat(12, a);
         }
 
-        default void putColor(FloatBuffer buffer, float r, float g, float b, float a) {
+        @Override
+        public void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a) {
             buffer.put(0, r);
             buffer.put(1, g);
             buffer.put(2, b);
             buffer.put(3, a);
         }
 
-        default void putColor(ByteBuffer buffer, float r, float g, float b, float a) {
+        @Override
+        public void setRGBA_Buffer(ByteBuffer buffer, float r, float g, float b, float a) {
             buffer.putFloat(0, r);
             buffer.putFloat(4, g);
             buffer.putFloat(8, b);
@@ -116,32 +117,16 @@ public class ColorUtil {
         }
     }
 
-    public static class DefaultColorConsumer implements ColorConsumer {
-
-        @Override
-        public void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a) {
-            putColor(buffer, r, g, b, a);
-        }
-
-        @Override
-        public void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a) {
-            putColor(buffer, r, g, b, a);
-        }
-
-        @Override
-        public void setRGBA_Buffer(ByteBuffer buffer, float r, float g, float b, float a) {
-            putColor(buffer, r, g, b, a);
-        }
-    }
-
     public static class GammaColorConsumer implements ColorConsumer {
-
         @Override
         public void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a) {
             r = gamma(r);
             g = gamma(g);
             b = gamma(b);
-            putColor(buffer, r, g, b, a);
+            buffer.putFloat(0, r);
+            buffer.putFloat(4, g);
+            buffer.putFloat(8, b);
+            buffer.putFloat(12, a);
         }
 
         @Override
@@ -149,7 +134,10 @@ public class ColorUtil {
             r = gamma(r);
             g = gamma(g);
             b = gamma(b);
-            putColor(buffer, r, g, b, a);
+            buffer.put(0, r);
+            buffer.put(1, g);
+            buffer.put(2, b);
+            buffer.put(3, a);
         }
 
         @Override
@@ -157,8 +145,10 @@ public class ColorUtil {
             r = gamma(r);
             g = gamma(g);
             b = gamma(b);
-            putColor(buffer, r, g, b, a);
+            buffer.putFloat(0, r);
+            buffer.putFloat(4, g);
+            buffer.putFloat(8, b);
+            buffer.putFloat(12, a);
         }
-
     }
 }
