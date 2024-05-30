@@ -407,7 +407,7 @@ public abstract class Options {
                                 },
                                 value -> config.ramInfoUpdate = value,
                                 () -> config.ramInfoUpdate)
-                                .setTooltip(Component.translatable("Sets the number of updates when the RAM info updates information.")),
+                                .setTooltip(Component.translatable("Sets the number of seconds when the RAM info updates information. Higher values can help performance a bit.")),
                         new SwitchOption(Component.translatable("Show Pojav Info"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
