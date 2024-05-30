@@ -1,66 +1,32 @@
 package net.vulkanmod.vulkan.memory;
 
-import net.vulkanmod.render.chunk.util.Util;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.system.libc.LibCString.nmemcpy;
-import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
 public class StagingBuffer extends Buffer {
 
     public StagingBuffer(int bufferSize) {
         super(VK_BUFFER_USAGE_TRANSFER_SRC_BIT, MemoryType.BAR_MEM);
-        this.usedBytes = 0;
-        this.offset = 0;
-
         this.createBuffer(bufferSize);
     }
 
     public void copyBuffer(int size, ByteBuffer byteBuffer) {
-
-        if(size > this.bufferSize - this.usedBytes) {
-            resizeBuffer((this.bufferSize + size) * 2);
+        if (size > this.bufferSize - this.usedBytes) {
+            resizeBuffer(size);
         }
 
-//        VUtil.memcpy(byteBuffer, this.data.getByteBuffer(0, this.bufferSize), this.usedBytes);
-        nmemcpy(this.data.get(0) + this.usedBytes, MemoryUtil.memAddress(byteBuffer), size);
+        ByteBuffer destBuffer = this.data.getByteBuffer(this.usedBytes, size);
+        destBuffer.put(byteBuffer);
+        destBuffer.flip();
 
-        offset = usedBytes;
-        usedBytes += size;
-
-        //createVertexBuffer(vertexSize, vertexCount, byteBuffer);
-    }
-    public void copyBuffer2(int size, long byteBuffer) {
-
-        if(size > this.bufferSize - this.usedBytes) {
-            resizeBuffer((this.bufferSize + size) * 2);
-        }
-
-//        VUtil.memcpy(byteBuffer, this.data.getByteBuffer(0, this.bufferSize), this.usedBytes);
-        nmemcpy(this.data.get(0) + this.usedBytes, (byteBuffer), size);
-
-        offset = usedBytes;
-        usedBytes += size;
-
-        //createVertexBuffer(vertexSize, vertexCount, byteBuffer);
-    }
-
-    public void align(int alignment) {
-        int alignedValue = Util.align(usedBytes, alignment);
-
-        if(alignedValue > this.bufferSize) {
-            resizeBuffer((this.bufferSize) * 2);
-        }
-
-        usedBytes = alignedValue;
+        this.usedBytes += size;
     }
 
     private void resizeBuffer(int newSize) {
-        this.type.freeBuffer(this);
+        MemoryManager.getInstance().addToFreeable(this);
         this.createBuffer(newSize);
-
-        System.out.println("resized staging buffer to: " + newSize);
     }
 }
