@@ -19,11 +19,11 @@ import static net.vulkanmod.vulkan.queue.Queue.TransferQueue;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class UploadManager {
-    private static final UploadManager INSTANCE = new UploadManager();
+    public static final UploadManager INSTANCE = new UploadManager();
 
-    private final Queue queue = DeviceManager.getTransferQueue();
-    private CommandPool.CommandBuffer commandBuffer;
-    private final Set<Long> dstBuffers = new HashSet<>();
+    public final Queue queue = DeviceManager.getTransferQueue();
+    public CommandPool.CommandBuffer commandBuffer;
+    public final Set<Long> dstBuffers = new HashSet<>();
 
     public UploadManager() {
         // Private constructor to enforce singleton pattern
@@ -90,7 +90,7 @@ public class UploadManager {
         }
     }
 
-    private void beginBarrier() {
+    public void beginBarrier() {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             VkMemoryBarrier.Buffer barrier = VkMemoryBarrier.calloc(1, stack);
             barrier.sType$Default();
@@ -106,7 +106,7 @@ public class UploadManager {
         }
     }
 
-    private void endBarrier(VkCommandBuffer commandBufferHandle) {
+    public void endBarrier(VkCommandBuffer commandBufferHandle) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             VkMemoryBarrier.Buffer barrier = VkMemoryBarrier.calloc(1, stack);
             barrier.sType$Default();
