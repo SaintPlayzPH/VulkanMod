@@ -20,8 +20,6 @@ import static org.lwjgl.vulkan.VK10.*;
 public class Framebuffer {
     public static final int DEFAULT_FORMAT = VK_FORMAT_R8G8B8A8_UNORM;
 
-//    private long id;
-
     protected int format;
     protected int depthFormat;
     protected int width, height;
@@ -36,10 +34,8 @@ public class Framebuffer {
     protected VulkanImage depthAttachment;
 
     private final ObjectArrayList<RenderPass> renderPasses = new ObjectArrayList<>();
-
     private final Reference2LongArrayMap<RenderPass> framebufferIds = new Reference2LongArrayMap<>();
 
-    //SwapChain
     protected Framebuffer() {}
 
     public Framebuffer(Builder builder) {
@@ -52,9 +48,9 @@ public class Framebuffer {
         this.hasColorAttachment = builder.hasColorAttachment;
         this.hasDepthAttachment = builder.hasDepthAttachment;
 
-        if (builder.createImages)
+        if (builder.createImages) {
             this.createImages();
-        else {
+        } else {
             this.colorAttachment = builder.colorAttachment;
             this.depthAttachment = builder.depthAttachment;
         }
@@ -86,23 +82,19 @@ public class Framebuffer {
     public void resize(int newWidth, int newHeight) {
         this.width = newWidth;
         this.height = newHeight;
-
         this.cleanUp();
-
         this.createImages();
     }
 
     private long createFramebuffer(RenderPass renderPass) {
-
         try (MemoryStack stack = MemoryStack.stackPush()) {
-
             LongBuffer attachments;
             if (colorAttachment != null && depthAttachment != null) {
                 attachments = stack.longs(colorAttachment.getImageView(), depthAttachment.getImageView());
             } else if (colorAttachment != null) {
                 attachments = stack.longs(colorAttachment.getImageView());
             } else {
-                throw new IllegalStateException();
+                throw new IllegalStateException("No attachments found");
             }
 
             LongBuffer pFramebuffer = stack.mallocLong(1);
@@ -115,7 +107,7 @@ public class Framebuffer {
             framebufferInfo.layers(1);
             framebufferInfo.pAttachments(attachments);
 
-            if (VK10.vkCreateFramebuffer(Vulkan.getVkDevice(), framebufferInfo, null, pFramebuffer) != VK_SUCCESS) {
+            if (vkCreateFramebuffer(Vulkan.getVkDevice(), framebufferInfo, null, pFramebuffer) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create framebuffer");
             }
 
@@ -125,7 +117,7 @@ public class Framebuffer {
 
     public void beginRenderPass(VkCommandBuffer commandBuffer, RenderPass renderPass, MemoryStack stack) {
         if (!DYNAMIC_RENDERING) {
-            long framebufferId = framebufferIds.computeIfAbsent(renderPass, renderPass1 -> createFramebuffer(renderPass));
+            long framebufferId = framebufferIds.computeIfAbsent(renderPass, this::createFramebuffer);
             renderPass.beginRenderPass(commandBuffer, framebufferId, stack);
         } else {
             renderPass.beginDynamicRendering(commandBuffer, stack);
@@ -161,21 +153,14 @@ public class Framebuffer {
 
     public void cleanUp(boolean cleanImages) {
         if (cleanImages) {
-            if (this.colorAttachment != null)
-                this.colorAttachment.free();
-
-            if (this.depthAttachment != null)
-                this.depthAttachment.free();
+            if (this.colorAttachment != null) this.colorAttachment.free();
+            if (this.depthAttachment != null) this.depthAttachment.free();
         }
 
         final VkDevice device = Vulkan.getVkDevice();
         final var ids = framebufferIds.values().toLongArray();
 
-        MemoryManager.getInstance().addFrameOp(
-                () -> Arrays.stream(ids).forEach(id ->
-                        vkDestroyFramebuffer(device, id, null))
-        );
-
+        MemoryManager.getInstance().addFrameOp(() -> Arrays.stream(ids).forEach(id -> vkDestroyFramebuffer(device, id, null)));
 
         framebufferIds.clear();
     }
@@ -220,29 +205,22 @@ public class Framebuffer {
         final boolean createImages;
         final int width, height;
         int format, depthFormat;
-
         VulkanImage colorAttachment;
         VulkanImage depthAttachment;
-
-//        int colorAttachments;
         boolean hasColorAttachment;
         boolean hasDepthAttachment;
-
         boolean linearFiltering;
         boolean depthLinearFiltering;
 
         public Builder(int width, int height, int colorAttachments, boolean hasDepthAttachment) {
             Validate.isTrue(colorAttachments > 0 || hasDepthAttachment, "At least 1 attachment needed");
-
-            //TODO multi color attachments
-            Validate.isTrue(colorAttachments <= 1, "Not supported");
+            Validate.isTrue(colorAttachments <= 1, "Multiple color attachments not supported");
 
             this.createImages = true;
             this.format = DEFAULT_FORMAT;
             this.depthFormat = Vulkan.getDefaultDepthFormat();
             this.linearFiltering = true;
             this.depthLinearFiltering = false;
-
             this.width = width;
             this.height = height;
             this.hasColorAttachment = colorAttachments == 1;
@@ -253,14 +231,11 @@ public class Framebuffer {
             this.createImages = false;
             this.colorAttachment = colorAttachment;
             this.depthAttachment = depthAttachment;
-
             this.format = colorAttachment.format;
-
             this.width = colorAttachment.width;
             this.height = colorAttachment.height;
             this.hasColorAttachment = true;
             this.hasDepthAttachment = depthAttachment != null;
-
             this.depthFormat = this.hasDepthAttachment ? depthAttachment.format : 0;
             this.linearFiltering = true;
             this.depthLinearFiltering = false;
@@ -272,21 +247,17 @@ public class Framebuffer {
 
         public Builder setFormat(int format) {
             this.format = format;
-
             return this;
         }
 
         public Builder setLinearFiltering(boolean b) {
             this.linearFiltering = b;
-
             return this;
         }
 
         public Builder setDepthLinearFiltering(boolean b) {
             this.depthLinearFiltering = b;
-
             return this;
         }
-
     }
 }
