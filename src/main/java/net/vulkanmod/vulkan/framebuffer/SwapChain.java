@@ -168,22 +168,6 @@ public class SwapChain extends Framebuffer {
                 this.swapChainImages.add(image);
             }
 
-            // Check if VK_GOOGLE_display_timing is supported
-            VkExtensionProperties.Buffer availableExtensions = vkEnumerateDeviceExtensionProperties(device.getPhysicalDevice(), (String) null);
-            boolean isGoogleDisplayTimingSupported = false;
-            for (int i = 0; i < availableExtensions.capacity(); i++) {
-                if (VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME.equals(availableExtensions.get(i).extensionNameString())) {
-                    isGoogleDisplayTimingSupported = true;
-                    break;
-                }
-            }
-
-            if (isGoogleDisplayTimingSupported) {
-                Initializer.LOGGER.info(VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME + " is supported.");
-            } else {
-                Initializer.LOGGER.warn(VK_GOOGLE_DISPLAY_TIMING_EXTENSION_NAME + " is not supported.");
-            }
-
         }
 
         createGlIds();
