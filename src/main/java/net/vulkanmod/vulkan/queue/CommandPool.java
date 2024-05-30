@@ -19,90 +19,72 @@ public class CommandPool {
     private final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
     private final java.util.Queue<CommandBuffer> availableCmdBuffers = new ArrayDeque<>();
 
-    CommandPool(int queueFamilyIndex) {
+    public CommandPool(int queueFamilyIndex) {
         this.createCommandPool(queueFamilyIndex);
     }
 
-    public void createCommandPool(int familyIndex) {
-
+    private void createCommandPool(int familyIndex) {
         try (MemoryStack stack = stackPush()) {
-
-            VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.calloc(stack);
-            poolInfo.sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO);
-            poolInfo.queueFamilyIndex(familyIndex);
-            poolInfo.flags(VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+            VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.calloc(stack)
+                    .sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO)
+                    .queueFamilyIndex(familyIndex)
+                    .flags(VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 
             LongBuffer pCommandPool = stack.mallocLong(1);
-
             if (vkCreateCommandPool(Vulkan.getVkDevice(), poolInfo, null, pCommandPool) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create command pool");
             }
-
             this.id = pCommandPool.get(0);
         }
     }
 
     public CommandBuffer beginCommands() {
-
         try (MemoryStack stack = stackPush()) {
             final int size = 10;
-
             if (availableCmdBuffers.isEmpty()) {
-
-                VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.calloc(stack);
-                allocInfo.sType$Default();
-                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-                allocInfo.commandPool(id);
-                allocInfo.commandBufferCount(size);
+                VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.calloc(stack)
+                        .sType$Default()
+                        .level(VK_COMMAND_BUFFER_LEVEL_PRIMARY)
+                        .commandPool(id)
+                        .commandBufferCount(size);
 
                 PointerBuffer pCommandBuffer = stack.mallocPointer(size);
                 vkAllocateCommandBuffers(Vulkan.getVkDevice(), allocInfo, pCommandBuffer);
 
-                VkFenceCreateInfo fenceInfo = VkFenceCreateInfo.calloc(stack);
-                fenceInfo.sType$Default();
-                fenceInfo.flags(VK_FENCE_CREATE_SIGNALED_BIT);
+                VkFenceCreateInfo fenceInfo = VkFenceCreateInfo.calloc(stack)
+                        .sType$Default()
+                        .flags(VK_FENCE_CREATE_SIGNALED_BIT);
 
                 for (int i = 0; i < size; ++i) {
-                    LongBuffer pFence = stack.mallocLong(size);
+                    LongBuffer pFence = stack.mallocLong(1);
                     vkCreateFence(Vulkan.getVkDevice(), fenceInfo, null, pFence);
-
                     CommandBuffer commandBuffer = new CommandBuffer(new VkCommandBuffer(pCommandBuffer.get(i), Vulkan.getVkDevice()), pFence.get(0));
-                    commandBuffer.handle = new VkCommandBuffer(pCommandBuffer.get(i), Vulkan.getVkDevice());
                     commandBuffers.add(commandBuffer);
                     availableCmdBuffers.add(commandBuffer);
                 }
-
             }
 
             CommandBuffer commandBuffer = availableCmdBuffers.poll();
-
-            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc(stack);
-            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
-            beginInfo.flags(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc(stack)
+                    .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
+                    .flags(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
 
             vkBeginCommandBuffer(commandBuffer.handle, beginInfo);
-
-//            current++;
-
             return commandBuffer;
         }
     }
 
     public long submitCommands(CommandBuffer commandBuffer, VkQueue queue) {
-
         try (MemoryStack stack = stackPush()) {
             long fence = commandBuffer.fence;
-
             vkEndCommandBuffer(commandBuffer.handle);
+            vkResetFences(Vulkan.getVkDevice(), fence);
 
-            vkResetFences(Vulkan.getVkDevice(), commandBuffer.fence);
-
-            VkSubmitInfo submitInfo = VkSubmitInfo.calloc(stack);
-            submitInfo.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO);
-            submitInfo.pCommandBuffers(stack.pointers(commandBuffer.handle));
+            VkSubmitInfo submitInfo = VkSubmitInfo.calloc(stack)
+                    .sType(VK_STRUCTURE_TYPE_SUBMIT_INFO)
+                    .pCommandBuffers(stack.pointers(commandBuffer.handle));
 
             vkQueueSubmit(queue, submitInfo, fence);
-
             return fence;
         }
     }
