@@ -15,7 +15,6 @@ public class AndroidRAMInfo {
     private static final Lock lock = new ReentrantLock();
 
     static {
-        // Start the background thread to update memory info every second
         Thread memoryUpdateThread = new Thread(() -> {
             while (true) {
                 getAllMemoryInfo();
@@ -29,8 +28,6 @@ public class AndroidRAMInfo {
         memoryUpdateThread.setDaemon(true);
         memoryUpdateThread.start();
     }
-
-    
 
     public static void getAllMemoryInfo() {
         if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
@@ -51,7 +48,7 @@ public class AndroidRAMInfo {
                     lock.unlock();
                 }
             } catch (IOException e) {
-                Initializer.LOGGER.error("Can't obtain Memory info: " + e.getMessage());
+                Initializer.LOGGER.error("Can't obtain RAM info: " + e.getMessage());
             }
         }
     }
@@ -62,9 +59,9 @@ public class AndroidRAMInfo {
             if (memTotal != 0 && memFree != 0) {
                 double memTotalMB = memTotal / 1024.0;
                 double usedMemoryMB = (memTotal - memFree) / 1024.0;
-                return "Memory: " + String.format("%.2f", usedMemoryMB) + "/" + String.format("%.2f", memTotalMB) + " MB";
+                return String.format("RAM: %.2f/%.2f MB", usedMemoryMB, memTotalMB);
             } else {
-                return "Memory: Unavailable";
+                return "RAM: Unavailable";
             }
         } finally {
             lock.unlock();
@@ -77,23 +74,10 @@ public class AndroidRAMInfo {
             if (memTotal != 0 && memFree != 0) {
                 double memFreeMB = memFree / 1024.0;
                 long freeMemoryPercentage = (memFree * 100) / memTotal;
-                String colorPerc;
-                if (freeMemoryPercentage > 20) {
-                    colorPerc = "§a";
-                } else if (freeMemoryPercentage >= 16 && freeMemoryPercentage <= 20) {
-                    colorPerc = "§e";
-                } else if (freeMemoryPercentage >= 11 && freeMemoryPercentage <= 15) {
-                    colorPerc = "§6";
-                } else if (freeMemoryPercentage >= 6 && freeMemoryPercentage <= 10) {
-                    colorPerc = "§c";
-                } else if (freeMemoryPercentage >= 0 && freeMemoryPercentage <= 5) {
-                    colorPerc = "§4";
-                } else {
-                    colorPerc = "";
-                }
-                return "Available Memory: " + String.format("%.2f", memFreeMB) + " MB / " + colorPerc + freeMemoryPercentage + "%";
+                String colorPerc = getColorPercentage(freeMemoryPercentage);
+                return String.format("Available Memory: %.2f MB / %s%d%%", memFreeMB, colorPerc, freeMemoryPercentage);
             } else {
-                return "Available Memory: Unavailable";
+                return "Available RAM: Unavailable";
             }
         } finally {
             lock.unlock();
@@ -105,7 +89,7 @@ public class AndroidRAMInfo {
         try {
             if (memBuffers != 0) {
                 double buffersMB = memBuffers / 1024.0;
-                return "Buffers: " + String.format("%.2f", buffersMB) + " MB";
+                return String.format("Buffers: %.2f MB", buffersMB);
             } else {
                 return "Buffers: No Buffers";
             }
@@ -121,5 +105,19 @@ public class AndroidRAMInfo {
 
     private static boolean isRunningOnAndroid() {
         return System.getenv("POJAV_RENDERER") != null;
+    }
+
+    private static String getColorPercentage(long freeMemoryPercentage) {
+        if (freeMemoryPercentage > 20) {
+            return "§a";
+        } else if (freeMemoryPercentage >= 16) {
+            return "§e";
+        } else if (freeMemoryPercentage >= 11) {
+            return "§6";
+        } else if (freeMemoryPercentage >= 6) {
+            return "§c";
+        } else {
+            return "§4";
+        }
     }
 }
