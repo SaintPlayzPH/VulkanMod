@@ -11,7 +11,7 @@ public class AndroidRAMInfo {
     private static long memFree = 0;
     private static long memTotal = 0;
     private static long memBuffers = 0;
-    private int updateDelay;
+    private static int updateDelay;
 
     private static final Lock lock = new ReentrantLock();
 
