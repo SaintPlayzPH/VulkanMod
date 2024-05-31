@@ -1,7 +1,7 @@
 package net.vulkanmod.vulkan.queue;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectArrayDeque;
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import net.vulkanmod.vulkan.Vulkan;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
@@ -18,7 +18,7 @@ public class CommandPool {
     long id;
 
     private final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
-    private final Queue<CommandBuffer> availableCmdBuffers = new ObjectArrayDeque<>();
+    private final Queue<CommandBuffer> availableCmdBuffers = new ObjectArrayFIFOQueue<>();
 
     CommandPool(int queueFamilyIndex) {
         this.createCommandPool(queueFamilyIndex);
