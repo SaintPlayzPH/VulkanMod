@@ -18,7 +18,7 @@ public class CommandPool {
     long id;
 
     private final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
-    private final Queue<CommandBuffer> availableCmdBuffers = new ObjectArrayFIFOQueue<>();
+    private final Queue<CommandBuffer> availableCmdBuffers = new ObjectArrayFIFOQueue<>(K);
 
     CommandPool(int queueFamilyIndex) {
         this.createCommandPool(queueFamilyIndex);
