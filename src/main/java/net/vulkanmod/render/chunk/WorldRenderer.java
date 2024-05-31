@@ -80,7 +80,7 @@ public class WorldRenderer {
     private double yTransparentOld;
     private double zTransparentOld;
 
-    IndirectBuffer[] indirectBuffers = null;
+    IndirectBuffer[] indirectBuffers;
 
     public RenderRegionBuilder renderRegionCache;
 
@@ -96,12 +96,10 @@ public class WorldRenderer {
 
         BlockRenderer.setBlockColors(this.minecraft.getBlockColors());
 
-        Renderer.getInstance().addOnResizeCallback(Queue::trimCmdPools);
         Renderer.getInstance().addOnResizeCallback(() -> {
             if (this.indirectBuffers.length != Renderer.getFramesNum())
                 allocateIndirectBuffers();
         });
-        addOnAllChangedCallback(Vulkan::waitIdle);
     }
     
     private void allocateIndirectBuffers() {
