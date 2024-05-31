@@ -75,7 +75,7 @@ public class AndroidRAMInfo {
                 double memFreeMB = memFree / 1024.0;
                 long freeMemoryPercentage = (memFree * 100) / memTotal;
                 String colorPerc = getColorPercentage(freeMemoryPercentage);
-                return String.format("Available Memory: %.2f MB / %s%d%%", memFreeMB, colorPerc, freeMemoryPercentage);
+                return String.format("Available RAM: %.2f MB / %s%d%%", memFreeMB, colorPerc, freeMemoryPercentage);
             } else {
                 return "Available RAM: Unavailable";
             }
