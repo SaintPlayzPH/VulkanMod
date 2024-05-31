@@ -9,7 +9,6 @@ import org.lwjgl.vulkan.*;
 
 import java.nio.LongBuffer;
 import java.util.List;
-import java.util.Queue;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
@@ -18,7 +17,7 @@ public class CommandPool {
     long id;
 
     private final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
-    private final Queue<CommandBuffer> availableCmdBuffers = new ObjectArrayFIFOQueue<>(K);
+    private final java.util.Queue<CommandBuffer> availableCmdBuffers = new ObjectArrayFIFOQueue<>();
 
     CommandPool(int queueFamilyIndex) {
         this.createCommandPool(queueFamilyIndex);
