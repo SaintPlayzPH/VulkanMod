@@ -1,5 +1,6 @@
 package net.vulkanmod.vulkan.queue;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayFIFOQueue;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.util.VUtil;
@@ -8,9 +9,7 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
 import java.nio.LongBuffer;
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Queue;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
@@ -18,7 +17,7 @@ import static org.lwjgl.vulkan.VK10.*;
 public class CommandPool {
     public long id;
     public final List<CommandBuffer> commandBuffers = new ObjectArrayList<>();
-    public final Queue<CommandBuffer> availableCmdBuffers = new ArrayDeque<>();
+    public final ObjectArrayFIFOQueue<CommandBuffer> availableCmdBuffers = new ObjectArrayFIFOQueue<>();
 
     public CommandPool(int queueFamilyIndex) {
         createCommandPool(queueFamilyIndex);
@@ -63,11 +62,11 @@ public class CommandPool {
                     }
                     CommandBuffer commandBuffer = new CommandBuffer(new VkCommandBuffer(pCommandBuffer.get(i), Vulkan.getVkDevice()), pFence.get(0));
                     commandBuffers.add(commandBuffer);
-                    availableCmdBuffers.add(commandBuffer);
+                    availableCmdBuffers.enqueue(commandBuffer);
                 }
             }
 
-            CommandBuffer commandBuffer = availableCmdBuffers.poll();
+            CommandBuffer commandBuffer = availableCmdBuffers.dequeue();
             VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc(stack)
                     .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
                     .flags(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
@@ -102,7 +101,7 @@ public class CommandPool {
 
     public void addToAvailable(CommandBuffer commandBuffer) {
         commandBuffer.reset();
-        availableCmdBuffers.add(commandBuffer);
+        availableCmdBuffers.enqueue(commandBuffer);
     }
 
     public void cleanUp() {
