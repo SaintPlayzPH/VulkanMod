@@ -25,8 +25,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
         // Log the target class name and mixin class name for debugging
         Initializer.LOGGER.info("Evaluating mixin for target class: " + targetClassName + ", mixin class: " + mixinClassName);
         
-        if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") || 
-            mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostPassM")) {
+        if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") {
             // Check if CONFIG is initialized and postEffect is true
             boolean shouldApply = Initializer.CONFIG != null && !Initializer.CONFIG.postEffectFix;
             Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApply);
