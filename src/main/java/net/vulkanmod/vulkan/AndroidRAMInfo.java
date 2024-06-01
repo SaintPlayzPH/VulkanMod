@@ -107,6 +107,20 @@ public class AndroidRAMInfo {
         return System.getenv("POJAV_RENDERER") != null;
     }
 
+    private static String getAvailableRAMWarn(float memFreeMB) {
+        lock.lock();
+        try {
+            if (memFreeMB > 300 && memFreeMB < 500) {
+                return "Your RAM is low, the system will start to lag at this point.";
+            } else {
+                return "Your RAM is very low, the system will lag significantly and there is a chance the game may force crash.";
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+    
+
     private static String getColorPercentage(long freeMemoryPercentage) {
         if (freeMemoryPercentage > 20) {
             return "§a";
