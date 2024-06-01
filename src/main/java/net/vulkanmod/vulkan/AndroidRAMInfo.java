@@ -107,13 +107,16 @@ public class AndroidRAMInfo {
         return System.getenv("POJAV_RENDERER") != null;
     }
 
-    private static String getAvailableRAMWarn(float memFreeMB) {
+    private static String getAvailableRAMWarn() {
+        getAllMemoryInfo();
         lock.lock();
         try {
-            if (memFreeMB > 300 && memFreeMB < 500) {
-                return "Your RAM is low, the system will start to lag at this point.";
-            } else {
-                return "Your RAM is very low, the system will lag significantly and there is a chance the game may force crash.";
+            if (memFreeMB < 500) {
+                if (memFreeMB > 300) {
+                    return "Your RAM is low, the system will start to lag at this point.";
+                } else {
+                    return "Your RAM is very low, the system will lag significantly and there's a chance the game may force crash.";
+                }
             }
         } finally {
             lock.unlock();
