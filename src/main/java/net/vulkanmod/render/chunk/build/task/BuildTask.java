@@ -136,8 +136,8 @@ public class BuildTask extends ChunkTask {
 
                         if (Initializer.CONFIG.uniqueOpaqueLayer)
                         {
-                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? CUTOUT : CUTOUT_MIPPED;
-                            else if(blockState.getBlock() instanceof GrassBlock) renderType = CUTOUT;
+                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
+                            else if(blockState.getBlock() instanceof GrassBlock) renderType = TerrainRenderType.CUTOUT;
                         }
                         
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
@@ -187,17 +187,17 @@ public class BuildTask extends ChunkTask {
             if(!Initializer.CONFIG.uniqueOpaqueLayer) {
                 return switch (renderType)
                 {
-                    case SOLID, CUTOUT_MIPPED, CUTOUT -> CUTOUT_MIPPED;
-                    default -> TRANSLUCENT;
+                    case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
+                    default -> TerrainRenderType.TRANSLUCENT;
 
                 };
             }
             else {
                 return  switch (renderType)
                 {
-                    case SOLID, CUTOUT_MIPPED -> CUTOUT_MIPPED;
-                    case CUTOUT -> CUTOUT;
-                    default -> TRANSLUCENT;
+                    case SOLID, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
+                    case CUTOUT -> TerrainRenderType.CUTOUT;
+                    default -> TerrainRenderType.TRANSLUCENT;
 
                 };
             }
