@@ -359,72 +359,72 @@ public abstract class Options {
     }
 
     public static OptionBlock[] getOtherOpts() {
-        return new OptionBlock[] {
-                new OptionBlock("", new Option[] {
-                        new RangeOption(Component.translatable("vulkanmod.options.frameQueue"),
-                                1, 8, 1,
-                                value -> {
-                                    config.frameQueueSize = value;
-                                    Renderer.scheduleSwapChainUpdate();
-                                }, () -> config.frameQueueSize)
-                                .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
-                        new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
-                                maxImageCount, 1,
-                                value -> {
-                                    config.imageCount = value;
-                                    Renderer.scheduleSwapChainUpdate();
-                                }, () -> config.imageCount)
-                                .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
-                        new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
-                                value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
-                                () -> isRunningOnPhone() && config.showAndroidRAM)
-                                .setTooltip(
-                                Component.translatable("vulkanmod.options.runningOnPhone")
-                                        .append(Component.literal(isRunningOnPhone() ? "§aYes§r" : "§cNo§r"))
-                                        .append("\n")
-                                        .append(Component.translatable("vulkanmod.options.showPhoneRAMInfo.tooltip")));
-                        new RangeOption(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay"), 0, 10, 1,
-                                value -> {
-                                    if (value == 0) return Component.translatable("0.01s");
-                                    else if (value == 1) return Component.translatable("0.1s");
-                                    else if (value == 2) return Component.translatable("0.2s");
-                                    else if (value == 3) return Component.translatable("0.3s");
-                                    else if (value == 4) return Component.translatable("0.4s");
-                                    else if (value == 5) return Component.translatable("0.5s");
-                                    else if (value == 6) return Component.translatable("0.6s");
-                                    else if (value == 7) return Component.translatable("0.7s");
-                                    else if (value == 8) return Component.translatable("0.8s");
-                                    else if (value == 9) return Component.translatable("0.9s");
-                                    else if (value == 10) return Component.translatable("1s");
-                                    return Component.literal(String.valueOf(value));
-                                },
-                                value -> config.ramInfoUpdate = value,
-                                () -> config.ramInfoUpdate)
-                                .setTooltip(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip")),
-                        new SwitchOption(Component.translatable("vulkanmod.options.showPojavInfo"),
-                                value -> config.pojavInfo = value,
-                                () -> config.pojavInfo)
-                                .setTooltip(Component.translatable("vulkanmod.options.showPojavInfo.tooltip")),
-                        new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
-                                IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
-                                value -> config.device = value,
-                                () -> config.device)
-                                .setTranslator(value -> {
-                                    String t;
+    return new OptionBlock[] {
+        new OptionBlock("", new Option[] {
+            new RangeOption(Component.translatable("vulkanmod.options.frameQueue"),
+                    1, 8, 1,
+                    value -> {
+                        config.frameQueueSize = value;
+                        Renderer.scheduleSwapChainUpdate();
+                    }, () -> config.frameQueueSize)
+                    .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
+            new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
+                    maxImageCount, 1,
+                    value -> {
+                        config.imageCount = value;
+                        Renderer.scheduleSwapChainUpdate();
+                    }, () -> config.imageCount)
+                    .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
+                    value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
+                    () -> isRunningOnPhone() && config.showAndroidRAM)
+                    .setTooltip(
+                    Component.translatable("vulkanmod.options.runningOnPhone")
+                            .append(Component.literal(isRunningOnPhone() ? "§aYes§r" : "§cNo§r"))
+                            .append("\n")
+                            .append(Component.translatable("vulkanmod.options.showPhoneRAMInfo.tooltip"))),
+            new RangeOption(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay"), 0, 10, 1,
+                    value -> {
+                        if (value == 0) return Component.translatable("0.01s");
+                        else if (value == 1) return Component.translatable("0.1s");
+                        else if (value == 2) return Component.translatable("0.2s");
+                        else if (value == 3) return Component.translatable("0.3s");
+                        else if (value == 4) return Component.translatable("0.4s");
+                        else if (value == 5) return Component.translatable("0.5s");
+                        else if (value == 6) return Component.translatable("0.6s");
+                        else if (value == 7) return Component.translatable("0.7s");
+                        else if (value == 8) return Component.translatable("0.8s");
+                        else if (value == 9) return Component.translatable("0.9s");
+                        else if (value == 10) return Component.translatable("1s");
+                        return Component.literal(String.valueOf(value));
+                    },
+                    value -> config.ramInfoUpdate = value,
+                    () -> config.ramInfoUpdate)
+                    .setTooltip(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip")),
+            new SwitchOption(Component.translatable("vulkanmod.options.showPojavInfo"),
+                    value -> config.pojavInfo = value,
+                    () -> config.pojavInfo)
+                    .setTooltip(Component.translatable("vulkanmod.options.showPojavInfo.tooltip")),
+            new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
+                    IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
+                    value -> config.device = value,
+                    () -> config.device)
+                    .setTranslator(value -> {
+                        String t;
 
-                                    if (value == -1)
-                                        t = "options.guiScale.auto";
-                                    else
-                                        t = DeviceManager.suitableDevices.get(value).deviceName;
+                        if (value == -1)
+                            t = "options.guiScale.auto";
+                        else
+                            t = DeviceManager.suitableDevices.get(value).deviceName;
 
-                                    return Component.translatable(t);
-                                })
-                                .setTooltip(
-                                        Component.nullToEmpty("%s: %s".formatted(
-                                                Component.translatable("vulkanmod.options.deviceSelector.tooltip").getString(),
-                                                DeviceManager.device.deviceName
-                                        )))
-                })
+                        return Component.translatable(t);
+                    })
+                    .setTooltip(
+                            Component.nullToEmpty("%s: %s".formatted(
+                                    Component.translatable("vulkanmod.options.deviceSelector.tooltip").getString(),
+                                    DeviceManager.device.deviceName
+                            )))
+            })
         };
     }
 }
