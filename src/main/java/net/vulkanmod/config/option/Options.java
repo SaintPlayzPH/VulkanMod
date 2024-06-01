@@ -25,6 +25,7 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
+
     private static boolean isRunningOnPhone() {
         return System.getenv("POJAV_RENDERER") != null;
     }
@@ -40,7 +41,7 @@ public abstract class Options {
             maxImageCount = Math.min(capabilities.maxImageCount(), 32);
         }
     }
-    
+
     public static OptionBlock[] getVideoOpts() {
         var videoMode = config.videoMode;
         var videoModeSet = VideoModeManager.getFromVideoMode(videoMode);
@@ -108,7 +109,6 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("options.fullscreen"),
                                 value -> {
                                     minecraftOptions.fullscreen().set(value);
-//                            window.toggleFullScreen();
                                     fullscreenDirty = true;
                                 },
                                 () -> minecraftOptions.fullscreen().get()),
@@ -248,20 +248,20 @@ public abstract class Options {
                                 50, 500, 25,
                                 value -> minecraftOptions.entityDistanceScaling().set(value * 0.01),
                                 () -> minecraftOptions.entityDistanceScaling().get().intValue() * 100),
-                        new SwitchOption(Component.translatable("Enable Post-Effect"),
-                                 value -> {
+                        new SwitchOption(Component.translatable("vulkanmod.options.enablePostEffect"),
+                                value -> {
                                     config.postEffect = value;
                                     minecraft.delayTextureReload();
                                 },
                                 () -> config.postEffect)
-                                .setTooltip(Component.translatable("Enables Post Effect 'e.g. Glowing Effect, etc...'. Disabling this may improve performance!")),
-                        new SwitchOption(Component.translatable("Fix Post-Effect Bug"),
-                                 value -> {
+                                .setTooltip(Component.translatable("vulkanmod.options.enablePostEffect.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.fixPostEffectBug"),
+                                value -> {
                                     config.postEffectFix = value;
                                 },
                                 () -> config.postEffectFix)
-                                .setTooltip(Component.translatable("Fixes few bugs with Post-Effect especially when using ASR but Post-effect still renders weird if ASR is enabled. Restarting the game is required to take effect!")),
-                        new CyclingOption<>(Component.translatable("Biome Tint Builder"),
+                                .setTooltip(Component.translatable("vulkanmod.options.fixPostEffectBug.tooltip")),
+                        new CyclingOption<>(Component.translatable("vulkanmod.options.biomeTintBuilder"),
                                 new Integer[]{1, 2},
                                 value -> {
                                     config.tintBuilder = value;
@@ -270,8 +270,8 @@ public abstract class Options {
                                 () -> config.tintBuilder)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
-                                        case 1 -> "Old";
-                                        case 2 -> "New";
+                                        case 1 -> "vulkanmod.options.old";
+                                        case 2 -> "vulkanmod.options.new";
                                         default -> "vulkanmod.options.unknown";
                                     };
                                     return Component.translatable(t);
@@ -287,7 +287,7 @@ public abstract class Options {
                                 .setTranslator(value -> Component.nullToEmpty(value.toString()))
                 })
         };
-}
+    }
 
     public static OptionBlock[] getOptimizationOpts() {
         return new OptionBlock[] {
@@ -307,50 +307,45 @@ public abstract class Options {
                                     return Component.translatable(t);
                                 })
                                 .setTooltip(Component.translatable("vulkanmod.options.advCulling.tooltip")),
-                        new SwitchOption(Component.translatable("Animations"),
+                        new SwitchOption(Component.translatable("vulkanmod.options.animations"),
                                 value -> {
                                     config.animations = value;
                                 },
                                 () -> config.animations)
-                                .setTooltip(Component.translatable("Makes the animated textures to animate. Disabling this prevents them from animating and may improve performance a bit.")),
-                        new SwitchOption(Component.translatable("Render Sky"),
+                                .setTooltip(Component.translatable("vulkanmod.options.animations.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.renderSky"),
                                 value -> {
                                     config.renderSky = value;
                                 },
                                 () -> config.renderSky)
-                                .setTooltip(Component.translatable("Renders the sky. Disabling this may improve performance a bit.")),
-                        new SwitchOption(Component.translatable("Render Fog"),
+                                .setTooltip(Component.translatable("vulkanmod.options.renderSky.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.renderFog"),
                                 value -> {
                                     config.renderFog = value;
                                     Renderer.recompile = true;
                                 },
                                 () -> config.renderFog)
-                                .setTooltip(Component.translatable("Renders the fog. Disabling this may improve performance a bit.")),
-                        new SwitchOption(Component.translatable("Render Entity Outline"),
+                                .setTooltip(Component.translatable("vulkanmod.options.renderFog.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.renderEntityOutline"),
                                 value -> {
                                     config.entityOutline = config.postEffect ? value : false;
                                 },
                                 () -> config.postEffect && config.entityOutline)
-                                .setTooltip(Component.translatable("Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance." + (Initializer.CONFIG.postEffect ? "" : " Requires §cEnable Post-Effect§r option to be enabled!"))),
-                        new SwitchOption(Component.translatable("Per RenderType AreaBuffers"),
+                                .setTooltip(Component.translatable("vulkanmod.options.renderEntityOutline.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.perRenderTypeAreaBuffers"),
                                 value -> {
                                     config.perRenderTypeAreaBuffers = value;
                                     minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.perRenderTypeAreaBuffers)
-                                .setTooltip(Component.nullToEmpty("""
-                                (WARNING: EXPERIMENTAL)
-                        
-                                Potentially improves performance of Chunk Rendering
-                        
-                                Very Architecture specific: May have no effect on some Devices""")),
-                        new SwitchOption(Component.translatable("Exclude Sampled Usage"),
+                                .setTooltip(Component.translatable("vulkanmod.options.perRenderTypeAreaBuffers.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.excludeSampledUsage"),
                                 value -> {
                                     config.dontUseImageSampled = value;
                                     minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.dontUseImageSampled)
-                                .setTooltip(Component.translatable("When enabled, this option optimizes the image solely for rendering operations, enhancing efficiency, and avoiding potential compression issues, particularly on mobile platforms. However, it restricts the image to being solely a render target, thus prohibiting direct sampling in shaders.")),
+                                .setTooltip(Component.translatable("vulkanmod.options.excludeSampledUsage.tooltip" + (Initializer.CONFIG.postEffect ? "" : "vulkanmod.options.renderEntityOutline.tooltip.extra"))),
                         new SwitchOption(Component.translatable("vulkanmod.options.entityCulling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
@@ -361,7 +356,6 @@ public abstract class Options {
                                 .setTooltip(Component.translatable("vulkanmod.options.indirectDraw.tooltip"))
                 })
         };
-
     }
 
     public static OptionBlock[] getOtherOpts() {
@@ -374,24 +368,18 @@ public abstract class Options {
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.frameQueueSize)
                                 .setTooltip(Component.translatable("vulkanmod.options.frameQueue.tooltip")),
-                        new RangeOption(Component.translatable("SwapChain Images"), minImageCount,
+                        new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
                                 maxImageCount, 1,
                                 value -> {
                                     config.imageCount = value;
                                     Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.imageCount)
-                                .setTooltip(Component.nullToEmpty("""
-                                Sets the number of Swapchain images
-                                Optimised automatically for best performance
-                                This can be reduced to minimise input lag but at the cost of decreased FPS""")),
-                        new SwitchOption(Component.translatable("Show Phone RAM Info"),
+                                .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
-                                .setTooltip(Component.nullToEmpty(
-                                "Running on Phone?: " + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" +
-                                "\n" +
-                                "Shows your Phone RAM Info on debug screen.")),
-                        new RangeOption(Component.translatable("Phone RAM Info update delay"), 0, 10, 1,
+                                .setTooltip(Component.translatable("vulkanmod.options.showPhoneRAMInfo.tooltip")),
+                        new RangeOption(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay"), 0, 10, 1,
                                 value -> {
                                     if (value == 0) return Component.translatable("0.01s");
                                     else if (value == 1) return Component.translatable("0.1s");
@@ -408,11 +396,11 @@ public abstract class Options {
                                 },
                                 value -> config.ramInfoUpdate = value,
                                 () -> config.ramInfoUpdate)
-                                .setTooltip(Component.translatable("Sets the number of seconds when the RAM info updates information. Setting too low can affect performance.")),
-                        new SwitchOption(Component.translatable("Show Pojav Info"),
+                                .setTooltip(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.showPojavInfo"),
                                 value -> config.pojavInfo = value,
                                 () -> config.pojavInfo)
-                                .setTooltip(Component.translatable("Shows Pojav Info on debug screen.")),
+                                .setTooltip(Component.translatable("vulkanmod.options.showPojavInfo.tooltip")),
                         new CyclingOption<>(Component.translatable("vulkanmod.options.deviceSelector"),
                                 IntStream.range(-1, DeviceManager.suitableDevices.size()).boxed().toArray(Integer[]::new),
                                 value -> config.device = value,
@@ -428,10 +416,10 @@ public abstract class Options {
                                     return Component.translatable(t);
                                 })
                                 .setTooltip(
-                                Component.nullToEmpty("%s: %s".formatted(
-                                        Component.translatable("vulkanmod.options.deviceSelector.tooltip").getString(),
-                                        DeviceManager.device.deviceName
-                                )))
+                                        Component.nullToEmpty("%s: %s".formatted(
+                                                Component.translatable("vulkanmod.options.deviceSelector.tooltip").getString(),
+                                                DeviceManager.device.deviceName
+                                        )))
                 })
         };
     }
