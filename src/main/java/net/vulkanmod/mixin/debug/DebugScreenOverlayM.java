@@ -47,7 +47,7 @@ public abstract class DebugScreenOverlayM {
     @Shadow
     protected abstract List<String> getSystemInformation();
 
-    @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;"))
+    @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;"))
         private ObjectArrayList<String> redirectList(Object[] elements) {
         ObjectArrayList<String> strings = new ObjectArrayList<>();
         long maxMemory = Runtime.getRuntime().maxMemory();
