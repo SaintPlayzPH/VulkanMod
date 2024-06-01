@@ -1,6 +1,5 @@
 package net.vulkanmod.mixin.debug;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
@@ -19,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.lang.management.ManagementFactory;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR;
@@ -47,9 +47,9 @@ public abstract class DebugScreenOverlayM {
     @Shadow
     protected abstract List<String> getSystemInformation();
 
-    @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;"))
-        private ObjectArrayList<String> redirectList(Object[] elements) {
-        ObjectArrayList<String> strings = new ObjectArrayList<>();
+    @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;"))
+        private ArrayList<String> redirectList(Object[] elements) {
+        ArrayList<String> strings = new ArrayList<>();
         long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
         long freeMemory = Runtime.getRuntime().freeMemory();
