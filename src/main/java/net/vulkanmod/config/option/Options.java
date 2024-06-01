@@ -188,7 +188,11 @@ public abstract class Options {
                 new OptionBlock("", new Option<?>[]{
                         new CyclingOption<>(Component.translatable("options.graphics"),
                                 new GraphicsStatus[]{GraphicsStatus.FAST, GraphicsStatus.FANCY},
-                                value -> minecraftOptions.graphicsMode().set(value),
+                                value ->
+                                {
+                                    minecraftOptions.graphicsMode().set(value);
+                                    minecraft.levelRenderer.allChanged();
+                                },
                                 () -> minecraftOptions.graphicsMode().get())
                                 .setTranslator(graphicsMode -> Component.translatable(graphicsMode.getKey())),
                         new CyclingOption<>(Component.translatable("options.particles"),
