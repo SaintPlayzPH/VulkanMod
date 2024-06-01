@@ -3,7 +3,6 @@ package net.vulkanmod.config.gui;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -14,8 +13,8 @@ import net.minecraft.util.FormattedCharSequence;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.config.gui.widget.VAbstractWidget;
 import net.vulkanmod.config.gui.widget.VButtonWidget;
-import net.vulkanmod.config.option.Options;
 import net.vulkanmod.config.option.OptionPage;
+import net.vulkanmod.config.option.Options;
 import net.vulkanmod.vulkan.util.ColorUtil;
 
 import java.util.ArrayList;
@@ -154,23 +153,36 @@ public class VOptionScreen extends Screen {
 
     private void addButtons() {
         int rightMargin = 20;
-        int buttonWidth = 50;
         int buttonHeight = 20;
+        int padding = 10;
+        int buttonWidth = minecraft.font.width(CommonComponents.GUI_DONE) + padding;
         int x0 = (this.width - buttonWidth - rightMargin);
         int y0 = this.height - buttonHeight - 7;
-        int padding = 5;
 
-        this.doneButton = new VButtonWidget(x0, y0, buttonWidth, buttonHeight, CommonComponents.GUI_DONE,
-                button -> this.minecraft.setScreen(this.parent));
+        this.doneButton = new VButtonWidget(
+                x0, y0,
+                buttonWidth, buttonHeight,
+                CommonComponents.GUI_DONE,
+                button -> this.minecraft.setScreen(this.parent)
+        );
 
-        x0 -= (buttonWidth + padding);
-        this.applyButton = new VButtonWidget(x0, y0, buttonWidth, buttonHeight, Component.translatable("vulkanmod.options.buttons.apply"),
-                button -> this.applyOptions());
+        buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.apply")) + padding;
+        x0 -= (buttonWidth + padding / 2);
+        this.applyButton = new VButtonWidget(
+                x0, y0,
+                buttonWidth, buttonHeight,
+                Component.translatable("vulkanmod.options.buttons.apply"),
+                button -> this.applyOptions()
+        );
 
-        buttonWidth = 70;
+        buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + padding;
         x0 = (this.width - buttonWidth - rightMargin);
-        this.supportButton = new VButtonWidget(x0, 6, buttonWidth, buttonHeight, Component.translatable("vulkanmod.options.buttons.kofi"),
-                button -> Util.getPlatform().openUri("https://ko-fi.com/xcollateral"));
+        this.supportButton = new VButtonWidget(
+                x0, 6,
+                buttonWidth, buttonHeight,
+                Component.translatable("vulkanmod.options.buttons.kofi"),
+                button -> Util.getPlatform().openUri("https://ko-fi.com/xcollateral")
+        );
 
         buttons.add(this.applyButton);
         buttons.add(this.doneButton);
@@ -232,7 +244,7 @@ public class VOptionScreen extends Screen {
         this.renderBackground(guiGraphics, 0, 0, 0);
 
         ResourceLocation icon = new ResourceLocation("vulkanmod", "vlogo_transparent.png");
-        int size = Minecraft.getInstance().font.lineHeight * 4;
+        int size = minecraft.font.lineHeight * 4;
 
         guiGraphics.blit(icon, 30, 4, 0f, 0f, size, size, size, size);
 
