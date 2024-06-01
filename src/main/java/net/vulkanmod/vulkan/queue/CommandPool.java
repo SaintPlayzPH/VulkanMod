@@ -82,6 +82,8 @@ public class CommandPool {
 
             vkBeginCommandBuffer(commandBuffer.handle, beginInfo);
 
+//            current++;
+
             return commandBuffer;
         }
     }
@@ -150,4 +152,5 @@ public class CommandPool {
             addToAvailable(this);
         }
     }
-}
+    }
+        
