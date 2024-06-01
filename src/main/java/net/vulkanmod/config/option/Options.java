@@ -381,7 +381,7 @@ public abstract class Options {
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnPhone")
                             .append(Component.literal(isRunningOnPhone() ? "§aYes§r" : "§cNo§r"))
-                            .append("\n")
+                            .append("\n\n")
                             .append(Component.translatable("vulkanmod.options.showPhoneRAMInfo.tooltip"))),
             new RangeOption(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay"), 0, 10, 1,
                     value -> {
