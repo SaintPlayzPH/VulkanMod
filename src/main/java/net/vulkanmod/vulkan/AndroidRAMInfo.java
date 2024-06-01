@@ -107,8 +107,8 @@ public class AndroidRAMInfo {
         return System.getenv("POJAV_RENDERER") != null;
     }
 
-    private static String getAvailableRAMWarn() {
-        getAllMemoryInfo();
+    public static String getAvailableRAMWarn() {
+        double memFreeMB = memFree / 1024.0;
         lock.lock();
         try {
             if (memFreeMB < 500) {
