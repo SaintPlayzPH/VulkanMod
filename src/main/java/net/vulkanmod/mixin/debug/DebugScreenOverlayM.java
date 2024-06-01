@@ -1,5 +1,6 @@
 package net.vulkanmod.mixin.debug;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
@@ -17,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,8 +48,8 @@ public abstract class DebugScreenOverlayM {
     protected abstract List<String> getSystemInformation();
 
     @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;"))
-    private ArrayList<String> redirectList(Object[] elements) {
-        ArrayList<String> strings = new ArrayList<>();
+        private ObjectArrayList<String> redirectList(Object[] elements) {
+        ObjectArrayList<String> strings = new ObjectArrayList<>();
         long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
         long freeMemory = Runtime.getRuntime().freeMemory();
@@ -91,6 +91,7 @@ public abstract class DebugScreenOverlayM {
             strings.add(AndroidRAMInfo.getBuffersInfo());
             strings.add(AndroidRAMInfo.getAvailableRAMWarn());
         }
+        
         return strings;
     }
 
