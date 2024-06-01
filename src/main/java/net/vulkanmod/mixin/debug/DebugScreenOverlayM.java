@@ -89,7 +89,7 @@ public abstract class DebugScreenOverlayM {
             strings.add(AndroidRAMInfo.getMemoryInfo());
             strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
             strings.add(AndroidRAMInfo.getBuffersInfo());
-            strings.add(AndroidRAMInfo.getAvailableRAMWarn());
+            strings.add(AndroidRAMInfo.getAvailableRAMWarn(float memFreeMB));
         }
         return strings;
     }
