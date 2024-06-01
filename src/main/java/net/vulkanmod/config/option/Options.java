@@ -378,7 +378,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
                                 value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
                                 () -> isRunningOnPhone() && config.showAndroidRAM)
-                                .setTooltip(Component.translatable("vulkanmod.options.showPhoneRAMInfo.tooltip")),
+                                .setTooltip(Component.translatable("vulkanmod.options.runningOnPhone" + (isRunningOnPhone() ? "§aYes§r" : "§cNo§r") + "\n" + "vulkanmod.options.showPhoneRAMInfo.tooltip")),
                         new RangeOption(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay"), 0, 10, 1,
                                 value -> {
                                     if (value == 0) return Component.translatable("0.01s");
