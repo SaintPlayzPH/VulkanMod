@@ -117,11 +117,11 @@ public class AndroidRAMInfo {
                 } else {
                     return "Your RAM is very low, the system will lag significantly and there's a chance the game may force crash.";
                 }
-                return "";
             }
         } finally {
             lock.unlock();
         }
+        return "";
     }
     
 
