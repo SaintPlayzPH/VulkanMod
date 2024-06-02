@@ -115,10 +115,10 @@ public class DrawBuffers {
     }
 
     public void buildDrawBatchesIndirect(IndirectBuffer indirectBuffer, StaticQueue<RenderSection> queue, TerrainRenderType terrainRenderType) {
-    VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
 
     try (MemoryStack stack = MemoryStack.stackPush()) {
 
+        ByteBuffer byteBuffer = stack.malloc(20); // Allocate memory for a single draw call
         boolean isTranslucent = terrainRenderType == TerrainRenderType.TRANSLUCENT;
 
         for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
@@ -129,21 +129,20 @@ public class DrawBuffers {
             if (drawParameters.indexCount <= 0)
                 continue;
 
-            ByteBuffer byteBuffer = stack.malloc(20);
-
+            // Populate the byte buffer for a single draw call
             MemoryUtil.memPutInt(byteBuffer, drawParameters.indexCount);
-            MemoryUtil.memPutInt(byteBuffer + Integer.BYTES, drawParameters.instanceCount);
-            MemoryUtil.memPutInt(byteBuffer + 2 * Integer.BYTES, drawParameters.firstIndex == -1 ? 0 : drawParameters.firstIndex);
-            MemoryUtil.memPutInt(byteBuffer + 3 * Integer.BYTES, drawParameters.vertexOffset);
-            MemoryUtil.memPutInt(byteBuffer + 4 * Integer.BYTES, drawParameters.baseInstance);
+            MemoryUtil.memPutInt(byteBuffer + 4, drawParameters.instanceCount);
+            MemoryUtil.memPutInt(byteBuffer + 8, drawParameters.firstIndex == -1 ? 0 : drawParameters.firstIndex);
+            MemoryUtil.memPutInt(byteBuffer + 12, drawParameters.vertexOffset);
+            MemoryUtil.memPutInt(byteBuffer + 16, drawParameters.baseInstance);
 
-            indirectBuffer.recordCopyCmd(byteBuffer);
-
-            vkCmdDrawIndexedIndirect(commandBuffer, indirectBuffer.getId(), indirectBuffer.getOffset(), 1, 20);
+            // Record the draw call
+            indirectBuffer.recordCopyCmd(byteBuffer.position(0));
+            vkCmdDrawIndexedIndirect(Renderer.getCommandBuffer(), indirectBuffer.getId(), indirectBuffer.getOffset(), 1, 20);
         }
     }
     }
-
+    
     public void buildDrawBatchesDirect(StaticQueue<RenderSection> queue, TerrainRenderType renderType) {
         boolean isTranslucent = renderType == TerrainRenderType.TRANSLUCENT;
         VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
