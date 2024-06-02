@@ -68,7 +68,6 @@ public abstract class LevelRendererMixin {
     @Shadow
     public abstract void renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f);
 
-    @Unique
     private WorldRenderer worldRenderer;
 
     @Unique
@@ -97,7 +96,7 @@ public abstract class LevelRendererMixin {
 
     @Overwrite
     public boolean shouldShowEntityOutlines() {
-        return Initializer.CONFIG.postEffect && Initializer.CONFIG.entityOutline;
+        return Initializer.CONFIG.entityOutline;
     }
     /**
      * @author
