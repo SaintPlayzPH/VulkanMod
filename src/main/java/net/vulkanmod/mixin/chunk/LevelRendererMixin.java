@@ -68,6 +68,11 @@ public abstract class LevelRendererMixin {
     @Shadow
     public abstract void renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f);
 
+    @Overwrite
+    public boolean shouldShowEntityOutlines() {
+        return Initializer.CONFIG.entityOutline;
+    }
+    
     private WorldRenderer worldRenderer;
 
     @Unique
@@ -94,10 +99,6 @@ public abstract class LevelRendererMixin {
         this.worldRenderer.renderBlockEntities(poseStack, pos.x(), pos.y(), pos.z(), this.destructionProgress, f);
     }
 
-    @Overwrite
-    public boolean shouldShowEntityOutlines() {
-        return Initializer.CONFIG.entityOutline;
-    }
     /**
      * @author
      * @reason
