@@ -138,7 +138,7 @@ public class DrawBuffers {
             intBuffer.put(drawParameters.baseInstance);
 
             // Record the draw call
-            indirectBuffer.recordCopyCmd(intBuffer.position(0) * Integer.BYTES);
+            indirectBuffer.recordCopyCmd(intBuffer.capacity() * Integer.BYTES);
             vkCmdDrawIndexedIndirect(Renderer.getCommandBuffer(), indirectBuffer.getId(), indirectBuffer.getOffset(), 1, 20);
         }
     }
