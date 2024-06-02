@@ -29,7 +29,7 @@ public class GraphicsPipeline extends Pipeline {
     private final VertexFormat vertexFormat;
     private long vertShaderModule = 0;
     private long fragShaderModule = 0;
-    private PipelineState state;
+    public PipelineState state;
 
     GraphicsPipeline(Builder builder) {
         super(builder.shaderPath);
@@ -57,8 +57,7 @@ public class GraphicsPipeline extends Pipeline {
         return graphicsPipelines.computeIfAbsent(state, this::createGraphicsPipeline);
     }
 
-    public long createGraphicsPipeline(PipelineState state) {
-        this.state = state;
+    private long createGraphicsPipeline(PipelineState state) {
 
         try (MemoryStack stack = stackPush()) {
 
