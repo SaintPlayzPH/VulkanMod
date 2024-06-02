@@ -299,7 +299,7 @@ public class Renderer {
     }
 
     private void submitFrame() {
-        if (swapChainUpdate || state.renderPass)
+        if (swapChainUpdate || state.renderPass == null)
             return;
 
         try (MemoryStack stack = stackPush()) {
