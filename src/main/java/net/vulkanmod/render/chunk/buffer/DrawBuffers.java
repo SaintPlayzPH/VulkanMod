@@ -207,7 +207,7 @@ public class DrawBuffers {
     }
 
     public static class DrawParameters {
-        int indexCount = 0, instanceCount = 1, firstIndex = -1, vertexOffset = -1, baseInstance;
+        byte indexCount = 0, instanceCount = 1, firstIndex = -1, vertexOffset = -1, baseInstance;
         public void reset(ChunkArea chunkArea, TerrainRenderType r) {
             int segmentOffset = vertexOffset * VERTEX_SIZE;
             if (chunkArea != null && chunkArea.getDrawBuffers().hasRenderType(r) && segmentOffset != -1) {
