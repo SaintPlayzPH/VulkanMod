@@ -134,12 +134,17 @@ public class BuildTask extends ChunkTask {
                     if (blockState.getRenderShape() == RenderShape.MODEL) {
                         renderType = TerrainRenderType.get(ItemBlockRenderTypes.getChunkRenderType(blockState));
 
-                        if (Initializer.CONFIG.uniqueOpaqueLayer)
-                        {
-                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
-                            else if(blockState.getBlock() instanceof GrassBlock) renderType = TerrainRenderType.CUTOUT;
+                        if (Initializer.CONFIG.uniqueOpaqueLayer) {
+                            if (blockState.getBlock() instanceof LeavesBlock) {
+                                // Custom logic to render leaves as opaque with black color
+                                renderType = TerrainRenderType.SOLID;
+                                bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
+                                bufferBuilder.setColor(0, 0, 0, 255); // Set color to black
+                            } else if (blockState.getBlock() instanceof GrassBlock) {
+                                renderType = TerrainRenderType.CUTOUT;
+                            }
                         }
-                        
+
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
                         bufferBuilder.setBlockAttributes(blockState);
 
@@ -183,24 +188,18 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-
-            if(!Initializer.CONFIG.uniqueOpaqueLayer) {
-                return switch (renderType)
-                {
-                    case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
-                    default -> TerrainRenderType.TRANSLUCENT;
-
-                };
-            }
-            else {
-                return  switch (renderType)
-                {
-                    case SOLID, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
-                    case CUTOUT -> TerrainRenderType.CUTOUT;
-                    default -> TerrainRenderType.TRANSLUCENT;
-
-                };
-            }
+        if (!Initializer.CONFIG.uniqueOpaqueLayer) {
+            return switch (renderType) {
+                case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
+                default -> TerrainRenderType.TRANSLUCENT;
+            };
+        } else {
+            return switch (renderType) {
+                case SOLID, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
+                case CUTOUT -> TerrainRenderType.CUTOUT;
+                default -> TerrainRenderType.TRANSLUCENT;
+            };
+        }
     }
 
     private <E extends BlockEntity> void handleBlockEntity(CompileResult compileResult, E blockEntity) {
@@ -211,6 +210,5 @@ public class BuildTask extends ChunkTask {
                 compileResult.globalBlockEntities.add(blockEntity);
             }
         }
-
     }
 }
