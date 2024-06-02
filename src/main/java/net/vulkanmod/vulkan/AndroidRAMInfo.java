@@ -8,9 +8,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import net.vulkanmod.Initializer;
 
 public class AndroidRAMInfo {
-    private static long memFree = 0;
-    private static long memTotal = 0;
-    private static long memBuffers = 0;
+    public static long memFree = 0;
+    public static long memTotal = 0;
+    public static long memBuffers = 0;
 
     private static final Lock lock = new ReentrantLock();
 
