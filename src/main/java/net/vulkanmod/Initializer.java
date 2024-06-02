@@ -8,6 +8,7 @@ import net.vulkanmod.config.video.VideoModeManager;
 import net.vulkanmod.vulkan.AndroidRAMInfo;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.Device;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,8 +39,7 @@ public class Initializer implements ClientModInitializer {
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
             LOGGER.info("• Phone GPU: " + Vulkan.getDevice().deviceName);
-            LOGGER.info("• Phone RAM:");
-            LOGGER.info(AndroidRAMInfo.getMemoryInfo());
+            LOGGER.info("• Phone RAM:" + AndroidRAMInfo.getRAMInfo() + " KB");
             loggedAndroid = true;
         }
         Platform.init();
