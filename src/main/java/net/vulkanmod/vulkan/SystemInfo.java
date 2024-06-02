@@ -29,7 +29,7 @@ public class SystemInfo {
         }
     }
 
-    private static String getProcessorNameForAndroid() {
+    public static String getProcessorNameForAndroid() {
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
             String line;
             while ((line = br.readLine()) != null) {
