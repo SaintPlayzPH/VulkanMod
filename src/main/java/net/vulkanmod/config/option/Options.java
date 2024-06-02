@@ -331,14 +331,9 @@ public abstract class Options {
                                     config.entityOutline = config.postEffect ? value : false;
                                 },
                                 () -> config.postEffect && config.entityOutline)
-                               .setTooltip(() -> {
-                                   Component tooltip = Component.translatable("vulkanmod.options.renderEntityOutline.tooltip");
-                                   if (!config.postEffect) {
-                                   tooltip = tooltip.append(Component.translatable("vulkanmod.options.renderEntityOutline.tooltip.extra"));
-                            }
-
-                            return tooltip;
-                        });
+                                .setTooltip(
+                    Component.translatable("vulkanmod.options.runningOnPhone")
+                            .append(!config.postEffect ? Component.translatable("vulkanmod.options.renderEntityOutline.tooltip") : null)),
                         new SwitchOption(Component.translatable("vulkanmod.options.perRenderTypeAreaBuffers"),
                                 value -> {
                                     config.perRenderTypeAreaBuffers = value;
@@ -352,7 +347,7 @@ public abstract class Options {
                                     minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.dontUseImageSampled)
-                                .setTooltip(Component.translatable("vulkanmod.options.excludeSampledUsage.tooltip" + (Initializer.CONFIG.postEffect ? "" : "vulkanmod.options.renderEntityOutline.tooltip.extra"))),
+                                .setTooltip(Component.translatable("vulkanmod.options.excludeSampledUsage.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.entityCulling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
