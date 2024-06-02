@@ -333,7 +333,7 @@ public abstract class Options {
                                 () -> config.postEffect && config.entityOutline)
                                 .setTooltip(
                     Component.translatable("vulkanmod.options.renderEntityOutline.tooltip")
-                            .append(!config.postEffect ? Component.translatable("vulkanmod.options.renderEntityOutline.tooltip.extra") : "")),
+                            .append(!config.postEffect ? Component.translatable("vulkanmod.options.renderEntityOutline.tooltip.extra") : Component.literal(""))),
                         new SwitchOption(Component.translatable("vulkanmod.options.perRenderTypeAreaBuffers"),
                                 value -> {
                                     config.perRenderTypeAreaBuffers = value;
