@@ -299,7 +299,7 @@ public class Renderer {
     }
 
     private void submitFrame() {
-        if (swapChainUpdate || GraphicsPipeline.state.renderPass == null)
+        if (swapChainUpdate)
             return;
 
         try (MemoryStack stack = stackPush()) {
