@@ -18,7 +18,7 @@ public class Initializer implements ClientModInitializer {
 
     private static String VERSION;
     public static Config CONFIG;
-    public static boolean androidLogged = false;
+    public static boolean loggedAndroid = false;
 
     // Static block to ensure CONFIG is initialized early
     static {
