@@ -58,6 +58,7 @@ public class GraphicsPipeline extends Pipeline {
     }
 
     private long createGraphicsPipeline(PipelineState state) {
+        this.state = state;
 
         try (MemoryStack stack = stackPush()) {
 
