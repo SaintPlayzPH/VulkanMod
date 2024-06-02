@@ -19,6 +19,7 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.EnumMap;
 
 import static org.lwjgl.vulkan.VK10.*;
@@ -118,7 +119,7 @@ public class DrawBuffers {
 
     try (MemoryStack stack = MemoryStack.stackPush()) {
 
-        ByteBuffer byteBuffer = stack.malloc(20); // Allocate memory for a single draw call
+        IntBuffer intBuffer = stack.mallocInt(5); // Allocate memory for a single draw call
         boolean isTranslucent = terrainRenderType == TerrainRenderType.TRANSLUCENT;
 
         for (var iterator = queue.iterator(isTranslucent); iterator.hasNext(); ) {
@@ -129,15 +130,15 @@ public class DrawBuffers {
             if (drawParameters.indexCount <= 0)
                 continue;
 
-            // Populate the byte buffer for a single draw call
-            MemoryUtil.memPutInt(byteBuffer, drawParameters.indexCount);
-            MemoryUtil.memPutInt(byteBuffer + 4, drawParameters.instanceCount);
-            MemoryUtil.memPutInt(byteBuffer + 8, drawParameters.firstIndex == -1 ? 0 : drawParameters.firstIndex);
-            MemoryUtil.memPutInt(byteBuffer + 12, drawParameters.vertexOffset);
-            MemoryUtil.memPutInt(byteBuffer + 16, drawParameters.baseInstance);
+            // Populate the int buffer for a single draw call
+            intBuffer.put(drawParameters.indexCount);
+            intBuffer.put(1);
+            intBuffer.put(drawParameters.firstIndex == -1 ? 0 : drawParameters.firstIndex);
+            intBuffer.put(drawParameters.vertexOffset);
+            intBuffer.put(drawParameters.baseInstance);
 
             // Record the draw call
-            indirectBuffer.recordCopyCmd(byteBuffer.position(0));
+            indirectBuffer.recordCopyCmd(intBuffer.position(0) * Integer.BYTES);
             vkCmdDrawIndexedIndirect(Renderer.getCommandBuffer(), indirectBuffer.getId(), indirectBuffer.getOffset(), 1, 20);
         }
     }
@@ -207,7 +208,7 @@ public class DrawBuffers {
     }
 
     public static class DrawParameters {
-        byte indexCount = 0, instanceCount = 1, firstIndex = -1, vertexOffset = -1, baseInstance;
+        int indexCount = 0, instanceCount = 1, firstIndex = -1, vertexOffset = -1, baseInstance;
         public void reset(ChunkArea chunkArea, TerrainRenderType r) {
             int segmentOffset = vertexOffset * VERTEX_SIZE;
             if (chunkArea != null && chunkArea.getDrawBuffers().hasRenderType(r) && segmentOffset != -1) {
