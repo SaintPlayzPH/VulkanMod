@@ -49,6 +49,9 @@ public class DrawBuffers {
     }
 
     public void upload(RenderSection section, UploadBuffer buffer, TerrainRenderType renderType) {
+        if (!this.allocated) {
+            allocateBuffers();
+        }
         DrawParameters drawParameters = section.getDrawParameters(renderType);
         int vertexOffset = drawParameters.vertexOffset;
         int firstIndex = -1;
