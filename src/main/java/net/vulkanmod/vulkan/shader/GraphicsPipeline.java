@@ -57,7 +57,7 @@ public class GraphicsPipeline extends Pipeline {
         return graphicsPipelines.computeIfAbsent(state, this::createGraphicsPipeline);
     }
 
-    private long createGraphicsPipeline(PipelineState state) {
+    public long createGraphicsPipeline(PipelineState state) {
         this.state = state;
 
         try (MemoryStack stack = stackPush()) {
