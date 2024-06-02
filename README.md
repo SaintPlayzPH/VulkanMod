@@ -71,13 +71,13 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 >- [ ] Removed Herobrine
 
 ## Known Issue with VKMod on PojavLauncher:
-- Few Rendering bug with **ASR** enabled.
+- Few bugs with **ASR** enabled.
 - Some devices doesn't support.
 
 ## Notes
 - This mod is still in development, please report issues in the [issue tab](https://github.com/xCollateral/VulkanMod/issues) with logs attached!
 - This mode isn't just "minecraft on vulkan" (e.g: [zink](https://docs.mesa3d.org/drivers/zink.html) ), it is a full rewrite of the minecraft renderer.
-- This will not support 32-bit devices **(e.g. Desktops, Mobile, etc...)**.
+- This will not support 32-bit devices **(e.g. Desktops, Mobile, etc...)** but this modified version may still works on **Desktop** (not sure).
 - The **modifier** has no plan to publish this publicly on **any platforms (e.g YouTube, Mediafire, etc...)**.
 - This modification of **VulkanMod** is **UNOFFICIAL**.
 - Use main branch **"1.20.4"** and don't worry about **Malware**, or **any viruses** because this **modified** version doesn't **APPLY** any **malicious files or codes** and trust ne, I have **5 YEARS** of coding experience and I know to trace **any malicious files** at all.
