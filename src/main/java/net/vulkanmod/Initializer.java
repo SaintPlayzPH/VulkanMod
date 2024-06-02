@@ -36,9 +36,10 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("==> VulkanMod <==");
         if (isRunningOnMobile() && !loggedAndroid) {
             LOGGER.info("=• We're running on Mobile device! •=");
-            LOGERR.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
+            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
             LOGGER.info("• Phone GPU: " + Vulkan.getDevice().deviceName);
-            LOGGER.info("• Phone RAM: " + AndroidRAMInfo.getMemoryInfo().memTotalMB + " MB");
+            LOGGER.info("• Phone RAM:");
+            LOGGER.info(AndroidRAMInfo.getMemoryInfo());
             loggedAndroid = true;
         }
         Platform.init();
