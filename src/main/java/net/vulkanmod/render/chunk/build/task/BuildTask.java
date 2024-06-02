@@ -139,7 +139,6 @@ public class BuildTask extends ChunkTask {
                                 // Custom logic to render leaves as opaque with black color
                                 renderType = TerrainRenderType.SOLID;
                                 bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
-                                bufferBuilder.setColor(0, 0, 0, 255); // Set color to black
                             } else if (blockState.getBlock() instanceof GrassBlock) {
                                 renderType = TerrainRenderType.CUTOUT;
                             }
