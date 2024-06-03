@@ -89,7 +89,7 @@ public abstract class DebugScreenOverlayM {
             strings.add(AndroidRAMInfo.getMemoryInfo());
             strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
             strings.add(AndroidRAMInfo.getBuffersInfo());
-            if (INITIALIZER.CONFIG.showlowRAM) {
+            if (Initializer.CONFIG.showlowRAM) {
                 strings.add(AndroidRAMInfo.getAvailableRAMWarn());
             }
         }
