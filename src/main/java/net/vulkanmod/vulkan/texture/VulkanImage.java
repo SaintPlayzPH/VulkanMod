@@ -8,6 +8,7 @@ import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.memory.MemoryManager;
 import net.vulkanmod.vulkan.memory.StagingBuffer;
 import net.vulkanmod.vulkan.queue.CommandPool;
+import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -29,6 +30,9 @@ public class VulkanImage {
 
     private static final VkDevice DEVICE = Vulkan.getVkDevice();
 
+    private static final int defAccessReadBit = QueueFamilyIndices.hasDedicatedTransferQueue ? VK_ACCESS_TRANSFER_READ_BIT : VK_ACCESS_SHADER_READ_BIT;
+    private static final int defDstStage = QueueFamilyIndices.hasDedicatedTransferQueue ? VK_PIPELINE_STAGE_TRANSFER_BIT : VK_PIPELINE_STAGE_VERTEX_SHADER_BIT;
+    
     private long id;
     private long allocation;
     private long mainImageView;
@@ -199,7 +203,7 @@ public class VulkanImage {
     public void uploadSubTextureAsync(int mipLevel, int width, int height, int xOffset, int yOffset, int unpackSkipRows, int unpackSkipPixels, int unpackRowLength, ByteBuffer buffer) {
         long imageSize = buffer.limit();
 
-        CommandPool.CommandBuffer commandBuffer = DeviceManager.getGraphicsQueue().getCommandBuffer();
+        CommandPool.CommandBuffer commandBuffer = DeviceManager.getTransferQueue().getCommandBuffer();
         try (MemoryStack stack = stackPush()) {
             transferDstLayout(stack, commandBuffer.getHandle());
         }
@@ -212,7 +216,7 @@ public class VulkanImage {
         ImageUtil.copyBufferToImageCmd(commandBuffer.getHandle(), stagingBuffer.getId(), id, mipLevel, width, height, xOffset, yOffset,
                 (int) (stagingBuffer.getOffset() + (unpackRowLength * unpackSkipRows + unpackSkipPixels) * this.formatSize), unpackRowLength, height);
 
-        long fence = DeviceManager.getGraphicsQueue().endIfNeeded(commandBuffer);
+        long fence = DeviceManager.getTransferQueue().endIfNeeded(commandBuffer);
         if (fence != VK_NULL_HANDLE)
 //            Synchronization.INSTANCE.addFence(fence);
             Synchronization.INSTANCE.addCommandBuffer(commandBuffer);
@@ -226,11 +230,11 @@ public class VulkanImage {
         if (this.currentLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
             return;
 
-        CommandPool.CommandBuffer commandBuffer = DeviceManager.getGraphicsQueue().getCommandBuffer();
+        CommandPool.CommandBuffer commandBuffer = DeviceManager.getTransferQueue().getCommandBuffer();
         try (MemoryStack stack = MemoryStack.stackPush()) {
             readOnlyLayout(stack, commandBuffer.getHandle());
         }
-        DeviceManager.getGraphicsQueue().submitCommands(commandBuffer);
+        DeviceManager.getTransferQueue().submitCommands(commandBuffer);
         Synchronization.INSTANCE.addCommandBuffer(commandBuffer);
     }
 
@@ -273,14 +277,14 @@ public class VulkanImage {
             }
             case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL -> {
                 srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-                sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+                sourceStage = defDstStage;
             }
             case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL -> {
                 srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-                sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+                sourceStage = defDstStage;
             }
             case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL -> {
-                srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+                srcAccessMask = defAccessReadBit;
                 sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
             }
             case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL -> {
@@ -297,14 +301,14 @@ public class VulkanImage {
         switch (newLayout) {
             case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL -> {
                 dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-                destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+                destinationStage = defDstStage;
             }
             case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL -> {
                 dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-                destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+                destinationStage = defDstStage;
             }
             case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL -> {
-                dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+                dstAccessMask = defAccessReadBit;
                 destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
             }
             case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL -> {
@@ -428,7 +432,7 @@ public class VulkanImage {
         int format = VulkanImage.DefaultFormat;
         int formatSize;
         byte mipLevels = 1;
-        int usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        int usage = Initializer.CONFIG.dontUseImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 
         byte samplerFlags = 0;
 
