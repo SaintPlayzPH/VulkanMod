@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "電話のRAM情報更新遅延",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "RAM情報が更新される秒数を設定します。低く設定しすぎるとパフォーマンスに影響する場合があります。",
   "vulkanmod.options.showPojavInfo": "Pojav情報を表示",
-  "vulkanmod.options.showPojavInfo.tooltip": "デバッグ画面にPojav情報を表示します。"
+  "vulkanmod.options.showPojavInfo.tooltip": "デバッグ画面にPojav情報を表示します。",
+  "vulkanmod.options.showLowRAM": "電話の低RAM警告を表示",
+  "vulkanmod.options.showLowRAM.tooltip": "RAMが低い場合に警告を表示します"
 }

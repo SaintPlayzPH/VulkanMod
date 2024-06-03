@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "手机 RAM 信息更新延迟",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "设置 RAM 信息更新的秒数。设置过低可能会影响性能。",
   "vulkanmod.options.showPojavInfo": "显示 Pojav 信息",
-  "vulkanmod.options.showPojavInfo.tooltip": "在调试屏幕上显示 Pojav 信息。"
+  "vulkanmod.options.showPojavInfo.tooltip": "在调试屏幕上显示 Pojav 信息。",
+  "vulkanmod.options.showLowRAM": "显示手机低RAM警告",
+  "vulkanmod.options.showLowRAM.tooltip": "当您的RAM较低时显示警告"
 }

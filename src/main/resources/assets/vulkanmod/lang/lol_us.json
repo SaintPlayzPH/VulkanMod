@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "Fone RAM Info updayt delay",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "Setz teh numbur of sekundz when teh RAM info updayts info. Settin too low can affekt purformans.",
   "vulkanmod.options.showPojavInfo": "Show Pojav Info",
-  "vulkanmod.options.showPojavInfo.tooltip": "Showz Pojav Info on debugg skreen."
+  "vulkanmod.options.showPojavInfo.tooltip": "Showz Pojav Info on debugg skreen.",
+  "vulkanmod.options.showLowRAM": "Sho Kitteh Low RAM Warnin",
+  "vulkanmod.options.showLowRAM.tooltip": "Sho Warnin wen yur RAM iz low"
 }

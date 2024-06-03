@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "Délai de mise à jour des infos RAM du téléphone",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "Définit le nombre de secondes avant la mise à jour des informations RAM. Réglé trop bas peut affecter les performances.",
   "vulkanmod.options.showPojavInfo": "Afficher les infos Pojav",
-  "vulkanmod.options.showPojavInfo.tooltip": "Affiche les informations Pojav sur l'écran de débogage."
+  "vulkanmod.options.showPojavInfo.tooltip": "Affiche les informations Pojav sur l'écran de débogage.",
+  "vulkanmod.options.showLowRAM": "Afficher Avertissement de faible RAM téléphone",
+  "vulkanmod.options.showLowRAM.tooltip": "Affiche un avertissement lorsque votre RAM est faible"
 }

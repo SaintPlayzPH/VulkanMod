@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "Phone RAM Info update delay",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "Itinatakda ang bilang ng mga segundo kung kailan nag-uupdate ang RAM info ng impormasyon. Ang pag-set ng masyadong mababa ay maaaring makaapekto sa performance.",
   "vulkanmod.options.showPojavInfo": "Ipakita ang Pojav Info",
-  "vulkanmod.options.showPojavInfo.tooltip": "Nagpapakita ng Pojav Info sa debug screen."
+  "vulkanmod.options.showPojavInfo.tooltip": "Nagpapakita ng Pojav Info sa debug screen.",
+  "vulkanmod.options.showLowRAM": "Ipakita ang Babala ng Mababang RAM ng Telepono",
+  "vulkanmod.options.showLowRAM.tooltip": "Nagpapakita ng Babala kapag ang iyong RAM ay mababa"
 }

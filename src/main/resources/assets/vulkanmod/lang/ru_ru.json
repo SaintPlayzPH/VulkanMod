@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "Задержка обновления информации о RAM телефона",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "Устанавливает количество секунд для обновления информации о RAM. Слишком низкое значение может повлиять на производительность.",
   "vulkanmod.options.showPojavInfo": "Показать информацию о Pojav",
-  "vulkanmod.options.showPojavInfo.tooltip": "Показывает информацию о Pojav на экране отладки."
+  "vulkanmod.options.showPojavInfo.tooltip": "Показывает информацию о Pojav на экране отладки.",
+  "vulkanmod.options.showLowRAM": "Показать предупреждение о низкой оперативной памяти телефона",
+  "vulkanmod.options.showLowRAM.tooltip": "Показывает предупреждение, когда ваша оперативная память низка"
 }

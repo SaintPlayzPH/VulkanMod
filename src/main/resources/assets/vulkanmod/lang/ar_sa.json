@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "تأخير تحديث معلومات ذاكرة الهاتف",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "يحدد عدد الثواني التي يتم فيها تحديث معلومات الذاكرة. قد يؤثر الإعداد المنخفض جدًا على الأداء.",
   "vulkanmod.options.showPojavInfo": "عرض معلومات Pojav",
-  "vulkanmod.options.showPojavInfo.tooltip": "يعرض معلومات Pojav على شاشة التصحيح."
+  "vulkanmod.options.showPojavInfo.tooltip": "يعرض معلومات Pojav على شاشة التصحيح.",
+  "vulkanmod.options.showLowRAM": "عرض تحذير الذاكرة العشوائية المنخفضة للهاتف",
+  "vulkanmod.options.showLowRAM.tooltip": "يظهر تحذيرًا عندما تكون ذاكرة الوصول العشوائي منخفضة"
 }

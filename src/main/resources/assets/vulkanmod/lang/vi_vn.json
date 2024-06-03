@@ -54,5 +54,7 @@
   "vulkanmod.options.phoneRAMInfoUpdateDelay": "Độ Trễ Cập Nhật Thông Tin RAM Điện Thoại",
   "vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip": "Đặt số giây khi thông tin RAM cập nhật thông tin. Cài đặt quá thấp có thể ảnh hưởng đến hiệu suất.",
   "vulkanmod.options.showPojavInfo": "Hiển Thị Thông Tin Pojav",
-  "vulkanmod.options.showPojavInfo.tooltip": "Hiển thị thông tin Pojav trên màn hình gỡ lỗi."
+  "vulkanmod.options.showPojavInfo.tooltip": "Hiển thị thông tin Pojav trên màn hình gỡ lỗi.",
+  "vulkanmod.options.showLowRAM": "Hiển thị Cảnh báo RAM thấp của Điện thoại",
+  "vulkanmod.options.showLowRAM.tooltip": "Hiển thị Cảnh báo khi RAM của bạn thấp"
 }
