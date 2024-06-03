@@ -31,7 +31,7 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 >1) Download and put the `Vulkanmod.jar` file into `.minecraft/mods`
 >1) Enjoy !
 
-## Useful links
+## Useful links (**DON'T** Report Related To PojavLauncher Here)
 <table>
     <tr>
       <th> Discord server</th>
