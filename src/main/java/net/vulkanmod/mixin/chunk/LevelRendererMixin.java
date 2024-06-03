@@ -73,7 +73,7 @@ public abstract class LevelRendererMixin {
         if (Initializer.CONFIG.postEffect) {
           return Initializer.CONFIG.entityOutline;
         }
-        return false;
+        return !Initializer.CONFIG.entityOutline;
     }
     
     private WorldRenderer worldRenderer;
