@@ -211,6 +211,7 @@ public class Renderer {
             usedPipelines.forEach(graphicsPipeline -> {
                 graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_FOG);
                 graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_SKY_FOG);
+		graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_CLOUD_FOG);
             });
             recompile = false;
 	}
