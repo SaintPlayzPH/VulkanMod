@@ -1,5 +1,5 @@
 #version 450
-layout (constant_id = 0) const bool USE_SKY_FOG = true;
+layout (constant_id = 1) const bool USE_SKY_FOG = true;
 vec4 linear_fog(vec4 inColor, float vertexDistance, float fogStart, float fogEnd, vec4 fogColor) {
     if (vertexDistance <= fogStart) {
         return inColor;
