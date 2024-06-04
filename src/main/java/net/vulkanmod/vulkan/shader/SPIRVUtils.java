@@ -9,7 +9,7 @@ import org.lwjgl.system.NativeResource;
 import org.lwjgl.util.shaderc.ShadercIncludeResolveI;
 import org.lwjgl.util.shaderc.ShadercIncludeResult;
 import org.lwjgl.util.shaderc.ShadercIncludeResultReleaseI;
-import org.lwjgl.vulkan.VK12;
+import org.lwjgl.vulkan.VK11;
 
 import java.io.IOException;
 import java.io.InputStream;
