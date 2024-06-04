@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Zobrazit varování o nízké RAM telefonu",
   "vulkanmod.options.showLowRAM.tooltip": "Zobrazuje varování, když je vaše RAM nízká",
   "vulkanmod.options.renderSkyFog": "Zobrazit mlhu na obloze",
-  "vulkanmod.options.renderSkyFog.tooltip": "Zobrazuje oblohu."
+  "vulkanmod.options.renderSkyFog.tooltip": "Zobrazuje mlhu na obloze.",
+  "vulkanmod.options.renderCloudFog": "Zobrazit mlhu na oblacích",
+  "vulkanmod.options.renderCloudFog.tooltip": "Zobrazuje mlhu na oblacích."
 }

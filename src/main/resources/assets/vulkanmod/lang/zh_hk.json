@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "顯示手機低RAM警告",
   "vulkanmod.options.showLowRAM.tooltip": "在您的RAM低時顯示警告",
   "vulkanmod.options.renderSkyFog": "渲染天空霧",
-  "vulkanmod.options.renderSkyFog.tooltip": "渲染天空。"
+  "vulkanmod.options.renderSkyFog.tooltip": "渲染天空的霧。",
+  "vulkanmod.options.renderCloudFog": "渲染雲霧",
+  "vulkanmod.options.renderCloudFog.tooltip": "渲染雲的霧。"
 }

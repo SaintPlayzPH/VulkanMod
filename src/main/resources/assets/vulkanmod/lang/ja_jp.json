@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "電話の低RAM警告を表示",
   "vulkanmod.options.showLowRAM.tooltip": "RAMが低い場合に警告を表示します",
   "vulkanmod.options.renderSkyFog": "空の霧をレンダリング",
-  "vulkanmod.options.renderSkyFog.tooltip": "空をレンダリングします。"
+  "vulkanmod.options.renderSkyFog.tooltip": "空の霧を表示します。",
+  "vulkanmod.options.renderCloudFog": "雲の霧をレンダリング",
+  "vulkanmod.options.renderCloudFog.tooltip": "雲の霧を表示します。"
 }

@@ -6,6 +6,7 @@ import net.vulkanmod.config.Config;
 import net.vulkanmod.config.Platform;
 import net.vulkanmod.config.video.VideoModeManager;
 import net.vulkanmod.vulkan.AndroidRAMInfo;
+import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,6 +48,7 @@ public class Initializer implements ClientModInitializer {
         }
         Platform.init();
         VideoModeManager.init();
+	Renderer.recompile = true;
     }
 
     private static void initializeConfig() {

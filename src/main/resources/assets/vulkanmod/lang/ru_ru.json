@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Показать предупреждение о низкой оперативной памяти телефона",
   "vulkanmod.options.showLowRAM.tooltip": "Показывает предупреждение, когда ваша оперативная память низка",
   "vulkanmod.options.renderSkyFog": "Отображение тумана неба",
-  "vulkanmod.options.renderSkyFog.tooltip": "Отображает небо."
+  "vulkanmod.options.renderSkyFog.tooltip": "Отображает туман неба.",
+  "vulkanmod.options.renderCloudFog": "Отображение тумана облаков",
+  "vulkanmod.options.renderCloudFog.tooltip": "Отображает туман облаков."
 }

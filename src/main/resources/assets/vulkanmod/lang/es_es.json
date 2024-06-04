@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Mostrar advertencia de baja RAM del teléfono",
   "vulkanmod.options.showLowRAM.tooltip": "Muestra advertencia cuando tu RAM es baja",
   "vulkanmod.options.renderSkyFog": "Renderizar niebla del cielo",
-  "vulkanmod.options.renderSkyFog.tooltip": "Renderiza el cielo."
+  "vulkanmod.options.renderSkyFog.tooltip": "Renderiza la niebla del cielo.",
+  "vulkanmod.options.renderCloudFog": "Renderizar niebla de las nubes",
+  "vulkanmod.options.renderCloudFog.tooltip": "Renderiza la niebla de las nubes."
 }

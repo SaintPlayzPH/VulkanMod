@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Afficher Avertissement de faible RAM téléphone",
   "vulkanmod.options.showLowRAM.tooltip": "Affiche un avertissement lorsque votre RAM est faible",
   "vulkanmod.options.renderSkyFog": "Rendu du brouillard du ciel",
-  "vulkanmod.options.renderSkyFog.tooltip": "Affiche le ciel."
+  "vulkanmod.options.renderSkyFog.tooltip": "Affiche le brouillard du ciel.",
+  "vulkanmod.options.renderCloudFog": "Rendu du brouillard des nuages",
+  "vulkanmod.options.renderCloudFog.tooltip": "Affiche le brouillard des nuages."
 }
