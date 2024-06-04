@@ -27,6 +27,12 @@ public abstract class Options {
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
 
     private static boolean isRunningOnPhone() {
+        if (System.getenv("POJAV_ENVIRON") != null) { //PojavLauncher
+            return true;
+        }
+        if (System.getenv("SCL_ENVIRON") != null) { //SolCraftLauncher
+            return true;
+        }
         return System.getenv("POJAV_RENDERER") != null;
     }
 
