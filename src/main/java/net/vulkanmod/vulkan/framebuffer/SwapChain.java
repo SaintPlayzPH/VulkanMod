@@ -322,6 +322,8 @@ public class SwapChain extends Framebuffer {
             case VK_PRESENT_MODE_IMMEDIATE_KHR -> "Immediate";
             case VK_PRESENT_MODE_MAILBOX_KHR -> "Mailbox (FastSync)";
             case VK_PRESENT_MODE_FIFO_RELAXED_KHR -> "FIFO Relaxed (Adaptive VSync)";
+            case VK_PRESENT_MODE_SHARED_DEMAND_REFRESH_KHR -> "Shared Demand Refresh";
+            case VK_PRESENT_MODE_SHARED_CONTINUOUS_REFRESH_KHR -> "Shared Continuous Refresh";
             default -> "FIFO (VSync)";
         };
     }
