@@ -213,6 +213,7 @@ public class Renderer {
                 graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_SKY_FOG);
 		graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_CLOUD_FOG);
             });
+	    Initializer.LOGGER.info("Fog Renderer recompilation requested.");
             recompile = false;
 	}
 
