@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "عرض تحذير الذاكرة العشوائية المنخفضة للهاتف",
   "vulkanmod.options.showLowRAM.tooltip": "يظهر تحذيرًا عندما تكون ذاكرة الوصول العشوائي منخفضة",
   "vulkanmod.options.renderSkyFog": "عرض ضباب السماء",
-  "vulkanmod.options.renderSkyFog.tooltip": "يعرض السماء."
+  "vulkanmod.options.renderSkyFog.tooltip": "يعرض ضباب السماء.",
+  "vulkanmod.options.renderCloudFog": "عرض ضباب السحاب",
+  "vulkanmod.options.renderCloudFog.tooltip": "يعرض ضباب السحاب."
 }

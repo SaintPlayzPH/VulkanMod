@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Hiển thị Cảnh báo RAM thấp của Điện thoại",
   "vulkanmod.options.showLowRAM.tooltip": "Hiển thị Cảnh báo khi RAM của bạn thấp",
   "vulkanmod.options.renderSkyFog": "Hiển thị Sương mù Trời",
-  "vulkanmod.options.renderSkyFog.tooltip": "Hiển thị bầu trời."
+  "vulkanmod.options.renderSkyFog.tooltip": "Hiển thị sương mù của bầu trời.",
+  "vulkanmod.options.renderCloudFog": "Hiển thị Sương mù Mây",
+  "vulkanmod.options.renderCloudFog.tooltip": "Hiển thị sương mù của mây."
 }

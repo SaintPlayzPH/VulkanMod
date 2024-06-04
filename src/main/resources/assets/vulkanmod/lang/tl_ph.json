@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Ipakita ang Babala ng Mababang RAM ng Telepono",
   "vulkanmod.options.showLowRAM.tooltip": "Nagpapakita ng Babala kapag ang iyong RAM ay mababa",
   "vulkanmod.options.renderSkyFog": "I-render ang Ulap sa Kalangitan",
-  "vulkanmod.options.renderSkyFog.tooltip": "Ipinapakita ang kalangitan."
+  "vulkanmod.options.renderSkyFog.tooltip": "Ipinapakita ang fog ng kalangitan.",
+  "vulkanmod.options.renderCloudFog": "I-render ang Ulap ng mga ulap",
+  "vulkanmod.options.renderCloudFog.tooltip": "Ipinapakita ang fog ng mga ulap."
 }

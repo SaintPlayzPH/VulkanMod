@@ -58,5 +58,7 @@
   "vulkanmod.options.showLowRAM": "Show Phone Low RAM Warning",
   "vulkanmod.options.showLowRAM.tooltip": "Shows Warning when your RAM is low",
   "vulkanmod.options.renderSkyFog": "Render Sky Fog",
-  "vulkanmod.options.renderSkyFog.tooltip": "Renders the sky."
+  "vulkanmod.options.renderSkyFog.tooltip": "Renders fog of the sky.",
+  "vulkanmod.options.renderCloudFog": "Render Cloud Fog",
+  "vulkanmod.options.renderCloudFog.tooltip": "Renders fog of clouds."
 }
