@@ -282,6 +282,13 @@ public abstract class Options {
                                     };
                                     return Component.translatable(t);
                                 }),
+                        new SwitchOption(Component.translatable("vulkanmod.options.renderSkyFog"),
+                                value -> {
+                                    config.renderSkyFog = value;
+                                    Renderer.recompile = true;
+                                },
+                                () -> config.renderSkyFog)
+                                .setTooltip(Component.translatable("vulkanmod.options.renderSkyFog.tooltip")),
                         new CyclingOption<>(Component.translatable("options.mipmapLevels"),
                                 new Integer[]{0, 1, 2, 3, 4},
                                 value -> {

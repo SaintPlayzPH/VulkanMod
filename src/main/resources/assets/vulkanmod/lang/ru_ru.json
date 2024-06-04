@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Показать информацию о Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "Показывает информацию о Pojav на экране отладки.",
   "vulkanmod.options.showLowRAM": "Показать предупреждение о низкой оперативной памяти телефона",
-  "vulkanmod.options.showLowRAM.tooltip": "Показывает предупреждение, когда ваша оперативная память низка"
+  "vulkanmod.options.showLowRAM.tooltip": "Показывает предупреждение, когда ваша оперативная память низка",
+  "vulkanmod.options.renderSkyFog": "Отображение тумана неба",
+  "vulkanmod.options.renderSkyFog.tooltip": "Отображает небо."
 }

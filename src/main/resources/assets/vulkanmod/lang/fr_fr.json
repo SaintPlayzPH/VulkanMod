@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Afficher les infos Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "Affiche les informations Pojav sur l'écran de débogage.",
   "vulkanmod.options.showLowRAM": "Afficher Avertissement de faible RAM téléphone",
-  "vulkanmod.options.showLowRAM.tooltip": "Affiche un avertissement lorsque votre RAM est faible"
+  "vulkanmod.options.showLowRAM.tooltip": "Affiche un avertissement lorsque votre RAM est faible",
+  "vulkanmod.options.renderSkyFog": "Rendu du brouillard du ciel",
+  "vulkanmod.options.renderSkyFog.tooltip": "Affiche le ciel."
 }

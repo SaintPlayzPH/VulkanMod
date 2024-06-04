@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "عرض معلومات Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "يعرض معلومات Pojav على شاشة التصحيح.",
   "vulkanmod.options.showLowRAM": "عرض تحذير الذاكرة العشوائية المنخفضة للهاتف",
-  "vulkanmod.options.showLowRAM.tooltip": "يظهر تحذيرًا عندما تكون ذاكرة الوصول العشوائي منخفضة"
+  "vulkanmod.options.showLowRAM.tooltip": "يظهر تحذيرًا عندما تكون ذاكرة الوصول العشوائي منخفضة",
+  "vulkanmod.options.renderSkyFog": "عرض ضباب السماء",
+  "vulkanmod.options.renderSkyFog.tooltip": "يعرض السماء."
 }

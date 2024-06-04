@@ -206,11 +206,14 @@ public class Renderer {
         p.pop();
         p.push("Frame_fence");
 	
-	if(recompile) {
+	if (recompile) {
             waitIdle();
-            usedPipelines.forEach(graphicsPipeline -> graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_FOG));
+            usedPipelines.forEach(graphicsPipeline -> {
+                graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_FOG);
+                graphicsPipeline.updateSpecConstant(SPIRVUtils.SpecConstant.USE_SKY_FOG);
+            });
             recompile = false;
-        }
+	}
 
         if (swapChainUpdate) {
             recreateSwapChain();

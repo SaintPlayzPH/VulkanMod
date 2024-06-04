@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "顯示 Pojav 信息",
   "vulkanmod.options.showPojavInfo.tooltip": "在調試屏幕上顯示 Pojav 信息。",
   "vulkanmod.options.showLowRAM": "顯示手機低RAM警告",
-  "vulkanmod.options.showLowRAM.tooltip": "在您的RAM低時顯示警告"
+  "vulkanmod.options.showLowRAM.tooltip": "在您的RAM低時顯示警告",
+  "vulkanmod.options.renderSkyFog": "渲染天空霧",
+  "vulkanmod.options.renderSkyFog.tooltip": "渲染天空。"
 }

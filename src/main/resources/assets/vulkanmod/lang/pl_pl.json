@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Pokaż informacje o Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "Pokazuje informacje o Pojav na ekranie debugowania.",
   "vulkanmod.options.showLowRAM": "Pokaż ostrzeżenie o niskiej pamięci RAM telefonu",
-  "vulkanmod.options.showLowRAM.tooltip": "Pokazuje ostrzeżenie, gdy pamięć RAM jest niska"
+  "vulkanmod.options.showLowRAM.tooltip": "Pokazuje ostrzeżenie, gdy pamięć RAM jest niska",
+  "vulkanmod.options.renderSkyFog": "Renderowanie mgły nieba",
+  "vulkanmod.options.renderSkyFog.tooltip": "Renderuje niebo."
 }
