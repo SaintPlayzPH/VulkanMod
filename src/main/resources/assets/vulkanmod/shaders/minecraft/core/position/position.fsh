@@ -1,5 +1,5 @@
 #version 450
-
+layout (constant_id = 0) const bool USE_SKY_FOG = true;
 vec4 linear_fog(vec4 inColor, float vertexDistance, float fogStart, float fogEnd, vec4 fogColor) {
     if (vertexDistance <= fogStart) {
         return inColor;
@@ -21,5 +21,5 @@ layout(location = 0) in float vertexDistance;
 layout(location = 0) out vec4 fragColor;
 
 void main() {
-    fragColor = linear_fog(ColorModulator, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = USE_SKY_FOG ? linear_fog(ColorModulator, vertexDistance, FogStart, FogEnd, FogColor) : ColorModulator;
 }
