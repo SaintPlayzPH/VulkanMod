@@ -98,6 +98,12 @@ public abstract class DebugScreenOverlayM {
     }
 
     private static boolean isRunningOnPojav() {
+        if (System.getenv("POJAV_ENVIRON") != null) { //PojavLauncher
+            return true;
+        }
+        if (System.getenv("SCL_ENVIRON") != null) { //SolCraftLauncher
+            return true;
+        }
         return System.getenv("POJAV_RENDERER") != null;
     }
 
