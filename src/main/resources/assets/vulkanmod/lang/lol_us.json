@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Show Pojav Info",
   "vulkanmod.options.showPojavInfo.tooltip": "Showz Pojav Info on debugg skreen.",
   "vulkanmod.options.showLowRAM": "Sho Kitteh Low RAM Warnin",
-  "vulkanmod.options.showLowRAM.tooltip": "Sho Warnin wen yur RAM iz low"
+  "vulkanmod.options.showLowRAM.tooltip": "Sho Warnin wen yur RAM iz low",
+  "vulkanmod.options.renderSkyFog": "Render teh Skyz Fog",
+  "vulkanmod.options.renderSkyFog.tooltip": "Render teh sky."
 }

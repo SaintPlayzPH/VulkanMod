@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Pojav情報を表示",
   "vulkanmod.options.showPojavInfo.tooltip": "デバッグ画面にPojav情報を表示します。",
   "vulkanmod.options.showLowRAM": "電話の低RAM警告を表示",
-  "vulkanmod.options.showLowRAM.tooltip": "RAMが低い場合に警告を表示します"
+  "vulkanmod.options.showLowRAM.tooltip": "RAMが低い場合に警告を表示します",
+  "vulkanmod.options.renderSkyFog": "空の霧をレンダリング",
+  "vulkanmod.options.renderSkyFog.tooltip": "空をレンダリングします。"
 }

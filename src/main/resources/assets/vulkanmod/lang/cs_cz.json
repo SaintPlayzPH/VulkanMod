@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Zobrazit informace o Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "Zobrazuje informace o Pojav na debugovací obrazovce.",
   "vulkanmod.options.showLowRAM": "Zobrazit varování o nízké RAM telefonu",
-  "vulkanmod.options.showLowRAM.tooltip": "Zobrazuje varování, když je vaše RAM nízká"
+  "vulkanmod.options.showLowRAM.tooltip": "Zobrazuje varování, když je vaše RAM nízká",
+  "vulkanmod.options.renderSkyFog": "Zobrazit mlhu na obloze",
+  "vulkanmod.options.renderSkyFog.tooltip": "Zobrazuje oblohu."
 }

@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Tampilkan Info Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "Menampilkan Info Pojav di layar debug.",
   "vulkanmod.options.showLowRAM": "Tampilkan Peringatan RAM Rendah Ponsel",
-  "vulkanmod.options.showLowRAM.tooltip": "Menampilkan Peringatan saat RAM Anda rendah"
+  "vulkanmod.options.showLowRAM.tooltip": "Menampilkan Peringatan saat RAM Anda rendah",
+  "vulkanmod.options.renderSkyFog": "Render Kabut Langit",
+  "vulkanmod.options.renderSkyFog.tooltip": "Menampilkan langit."
 }

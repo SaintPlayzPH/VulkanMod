@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Ipakita ang Pojav Info",
   "vulkanmod.options.showPojavInfo.tooltip": "Nagpapakita ng Pojav Info sa debug screen.",
   "vulkanmod.options.showLowRAM": "Ipakita ang Babala ng Mababang RAM ng Telepono",
-  "vulkanmod.options.showLowRAM.tooltip": "Nagpapakita ng Babala kapag ang iyong RAM ay mababa"
+  "vulkanmod.options.showLowRAM.tooltip": "Nagpapakita ng Babala kapag ang iyong RAM ay mababa",
+  "vulkanmod.options.renderSkyFog": "I-render ang Ulap sa Kalangitan",
+  "vulkanmod.options.renderSkyFog.tooltip": "Ipinapakita ang kalangitan."
 }

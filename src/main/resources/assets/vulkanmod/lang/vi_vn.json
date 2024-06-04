@@ -56,5 +56,7 @@
   "vulkanmod.options.showPojavInfo": "Hiển Thị Thông Tin Pojav",
   "vulkanmod.options.showPojavInfo.tooltip": "Hiển thị thông tin Pojav trên màn hình gỡ lỗi.",
   "vulkanmod.options.showLowRAM": "Hiển thị Cảnh báo RAM thấp của Điện thoại",
-  "vulkanmod.options.showLowRAM.tooltip": "Hiển thị Cảnh báo khi RAM của bạn thấp"
+  "vulkanmod.options.showLowRAM.tooltip": "Hiển thị Cảnh báo khi RAM của bạn thấp",
+  "vulkanmod.options.renderSkyFog": "Hiển thị Sương mù Trời",
+  "vulkanmod.options.renderSkyFog.tooltip": "Hiển thị bầu trời."
 }
