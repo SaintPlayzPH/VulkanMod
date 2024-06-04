@@ -22,7 +22,7 @@
 //}
 
 #version 450
-
+layout (constant_id = 0) const bool USE_FOG = true;
 #include <fog.glsl>
 
 layout(binding = 2) uniform sampler2D Sampler0;
@@ -45,5 +45,5 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    fragColor = USE_FOG ? linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor) : color;
 }
