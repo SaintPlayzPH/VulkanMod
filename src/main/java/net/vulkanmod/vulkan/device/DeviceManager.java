@@ -22,7 +22,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_1;
+import static org.lwjgl.vulkan.VK11.VK_API_VERSION_1_1;
 
 public abstract class DeviceManager {
     public static List<Device> availableDevices;
