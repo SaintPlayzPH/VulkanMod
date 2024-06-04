@@ -27,8 +27,11 @@ public class Initializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         if (System.getenv("POJAV_ENVIRON") != null) {
-			LOGGER.info("=> We're running on PojavLauncher! <=");
-        }
+       	    LOGGER.info("=> We're running on PojavLauncher! <=");
+	}
+	if (System.getenv("SCL_ENVIRON") != null) {
+       	    LOGGER.info("=> We're running on SolCraftLauncher! <=");
+	}
         VERSION = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .get()
