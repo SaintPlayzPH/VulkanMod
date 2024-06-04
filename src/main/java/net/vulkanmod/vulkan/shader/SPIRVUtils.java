@@ -123,6 +123,7 @@ public class SPIRVUtils {
     public enum SpecConstant
     {
         USE_FOG(Boolean.class),
+        USE_SKY_FOG(Boolean.class),
         ALPHA_CUTOUT(Float.class);
 
         SpecConstant(Object floatClass) {
@@ -133,6 +134,7 @@ public class SPIRVUtils {
             return switch (name)
             {
                 case "USE_FOG" -> USE_FOG;
+                case "USE_SKY_FOG" -> USE_SKY_FOG;
                 case "ALPHA_CUTOUT" -> ALPHA_CUTOUT;
                 default -> null;
             };
@@ -143,6 +145,7 @@ public class SPIRVUtils {
         {
             return switch (this){
                 case USE_FOG -> Initializer.CONFIG.renderFog ? 1 : 0;
+                case USE_SKY_FOG -> Initializer.CONFIG.renderSkyFog ? 1 : 0;
                 case ALPHA_CUTOUT -> Float.floatToRawIntBits(VRenderSystem.alphaCutout);
             };
         }
