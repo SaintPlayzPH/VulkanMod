@@ -285,6 +285,7 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("vulkanmod.options.renderSkyFog"),
                                 value -> {
                                     config.renderSkyFog = value;
+                                    Renderer.recompile = true;
                                 },
                                 () -> config.renderSkyFog)
                                 .setTooltip(Component.translatable("vulkanmod.options.renderSkyFog.tooltip")),
