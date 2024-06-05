@@ -88,6 +88,20 @@ public class AndroidRAMInfo {
         }
     }
 
+    public static String getRAMInfo() {
+        try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("MemTotal")) {
+                    return line.split("\\s+")[1];
+                }
+            }
+        } catch (IOException e) {
+            Initializer.LOGGER.error("Can't obtain your RAM!");
+        }
+        return "Unknown";
+    }
+
     public static String getHighestRAMUsage() {
         lock.lock();
         try {
