@@ -180,6 +180,7 @@ public abstract class DeviceManager {
                 VRenderSystem.canSetLineWidth = true;
             }
 
+            deviceFeatures.pNext(deviceVulkan11Features);
             VkDeviceCreateInfo createInfo = VkDeviceCreateInfo.calloc(stack);
             createInfo.sType$Default();
             createInfo.sType(VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO);
