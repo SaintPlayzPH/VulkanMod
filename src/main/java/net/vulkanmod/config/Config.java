@@ -30,7 +30,6 @@ public class Config {
     public boolean renderSky = true;
     public boolean renderSkyFog = true;
     public boolean renderCloudFog = true;
-    public boolean postEffect = true;
     public boolean postEffectFix = true;
     public boolean renderFog = true;
     public boolean entityOutline = true;
