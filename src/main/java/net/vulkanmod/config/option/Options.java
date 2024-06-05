@@ -362,7 +362,9 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("vulkanmod.options.entityCulling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
-                                .setTooltip(Component.translatable("vulkanmod.options.entityCulling.tooltip")),
+                                .setTooltip(Component.translatable("vulkanmod.options.entityCulling.tooltip")
+                                    .append("\n\n")
+                                    .append(Component.translatable("vulkanmod.options.excludeSampledUsage.warn"))),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = value,
                                 () -> config.indirectDraw)
