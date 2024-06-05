@@ -358,13 +358,13 @@ public abstract class Options {
                                     minecraft.levelRenderer.allChanged();
                                 },
                                 () -> config.dontUseImageSampled)
-                                .setTooltip(Component.translatable("vulkanmod.options.excludeSampledUsage.tooltip")),
+                                .setTooltip(Component.translatable("vulkanmod.options.excludeSampledUsage.tooltip")
+                                    .append("\n\n")
+                                    .append(Component.translatable("vulkanmod.options.excludeSampledUsage.warn"))),
                         new SwitchOption(Component.translatable("vulkanmod.options.entityCulling"),
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
-                                .setTooltip(Component.translatable("vulkanmod.options.entityCulling.tooltip")
-                                    .append("\n\n")
-                                    .append(Component.translatable("vulkanmod.options.excludeSampledUsage.warn"))),
+                                .setTooltip(Component.translatable("vulkanmod.options.entityCulling.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = value,
                                 () -> config.indirectDraw)
