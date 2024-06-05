@@ -254,13 +254,6 @@ public abstract class Options {
                                 50, 500, 25,
                                 value -> minecraftOptions.entityDistanceScaling().set(value * 0.01),
                                 () -> minecraftOptions.entityDistanceScaling().get().intValue() * 100),
-                        new SwitchOption(Component.translatable("vulkanmod.options.enablePostEffect"),
-                                value -> {
-                                    config.postEffect = value;
-                                    minecraft.delayTextureReload();
-                                },
-                                () -> config.postEffect)
-                                .setTooltip(Component.translatable("vulkanmod.options.enablePostEffect.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.fixPostEffectBug"),
                                 value -> {
                                     config.postEffectFix = value;
@@ -348,12 +341,10 @@ public abstract class Options {
                                 .setTooltip(Component.translatable("vulkanmod.options.renderFog.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.renderEntityOutline"),
                                 value -> {
-                                    config.entityOutline = config.postEffect ? value : false;
+                                    config.entityOutline = value;
                                 },
-                                () -> config.postEffect && config.entityOutline)
-                                .setTooltip(
-                    Component.translatable("vulkanmod.options.renderEntityOutline.tooltip")
-                            .append(!config.postEffect ? Component.translatable("vulkanmod.options.renderEntityOutline.tooltip.extra") : Component.literal(""))),
+                                () -> config.entityOutline)
+                                .setTooltip(Component.translatable("vulkanmod.options.renderEntityOutline.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.perRenderTypeAreaBuffers"),
                                 value -> {
                                     config.perRenderTypeAreaBuffers = value;
