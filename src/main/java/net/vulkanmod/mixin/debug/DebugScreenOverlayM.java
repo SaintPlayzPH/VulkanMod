@@ -21,8 +21,7 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
+import static org.lwjgl.vulkan.KHRSurface.*;
 import static net.vulkanmod.Initializer.getVersion;
 
 @Mixin(DebugScreenOverlay.class)
@@ -88,6 +87,7 @@ public abstract class DebugScreenOverlayM {
             strings.add("Phone RAM Info:");
             strings.add(AndroidRAMInfo.getMemoryInfo());
             strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
+            strings.add(AndroidRAMInfo.getHighestRAMUsage());
             strings.add(AndroidRAMInfo.getBuffersInfo());
             if (Initializer.CONFIG.showlowRAM) {
                 strings.add(AndroidRAMInfo.getAvailableRAMWarn());
