@@ -70,10 +70,7 @@ public abstract class LevelRendererMixin {
 
     @Overwrite
     public boolean shouldShowEntityOutlines() {
-        if (Initializer.CONFIG.postEffect) {
-          return Initializer.CONFIG.entityOutline;
-        }
-        return !Initializer.CONFIG.entityOutline;
+        return Initializer.CONFIG.entityOutline;
     }
     
     private WorldRenderer worldRenderer;
