@@ -1,7 +1,7 @@
 package net.vulkanmod.vulkan.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.vulkanmod.Initializer;
+//import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Synchronization;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
@@ -115,7 +115,7 @@ public class VulkanImage {
 
             VulkanImage image = VulkanImage.builder(1, 1)
                     .setFormat(DefaultFormat)
-                    .setUsage(!Initializer.CONFIG.dontUseImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+                    .setUsage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
                     .setLinearFiltering(false)
                     .setClamp(false)
                     .createVulkanImage();
