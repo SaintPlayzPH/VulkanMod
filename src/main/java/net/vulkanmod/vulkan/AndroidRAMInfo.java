@@ -11,6 +11,7 @@ public class AndroidRAMInfo {
     public static long memFree = 0;
     public static long memTotal = 0;
     public static long memBuffers = 0;
+    public static long maxMemUsed = 0;
 
     private static final Lock lock = new ReentrantLock();
 
@@ -19,7 +20,7 @@ public class AndroidRAMInfo {
             while (true) {
                 getAllMemoryInfo();
                 try {
-                    Thread.sleep(Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100);
+                    Thread.sleep(Initializer.CONFIG.ramInfoUpdate == 0 ? 1000 : Initializer.CONFIG.ramInfoUpdate * 1000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -27,6 +28,19 @@ public class AndroidRAMInfo {
         });
         memoryUpdateThread.setDaemon(true);
         memoryUpdateThread.start();
+
+        Thread resetMaxMemoryThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(60000);
+                    resetMaxMemoryUsage();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        resetMaxMemoryThread.setDaemon(true);
+        resetMaxMemoryThread.start();
     }
 
     public static void getAllMemoryInfo() {
@@ -43,6 +57,12 @@ public class AndroidRAMInfo {
                         } else if (line.startsWith("Buffers")) {
                             memBuffers = extractMemoryValue(line);
                         }
+                    }
+
+                    // Update the maximum memory used
+                    long currentMemUsed = memTotal - memFree;
+                    if (currentMemUsed > maxMemUsed) {
+                        maxMemUsed = currentMemUsed;
                     }
                 } finally {
                     lock.unlock();
@@ -68,18 +88,18 @@ public class AndroidRAMInfo {
         }
     }
 
-    public static String getRAMInfo() {
-        try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("MemTotal")) {
-                    return line.split("\\s+")[1];
-                }
+    public static String getHighestRAMUsage() {
+        lock.lock();
+        try {
+            if (maxMemUsed != 0) {
+                double maxMemUsedMB = maxMemUsed / 1024.0;
+                return String.format("Highest RAM Usage: %.2f MB", maxMemUsedMB);
+            } else {
+                return "Highest RAM Usage: Unavailable";
             }
-        } catch (IOException e) {
-            Initializer.LOGGER.error("Can't obtain your RAM!");
+        } finally {
+            lock.unlock();
         }
-        return "Unknown";
     }
 
     public static String getAvailableMemoryInfo() {
@@ -143,7 +163,6 @@ public class AndroidRAMInfo {
         }
         return "";
     }
-    
 
     private static String getColorPercentage(long freeMemoryPercentage) {
         if (freeMemoryPercentage > 20) {
@@ -156,6 +175,15 @@ public class AndroidRAMInfo {
             return "§c";
         } else {
             return "§4";
+        }
+    }
+
+    private static void resetMaxMemoryUsage() {
+        lock.lock();
+        try {
+            maxMemUsed = 0;
+        } finally {
+            lock.unlock();
         }
     }
 }
