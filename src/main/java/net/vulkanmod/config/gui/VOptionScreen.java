@@ -212,10 +212,10 @@ public class VOptionScreen extends Screen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        if (this.client.world == null) {
-            this.renderBackgroundTexture(0);
-        }
-        this.renderBackground(guiGraphics, i, j, f);
+     //   if (this.client.world == null) {
+      //      this.renderBackgroundTexture(0);
+    //    }
+   //    this.renderBackground(guiGraphics, i, j, f);
     }
 
     @Override
