@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "Zobrazit mlhu na obloze",
   "vulkanmod.options.renderSkyFog.tooltip": "Zobrazuje mlhu na obloze.",
   "vulkanmod.options.renderCloudFog": "Zobrazit mlhu na oblacích",
-  "vulkanmod.options.renderCloudFog.tooltip": "Zobrazuje mlhu na oblacích."
+  "vulkanmod.options.renderCloudFog.tooltip": "Zobrazuje mlhu na oblacích.",
+  "vulkanmod.options.excludeSampledUsage.warn": "VAROVÁNÍ; Projeví se po restartu hry a způsobí chyby a pády při sledování entity s poefektem (např. Creeper)."
 }

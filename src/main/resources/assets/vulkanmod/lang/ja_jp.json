@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "空の霧をレンダリング",
   "vulkanmod.options.renderSkyFog.tooltip": "空の霧を表示します。",
   "vulkanmod.options.renderCloudFog": "雲の霧をレンダリング",
-  "vulkanmod.options.renderCloudFog.tooltip": "雲の霧を表示します。"
+  "vulkanmod.options.renderCloudFog.tooltip": "雲の霧を表示します。",
+  "vulkanmod.options.excludeSampledUsage.warn": "警告; 効果を発揮するにはゲームを再起動する必要があり、ポストエフェクトを持つエンティティ（例: クリーパー）を観察するとバグやクラッシュが発生します。"
 }

@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "Hiển thị Sương mù Trời",
   "vulkanmod.options.renderSkyFog.tooltip": "Hiển thị sương mù của bầu trời.",
   "vulkanmod.options.renderCloudFog": "Hiển thị Sương mù Mây",
-  "vulkanmod.options.renderCloudFog.tooltip": "Hiển thị sương mù của mây."
+  "vulkanmod.options.renderCloudFog.tooltip": "Hiển thị sương mù của mây.",
+  "vulkanmod.options.excludeSampledUsage.warn": "CẢNH BÁO; Yêu cầu khởi động lại trò chơi để có hiệu lực và sẽ gây ra lỗi và treo máy khi quan sát một thực thể với hiệu ứng hậu kỳ (ví dụ: Creeper)."
 }

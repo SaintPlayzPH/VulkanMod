@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "Rendu du brouillard du ciel",
   "vulkanmod.options.renderSkyFog.tooltip": "Affiche le brouillard du ciel.",
   "vulkanmod.options.renderCloudFog": "Rendu du brouillard des nuages",
-  "vulkanmod.options.renderCloudFog.tooltip": "Affiche le brouillard des nuages."
+  "vulkanmod.options.renderCloudFog.tooltip": "Affiche le brouillard des nuages.",
+  "vulkanmod.options.excludeSampledUsage.warn": "AVERTISSEMENT; Nécessite un redémarrage du jeu pour prendre effet et provoquera des bugs et des plantages lors de la spectation d'une entité avec un post-effet (ex. Creeper)."
 }

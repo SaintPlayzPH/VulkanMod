@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "Render teh Skyz Fog",
   "vulkanmod.options.renderSkyFog.tooltip": "Renders fogz of teh sky.",
   "vulkanmod.options.renderCloudFog": "Render teh Cloudz Fog",
-  "vulkanmod.options.renderCloudFog.tooltip": "Renders fogz of teh cloudz."
+  "vulkanmod.options.renderCloudFog.tooltip": "Renders fogz of teh cloudz.",
+  "vulkanmod.options.excludeSampledUsage.warn": "WARNIN; Requires Game Restart To Take Effect and will cause bugz and crashez when spectatin an entity wit Post-effect (ex. Creeper)."
 }

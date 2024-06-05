@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "Renderizar niebla del cielo",
   "vulkanmod.options.renderSkyFog.tooltip": "Renderiza la niebla del cielo.",
   "vulkanmod.options.renderCloudFog": "Renderizar niebla de las nubes",
-  "vulkanmod.options.renderCloudFog.tooltip": "Renderiza la niebla de las nubes."
+  "vulkanmod.options.renderCloudFog.tooltip": "Renderiza la niebla de las nubes.",
+  "vulkanmod.options.excludeSampledUsage.warn": "ADVERTENCIA; Requiere reiniciar el juego para que surta efecto y causará errores y bloqueos al observar una entidad con post-efecto (ej. Creeper)."
 }

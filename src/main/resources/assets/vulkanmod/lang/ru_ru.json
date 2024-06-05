@@ -57,5 +57,6 @@
   "vulkanmod.options.renderSkyFog": "Отображение тумана неба",
   "vulkanmod.options.renderSkyFog.tooltip": "Отображает туман неба.",
   "vulkanmod.options.renderCloudFog": "Отображение тумана облаков",
-  "vulkanmod.options.renderCloudFog.tooltip": "Отображает туман облаков."
+  "vulkanmod.options.renderCloudFog.tooltip": "Отображает туман облаков.",
+  "vulkanmod.options.excludeSampledUsage.warn": "ПРЕДУПРЕЖДЕНИЕ; Требуется перезапуск игры, чтобы вступить в силу, и вызовет ошибки и сбои при наблюдении за сущностью с постэффектом (например, Крипер)."
 }
