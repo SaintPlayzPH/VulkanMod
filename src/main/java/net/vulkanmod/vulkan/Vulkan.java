@@ -39,7 +39,7 @@ import static org.lwjgl.vulkan.VK11.VK_API_VERSION_1_1;
 
 public class Vulkan {
 
-    public static final boolean ENABLE_VALIDATION_LAYERS = false;
+    public static final boolean ENABLE_VALIDATION_LAYERS = true;
 //    public static final boolean ENABLE_VALIDATION_LAYERS = true;
 
     //    public static final boolean DYNAMIC_RENDERING = true;
@@ -461,10 +461,6 @@ public class Vulkan {
         return swapChain.getPretransformMatrix();
     }
     public static int getPretransformFlags() {
-        if (swapChain == null) {
-            System.err.println("Warning: Swapchain is null, returning default pretransform flags.");
-            return 0;
-        }
         return swapChain.getPretransformFlags();
     }
 
