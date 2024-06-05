@@ -20,7 +20,7 @@ public class AndroidRAMInfo {
             while (true) {
                 getAllMemoryInfo();
                 try {
-                    Thread.sleep(Initializer.CONFIG.ramInfoUpdate == 0 ? 1000 : Initializer.CONFIG.ramInfoUpdate * 1000);
+                    Thread.sleep(Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
