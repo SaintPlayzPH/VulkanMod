@@ -84,9 +84,10 @@ public abstract class DebugScreenOverlayM {
         }
         if (isPojav && Initializer.CONFIG.showAndroidRAM) {
             strings.add("");
-            strings.add("Phone RAM Info:");
+            strings.add("Device RAM Info:");
             strings.add(AndroidRAMInfo.getMemoryInfo());
             strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
+            strings.add(AndroidRAMInfo.getMemoryUsagePerSecond());
             strings.add(AndroidRAMInfo.getHighestRAMUsage());
             strings.add(AndroidRAMInfo.getBuffersInfo());
             if (Initializer.CONFIG.showlowRAM) {
