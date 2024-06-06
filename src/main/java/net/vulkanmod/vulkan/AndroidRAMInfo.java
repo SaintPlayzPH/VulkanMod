@@ -63,18 +63,20 @@ public class AndroidRAMInfo {
                         }
                     }
 
-                    // Update the current memory used, max memory used, and max memory used per second
+                    // Update the current memory used and max memory used
                     long currentMemUsed = memTotal - memFree;
                     if (currentMemUsed > maxMemUsed) {
                         maxMemUsed = currentMemUsed;
-                    }
-                    if (currentMemUsed > maxMemUsedPerSecond) {
-                        maxMemUsedPerSecond = currentMemUsed;
                     }
 
                     // Calculate the memory used difference
                     memUsedDifference = currentMemUsed - prevMemUsed;
                     prevMemUsed = currentMemUsed;
+
+                    // Update the max memory used per second
+                    if (memUsedDifference > maxMemUsedPerSecond) {
+                        maxMemUsedPerSecond = memUsedDifference;
+                    }
                 } finally {
                     lock.unlock();
                 }
@@ -162,9 +164,9 @@ public class AndroidRAMInfo {
                 } else {
                     color = "";
                 }
-                return String.format("Highest RAM Usage Per Second: %s%.2f MB", color, maxMemUsedPerSecondMB);
+                return String.format("Highest Memory Usage Per Second: %.2f MB", color, maxMemUsedPerSecondMB);
             } else {
-                return "Highest RAM Usage Per Second: Unavailable";
+                return "Highest Memory Usage Per Second: Unavailable";
             }
         } finally {
             lock.unlock();
