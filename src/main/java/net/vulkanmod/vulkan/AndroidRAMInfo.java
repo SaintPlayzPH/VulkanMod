@@ -130,9 +130,9 @@ public class AndroidRAMInfo {
                 double memUsedDiffMB = memUsedDifference / 1024.0;
                 String color;
                 if (memUsedDifference > 0) {
-                    color = "§c";
+                    color = "§c ↑";
                 } else if (memUsedDifference < 0) {
-                    color = "§a";
+                    color = "§a ↓";
                 } else {
                     color = "";
                 }
