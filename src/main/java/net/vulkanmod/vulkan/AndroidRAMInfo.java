@@ -41,7 +41,7 @@ public class AndroidRAMInfo {
             resetMaxMemoryThread.interrupt();
         }
 
-        if (Initializer.CONFIG.resetHighUsageRec.get()) {
+        if (Initializer.CONFIG.resetHighUsageRec) {
             resetMaxMemoryThread = new Thread(() -> {
                 while (true) {
                     try {
