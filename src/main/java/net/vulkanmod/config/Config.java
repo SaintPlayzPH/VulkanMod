@@ -34,6 +34,7 @@ public class Config {
     public boolean renderFog = true;
     public boolean entityOutline = true;
     public boolean dontUseImageSampled = false;
+    public boolean resetHighUsageRec = false;
     public boolean showlowRAM = false;
     public int tintBuilder = 1;
     public int ramInfoUpdate = 1;
