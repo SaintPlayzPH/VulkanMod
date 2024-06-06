@@ -32,19 +32,21 @@ public class AndroidRAMInfo {
         memoryUpdateThread.setDaemon(true);
         memoryUpdateThread.start();
 
-        Thread resetMaxMemoryThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(45000); // reset per 45 seconds
-                    resetMaxMemoryUsage();
-                    resetMaxMemoryUsagePerSecond();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
+        if (Initializer.CONFIG.resetHighUsageRec) {
+            Thread resetMaxMemoryThread = new Thread(() -> {
+                while (true) {
+                    try {
+                        Thread.sleep(45000); // reset every 45 seconds
+                        resetMaxMemoryUsage();
+                        resetMaxMemoryUsagePerSecond();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
-            }
-        });
-        resetMaxMemoryThread.setDaemon(true);
-        resetMaxMemoryThread.start();
+            });
+            resetMaxMemoryThread.setDaemon(true);
+            resetMaxMemoryThread.start();
+        }
     }
 
     public static void getAllMemoryInfo() {
