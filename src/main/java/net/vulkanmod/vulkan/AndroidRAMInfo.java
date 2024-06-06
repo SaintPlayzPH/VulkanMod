@@ -18,6 +18,7 @@ public class AndroidRAMInfo {
 
     private static final Lock lock = new ReentrantLock();
     private static Thread resetMaxMemoryThread;
+    private static boolean lastResetHighUsageRec;
 
     static {
         Thread memoryUpdateThread = new Thread(() -> {
@@ -33,7 +34,24 @@ public class AndroidRAMInfo {
         memoryUpdateThread.setDaemon(true);
         memoryUpdateThread.start();
 
+        lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         initializeResetMaxMemoryThread();
+
+        Thread configWatcherThread = new Thread(() -> {
+            while (true) {
+                if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
+                    updateResetMaxMemoryThread();
+                    lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+                }
+                try {
+                    Thread.sleep(1000); // Check for changes every second
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        });
+        configWatcherThread.setDaemon(true);
+        configWatcherThread.start();
     }
 
     private static void initializeResetMaxMemoryThread() {
@@ -217,10 +235,10 @@ public class AndroidRAMInfo {
     }
 
     private static boolean isRunningOnAndroid() {
-        if (System.getenv("POJAV_ENVIRON") != null) { //PojavLauncher
+        if (System.getenv("POJAV_ENVIRON") != null) { // PojavLauncher
             return true;
         }
-        if (System.getenv("SCL_ENVIRON") != null) { //SolCraftLauncher
+        if (System.getenv("SCL_ENVIRON") != null) { // SolCraftLauncher
             return true;
         }
         return System.getenv("POJAV_RENDERER") != null;
@@ -234,7 +252,7 @@ public class AndroidRAMInfo {
                 if (memFreeMB > 300) {
                     return "RAM running low, the game will start to lag.";
                 } else {
-                    return "RAM running very low, the game will lag significantly and has chance to crash.";
+                    return "RAM running very low, the game will lag significantly and has a chance to crash.";
                 }
             }
         } finally {
@@ -277,5 +295,13 @@ public class AndroidRAMInfo {
 
     public static void updateResetMaxMemoryThread() {
         initializeResetMaxMemoryThread();
+    }
+
+    public static void updateConfigDependentThreads() {
+        // This method should be called when the config changes
+        if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
+            updateResetMaxMemoryThread();
+            lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+        }
     }
 }
