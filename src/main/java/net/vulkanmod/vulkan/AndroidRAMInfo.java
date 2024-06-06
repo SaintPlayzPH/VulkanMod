@@ -156,9 +156,9 @@ public class AndroidRAMInfo {
                 double maxMemUsedPerSecondMB = maxMemUsedPerSecond / 1024.0;
                 String color;
                 if (maxMemUsedPerSecond > prevMemUsed) {
-                    color = "§c";
+                    color = "§c ↑";
                 } else if (maxMemUsedPerSecond < prevMemUsed) {
-                    color = "§a";
+                    color = "§a ↓";
                 } else {
                     color = "";
                 }
