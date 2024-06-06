@@ -17,6 +17,7 @@ public class AndroidRAMInfo {
     public static long maxMemUsedPerSecond = 0;
 
     private static final Lock lock = new ReentrantLock();
+    private static Thread resetMaxMemoryThread;
 
     static {
         Thread memoryUpdateThread = new Thread(() -> {
@@ -32,8 +33,16 @@ public class AndroidRAMInfo {
         memoryUpdateThread.setDaemon(true);
         memoryUpdateThread.start();
 
-        if (Initializer.CONFIG.resetHighUsageRec) {
-            Thread resetMaxMemoryThread = new Thread(() -> {
+        initializeResetMaxMemoryThread();
+    }
+
+    private static void initializeResetMaxMemoryThread() {
+        if (resetMaxMemoryThread != null && resetMaxMemoryThread.isAlive()) {
+            resetMaxMemoryThread.interrupt();
+        }
+
+        if (Initializer.CONFIG.resetHighUsageRec.get()) {
+            resetMaxMemoryThread = new Thread(() -> {
                 while (true) {
                     try {
                         Thread.sleep(45000); // reset every 45 seconds
@@ -76,7 +85,7 @@ public class AndroidRAMInfo {
                     prevMemUsed = currentMemUsed;
 
                     // Update the max memory used per second
-                    if (memUsedDifference > maxMemUsedPerSecond) {
+                    if (Math.abs(memUsedDifference) > Math.abs(maxMemUsedPerSecond)) {
                         maxMemUsedPerSecond = memUsedDifference;
                     }
                 } finally {
@@ -264,5 +273,9 @@ public class AndroidRAMInfo {
         } finally {
             lock.unlock();
         }
+    }
+
+    public static void updateResetMaxMemoryThread() {
+        initializeResetMaxMemoryThread();
     }
 }
