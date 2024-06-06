@@ -35,7 +35,7 @@ public class AndroidRAMInfo {
         Thread resetMaxMemoryThread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(40000); // reset per 40 seconds
+                    Thread.sleep(45000); // reset per 45 seconds
                     resetMaxMemoryUsage();
                     resetMaxMemoryUsagePerSecond();
                 } catch (InterruptedException e) {
@@ -222,9 +222,9 @@ public class AndroidRAMInfo {
         try {
             if (memFreeMB < 500) {
                 if (memFreeMB > 300) {
-                    return "Your RAM is low, the system will start to lag at this point.";
+                    return "RAM running low, the game will start to lag.";
                 } else {
-                    return "Your RAM is very low, the system will lag significantly and there's a chance the game may force crash.";
+                    return "RAM running very low, the game will lag significantly and has chance to crash.";
                 }
             }
         } finally {
