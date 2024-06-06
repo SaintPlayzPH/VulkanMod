@@ -164,7 +164,7 @@ public class AndroidRAMInfo {
                 } else {
                     color = "";
                 }
-                return String.format("Highest RAM Usage Per Second: %.2f MB", color, maxMemUsedPerSecondMB);
+                return String.format("Highest RAM Usage Per Second: %s%.2f MB", color, maxMemUsedPerSecondMB);
             } else {
                 return "Highest RAM Usage Per Second: Unavailable";
             }
