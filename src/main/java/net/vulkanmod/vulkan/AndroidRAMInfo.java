@@ -12,6 +12,8 @@ public class AndroidRAMInfo {
     public static long memTotal = 0;
     public static long memBuffers = 0;
     public static long maxMemUsed = 0;
+    public static long prevMemUsed = 0;
+    public static long memUsedDifference = 0;
 
     private static final Lock lock = new ReentrantLock();
 
@@ -59,11 +61,15 @@ public class AndroidRAMInfo {
                         }
                     }
 
-                    // Update the maximum memory used
+                    // Update the current memory used and max memory used
                     long currentMemUsed = memTotal - memFree;
                     if (currentMemUsed > maxMemUsed) {
                         maxMemUsed = currentMemUsed;
                     }
+
+                    // Calculate the memory used difference
+                    memUsedDifference = currentMemUsed - prevMemUsed;
+                    prevMemUsed = currentMemUsed;
                 } finally {
                     lock.unlock();
                 }
@@ -101,6 +107,7 @@ public class AndroidRAMInfo {
         }
         return "Unknown";
     }
+    
 
     public static String getHighestRAMUsage() {
         lock.lock();
@@ -110,6 +117,28 @@ public class AndroidRAMInfo {
                 return String.format("Highest RAM Usage: %.2f MB", maxMemUsedMB);
             } else {
                 return "Highest RAM Usage: Unavailable";
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static String getMemoryUsagePerSecond() {
+        lock.lock();
+        try {
+            if (prevMemUsed != 0) {
+                double memUsedDiffMB = memUsedDifference / 1024.0;
+                String color;
+                if (memUsedDifference > 0) {
+                    color = "§c";
+                } else if (memUsedDifference < 0) {
+                    color = "§a";
+                } else {
+                    color = "";
+                }
+                return String.format("RAM used per second: %s%.2f MB", color, Math.abs(memUsedDiffMB));
+            } else {
+                return "RAM used per second: Unavailable";
             }
         } finally {
             lock.unlock();
