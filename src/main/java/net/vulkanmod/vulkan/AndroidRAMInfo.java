@@ -108,13 +108,19 @@ public class AndroidRAMInfo {
         return "Unknown";
     }
     
-
     public static String getHighestRAMUsage() {
         lock.lock();
         try {
             if (maxMemUsed != 0) {
                 double maxMemUsedMB = maxMemUsed / 1024.0;
-                return String.format("Highest RAM Usage: %.2f MB", maxMemUsedMB);
+                String memoryUsagePerSecond = getMemoryUsagePerSecond();
+                String color = "";
+                if (memoryUsagePerSecond.contains("§c ↑")) {
+                    color = "§c ↑";
+                } else if (memoryUsagePerSecond.contains("§a ↓")) {
+                    color = "§a ↓";
+                }
+                return String.format("Highest RAM Usage: %.2f MB / %s%s", maxMemUsedMB, color, memoryUsagePerSecond);
             } else {
                 return "Highest RAM Usage: Unavailable";
             }
