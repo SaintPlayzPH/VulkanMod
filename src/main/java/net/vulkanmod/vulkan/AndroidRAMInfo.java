@@ -139,9 +139,9 @@ public class AndroidRAMInfo {
             String highestRAMUsage;
             if (maxMemUsed != 0) {
                 double maxMemUsedMB = maxMemUsed / 1024.0;
-                highestRAMUsage = String.format("Highest RAM Usage: %.2f MB", maxMemUsedMB);
+                highestRAMUsage = String.format("Highest RAM Used: %.2f MB", maxMemUsedMB);
             } else {
-                highestRAMUsage = "Highest RAM Usage: Unavailable";
+                highestRAMUsage = "Highest RAM Used: Unavailable";
             }
         
             return highestMemoryUsagePerSecond + "§r / " + highestRAMUsage;
