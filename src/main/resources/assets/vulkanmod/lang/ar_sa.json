@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "يعرض ضباب السماء.",
   "vulkanmod.options.renderCloudFog": "عرض ضباب السحاب",
   "vulkanmod.options.renderCloudFog.tooltip": "يعرض ضباب السحاب.",
-  "vulkanmod.options.excludeSampledUsage.warn": "تحذير؛ يتطلب إعادة تشغيل اللعبة لتصبح سارية المفعول وسيؤدي إلى أخطاء وأعطال عند مراقبة كيان مع تأثير بعد (مثل الزاحف)."
+  "vulkanmod.options.excludeSampledUsage.warn": "تحذير: يتطلب إعادة تشغيل اللعبة لتصبح سارية المفعول وسيؤدي إلى أخطاء وأعطال عند مراقبة كيان مع تأثير بعد (مثل الزاحف).",
+  "vulkanmod.options.resetHighUsageRec": "إعادة تعيين سجلات الاستخدام العالي",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "تمكين لإعادة تعيين سجلات أعلى استخدام للذاكرة والذاكرة العشوائية كل 45 ثانية"
 }

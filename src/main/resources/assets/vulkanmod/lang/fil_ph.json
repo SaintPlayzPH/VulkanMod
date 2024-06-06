@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "Ipinapakita ang fog ng langit.",
   "vulkanmod.options.renderCloudFog": "I-render ang Fog ng mga ulap",
   "vulkanmod.options.renderCloudFog.tooltip": "Ipinapakita ang fog ng mga ulap.",
-  "vulkanmod.options.excludeSampledUsage.warn": "BABALA; Nangangailangan ng pag-restart ng laro upang magkaroon ng bisa at magdudulot ng mga bug at pag-crash kapag nanonood ng isang entidad na may post-effect (hal. Creeper)."
+  "vulkanmod.options.excludeSampledUsage.warn": "BABALA: Nangangailangan ng pag-restart ng laro upang magkaroon ng bisa at magdudulot ng mga bug at pag-crash kapag nag-oobserba ng isang entidad na may post-effect (hal. Creeper).",
+  "vulkanmod.options.resetHighUsageRec": "I-reset ang Mga Rekord ng Mataas na Paggamit",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Paganahin upang i-reset ang pinakamataas na rekord ng paggamit ng memory at RAM bawat 45 segundo"
 }

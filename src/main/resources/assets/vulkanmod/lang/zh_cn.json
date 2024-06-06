@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "渲染天空的雾。",
   "vulkanmod.options.renderCloudFog": "渲染云雾",
   "vulkanmod.options.renderCloudFog.tooltip": "渲染云的雾。",
-  "vulkanmod.options.excludeSampledUsage.warn": "警告；需要重新启动游戏才能生效，并且在观察带有后效应的实体时会导致错误和崩溃（例如：爬行者）。"
+  "vulkanmod.options.excludeSampledUsage.warn": "警告: 需要重新启动游戏才能生效，并且在观察带有后效应的实体时会导致错误和崩溃（例如：爬行者）。",
+  "vulkanmod.options.resetHighUsageRec": "重置高使用记录",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "启用以每45秒重置一次最高内存和RAM使用记录"
 }

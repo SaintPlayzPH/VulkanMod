@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "Отображает туман неба.",
   "vulkanmod.options.renderCloudFog": "Отображение тумана облаков",
   "vulkanmod.options.renderCloudFog.tooltip": "Отображает туман облаков.",
-  "vulkanmod.options.excludeSampledUsage.warn": "ПРЕДУПРЕЖДЕНИЕ; Требуется перезапуск игры, чтобы вступить в силу, и вызовет ошибки и сбои при наблюдении за сущностью с постэффектом (например, Крипер)."
+  "vulkanmod.options.excludeSampledUsage.warn": "ПРЕДУПРЕЖДЕНИЕ: Требуется перезапуск игры, чтобы вступить в силу, и вызовет ошибки и сбои при наблюдении за сущностью с постэффектом (например, Крипер).",
+  "vulkanmod.options.resetHighUsageRec": "Сбросить записи о высоком использовании",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Включите, чтобы сбросить самые высокие записи использования памяти и ОЗУ каждые 45 секунд"
 }

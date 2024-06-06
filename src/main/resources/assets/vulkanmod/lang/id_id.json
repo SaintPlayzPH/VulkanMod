@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "Render kabut di langit.",
   "vulkanmod.options.renderCloudFog": "Render Kabut Awan",
   "vulkanmod.options.renderCloudFog.tooltip": "Render kabut awan.",
-  "vulkanmod.options.excludeSampledUsage.warn": "PERINGATAN; Membutuhkan Restart Game untuk Berpengaruh dan akan menyebabkan bug dan crash saat mengamati entitas dengan efek pasca (contoh: Creeper)."
+  "vulkanmod.options.excludeSampledUsage.warn": "PERINGATAN: Membutuhkan Restart Game untuk Berpengaruh dan akan menyebabkan bug dan crash saat mengamati entitas dengan efek pasca (contoh: Creeper).",
+  "vulkanmod.options.resetHighUsageRec": "Setel Ulang Catatan Penggunaan Tinggi",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Aktifkan untuk menyetel ulang catatan penggunaan memori dan RAM tertinggi setiap 45 detik"
 }

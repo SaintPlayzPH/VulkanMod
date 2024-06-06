@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "空の霧を表示します。",
   "vulkanmod.options.renderCloudFog": "雲の霧をレンダリング",
   "vulkanmod.options.renderCloudFog.tooltip": "雲の霧を表示します。",
-  "vulkanmod.options.excludeSampledUsage.warn": "警告; 効果を発揮するにはゲームを再起動する必要があり、ポストエフェクトを持つエンティティ（例: クリーパー）を観察するとバグやクラッシュが発生します。"
+  "vulkanmod.options.excludeSampledUsage.warn": "警告: ゲームの再起動が必要です。効果が発揮され、ポストエフェクト（例: クリーパー）を持つエンティティを観察すると、バグやクラッシュが発生します。",
+  "vulkanmod.options.resetHighUsageRec": "高使用量レコードのリセット",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "毎45秒で最高メモリおよびRAM使用量レコードをリセットするには有効にしてください"
 }

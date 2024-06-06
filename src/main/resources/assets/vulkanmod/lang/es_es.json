@@ -58,5 +58,7 @@
   "vulkanmod.options.renderSkyFog.tooltip": "Renderiza la niebla del cielo.",
   "vulkanmod.options.renderCloudFog": "Renderizar niebla de las nubes",
   "vulkanmod.options.renderCloudFog.tooltip": "Renderiza la niebla de las nubes.",
-  "vulkanmod.options.excludeSampledUsage.warn": "ADVERTENCIA; Requiere reiniciar el juego para que surta efecto y causará errores y bloqueos al observar una entidad con post-efecto (ej. Creeper)."
+  "vulkanmod.options.excludeSampledUsage.warn": "ADVERTENCIA: Requiere reiniciar el juego para que surta efecto y causará errores y bloqueos al observar una entidad con post-efecto (ej. Creeper).",
+  "vulkanmod.options.resetHighUsageRec": "Restablecer registros de uso alto",
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Habilitar para restablecer los registros de mayor uso de memoria y RAM cada 45 segundos"
 }
