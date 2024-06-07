@@ -1,6 +1,7 @@
 package net.vulkanmod.render.chunk.graph;
 
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -31,6 +32,7 @@ public class SectionGraph {
     private SectionGrid sectionGrid;
     private final TaskDispatcher taskDispatcher;
     private final ResettableQueue<RenderSection> sectionQueue = new ResettableQueue<>();
+    private final Long2ReferenceMap<RenderSection> sectionByPosition = new Long2ReferenceOpenHashMap<>();
     private AreaSetQueue chunkAreaQueue;
     private short lastFrame = 0;
 
