@@ -30,7 +30,7 @@ public class AndroidRAMInfo {
     }
 
     private static void scheduleMemoryUpdateTask() {
-        long updateInterval = (Initializer.CONFIG.ramInfoUpdate == 0 ? 1 : Initializer.CONFIG.ramInfoUpdate) * 1000;
+        long updateInterval = (Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate) * 10;
         scheduler.scheduleAtFixedRate(AndroidRAMInfo::getAllMemoryInfo, 0, updateInterval, TimeUnit.MILLISECONDS);
     }
 
