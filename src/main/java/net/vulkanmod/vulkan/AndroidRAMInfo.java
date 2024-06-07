@@ -8,7 +8,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import net.vulkanmod.Initializer;
 
 public class AndroidRAMInfo {
@@ -21,7 +20,7 @@ public class AndroidRAMInfo {
     private static long maxMemUsedPerSecond = 0;
 
     private static final Lock lock = new ReentrantLock();
-    private static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private static boolean lastResetHighUsageRec;
 
     static {
@@ -31,7 +30,7 @@ public class AndroidRAMInfo {
     }
 
     private static void scheduleMemoryUpdateTask() {
-        long updateInterval = Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100;
+        long updateInterval = (Initializer.CONFIG.ramInfoUpdate == 0 ? 1 : Initializer.CONFIG.ramInfoUpdate) * 1000;
         scheduler.scheduleAtFixedRate(AndroidRAMInfo::getAllMemoryInfo, 0, updateInterval, TimeUnit.MILLISECONDS);
     }
 
@@ -88,6 +87,19 @@ public class AndroidRAMInfo {
                     "RAM: Unavailable";
         } finally {
             lock.unlock();
+        }
+    }
+
+    public static String getRAMInfo() {
+        try {
+            return Files.lines(Paths.get("/proc/meminfo"))
+                        .filter(line -> line.startsWith("MemTotal"))
+                        .map(line -> line.split("\\s+")[1])
+                        .findFirst()
+                        .orElse("Unknown");
+        } catch (IOException e) {
+            Initializer.LOGGER.error("Can't obtain your RAM!");
+            return "Unknown";
         }
     }
 
