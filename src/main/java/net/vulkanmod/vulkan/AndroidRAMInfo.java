@@ -158,7 +158,7 @@ public class AndroidRAMInfo {
                 } else {
                     color = "";
                 }
-                highestMemoryUsagePerSecond = String.format("Highest Usage: %s%.2f MB", color, Math.abs(maxMemUsedPerSecondMB));
+                highestMemoryUsagePerSecond = String.format("Highest Usage: %s%.2f MB", color, maxMemUsedPerSecondMB);
             } else {
                 highestMemoryUsagePerSecond = "Highest Usage: Unavailable";
             }
@@ -190,7 +190,7 @@ public class AndroidRAMInfo {
                 } else {
                     color = "";
                 }
-                return String.format("Current Usage: %s%.2f MB", color, Math.abs(memUsedDiffMB));
+                return String.format("Current Usage: %s%.2f MB", color, memUsedDiffMB);
             } else {
                 return "Current Usage: Unavailable";
             }
