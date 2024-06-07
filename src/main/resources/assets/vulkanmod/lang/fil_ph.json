@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen",
   "vulkanmod.options.fixPostEffectBug": "Ayusin ang Post-Effect Bug",
   "vulkanmod.options.fixPostEffectBug.tooltip": "Inaayos ang ilang mga bug sa Post-Effect lalo na kapag gumagamit ng ASR ngunit ang Post-effect ay nagre-render pa rin ng kakaiba kung ang ASR ay nakabukas. Kinakailangan ang pag-restart ng laro upang magkabisa!",
-  "vulkanmod.options.biomeTintBuilder": "Tagabuo ng Biome Tint",
   "vulkanmod.options.old": "Luma",
   "vulkanmod.options.new": "Bago",
   "vulkanmod.options.animations": "Animasyon",

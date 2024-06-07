@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "Okno v režimu celé obrazovky",
   "vulkanmod.options.fixPostEffectBug": "Opravit chybu post-efektu",
   "vulkanmod.options.fixPostEffectBug.tooltip": "Opravuje některé chyby post-efektu, zejména při použití ASR, ale post-efekt se stále může vykreslovat zvláštně, pokud je ASR povoleno. K efektu je nutné restartovat hru!",
-  "vulkanmod.options.biomeTintBuilder": "Stavitel tónování biomu",
   "vulkanmod.options.old": "Starý",
   "vulkanmod.options.new": "Nový",
   "vulkanmod.options.animations": "Animace",

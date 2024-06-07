@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "ملء الشاشة في نافذة",
   "vulkanmod.options.fixPostEffectBug": "إصلاح خطأ تأثير ما بعد",
   "vulkanmod.options.fixPostEffectBug.tooltip": "يُصلح بعض الأخطاء في تأثير ما بعد، خاصة عند استخدام ASR، لكن التأثير المضيء قد لا يزال يظهر بشكل غريب إذا كان ASR مفعلًا. يلزم إعادة تشغيل اللعبة لتطبيق التغييرات!",
-  "vulkanmod.options.biomeTintBuilder": "منشئ تدرج الأحياء",
   "vulkanmod.options.old": "قديم",
   "vulkanmod.options.new": "جديد",
   "vulkanmod.options.animations": "الرسوم المتحركة",

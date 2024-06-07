@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "ウィンドウ化されたフルスクリーン",
   "vulkanmod.options.fixPostEffectBug": "ポストエフェクトのバグを修正",
   "vulkanmod.options.fixPostEffectBug.tooltip": "ASRを使用するときに特にポストエフェクトに関するいくつかのバグを修正しますが、ASRが有効になっている場合、ポストエフェクトは依然として奇妙にレンダリングされます。ゲームを再起動する必要があります。",
-  "vulkanmod.options.biomeTintBuilder": "バイオームティントビルダー",
   "vulkanmod.options.old": "古い",
   "vulkanmod.options.new": "新しい",
   "vulkanmod.options.animations": "アニメーション",

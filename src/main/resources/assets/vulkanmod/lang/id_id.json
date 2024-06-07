@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "Layar Penuh dalam Jendela",
   "vulkanmod.options.fixPostEffectBug": "Perbaiki Bug Efek Post",
   "vulkanmod.options.fixPostEffectBug.tooltip": "Memperbaiki beberapa bug dengan Efek Post terutama saat menggunakan ASR tetapi Efek Post masih tampak aneh jika ASR diaktifkan. Memulai ulang permainan diperlukan untuk menerapkan perubahan!",
-  "vulkanmod.options.biomeTintBuilder": "Pembangun Tint Bioma",
   "vulkanmod.options.old": "Lama",
   "vulkanmod.options.new": "Baru",
   "vulkanmod.options.animations": "Animasi",

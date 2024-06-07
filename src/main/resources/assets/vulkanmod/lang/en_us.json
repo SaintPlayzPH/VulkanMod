@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen",
   "vulkanmod.options.fixPostEffectBug": "Fix Post-Effect Bug",
   "vulkanmod.options.fixPostEffectBug.tooltip": "Fixes few bugs with Post-Effect especially when using ASR but Post-effect still renders weird if ASR is enabled. Restarting the game is required to take effect!",
-  "vulkanmod.options.biomeTintBuilder": "Biome Tint Builder",
   "vulkanmod.options.old": "Old",
   "vulkanmod.options.new": "New",
   "vulkanmod.options.animations": "Animations",

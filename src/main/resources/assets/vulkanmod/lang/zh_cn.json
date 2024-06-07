@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "窗口全屏",
   "vulkanmod.options.fixPostEffectBug": "修复后处理效果错误",
   "vulkanmod.options.fixPostEffectBug.tooltip": "修复后处理效果的一些错误，尤其是在使用 ASR 时，但如果启用了 ASR，后处理效果仍然会渲染出现问题。需要重新启动游戏才能生效！",
-  "vulkanmod.options.biomeTintBuilder": "生态群调色板",
   "vulkanmod.options.old": "旧",
   "vulkanmod.options.new": "新",
   "vulkanmod.options.animations": "动画",

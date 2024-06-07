@@ -28,7 +28,6 @@
   "vulkanmod.options.windowedFullscreen": "Chế độ toàn màn hình cửa sổ",
   "vulkanmod.options.fixPostEffectBug": "Sửa lỗi Hiệu Ứng Hậu Kỳ",
   "vulkanmod.options.fixPostEffectBug.tooltip": "Sửa một số lỗi với hiệu ứng hậu kỳ đặc biệt khi sử dụng ASR nhưng hiệu ứng hậu kỳ vẫn hiển thị kỳ lạ nếu ASR được bật. Cần khởi động lại trò chơi để có hiệu lực!",
-  "vulkanmod.options.biomeTintBuilder": "Trình xây dựng sắc độ Biome",
   "vulkanmod.options.old": "Cũ",
   "vulkanmod.options.new": "Mới",
   "vulkanmod.options.animations": "Hoạt Hình",
