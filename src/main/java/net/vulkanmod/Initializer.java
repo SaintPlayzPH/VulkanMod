@@ -43,7 +43,7 @@ public class Initializer implements ClientModInitializer {
         if (isRunningOnMobile() && !loggedAndroid) {
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
-            LOGGER.info("• Phone RAM: " + AndroidRAMInfo.getRAMInfo() + " KB");
+            LOGGER.info("• Phone RAM: " + AndroidRAMInfo.getRAMInfo());
             loggedAndroid = true;
         }
         Platform.init();
