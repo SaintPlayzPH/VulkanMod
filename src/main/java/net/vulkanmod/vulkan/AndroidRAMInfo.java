@@ -36,18 +36,11 @@ public class AndroidRAMInfo {
 
     private static void scheduleConfigWatcherTask() {
         scheduler.scheduleAtFixedRate(() -> {
-            if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
-                lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
-                updateResetMaxMemoryThread();
-            }
-        }, 0, 1, TimeUnit.SECONDS); // Check for changes every second
-
-        scheduler.scheduleAtFixedRate(() -> {
             if (Initializer.CONFIG.resetHighUsageRec) {
                 resetMaxMemoryUsage();
                 resetMaxMemoryUsagePerSecond();
             }
-        }, 0, 45, TimeUnit.SECONDS); // Reset every 45 seconds if the option is enabled
+        }, 0, 3, TimeUnit.SECONDS); // Reset every 45 seconds if the option is enabled
     }
 
     public static void getAllMemoryInfo() {
