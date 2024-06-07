@@ -298,13 +298,32 @@ public class SectionGraph {
         return lastFrame;
     }
 
+    public int getVisibleSections() {
+    // Assuming we have access to player position and chunk information
+        int playerChunkX = getPlayerChunkX(); // Method to get player's current chunk X position
+        int playerChunkZ = getPlayerChunkZ(); // Method to get player's current chunk Z position
+        int renderDistance = WorldRenderer.getInstance().getRenderDistance();
+        int visibleSections = 0;
+
+        for (int x = playerChunkX - renderDistance; x <= playerChunkX + renderDistance; x++) {
+            for (int z = playerChunkZ - renderDistance; z <= playerChunkZ + renderDistance; z++) {
+                // Assuming chunkExists(x, z) is a method that checks if the chunk at position (x, z) exists
+                if (chunkExists(x, z)) {
+                    visibleSections += this.sectionGrid.getSectionCount(x, z); // Assuming getSectionCount(int x, int z) returns the number of sections in the chunk
+                }
+            }
+        }
+
+        return visibleSections;
+    }
+
     public String getStatistics() {
         int totalSections = this.sectionGrid.getSectionCount();
         int sections = this.sectionQueue.size();
         int renderDistance = WorldRenderer.getInstance().getRenderDistance();
         String tasksInfo = this.taskDispatcher == null ? "null" : this.taskDispatcher.getStats();
 
-        return String.format("Chunks: %d(%d)/%d D: %d, %s", this.nonEmptyChunks, sections, totalSections, renderDistance, tasksInfo);
+        return String.format("Chunks: %d(%d)/%d D: %d, %s", this.nonEmptyChunks, sections, visibleSections, renderDistance, tasksInfo);
     }
 }
 
