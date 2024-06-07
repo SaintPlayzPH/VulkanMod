@@ -100,8 +100,8 @@ public class AndroidRAMInfo {
                 memUsedDifference = currentMemUsed - prevMemUsed;
                 prevMemUsed = currentMemUsed;
 
-                // Update the max memory used per second
-                if (memUsedDifference > maxMemUsedPerSecond) {
+                // Update the max memory used per second based on absolute value
+                if (Math.abs(memUsedDifference) > Math.abs(maxMemUsedPerSecond)) {
                     maxMemUsedPerSecond = memUsedDifference;
                 }
             } catch (IOException e) {
@@ -125,17 +125,17 @@ public class AndroidRAMInfo {
         }
     }
 
-public static String getRAMInfo() {
-    try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
-        return br.lines()
-                .filter(line -> line.startsWith("MemTotal"))
-                .map(line -> {
-                long sizeKB = Long.parseLong(line.split("\\s+")[1]);
-                double sizeGB = sizeKB / 1048576.0; // Convert KB to GB
-                return String.format("%.2f GB", sizeGB);
-            })
-            .findFirst()
-            .orElse("Unknown");
+    public static String getRAMInfo() {
+        try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
+            return br.lines()
+                    .filter(line -> line.startsWith("MemTotal"))
+                    .map(line -> {
+                        long sizeKB = Long.parseLong(line.split("\\s+")[1]);
+                        double sizeGB = sizeKB / 1048576.0; // Convert KB to GB
+                        return String.format("%.2f GB", sizeGB);
+                    })
+                    .findFirst()
+                    .orElse("Unknown");
         } catch (IOException e) {
             Initializer.LOGGER.error("Can't obtain your RAM!");
             return "Unknown";
@@ -277,4 +277,4 @@ public static String getRAMInfo() {
             lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         }
     }
-                }
+}
