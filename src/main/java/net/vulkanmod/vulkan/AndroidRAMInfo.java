@@ -30,7 +30,7 @@ public class AndroidRAMInfo {
     }
 
     private static void scheduleMemoryUpdateTask() {
-        long updateInterval = (Initializer.CONFIG.ramInfoUpdate == 0 ? 1 : Initializer.CONFIG.ramInfoUpdate) * 1000; // Convert seconds to milliseconds
+        long updateInterval = Initializer.CONFIG.ramInfoUpdate * 100; // Convert 1/10 of a second to milliseconds
         scheduler.scheduleAtFixedRate(AndroidRAMInfo::getAllMemoryInfo, 0, updateInterval, TimeUnit.MILLISECONDS);
     }
 
@@ -40,7 +40,7 @@ public class AndroidRAMInfo {
                 resetMaxMemoryUsage();
                 resetMaxMemoryUsagePerSecond();
             }
-        }, 0, 3, TimeUnit.SECONDS); // Reset every 45 seconds if the option is enabled
+        }, 0, 2, TimeUnit.SECONDS); // Reset every 45 seconds if the option is enabled
     }
 
     public static void getAllMemoryInfo() {
