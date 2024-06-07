@@ -298,13 +298,16 @@ public class SectionGraph {
         return lastFrame;
     }
 
+    public int getTotalSections() {
+        return this.sectionByPosition.size();
+    }
+
     public String getStatistics() {
         int totalSections = this.sectionGrid.getSectionCount();
         int sections = this.sectionQueue.size();
         int renderDistance = WorldRenderer.getInstance().getRenderDistance();
         String tasksInfo = this.taskDispatcher == null ? "null" : this.taskDispatcher.getStats();
 
-        return String.format("Chunks: %d(%d)/%d D: %d, %s", this.nonEmptyChunks, sections, totalSections, renderDistance, tasksInfo);
+        return String.format("Chunks: %d(%d)/%d D: %d, %s", this.nonEmptyChunks, sections, this.getTotalSections(), renderDistance, tasksInfo);
     }
 }
-
