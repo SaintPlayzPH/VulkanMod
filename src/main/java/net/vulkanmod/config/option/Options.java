@@ -260,21 +260,6 @@ public abstract class Options {
                                 },
                                 () -> config.postEffectFix)
                                 .setTooltip(Component.translatable("vulkanmod.options.fixPostEffectBug.tooltip")),
-                        new CyclingOption<>(Component.translatable("vulkanmod.options.biomeTintBuilder"),
-                                new Integer[]{1, 2},
-                                value -> {
-                                    config.tintBuilder = value;
-                                    minecraft.levelRenderer.allChanged();
-                                },
-                                () -> config.tintBuilder)
-                                .setTranslator(value -> {
-                                    String t = switch (value) {
-                                        case 1 -> "vulkanmod.options.old";
-                                        case 2 -> "vulkanmod.options.new";
-                                        default -> "vulkanmod.options.unknown";
-                                    };
-                                    return Component.translatable(t);
-                                }),
                         new SwitchOption(Component.translatable("vulkanmod.options.renderSkyFog"),
                                 value -> {
                                     config.renderSkyFog = value;
