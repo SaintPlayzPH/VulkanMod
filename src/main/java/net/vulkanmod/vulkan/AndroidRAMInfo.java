@@ -37,6 +37,7 @@ public class AndroidRAMInfo {
 
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         initializeResetMaxMemoryThread();
+        resetMaxMemoryUsageRecord();
 
         Thread configWatcherThread = new Thread(() -> {
             while (true) {
