@@ -100,10 +100,16 @@ public class AndroidRAMInfo {
                     prevMemUsed = currentMemUsed;
 
                     // Update the max memory used per second
-                    if (memUsedDifference > maxMemUsedPerSecond && prevMemUsed != 0 && currentMemUsed != 0) {
+                    if (memUsedDifference > maxMemUsedPerSecond) {
                         maxMemUsedPerSecond = memUsedDifference;
                     }
 
+                    // Compare maxMemUsedPerSecond with currentMemUsed and threshold
+                    if (maxMemUsedPerSecond > currentMemUsed || maxMemUsedPerSecond > (currentMemUsed - 200)) {
+                        resetMaxMemoryUsageRecord();
+                    }
+
+                    // Update the max memory used
                     if (currentMemUsed > maxMemUsed) {
                         maxMemUsed = currentMemUsed;
                     }
