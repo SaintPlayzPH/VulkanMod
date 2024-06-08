@@ -59,5 +59,6 @@
   "vulkanmod.options.renderCloudFog.tooltip": "Renders fogz of teh cloudz.",
   "vulkanmod.options.excludeSampledUsage.warn": "WARNIN: Requires Game Restart To Take Effect and will cause bugz and crashez when spectatin an entity wit Post-effect (ex. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Reset High Usage Records",
-  "vulkanmod.options.resetHighUsageRec.tooltip": "Enablez to reset highes memori and RAM usage recordz everi 45 seconz"
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Enablez to reset highes memori and RAM usage recordz everi 45 seconz",
+  "vulkanmod.options.presentMode": "Present Mode"
 }

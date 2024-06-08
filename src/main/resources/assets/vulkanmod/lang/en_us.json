@@ -59,5 +59,6 @@
   "vulkanmod.options.renderCloudFog.tooltip": "Renders fog of clouds.",
   "vulkanmod.options.excludeSampledUsage.warn": "WARNING: Requires Game To Restart To Take Effect and will cause bugs and crashes when spectating an entity with Post-effect (ex. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Reset High Usage Records",
-  "vulkanmod.options.resetHighUsageRec.tooltip": "Enable to reset highest memory and RAM usage records every 45 seconds"
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Enable to reset highest memory and RAM usage records every 45 seconds",
+  "vulkanmod.options.presentMode": "Present Mode"
 }

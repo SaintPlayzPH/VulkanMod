@@ -59,5 +59,6 @@
   "vulkanmod.options.renderCloudFog.tooltip": "Affiche le brouillard des nuages.",
   "vulkanmod.options.excludeSampledUsage.warn": "AVERTISSEMENT: Nécessite un redémarrage du jeu pour prendre effet et provoquera des bugs et des plantages lors de la spectation d'une entité avec un post-effet (ex. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Réinitialiser les enregistrements d'utilisation élevée",
-  "vulkanmod.options.resetHighUsageRec.tooltip": "Activer pour réinitialiser les enregistrements d'utilisation de mémoire et de RAM les plus élevés toutes les 45 secondes"
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Activer pour réinitialiser les enregistrements d'utilisation de mémoire et de RAM les plus élevés toutes les 45 secondes",
+  "vulkanmod.options.presentMode": "Mode de Présentation"
 }

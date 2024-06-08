@@ -59,5 +59,6 @@
   "vulkanmod.options.renderCloudFog.tooltip": "Renderuje mgłę chmur.",
   "vulkanmod.options.excludeSampledUsage.warn": "OSTRZEŻENIE: Wymaga ponownego uruchomienia gry, aby zaczęło działać i spowoduje błędy oraz awarie podczas oglądania jednostki z efektem końcowym (np. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Zresetuj rekordy wysokiego użycia",
-  "vulkanmod.options.resetHighUsageRec.tooltip": "Włącz, aby zresetować najwyższe rekordy użycia pamięci i RAM co 45 sekund"
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Włącz, aby zresetować najwyższe rekordy użycia pamięci i RAM co 45 sekund",
+  "vulkanmod.options.presentMode": "Tryb prezentacji"
 }

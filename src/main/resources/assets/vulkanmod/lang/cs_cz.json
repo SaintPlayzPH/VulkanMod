@@ -59,5 +59,6 @@
   "vulkanmod.options.renderCloudFog.tooltip": "Zobrazuje mlhu na oblacích.",
   "vulkanmod.options.excludeSampledUsage.warn": "VAROVÁNÍ: Projeví se po restartu hry a způsobí chyby a pády při sledování entity s poefektem (např. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Resetovat záznamy o vysokém využití",
-  "vulkanmod.options.resetHighUsageRec.tooltip": "Povolte pro resetování nejvyšších záznamů o využití paměti a RAM každých 45 sekund"
+  "vulkanmod.options.resetHighUsageRec.tooltip": "Povolte pro resetování nejvyšších záznamů o využití paměti a RAM každých 45 sekund",
+  "vulkanmod.options.presentMode": "Režim zobrazení"
 }
