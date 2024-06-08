@@ -37,7 +37,6 @@ public class AndroidRAMInfo {
 
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         initializeResetMaxMemoryThread();
-        resetMaxMemoryUsageRecord();
 
         Thread configWatcherThread = new Thread(() -> {
             while (true) {
@@ -101,6 +100,7 @@ public class AndroidRAMInfo {
 
                     // Calculate the memory used difference
                     memUsedDifference = currentMemUsed - prevMemUsed;
+                    prevMemUsed = currentMemUsed;
 
                     // Update the max memory used per second
                     if (memUsedDifference > maxMemUsedPerSecond) {
