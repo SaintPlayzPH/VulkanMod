@@ -74,8 +74,6 @@ public class AndroidRAMInfo {
             resetMaxMemoryThread.setDaemon(true);
             resetMaxMemoryThread.start();
         }
-        
-        resetMaxMemoryUsageRecord();
     }
 
     public static void getAllMemoryInfo() {
@@ -96,17 +94,22 @@ public class AndroidRAMInfo {
 
                     // Update the current memory used and max memory used
                     long currentMemUsed = memTotal - memFree;
-                    if (currentMemUsed > maxMemUsed) {
-                        maxMemUsed = currentMemUsed;
-                    }
 
                     // Calculate the memory used difference
                     memUsedDifference = currentMemUsed - prevMemUsed;
                     prevMemUsed = currentMemUsed;
 
+                    if (prevMemUsed > currentMemUsed) {
+                        resetMaxMemoryUsageRecord();
+                    }
+
                     // Update the max memory used per second
                     if (memUsedDifference > maxMemUsedPerSecond) {
                         maxMemUsedPerSecond = memUsedDifference;
+                    }
+
+                    if (currentMemUsed > maxMemUsed) {
+                        maxMemUsed = currentMemUsed;
                     }
                 } finally {
                     lock.unlock();
