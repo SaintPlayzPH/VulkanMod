@@ -74,6 +74,8 @@ public class AndroidRAMInfo {
             resetMaxMemoryThread.setDaemon(true);
             resetMaxMemoryThread.start();
         }
+        
+        resetMaxMemoryUsageRecord();
     }
 
     public static void getAllMemoryInfo() {
@@ -99,7 +101,7 @@ public class AndroidRAMInfo {
                     }
 
                     // Calculate the memory used difference
-                    long memUsedDifference = currentMemUsed - prevMemUsed;
+                    memUsedDifference = currentMemUsed - prevMemUsed;
                     prevMemUsed = currentMemUsed;
 
                     // Update the max memory used per second
@@ -147,32 +149,6 @@ public class AndroidRAMInfo {
         }
     }
 
-    public static String getHighestMemoryAndRAMUsage() {
-        lock.lock();
-        try {
-            String highestMemoryUsagePerSecond;
-            if (maxMemUsedPerSecond != 0) {
-                double maxMemUsedPerSecondMB = maxMemUsedPerSecond / 1024.0;
-                String color = maxMemUsedPerSecond > 0 ? "§c↑" : maxMemUsedPerSecond < 0 ? "§a↓" : "";
-                highestMemoryUsagePerSecond = String.format("Highest Usage: %s%.2f MB", color, Math.abs(maxMemUsedPerSecondMB));
-            } else {
-                highestMemoryUsagePerSecond = "Highest Usage: Unavailable";
-            }
-
-            String highestRAMUsage;
-            if (maxMemUsed != 0) {
-                double maxMemUsedMB = maxMemUsed / 1024.0;
-                highestRAMUsage = String.format("Highest RAM Used: %.2f MB", maxMemUsedMB);
-            } else {
-                highestRAMUsage = "Highest RAM Used: Unavailable";
-            }
-
-            return highestMemoryUsagePerSecond + "§r / " + highestRAMUsage;
-        } finally {
-            lock.unlock();
-        }
-    }
-
     public static String getMemoryUsagePerSecond() {
         lock.lock();
         try {
@@ -199,6 +175,32 @@ public class AndroidRAMInfo {
             } else {
                 return "Available RAM: Unavailable";
             }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static String getHighestMemoryAndRAMUsage() {
+        lock.lock();
+        try {
+            String highestMemoryUsagePerSecond;
+            if (maxMemUsedPerSecond != 0) {
+                double maxMemUsedPerSecondMB = maxMemUsedPerSecond / 1024.0;
+                String color = maxMemUsedPerSecond > 0 ? "§c↑" : maxMemUsedPerSecond < 0 ? "§a↓" : "";
+                highestMemoryUsagePerSecond = String.format("Highest Usage: %s%.2f MB", color, Math.abs(maxMemUsedPerSecondMB));
+            } else {
+                highestMemoryUsagePerSecond = "Highest Usage: Unavailable";
+            }
+
+            String highestRAMUsage;
+            if (maxMemUsed != 0) {
+                double maxMemUsedMB = maxMemUsed / 1024.0;
+                highestRAMUsage = String.format("Highest RAM Used: %.2f MB", maxMemUsedMB);
+            } else {
+                highestRAMUsage = "Highest RAM Used: Unavailable";
+            }
+
+            return highestMemoryUsagePerSecond + "§r / " + highestRAMUsage;
         } finally {
             lock.unlock();
         }
