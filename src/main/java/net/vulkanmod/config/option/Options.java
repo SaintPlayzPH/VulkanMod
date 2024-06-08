@@ -11,17 +11,19 @@ import net.vulkanmod.config.gui.OptionBlock;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.device.DeviceManager;
+import net.vulkanmod.vulkan.device.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
 import java.util.stream.IntStream;
 
+import static org.lwjgl.vulkan.VkPhysicalDevice;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 
 public abstract class Options {
     public static boolean fullscreenDirty = false;
     static Config config = Initializer.CONFIG;
+    boolean Device device = Device.isMailboxSupported();
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
@@ -162,9 +164,9 @@ public abstract class Options {
                         new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
                                 new Integer[]{1, 2},
                                 value -> {
-                                   config.presentMode = value;
+                                   config.presentMode = Device.isMailboxSupported() ? value : 1;
                                    Renderer.scheduleSwapChainUpdate();
-                                }, () -> config.presentMode)
+                                }, () -> Device.isMailboxSupported() && config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
                                         case 1 -> "FIFO (VSync)";
