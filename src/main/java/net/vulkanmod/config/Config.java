@@ -36,6 +36,7 @@ public class Config {
     public boolean dontUseImageSampled = false;
     public boolean resetHighUsageRec = false;
     public boolean showlowRAM = false;
+    public int presentMode = 1;
     public int ramInfoUpdate = 1;
     public int imageCount = 3;
     public int device = -1;
