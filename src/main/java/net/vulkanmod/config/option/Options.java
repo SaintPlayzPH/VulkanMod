@@ -23,7 +23,6 @@ import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilities
 public abstract class Options {
     public static boolean fullscreenDirty = false;
     static Config config = Initializer.CONFIG;
-    boolean Device device = Device.isMailboxSupported();
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
