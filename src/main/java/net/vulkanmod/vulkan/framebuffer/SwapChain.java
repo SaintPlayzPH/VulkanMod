@@ -301,19 +301,29 @@ public class SwapChain extends Framebuffer {
     }
 
     private int getPresentMode(IntBuffer availablePresentModes) {
-        int requestedMode = vsync ? VK_PRESENT_MODE_FIFO_KHR : defUncappedMode;
+        int requestedMode;
+        
+        // Check the configuration option
+        switch (Initializer.CONFIG.presentMode) {
+            case 1: // FIFO mode
+                requestedMode = VK_PRESENT_MODE_FIFO_KHR;
+                break;
+            case 2: // Mailbox mode
+                requestedMode = VK_PRESENT_MODE_MAILBOX_KHR;
+                break;
+            default: // Default to FIFO mode
+                requestedMode = defUncappedMode;
+        }
 
-        // FIFO mode is the only mode that has to be supported
-        if (requestedMode == VK_PRESENT_MODE_FIFO_KHR)
-            return VK_PRESENT_MODE_FIFO_KHR;
-
+        // If the requested mode is supported, use it
         for (int i = 0; i < availablePresentModes.capacity(); i++) {
             if (availablePresentModes.get(i) == requestedMode) {
                 return requestedMode;
             }
         }
 
-        Initializer.LOGGER.warn("Requested mode not supported: " + getDisplayModeString(requestedMode) + ": using VSync");
+        // Log a warning if the requested mode is not supported and fall back to FIFO mode
+        Initializer.LOGGER.warn("Requested mode not supported: " + getDisplayModeString(requestedMode) + ": using FIFO");
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
@@ -359,7 +369,9 @@ public class SwapChain extends Framebuffer {
                     }
                 }
             }
-            return VK_PRESENT_MODE_FIFO_KHR; //If None of the request modes exist/are supported by Driver
+            // Log a warning if none of the requested modes are supported and fall back to FIFO mode
+            Initializer.LOGGER.warn("None of the requested modes are supported by the driver: using FIFO");
+            return VK_PRESENT_MODE_FIFO_KHR; // If None of the request modes exist/are supported by Driver
         }
     }
 
