@@ -172,7 +172,8 @@ public abstract class Options {
                                         default -> "FIFO (VSync)";
                                     };
                                     return Component.translatable(t);
-                                }),
+                                })
+                                .setTooltip(Component.translatable("vulkanmod.options.presentMode.tooltip")),
                         new SwitchOption(Component.translatable("options.viewBobbing"),
                                 (value) -> minecraftOptions.bobView().set(value),
                                 () -> minecraftOptions.bobView().get()),
