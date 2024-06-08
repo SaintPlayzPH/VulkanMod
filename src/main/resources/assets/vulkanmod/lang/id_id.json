@@ -42,8 +42,8 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(PERINGATAN: EKSPERIMEN)\n\nPotensial meningkatkan kinerja Render Chunk.\n\nSangat spesifik arsitektur: Mungkin tidak berpengaruh pada beberapa perangkat",
   "vulkanmod.options.excludeSampledUsage": "Kecualikan Penggunaan Sampled",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Saat diaktifkan, opsi ini mengoptimalkan gambar hanya untuk operasi rendering, meningkatkan efisiensi, dan menghindari potensi masalah kompresi, terutama pada platform mobile. Namun, ini membatasi gambar untuk hanya menjadi target rendering, sehingga melarang sampling langsung di shader.",
-  "vulkanmod.options.swapchainImages": "Gambar SwapChain",
-  "vulkanmod.options.swapchainImages.tooltip": "Mengatur jumlah gambar SwapChain. Dioptimalkan secara otomatis untuk kinerja terbaik. Ini dapat dikurangi untuk meminimalkan lag input tetapi dengan mengorbankan FPS.",
+  "vulkanmod.options.SwapchainImages": "Gambar Swapchain",
+  "vulkanmod.options.SwapchainImages.tooltip": "Mengatur jumlah gambar Swapchain. Dioptimalkan secara otomatis untuk kinerja terbaik. Ini dapat dikurangi untuk meminimalkan lag input tetapi dengan mengorbankan FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Tampilkan Info RAM Ponsel",
   "vulkanmod.options.runningOnPhone": "Berjalan di Ponsel?: ",
   "vulkanmod.options.showPhoneRAMInfo.tooltip": "Menampilkan Info RAM Ponsel Anda di layar debug.",
@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "PERINGATAN: Membutuhkan Restart Game untuk Berpengaruh dan akan menyebabkan bug dan crash saat mengamati entitas dengan efek pasca (contoh: Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Setel Ulang Catatan Penggunaan Tinggi",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Aktifkan untuk menyetel ulang catatan penggunaan memori dan RAM tertinggi setiap 45 detik",
-  "vulkanmod.options.presentMode": "Mode Presentasi"
+  "vulkanmod.options.presentMode": "Mode Presentasi",
+  "vulkanmod.options.presentMode.tooltip": "Mode Presentasi:\n\n- FIFO (VSync):\n  Menyinkronkan presentasi bingkai dengan kecepatan refresh layar. Memastikan interval reguler tetapi mungkin memperkenalkan gagap.\n\n- Mailbox (FastSync):\n  Memaksimalkan kecepatan bingkai dan responsivitas. Memberikan rendering yang halus tetapi mengkonsumsi lebih banyak sumber daya. Tidak didukung di semua perangkat."
 }

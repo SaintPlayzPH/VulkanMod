@@ -42,8 +42,8 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(OSTRZEŻENIE: EKSPERYMENTALNE)\n\nMoże potencjalnie poprawić wydajność renderowania chunków.\n\nBardzo specyficzne dla architektury: Może nie mieć wpływu na niektóre urządzenia.",
   "vulkanmod.options.excludeSampledUsage": "Wyklucz Użycie Próbkowane",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Kiedy włączone, ta opcja optymalizuje obraz wyłącznie pod kątem operacji renderowania, zwiększając wydajność i unikając potencjalnych problemów z kompresją, szczególnie na platformach mobilnych. Jednakże, ogranicza to obraz do bycia wyłącznie celem renderowania, zakazując bezpośredniego próbkowania w shaderach.",
-  "vulkanmod.options.swapchainImages": "Obrazy SwapChain",
-  "vulkanmod.options.swapchainImages.tooltip": "Ustawia liczbę obrazów SwapChain. Optymalizowane automatycznie dla najlepszej wydajności. Może zostać zmniejszona, aby zminimalizować opóźnienie wejściowe, kosztem zmniejszenia FPS.",
+  "vulkanmod.options.SwapchainImages": "Obrazy Swapchain",
+  "vulkanmod.options.SwapchainImages.tooltip": "Ustawia liczbę obrazów Swapchain. Optymalizowane automatycznie dla najlepszej wydajności. Może zostać zmniejszona, aby zminimalizować opóźnienie wejściowe, kosztem zmniejszenia FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Pokaż informacje o RAM telefonu",
   "vulkanmod.options.runningOnPhone": "Działa na telefonie?: ",
   "vulkanmod.options.showPhoneRAMInfo.tooltip": "Pokazuje informacje o RAM telefonu na ekranie debugowania.",
@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "OSTRZEŻENIE: Wymaga ponownego uruchomienia gry, aby zaczęło działać i spowoduje błędy oraz awarie podczas oglądania jednostki z efektem końcowym (np. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Zresetuj rekordy wysokiego użycia",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Włącz, aby zresetować najwyższe rekordy użycia pamięci i RAM co 45 sekund",
-  "vulkanmod.options.presentMode": "Tryb prezentacji"
+  "vulkanmod.options.presentMode": "Tryb prezentacji",
+  "vulkanmod.options.presentMode.tooltip": "Tryb prezentacji:\n\n- FIFO (VSync):\n  Synchronizuje prezentację klatek z częstotliwością odświeżania wyświetlacza. Zapewnia regularne odstępy, ale może wprowadzać zacięcia.\n\n- Mailbox (FastSync):\n  Maksymalizuje liczbę klatek na sekundę i szybkość reakcji. Zapewnia płynne renderowanie, ale zużywa więcej zasobów. Nieobsługiwane na wszystkich urządzeniach."
 }

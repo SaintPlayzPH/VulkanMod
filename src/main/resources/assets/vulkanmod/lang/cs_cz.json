@@ -42,8 +42,8 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(UPOZORNĚNÍ: EXPERIMENTÁLNÍ)\n\nPotenciálně zlepšuje výkon vykreslování chunků.\n\nVelmi závislé na architektuře: Na některých zařízeních nemusí mít žádný účinek.",
   "vulkanmod.options.excludeSampledUsage": "Vyloučit použití vzorkování",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Když je povoleno, tato možnost optimalizuje obraz pouze pro operace vykreslování, zvyšuje efektivitu a vyhýbá se potenciálním problémům s kompresí, zejména na mobilních platformách. Omezí však obraz pouze na cílový render, což zakazuje přímé vzorkování v shaderech.",
-  "vulkanmod.options.swapchainImages": "Obrázky swapchainu",
-  "vulkanmod.options.swapchainImages.tooltip": "Nastaví počet obrázků swapchainu. Automaticky optimalizováno pro nejlepší výkon. Toto lze snížit pro minimalizaci zpoždění vstupu, ale za cenu snížení FPS.",
+  "vulkanmod.options.SwapchainImages": "Obrázky Swapchainu",
+  "vulkanmod.options.SwapchainImages.tooltip": "Nastaví počet obrázků Swapchainu. Automaticky optimalizováno pro nejlepší výkon. Toto lze snížit pro minimalizaci zpoždění vstupu, ale za cenu snížení FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Zobrazit informace o RAM telefonu",
   "vulkanmod.options.runningOnPhone": "Běží na telefonu?: ",
   "vulkanmod.options.showPhoneRAMInfo.tooltip": "Zobrazuje informace o RAM telefonu na debugovací obrazovce.",
@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "VAROVÁNÍ: Projeví se po restartu hry a způsobí chyby a pády při sledování entity s poefektem (např. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Resetovat záznamy o vysokém využití",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Povolte pro resetování nejvyšších záznamů o využití paměti a RAM každých 45 sekund",
-  "vulkanmod.options.presentMode": "Režim zobrazení"
+  "vulkanmod.options.presentMode": "Režim zobrazení",
+  "vulkanmod.options.presentMode.tooltip": "Režim zobrazení:\n\n- FIFO (VSync):\n  Synchronizuje zobrazení snímků s obnovovací frekvencí displeje. Zajišťuje pravidelné intervaly, ale může způsobit zasekávání.\n\n- Mailbox (FastSync):\n  Maximalizuje obnovovací frekvenci a rychlost odezvy. Poskytuje plynulé vykreslování, ale spotřebovává více zdrojů. Není podporováno na všech zařízeních."
 }

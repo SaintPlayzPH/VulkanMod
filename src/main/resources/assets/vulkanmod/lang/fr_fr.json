@@ -42,8 +42,8 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(AVERTISSEMENT : EXPÉRIMENTAL)\n\nPeut potentiellement améliorer les performances de rendu des chunks.\n\nTrès spécifique à l'architecture : Peut ne pas avoir d'effet sur certains appareils",
   "vulkanmod.options.excludeSampledUsage": "Exclure l'utilisation échantillonnée",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Lorsqu'elle est activée, cette option optimise l'image uniquement pour les opérations de rendu, augmentant ainsi l'efficacité et évitant les problèmes de compression potentiels, en particulier sur les plateformes mobiles. Cependant, elle limite l'image à être uniquement une cible de rendu, interdisant ainsi l'échantillonnage direct dans les shaders.",
-  "vulkanmod.options.swapchainImages": "Images de la chaîne d'échange",
-  "vulkanmod.options.swapchainImages.tooltip": "Définit le nombre d'images de la chaîne d'échange. Optimisé automatiquement pour de meilleures performances. Cela peut être réduit pour minimiser le lag d'entrée, mais au détriment de la diminution des FPS.",
+  "vulkanmod.options.SwapchainImages": "Images de la chaîne d'échange",
+  "vulkanmod.options.SwapchainImages.tooltip": "Définit le nombre d'images de la chaîne d'échange. Optimisé automatiquement pour de meilleures performances. Cela peut être réduit pour minimiser le lag d'entrée, mais au détriment de la diminution des FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Afficher les infos RAM du téléphone",
   "vulkanmod.options.runningOnPhone": "Fonctionne sur téléphone ?: ",
   "vulkanmod.options.showPhoneRAMInfo.tooltip": "Affiche les informations RAM de votre téléphone sur l'écran de débogage.",
@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "AVERTISSEMENT: Nécessite un redémarrage du jeu pour prendre effet et provoquera des bugs et des plantages lors de la spectation d'une entité avec un post-effet (ex. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Réinitialiser les enregistrements d'utilisation élevée",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Activer pour réinitialiser les enregistrements d'utilisation de mémoire et de RAM les plus élevés toutes les 45 secondes",
-  "vulkanmod.options.presentMode": "Mode de Présentation"
+  "vulkanmod.options.presentMode": "Mode de Présentation",
+  "vulkanmod.options.presentMode.tooltip": "Mode de Présentation:\n\n- FIFO (VSync):\n  Synchronise la présentation des images avec le taux de rafraîchissement de l'écran. Assure des intervalles réguliers mais peut introduire des saccades.\n\n- Mailbox (FastSync):\n  Maximise le taux de trame et la réactivité. Offre un rendu fluide mais consomme plus de ressources. Non pris en charge sur tous les appareils."
 }

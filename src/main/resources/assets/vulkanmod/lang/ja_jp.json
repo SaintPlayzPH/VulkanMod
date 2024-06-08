@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "警告: ゲームの再起動が必要です。効果が発揮され、ポストエフェクト（例: クリーパー）を持つエンティティを観察すると、バグやクラッシュが発生します。",
   "vulkanmod.options.resetHighUsageRec": "高使用量レコードのリセット",
   "vulkanmod.options.resetHighUsageRec.tooltip": "毎45秒で最高メモリおよびRAM使用量レコードをリセットするには有効にしてください",
-  "vulkanmod.options.presentMode": "プレゼントモード"
+  "vulkanmod.options.presentMode": "プレゼントモード",
+  "vulkanmod.options.presentMode.tooltip": "プレゼントモード:\n\n- FIFO (VSync):\n  フレームの表示をディスプレイのリフレッシュレートに同期します。規則的な間隔を確保しますが、スタッタを引き起こす可能性があります。\n\n- メールボックス (FastSync):\n  フレームレートと応答性を最大化します。スムーズなレンダリングを提供しますが、より多くのリソースを消費します。すべてのデバイスでサポートされているわけではありません。"
 }

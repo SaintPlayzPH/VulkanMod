@@ -42,7 +42,7 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(WARNIN: XPERIMENTUL)\n\nPotenshully improovz purformans ov Chunk Rendurrin.\n\nVery Arkiteckshur spesifik: May hav no effek on sum Devices",
   "vulkanmod.options.excludeSampledUsage": "Eksklude Sampld Usaj",
   "vulkanmod.options.excludeSampledUsage.tooltip": "When enabld, dis opshun optimiziz teh imaj solee fur rendurrin opshunz, enhansin effishunsee, an avoidin potenshul kompresseeon ishuz, partikularly on mowbile platformz. Howevur, it restriktz teh imaj to bein solee a rendurr target, thuz prohibitin direkt samplin in shaderz.",
-  "vulkanmod.options.swapchainImages": "SwapChain Imajez",
+  "vulkanmod.options.swapchainImages": "Swapchain Imajez",
   "vulkanmod.options.swapchainImages.tooltip": "Setz teh numbur of Swapchain imajz. Optimized automatickally fur best purformans. Dis can be reduce'd to minimyz inpooot lag but at teh cost of decreezd FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Show Fone RAM Info",
   "vulkanmod.options.runningOnPhone": "Runnin on Fone?: ",
@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "WARNIN: Requires Game Restart To Take Effect and will cause bugz and crashez when spectatin an entity wit Post-effect (ex. Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Reset High Usage Records",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Enablez to reset highes memori and RAM usage recordz everi 45 seconz",
-  "vulkanmod.options.presentMode": "Present Mode"
+  "vulkanmod.options.presentMode": "Present Mode",
+  "vulkanmod.options.presentMode.tooltip": "Present Mode:\n\n- FIFO (VSync):\n  Synchronizes frame presentation with teh display's refresh rate. Ensurez regular intervalz but may introduce stutter.\n\n- Mailbox (FastSync):\n  Maximizes frame rate and responsiveness. Providez smooth rendering but consumes more resourcez. Not supported on all devicez."
 }

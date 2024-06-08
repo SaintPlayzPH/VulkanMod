@@ -42,8 +42,8 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(CẢNH BÁO: THỬ NGHIỆM)\n\nCó thể cải thiện hiệu suất kết xuất Chunk.\n\nRất cụ thể với kiến trúc: Có thể không có tác dụng trên một số thiết bị",
   "vulkanmod.options.excludeSampledUsage": "Loại Trừ Sử Dụng Mẫu",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Khi được bật, tùy chọn này tối ưu hóa hình ảnh chỉ cho các hoạt động kết xuất, nâng cao hiệu quả và tránh các vấn đề nén tiềm năng, đặc biệt trên các nền tảng di động. Tuy nhiên, nó hạn chế hình ảnh chỉ là mục tiêu kết xuất, do đó cấm lấy mẫu trực tiếp trong các shader.",
-  "vulkanmod.options.swapchainImages": "Hình Ảnh Chuỗi Trao Đổi",
-  "vulkanmod.options.swapchainImages.tooltip": "Đặt số lượng hình ảnh chuỗi trao đổi. Tự động tối ưu hóa để có hiệu suất tốt nhất. Điều này có thể giảm để tối thiểu hóa độ trễ đầu vào nhưng với chi phí giảm FPS.",
+  "vulkanmod.options.SwapchainImages": "Hình Ảnh Chuỗi Trao Đổi",
+  "vulkanmod.options.SwapchainImages.tooltip": "Đặt số lượng hình ảnh chuỗi trao đổi. Tự động tối ưu hóa để có hiệu suất tốt nhất. Điều này có thể giảm để tối thiểu hóa độ trễ đầu vào nhưng với chi phí giảm FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Hiển Thị Thông Tin RAM Điện Thoại",
   "vulkanmod.options.runningOnPhone": "Đang Chạy Trên Điện Thoại?: ",
   "vulkanmod.options.showPhoneRAMInfo.tooltip": "Hiển thị thông tin RAM điện thoại của bạn trên màn hình gỡ lỗi.",
@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "CẢNH BÁO: Yêu cầu khởi động lại trò chơi để có hiệu lực và sẽ gây ra lỗi và treo máy khi quan sát một thực thể với hiệu ứng hậu kỳ (ví dụ: Creeper).",
   "vulkanmod.options.resetHighUsageRec": "Đặt Lại Bản Ghi Sử Dụng Cao",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Bật để đặt lại bản ghi sử dụng bộ nhớ và RAM cao nhất mỗi 45 giây",
-  "vulkanmod.options.presentMode": "Chế Độ Trình Chiếu"
+  "vulkanmod.options.presentMode": "Chế Độ Trình Chiếu",
+  "vulkanmod.options.presentMode.tooltip": "Chế Độ Trình Chiếu:\n\n- FIFO (VSync):\n  Đồng bộ hóa việc trình chiếu khung hình với tốc độ làm mới của màn hình. Đảm bảo khoảng thời gian đều đặn nhưng có thể gây ra hiện tượng giật hình.\n\n- Mailbox (FastSync):\n  Tối đa hóa tốc độ khung hình và độ phản hồi. Cung cấp hiển thị mượt mà nhưng tiêu tốn nhiều tài nguyên hơn. Không được hỗ trợ trên tất cả các thiết bị."
 }

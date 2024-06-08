@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "警告: 需要重新启动游戏才能生效，并且在观察带有后效应的实体时会导致错误和崩溃（例如：爬行者）。",
   "vulkanmod.options.resetHighUsageRec": "重置高使用记录",
   "vulkanmod.options.resetHighUsageRec.tooltip": "启用以每45秒重置一次最高内存和RAM使用记录",
-  "vulkanmod.options.presentMode": "显示模式"
+  "vulkanmod.options.presentMode": "显示模式",
+  "vulkanmod.options.presentMode.tooltip": "显示模式:\n\n- FIFO (垂直同步):\n  将帧显示与显示器的刷新率同步。确保定期的间隔，但可能会引入卡顿。\n\n- Mailbox (快速同步):\n  最大化帧率和响应速度。提供流畅的渲染，但消耗更多资源。并非所有设备都支持。"
 }

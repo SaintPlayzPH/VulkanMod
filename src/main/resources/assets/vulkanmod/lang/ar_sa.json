@@ -60,5 +60,6 @@
   "vulkanmod.options.excludeSampledUsage.warn": "تحذير: يتطلب إعادة تشغيل اللعبة لتصبح سارية المفعول وسيؤدي إلى أخطاء وأعطال عند مراقبة كيان مع تأثير بعد (مثل الزاحف).",
   "vulkanmod.options.resetHighUsageRec": "إعادة تعيين سجلات الاستخدام العالي",
   "vulkanmod.options.resetHighUsageRec.tooltip": "تمكين لإعادة تعيين سجلات أعلى استخدام للذاكرة والذاكرة العشوائية كل 45 ثانية",
-  "vulkanmod.options.presentMode": "وضع العرض"
+  "vulkanmod.options.presentMode": "وضع العرض",
+  "vulkanmod.options.presentMode.tooltip": "وضع العرض:\n\n- FIFO (المزامنة الرأسية):\n  يزامن عرض الإطارات مع معدل تحديث الشاشة. يضمن تباعدًا منتظمًا ولكن قد يسبب تقطعًا.\n\n- Mailbox (المزامنة السريعة):\n  يزيد من معدل الإطارات والاستجابة. يوفر عرضًا سلسًا ولكنه يستهلك موارد أكثر. غير مدعوم في جميع الأجهزة."
 }
