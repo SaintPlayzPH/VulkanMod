@@ -80,29 +80,35 @@ public class AndroidRAMInfo {
     public static void getAllMemoryInfo() {
         if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
-                br.lines().forEach(line -> {
-                    if (line.startsWith("MemTotal")) {
-                        memTotal = extractMemoryValue(line);
-                    } else if (line.startsWith("MemAvailable")) {
-                        memFree = extractMemoryValue(line);
-                    } else if (line.startsWith("Buffers")) {
-                        memBuffers = extractMemoryValue(line);
+                String line;
+                lock.lock();
+                try {
+                    while ((line = br.readLine()) != null) {
+                        if (line.startsWith("MemTotal")) {
+                            memTotal = extractMemoryValue(line);
+                        } else if (line.startsWith("MemAvailable")) {
+                            memFree = extractMemoryValue(line);
+                        } else if (line.startsWith("Buffers")) {
+                            memBuffers = extractMemoryValue(line);
+                        }
                     }
-                });
 
-                // Update the current memory used and max memory used
-                long currentMemUsed = memTotal - memFree;
-                if (currentMemUsed > maxMemUsed) {
-                    maxMemUsed = currentMemUsed;
-                }
+                    // Update the current memory used and max memory used
+                    long currentMemUsed = memTotal - memFree;
+                    if (currentMemUsed > maxMemUsed) {
+                        maxMemUsed = currentMemUsed;
+                    }
 
-                // Calculate the memory used difference
-                memUsedDifference = currentMemUsed - prevMemUsed;
-                prevMemUsed = currentMemUsed;
+                    // Calculate the memory used difference
+                    prevMemUsed = currentMemUsed;
+                    memUsedDifference = currentMemUsed - prevMemUsed;
 
-                // Update the max memory used per second based on absolute value
-                if (Math.abs(memUsedDifference) > Math.abs(maxMemUsedPerSecond)) {
-                    maxMemUsedPerSecond = memUsedDifference;
+                    // Update the max memory used per second
+                    if (memUsedDifference > maxMemUsedPerSecond) {
+                        maxMemUsedPerSecond = memUsedDifference;
+                    }
+                } finally {
+                    lock.unlock();
                 }
             } catch (IOException e) {
                 Initializer.LOGGER.error("Can't obtain RAM info: " + e.getMessage());
