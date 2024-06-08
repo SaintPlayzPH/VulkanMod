@@ -42,7 +42,7 @@
   "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(WARNING: EXPERIMENTAL)\n\nPotentially improves performance of Chunk Rendering.\n\nVery Architecture specific: May have no effect on some Devices",
   "vulkanmod.options.excludeSampledUsage": "Exclude Sampled Usage",
   "vulkanmod.options.excludeSampledUsage.tooltip": "When enabled, this option optimizes the image solely for rendering operations, enhancing efficiency, and avoiding potential compression issues, particularly on mobile platforms. However, it restricts the image to being solely a render target, thus prohibiting direct sampling in shaders.",
-  "vulkanmod.options.swapchainImages": "SwapChain Images",
+  "vulkanmod.options.swapchainImages": "Swapchain Images",
   "vulkanmod.options.swapchainImages.tooltip": "Sets the number of Swapchain images. Optimised automatically for best performance. This can be reduced to minimise input lag but at the cost of decreased FPS.",
   "vulkanmod.options.showPhoneRAMInfo": "Show Phone RAM Info",
   "vulkanmod.options.runningOnPhone": "Running on Phone?: ",
