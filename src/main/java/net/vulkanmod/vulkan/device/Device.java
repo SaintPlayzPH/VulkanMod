@@ -1,5 +1,6 @@
 package net.vulkanmod.vulkan.device;
 
+import net.vulkanmod.Initializer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
@@ -56,6 +57,31 @@ public class Device {
         if (this.availableFeatures.features().multiDrawIndirect() && this.availableFeatures11.shaderDrawParameters())
             this.drawIndirectSupported = true;
 
+    }
+
+    public boolean isMailboxSupported(VkSurfaceKHR surface) {
+        Initializer.LOGGER.info("Checking for Mailbox compatibility of your device!");
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer presentModeCount = stack.mallocInt(1);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, null);
+
+            int count = presentModeCount.get(0);
+            if (count > 0) {
+                IntBuffer presentModes = stack.mallocInt(count);
+                vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, presentModes);
+
+                for (int i = 0; i < presentModes.capacity(); i++) {
+                    if (presentModes.get(i) == VK_PRESENT_MODE_MAILBOX_KHR) {
+                        Initializer.LOGGER.info("Present Mode: Mailbox (FastSync) is supported.");
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Initializer.LOGGER.error("Error checking present modes: ", e);
+        }
+        Initializer.LOGGER.info("Present Mode: Mailbox (FastSync) is not supported.");
+        return false;
     }
 
     private static String decodeVendor(int i) {
