@@ -159,6 +159,20 @@ public abstract class Options {
                                 () -> (int) (minecraftOptions.gamma().get() * 100.0)),
                 }),
                 new OptionBlock("", new Option<?>[]{
+                        new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
+                                new Integer[]{1, 2},
+                                value -> {
+                                   config.presentMode = value;
+                                   Renderer.scheduleSwapChainUpdate();
+                                }, () -> config.presentMode)
+                                .setTranslator(value -> {
+                                    String t = switch (value) {
+                                        case 1 -> "FIFO (VSync)";
+                                        case 2 -> "Mailbox (FastSync)";
+                                        default -> "FIFO (VSync)";
+                                    };
+                                    return Component.translatable(t);
+                                }),
                         new SwitchOption(Component.translatable("options.viewBobbing"),
                                 (value) -> minecraftOptions.bobView().set(value),
                                 () -> minecraftOptions.bobView().get()),
