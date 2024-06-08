@@ -302,7 +302,7 @@ public class SwapChain extends Framebuffer {
 
     private int getPresentMode(IntBuffer availablePresentModes) {
         int requestedMode;
-        
+
         // Check the configuration option
         switch (Initializer.CONFIG.presentMode) {
             case 1: // FIFO mode
@@ -318,12 +318,13 @@ public class SwapChain extends Framebuffer {
         // If the requested mode is supported, use it
         for (int i = 0; i < availablePresentModes.capacity(); i++) {
             if (availablePresentModes.get(i) == requestedMode) {
+                Initializer.LOGGER.info("Using present mode: " + getDisplayModeString(requestedMode));
                 return requestedMode;
             }
         }
 
         // Log a warning if the requested mode is not supported and fall back to FIFO mode
-        Initializer.LOGGER.warn("Requested mode not supported: " + getDisplayModeString(requestedMode) + ": using FIFO");
+        Initializer.LOGGER.warn("Requested mode not supported: " + getDisplayModeString(requestedMode) + ": using FIFO (VSync)");
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
