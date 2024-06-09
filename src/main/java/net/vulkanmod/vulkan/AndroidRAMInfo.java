@@ -43,8 +43,8 @@ public class AndroidRAMInfo {
         memoryUpdateFuture = executorService.scheduleAtFixedRate(
             AndroidRAMInfo::getAllMemoryInfo,
             0,
-            Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100,
-            TimeUnit.MILLISECONDS
+            Initializer.CONFIG.ramInfoUpdate == 0 ? 0.01 : Initializer.CONFIG.ramInfoUpdate / 1000.0,
+            TimeUnit.SECONDS
         );
     }
 
