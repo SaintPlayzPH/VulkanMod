@@ -63,16 +63,14 @@ public class AndroidRAMInfo {
     }
 
     private static void updateConfigDependentThreads() {
-        boolean configChanged = false;
         if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
             scheduleResetHighestMemoryUsageRecordTask();
             lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
-            configChanged = true;
         }
-        // Only schedule a new memory update task if the configuration has changed
-        if (configChanged || lastRamInfoUpdate != Initializer.CONFIG.ramInfoUpdate) {
-            lastRamInfoUpdate = Initializer.CONFIG.ramInfoUpdate; // Store the last update value
-            scheduleMemoryUpdateTask();  // This ensures the update interval is dynamically adjusted
+
+        if (Initializer.CONFIG.ramInfoUpdate != lastRAMInfoUpdate) {
+            scheduleMemoryUpdateTask();
+            lastRAMInfoUpdate = Initializer.CONFIG.ramInfoUpdate;
         }
     }
 
