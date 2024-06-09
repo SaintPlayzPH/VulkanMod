@@ -198,8 +198,8 @@ public abstract class Options {
                                 new Integer[]{1, 2},
                                 value -> {
                                    config.presentMode = isMailboxSupported(physicalDevice, surface) ? value : 1;
-                                   isMailboxSupported(physicalDevice, surface) && Renderer.scheduleSwapChainUpdate();
-                                }, () -> config.presentMode)
+                                   Renderer.scheduleSwapChainUpdate();
+                                }, () -> isMailboxSupported(physicalDevice, surface) && config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
                                         case 1 -> "FIFO (VSync)";
