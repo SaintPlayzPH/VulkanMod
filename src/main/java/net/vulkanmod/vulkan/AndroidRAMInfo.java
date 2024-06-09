@@ -34,7 +34,7 @@ public class AndroidRAMInfo {
         scheduleResetMaxMemoryTask();
 
         // Watcher thread for configuration changes
-        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 100, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     private static void scheduleMemoryUpdateTask() {
@@ -57,8 +57,8 @@ public class AndroidRAMInfo {
             resetMaxMemoryFuture = executorService.scheduleAtFixedRate(
                 AndroidRAMInfo::resetMaxMemoryUsageRecord,
                 0,
-                45000,
-                TimeUnit.MILLISECONDS
+                45,
+                TimeUnit.SECONDS
             );
         }
     }
