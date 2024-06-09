@@ -5,111 +5,89 @@ import net.vulkanmod.Initializer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class AndroidRAMInfo {
-    public static long memFree = 0;
-    public static long memTotal = 0;
-    public static long memBuffers = 0;
-    public static long maxMemUsed = 0;
-    public static long prevMemUsed = 0;
-    public static long memUsedDifference = 0;
-    public static long maxMemUsedPerSecond = 0;
+    private static volatile long memFree = 0;
+    private static volatile long memTotal = 0;
+    private static volatile long memBuffers = 0;
+    private static volatile long maxMemUsed = 0;
+    private static volatile long prevMemUsed = 0;
+    private static volatile long memUsedDifference = 0;
+    private static volatile long maxMemUsedPerSecond = 0;
 
     private static final Lock lock = new ReentrantLock();
-    private static Thread resetMaxMemoryThread;
-    private static boolean lastResetHighUsageRec;
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private static volatile boolean lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
 
     static {
-        Thread memoryUpdateThread = new Thread(() -> {
-            while (true) {
-                getAllMemoryInfo();
-                try {
-                    Thread.sleep(Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        });
-        memoryUpdateThread.setDaemon(true);
-        memoryUpdateThread.start();
-
-        lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+        startMemoryUpdateThread();
+        startConfigWatcherThread();
         initializeResetMaxMemoryThread();
+    }
 
-        Thread configWatcherThread = new Thread(() -> {
-            while (true) {
-                if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
-                    updateResetMaxMemoryThread();
-                    lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
-                }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+    private static void startMemoryUpdateThread() {
+        Runnable memoryUpdateTask = () -> {
+            getAllMemoryInfo();
+            int delay = Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100;
+            scheduler.schedule(memoryUpdateTask, delay, TimeUnit.MILLISECONDS);
+        };
+        scheduler.schedule(memoryUpdateTask, 0, TimeUnit.MILLISECONDS);
+    }
+
+    private static void startConfigWatcherThread() {
+        Runnable configWatcherTask = () -> {
+            if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
+                updateResetMaxMemoryThread();
+                lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
             }
-        });
-        configWatcherThread.setDaemon(true);
-        configWatcherThread.start();
+            scheduler.schedule(configWatcherTask, 100, TimeUnit.MILLISECONDS);
+        };
+        scheduler.schedule(configWatcherTask, 0, TimeUnit.MILLISECONDS);
     }
 
     private static void initializeResetMaxMemoryThread() {
-        if (resetMaxMemoryThread != null && resetMaxMemoryThread.isAlive()) {
-            resetMaxMemoryThread.interrupt();
-        }
-
-        if (Initializer.CONFIG.resetHighUsageRec) {
-            resetMaxMemoryThread = new Thread(() -> {
-                while (true) {
-                    try {
-                        Thread.sleep(45000); // reset every 45 seconds
-                        resetMaxMemoryUsageRecord();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            });
-            resetMaxMemoryThread.setDaemon(true);
-            resetMaxMemoryThread.start();
+        if (lastResetHighUsageRec) {
+            Runnable resetMaxMemoryTask = () -> {
+                resetMaxMemoryUsageRecord();
+                scheduler.schedule(resetMaxMemoryTask, 45, TimeUnit.SECONDS);
+            };
+            scheduler.schedule(resetMaxMemoryTask, 45, TimeUnit.SECONDS);
         }
     }
 
     public static void getAllMemoryInfo() {
         if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
-            try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
+            try (BufferedReader br = Files.newBufferedReader(Paths.get("/proc/meminfo"))) {
                 String line;
                 lock.lock();
                 try {
                     while ((line = br.readLine()) != null) {
-                        if (line.startsWith("MemTotal")) {
-                            memTotal = extractMemoryValue(line);
-                        } else if (line.startsWith("MemAvailable")) {
-                            memFree = extractMemoryValue(line);
-                        } else if (line.startsWith("Buffers")) {
-                            memBuffers = extractMemoryValue(line);
+                        switch (line.split(":")[0]) {
+                            case "MemTotal" -> memTotal = extractMemoryValue(line);
+                            case "MemAvailable" -> memFree = extractMemoryValue(line);
+                            case "Buffers" -> memBuffers = extractMemoryValue(line);
                         }
                     }
 
-                    // Update the current memory used and max memory used
                     long currentMemUsed = memTotal - memFree;
-
-                    // Calculate the memory used difference
                     memUsedDifference = currentMemUsed - prevMemUsed;
                     prevMemUsed = currentMemUsed;
 
-                    // Update the max memory used per second
                     if (memUsedDifference > maxMemUsedPerSecond) {
                         maxMemUsedPerSecond = memUsedDifference;
                     }
 
-                    // Compare maxMemUsedPerSecond with currentMemUsed and threshold
                     if (maxMemUsedPerSecond > currentMemUsed || maxMemUsedPerSecond > (currentMemUsed - 200)) {
                         resetMaxMemoryUsageRecord();
                     }
 
-                    // Update the max memory used
                     if (currentMemUsed > maxMemUsed) {
                         maxMemUsed = currentMemUsed;
                     }
@@ -138,7 +116,7 @@ public class AndroidRAMInfo {
     }
 
     public static String getRAMInfo() {
-        try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get("/proc/meminfo"))) {
             return br.lines()
                     .filter(line -> line.startsWith("MemTotal"))
                     .map(line -> {
@@ -248,17 +226,13 @@ public class AndroidRAMInfo {
     }
 
     private static String getColorPercentage(long freeMemoryPercentage) {
-        if (freeMemoryPercentage > 20) {
-            return "§a";
-        } else if (freeMemoryPercentage >= 16) {
-            return "§e";
-        } else if (freeMemoryPercentage >= 11) {
-            return "§6";
-        } else if (freeMemoryPercentage >= 6) {
-            return "§c";
-        } else {
-            return "§4";
-        }
+        return switch ((int) (freeMemoryPercentage / 5)) {
+            case 4, 5 -> "§a";
+            case 3 -> "§e";
+            case 2 -> "§6";
+            case 1 -> "§c";
+            default -> "§4";
+        };
     }
 
     private static void resetMaxMemoryUsageRecord() {
