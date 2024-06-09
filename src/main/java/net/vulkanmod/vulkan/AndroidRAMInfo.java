@@ -28,22 +28,28 @@ public class AndroidRAMInfo {
     static {
         scheduler = Executors.newScheduledThreadPool(2);
 
-        Runnable memoryUpdateTask = () -> {
-            getAllMemoryInfo();
-            long delay = Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100;
-            scheduler.schedule(this, delay, TimeUnit.MILLISECONDS);
+        Runnable memoryUpdateTask = new Runnable() {
+            @Override
+            public void run() {
+                getAllMemoryInfo();
+                long delay = Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100;
+                scheduler.schedule(this, delay, TimeUnit.MILLISECONDS);
+            }
         };
         scheduler.schedule(memoryUpdateTask, 0, TimeUnit.MILLISECONDS);
 
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         initializeResetMaxMemoryThread();
 
-        Runnable configWatcherTask = () -> {
-            if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
-                updateResetMaxMemoryThread();
-                lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+        Runnable configWatcherTask = new Runnable() {
+            @Override
+            public void run() {
+                if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
+                    updateResetMaxMemoryThread();
+                    lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+                }
+                scheduler.schedule(this, 100, TimeUnit.MILLISECONDS);
             }
-            scheduler.schedule(this, 100, TimeUnit.MILLISECONDS);
         };
         scheduler.schedule(configWatcherTask, 0, TimeUnit.MILLISECONDS);
     }
@@ -54,9 +60,12 @@ public class AndroidRAMInfo {
         }
 
         if (Initializer.CONFIG.resetHighUsageRec) {
-            Runnable resetMaxMemoryTask = () -> {
-                resetMaxMemoryUsageRecord();
-                scheduler.schedule(this, 45, TimeUnit.SECONDS);
+            Runnable resetMaxMemoryTask = new Runnable() {
+                @Override
+                public void run() {
+                    resetMaxMemoryUsageRecord();
+                    scheduler.schedule(this, 45, TimeUnit.SECONDS);
+                }
             };
             scheduler.schedule(resetMaxMemoryTask, 0, TimeUnit.MILLISECONDS);
         }
@@ -228,13 +237,17 @@ public class AndroidRAMInfo {
     }
 
     private static String getColorPercentage(long freeMemoryPercentage) {
-        return switch (freeMemoryPercentage) {
-            case > 20 -> "§a";
-            case >= 16 -> "§e";
-            case >= 11 -> "§6";
-            case >= 6 -> "§c";
-            default -> "§4";
-        };
+        if (freeMemoryPercentage > 20) {
+            return "§a";
+        } else if (freeMemoryPercentage >= 16) {
+            return "§e";
+        } else if (freeMemoryPercentage >= 11) {
+            return "§6";
+        } else if (freeMemoryPercentage >= 6) {
+            return "§c";
+        } else {
+            return "§4";
+        }
     }
 
     private static void resetMaxMemoryUsageRecord() {
