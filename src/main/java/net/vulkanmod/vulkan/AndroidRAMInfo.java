@@ -245,7 +245,7 @@ public class AndroidRAMInfo {
     private static void resetHighestUsageRecord() {
         lock.lock();
         try {
-            maxMemUsed = 0;
+            highestRAMUsedRecord = 0;
             highestCurrentUsageRecord = 0;
         } finally {
             lock.unlock();
