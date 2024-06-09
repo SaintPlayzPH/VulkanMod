@@ -23,6 +23,7 @@ public class AndroidRAMInfo {
 
     private static final Lock lock = new ReentrantLock();
     private static ScheduledExecutorService executorService;
+    private static Thread resetMaxMemoryThread;
     private static boolean lastResetHighUsageRec;
 
     static {
