@@ -24,7 +24,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         // Log the target class name and mixin class name for debugging
         Initializer.LOGGER.info("Evaluating mixin for target class: " + targetClassName + ", mixin class: " + mixinClassName);
-        
+    
         if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") || 
             mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostPassM")) {
             // Check if CONFIG is initialized and postEffect is true
@@ -32,6 +32,14 @@ public class MixinPlugin implements IMixinConfigPlugin {
             Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApply);
             return shouldApply;
         }
+    
+        if (mixinClassName.equals("net.vulkanmod.mixin.chunk.CubicSamplerM")) {
+            // Check if CONFIG is initialized and gaussianSkyBlending is true
+            boolean shouldApply = Initializer.CONFIG != null && Initializer.CONFIG.gaussianSkyBlending;
+            Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApply);
+            return shouldApply;
+        }
+    
         return true; // Apply all other mixins by default
     }
 
