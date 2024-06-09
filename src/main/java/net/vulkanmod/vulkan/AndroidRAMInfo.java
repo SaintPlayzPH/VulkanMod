@@ -5,9 +5,9 @@ import net.vulkanmod.Initializer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,62 +22,70 @@ public class AndroidRAMInfo {
     public static long maxMemUsedPerSecond = 0;
 
     private static final Lock lock = new ReentrantLock();
-    private static ScheduledExecutorService executorService;
-    private static Thread resetMaxMemoryThread;
+    private static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    private static ScheduledFuture<?> memoryUpdateFuture;
+    private static ScheduledFuture<?> resetMaxMemoryFuture;
     private static boolean lastResetHighUsageRec;
 
     static {
-        executorService = Executors.newScheduledThreadPool(2);
+        scheduleMemoryUpdateTask();
 
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
-        initializeResetMaxMemoryThread();
+        scheduleResetMaxMemoryTask();
+
+        // Watcher thread for configuration changes
+        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     private static void scheduleMemoryUpdateTask() {
-        executorService.scheduleAtFixedRate(AndroidRAMInfo::getAllMemoryInfo,
-                0, Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100, TimeUnit.MILLISECONDS);
-    }
-
-    public static void updateScheduledTask() {
-        executorService.shutdown();
-        executorService.schedule(() -> {
-            scheduleMemoryUpdateTask();
-        }, 0, TimeUnit.MILLISECONDS);
-    }
-
-    private static void initializeResetMaxMemoryThread() {
-        if (resetMaxMemoryThread != null && resetMaxMemoryThread.isAlive()) {
-            resetMaxMemoryThread.interrupt();
+        if (memoryUpdateFuture != null && !memoryUpdateFuture.isCancelled()) {
+            memoryUpdateFuture.cancel(true);
         }
+        memoryUpdateFuture = executorService.scheduleAtFixedRate(
+            AndroidRAMInfo::getAllMemoryInfo,
+            0,
+            Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100,
+            TimeUnit.MILLISECONDS
+        );
+    }
 
+    private static void scheduleResetMaxMemoryTask() {
+        if (resetMaxMemoryFuture != null && !resetMaxMemoryFuture.isCancelled()) {
+            resetMaxMemoryFuture.cancel(true);
+        }
         if (Initializer.CONFIG.resetHighUsageRec) {
-            resetMaxMemoryThread = new Thread(() -> {
-                while (true) {
-                    try {
-                        Thread.sleep(45000); // reset every 45 seconds
-                        resetMaxMemoryUsageRecord();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            });
-            resetMaxMemoryThread.setDaemon(true);
-            resetMaxMemoryThread.start();
+            resetMaxMemoryFuture = executorService.scheduleAtFixedRate(
+                AndroidRAMInfo::resetMaxMemoryUsageRecord,
+                0,
+                45000,
+                TimeUnit.MILLISECONDS
+            );
         }
+    }
+
+    private static void updateConfigDependentThreads() {
+        if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
+            scheduleResetMaxMemoryTask();
+            lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+        }
+        scheduleMemoryUpdateTask();  // This ensures the update interval is dynamically adjusted
     }
 
     public static void getAllMemoryInfo() {
         if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
-                Optional<String> memTotalLine = br.lines().filter(line -> line.startsWith("MemTotal")).findFirst();
-                Optional<String> memFreeLine = br.lines().filter(line -> line.startsWith("MemAvailable")).findFirst();
-                Optional<String> memBuffersLine = br.lines().filter(line -> line.startsWith("Buffers")).findFirst();
-
+                String line;
                 lock.lock();
                 try {
-                    memTotal = memTotalLine.map(AndroidRAMInfo::extractMemoryValue).orElse(0L);
-                    memFree = memFreeLine.map(AndroidRAMInfo::extractMemoryValue).orElse(0L);
-                    memBuffers = memBuffersLine.map(AndroidRAMInfo::extractMemoryValue).orElse(0L);
+                    while ((line = br.readLine()) != null) {
+                        if (line.startsWith("MemTotal")) {
+                            memTotal = extractMemoryValue(line);
+                        } else if (line.startsWith("MemAvailable")) {
+                            memFree = extractMemoryValue(line);
+                        } else if (line.startsWith("Buffers")) {
+                            memBuffers = extractMemoryValue(line);
+                        }
+                    }
 
                     // Update the current memory used and max memory used
                     long currentMemUsed = memTotal - memFree;
@@ -255,17 +263,6 @@ public class AndroidRAMInfo {
             maxMemUsedPerSecond = 0;
         } finally {
             lock.unlock();
-        }
-    }
-
-    public static void updateResetMaxMemoryThread() {
-        initializeResetMaxMemoryThread();
-    }
-
-    public static void updateConfigDependentThreads() {
-        if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
-            updateResetMaxMemoryThread();
-            lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         }
     }
 }
