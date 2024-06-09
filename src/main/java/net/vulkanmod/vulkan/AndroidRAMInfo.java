@@ -25,7 +25,7 @@ public class AndroidRAMInfo {
     private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     private static ScheduledFuture<?> memoryUpdateFuture;
     private static ScheduledFuture<?> resetMaxMemoryFuture;
-    private static boolean lastRAMInfoUpdate;
+    private static int lastRAMInfoUpdate;
     private static boolean lastResetHighUsageRec;
  
     static {
