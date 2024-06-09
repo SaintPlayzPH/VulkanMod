@@ -22,19 +22,18 @@ public class AndroidRAMInfo {
     public static long prevMemUsed = 0;
 
     private static final Lock lock = new ReentrantLock();
-    private static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     private static ScheduledFuture<?> memoryUpdateFuture;
     private static ScheduledFuture<?> resetMaxMemoryFuture;
     private static boolean lastResetHighUsageRec;
 
     static {
         scheduleMemoryUpdateTask();
-
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         scheduleResetHighestMemoryUsageRecordTask();
 
         // Watcher thread for configuration changes
-        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 1000, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 1, TimeUnit.SECONDS);
     }
 
     private static void scheduleMemoryUpdateTask() {
@@ -99,7 +98,7 @@ public class AndroidRAMInfo {
                         highestCurrentUsageRecord = memUsedDifference;
                     }
 
-                    // Compare maxMemUsedPerSecond with currentMemUsed and threshold
+                    // Compare highestCurrentUsageRecord with currentMemUsed and threshold
                     if (highestCurrentUsageRecord > currentMemUsed || highestCurrentUsageRecord > (currentMemUsed - 200)) {
                         resetHighestUsageRecord();
                     }
@@ -112,7 +111,7 @@ public class AndroidRAMInfo {
                     lock.unlock();
                 }
             } catch (IOException e) {
-                Initializer.LOGGER.error("Can't obtain RAM info: " + e.getMessage());
+                Initializer.LOGGER.error("Can't obtain RAM info: " + e.getMessage(), e);
             }
         }
     }
@@ -183,13 +182,13 @@ public class AndroidRAMInfo {
             String highestCurrentUsageRecorded = "Highest Usage: Unavailable";
             String highestRAMUsedRecorded = "Highest RAM Used: Unavailable";
 
-            if (maxMemUsedPerSecond != 0) {
+            if (highestCurrentUsageRecord != 0) {
                 double highestCurrentUsageRecordMB = highestCurrentUsageRecord / 1024.0;
                 String color = highestCurrentUsageRecord > 0 ? "§c↑" : "§a↓";
                 highestCurrentUsageRecorded = String.format("Highest Usage: %s%.2f MB", color, Math.abs(highestCurrentUsageRecordMB));
             }
 
-            if (maxMemUsed != 0) {
+            if (highestRAMUsedRecord != 0) {
                 double highestRAMUsedRecordedMB = highestRAMUsedRecord / 1024.0;
                 highestRAMUsedRecorded = String.format("Highest RAM Used: %.2f MB", highestRAMUsedRecordedMB);
             }
