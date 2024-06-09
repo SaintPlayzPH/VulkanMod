@@ -3,7 +3,6 @@ package net.vulkanmod.vulkan;
 import net.vulkanmod.Initializer;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,42 +22,43 @@ public class AndroidRAMInfo {
     private static volatile long maxMemUsedPerSecond = 0;
 
     private static final Lock lock = new ReentrantLock();
-    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-    private static volatile boolean lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+    private static ScheduledExecutorService scheduler;
+    private static boolean lastResetHighUsageRec;
 
     static {
-        startMemoryUpdateThread();
-        startConfigWatcherThread();
-        initializeResetMaxMemoryThread();
-    }
+        scheduler = Executors.newScheduledThreadPool(2);
 
-    private static void startMemoryUpdateThread() {
         Runnable memoryUpdateTask = () -> {
             getAllMemoryInfo();
-            int delay = Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100;
-            scheduler.schedule(memoryUpdateTask, delay, TimeUnit.MILLISECONDS);
+            long delay = Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100;
+            scheduler.schedule(this, delay, TimeUnit.MILLISECONDS);
         };
         scheduler.schedule(memoryUpdateTask, 0, TimeUnit.MILLISECONDS);
-    }
 
-    private static void startConfigWatcherThread() {
+        lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
+        initializeResetMaxMemoryThread();
+
         Runnable configWatcherTask = () -> {
             if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
                 updateResetMaxMemoryThread();
                 lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
             }
-            scheduler.schedule(configWatcherTask, 100, TimeUnit.MILLISECONDS);
+            scheduler.schedule(this, 100, TimeUnit.MILLISECONDS);
         };
         scheduler.schedule(configWatcherTask, 0, TimeUnit.MILLISECONDS);
     }
 
     private static void initializeResetMaxMemoryThread() {
-        if (lastResetHighUsageRec) {
+        if (resetMaxMemoryThread != null && resetMaxMemoryThread.isAlive()) {
+            resetMaxMemoryThread.interrupt();
+        }
+
+        if (Initializer.CONFIG.resetHighUsageRec) {
             Runnable resetMaxMemoryTask = () -> {
                 resetMaxMemoryUsageRecord();
-                scheduler.schedule(resetMaxMemoryTask, 45, TimeUnit.SECONDS);
+                scheduler.schedule(this, 45, TimeUnit.SECONDS);
             };
-            scheduler.schedule(resetMaxMemoryTask, 45, TimeUnit.SECONDS);
+            scheduler.schedule(resetMaxMemoryTask, 0, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -69,10 +69,12 @@ public class AndroidRAMInfo {
                 lock.lock();
                 try {
                     while ((line = br.readLine()) != null) {
-                        switch (line.split(":")[0]) {
-                            case "MemTotal" -> memTotal = extractMemoryValue(line);
-                            case "MemAvailable" -> memFree = extractMemoryValue(line);
-                            case "Buffers" -> memBuffers = extractMemoryValue(line);
+                        if (line.startsWith("MemTotal")) {
+                            memTotal = extractMemoryValue(line);
+                        } else if (line.startsWith("MemAvailable")) {
+                            memFree = extractMemoryValue(line);
+                        } else if (line.startsWith("Buffers")) {
+                            memBuffers = extractMemoryValue(line);
                         }
                     }
 
@@ -121,7 +123,7 @@ public class AndroidRAMInfo {
                     .filter(line -> line.startsWith("MemTotal"))
                     .map(line -> {
                         long sizeKB = Long.parseLong(line.split("\\s+")[1]);
-                        double sizeGB = sizeKB / 1048576.0; // Convert KB to GB
+                        double sizeGB = sizeKB / 1048576.0;
                         return String.format("%.2f GB", sizeGB);
                     })
                     .findFirst()
@@ -226,11 +228,11 @@ public class AndroidRAMInfo {
     }
 
     private static String getColorPercentage(long freeMemoryPercentage) {
-        return switch ((int) (freeMemoryPercentage / 5)) {
-            case 4, 5 -> "§a";
-            case 3 -> "§e";
-            case 2 -> "§6";
-            case 1 -> "§c";
+        return switch (freeMemoryPercentage) {
+            case > 20 -> "§a";
+            case >= 16 -> "§e";
+            case >= 11 -> "§6";
+            case >= 6 -> "§c";
             default -> "§4";
         };
     }
