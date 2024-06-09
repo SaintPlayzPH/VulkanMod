@@ -25,6 +25,7 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
+    Device device = new Device();
 
     private static boolean isRunningOnPhone() {
         if (System.getenv("POJAV_ENVIRON") != null) { //PojavLauncher
@@ -162,9 +163,9 @@ public abstract class Options {
                         new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
                                 new Integer[]{1, 2},
                                 value -> {
-                                   config.presentMode = Device.isMailboxSupported ? value : 1;
+                                   config.presentMode = device.isMailboxSupported ? value : 1;
                                    Renderer.scheduleSwapChainUpdate();
-                                }, () -> Device.isMailboxSupported && config.presentMode)
+                                }, () -> config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
                                         case 1 -> "FIFO (VSync)";
