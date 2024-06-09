@@ -1,3 +1,5 @@
+package net.vulkanmod.vulkan;
+
 import net.vulkanmod.Initializer;
 
 import java.io.BufferedReader;
