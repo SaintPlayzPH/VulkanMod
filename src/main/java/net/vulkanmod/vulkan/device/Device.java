@@ -12,6 +12,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM_WIN32;
 import static org.lwjgl.glfw.GLFW.glfwGetPlatform;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
@@ -31,7 +32,7 @@ public class Device {
     public final VkPhysicalDeviceVulkan11Features availableFeatures11;
 
     private boolean drawIndirectSupported;
-    public boolean mailboxSupported;
+    public boolean isMailboxSupported = false;
 
     public Device(VkPhysicalDevice device) {
         this.physicalDevice = device;
@@ -61,13 +62,37 @@ public class Device {
         checkMailboxSupport();
     }
 
-    private void checkMailboxSupport() {
-        mailboxSupported = availableFeatures11.presentModeMailbox();
-        if (mailboxSupported) {
-            Initializer.LOGGER.info("Mailbox present mode is supported.");
-        } else {
-            Initializer.LOGGER.info("Mailbox present mode is not supported.");
+    public void checkMailboxSupport(VkPhysicalDevice physicalDevice, long surface) {
+        Initializer.LOGGER.info("Checking for Mailbox compatibility of your device!");
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer presentModeCount = stack.ints(0);
+
+            int result = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, null);
+            if (result != VK_SUCCESS) {
+                throw new RuntimeException("Failed to retrieve present mode count");
+            }
+
+            int count = presentModeCount.get(0);
+            if (count > 0) {
+                IntBuffer presentModes = stack.mallocInt(count);
+
+                result = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, presentModes);
+                if (result != VK_SUCCESS) {
+                    throw new RuntimeException("Failed to retrieve present modes");
+                }
+
+                for (int i = 0; i < count; i++) {
+                    if (presentModes.get(i) == VK_PRESENT_MODE_MAILBOX_KHR) {
+                        Initializer.LOGGER.info("Present Mode: Mailbox (FastSync) is supported.");
+                        isMailboxSupported = true;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Initializer.LOGGER.error("Error checking mailbox support: ", e);
         }
+        Initializer.LOGGER.info("Present Mode: Mailbox (FastSync) is " + (isMailboxSupported ? "supported." : "not supported."));
     }
 
     private static String decodeVendor(int i) {
@@ -137,10 +162,6 @@ public class Device {
 
     public boolean isDrawIndirectSupported() {
         return drawIndirectSupported;
-    }
-
-    public boolean isMailboxSupported() {
-        return mailboxSupported;
     }
 
     public boolean isAMD() {
