@@ -13,13 +13,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class AndroidRAMInfo {
+    public static long highestCurrentUsageRecord = 0;
+    public static long highestRAMUsedRecord = 0;
+    public static long memBuffers = 0;
     public static long memFree = 0;
     public static long memTotal = 0;
-    public static long memBuffers = 0;
-    public static long maxMemUsed = 0;
-    public static long prevMemUsed = 0;
     public static long memUsedDifference = 0;
-    public static long maxMemUsedPerSecond = 0;
+    public static long prevMemUsed = 0;
 
     private static final Lock lock = new ReentrantLock();
     private static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
@@ -31,7 +31,7 @@ public class AndroidRAMInfo {
         scheduleMemoryUpdateTask();
 
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
-        scheduleResetMaxMemoryTask();
+        scheduleResetHighestMemoryUsageRecordTask();
 
         // Watcher thread for configuration changes
         executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 1000, TimeUnit.MILLISECONDS);
@@ -49,13 +49,13 @@ public class AndroidRAMInfo {
         );
     }
 
-    private static void scheduleResetMaxMemoryTask() {
+    private static void scheduleResetHighestMemoryUsageRecordTask() {
         if (resetMaxMemoryFuture != null && !resetMaxMemoryFuture.isCancelled()) {
             resetMaxMemoryFuture.cancel(true);
         }
         if (Initializer.CONFIG.resetHighUsageRec) {
             resetMaxMemoryFuture = executorService.scheduleAtFixedRate(
-                AndroidRAMInfo::resetMaxMemoryUsageRecord,
+                AndroidRAMInfo::resetHighestUsageRecord,
                 0,
                 45,
                 TimeUnit.SECONDS
@@ -65,7 +65,7 @@ public class AndroidRAMInfo {
 
     private static void updateConfigDependentThreads() {
         if (Initializer.CONFIG.resetHighUsageRec != lastResetHighUsageRec) {
-            scheduleResetMaxMemoryTask();
+            scheduleResetHighestMemoryUsageRecordTask();
             lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         }
         scheduleMemoryUpdateTask();  // This ensures the update interval is dynamically adjusted
@@ -95,18 +95,18 @@ public class AndroidRAMInfo {
                     prevMemUsed = currentMemUsed;
 
                     // Update the max memory used per second
-                    if (memUsedDifference > maxMemUsedPerSecond) {
-                        maxMemUsedPerSecond = memUsedDifference;
+                    if (memUsedDifference > highestCurrentUsageRecord) {
+                        highestCurrentUsageRecord = memUsedDifference;
                     }
 
                     // Compare maxMemUsedPerSecond with currentMemUsed and threshold
-                    if (maxMemUsedPerSecond > currentMemUsed || maxMemUsedPerSecond > (currentMemUsed - 200)) {
-                        resetMaxMemoryUsageRecord();
+                    if (highestCurrentUsageRecord > currentMemUsed || highestCurrentUsageRecord > (currentMemUsed - 200)) {
+                        resetHighestUsageRecord();
                     }
 
                     // Update the max memory used
-                    if (currentMemUsed > maxMemUsed) {
-                        maxMemUsed = currentMemUsed;
+                    if (currentMemUsed > highestRAMUsedRecord) {
+                        highestRAMUsedRecord = currentMemUsed;
                     }
                 } finally {
                     lock.unlock();
@@ -177,24 +177,24 @@ public class AndroidRAMInfo {
         return "Available RAM: Unavailable";
     }
 
-    public static String getHighestMemoryAndRAMUsage() {
+    public static String getHighestMemoryUsedRecord() {
         lock.lock();
         try {
-            String highestMemoryUsagePerSecond = "Highest Usage: Unavailable";
-            String highestRAMUsage = "Highest RAM Used: Unavailable";
+            String highestCurrentUsageRecorded = "Highest Usage: Unavailable";
+            String highestRAMUsedRecorded = "Highest RAM Used: Unavailable";
 
             if (maxMemUsedPerSecond != 0) {
-                double maxMemUsedPerSecondMB = maxMemUsedPerSecond / 1024.0;
-                String color = maxMemUsedPerSecond > 0 ? "§c↑" : "§a↓";
-                highestMemoryUsagePerSecond = String.format("Highest Usage: %s%.2f MB", color, Math.abs(maxMemUsedPerSecondMB));
+                double highestCurrentUsageRecordMB = highestCurrentUsageRecord / 1024.0;
+                String color = highestCurrentUsageRecord > 0 ? "§c↑" : "§a↓";
+                highestCurrentUsageRecorded = String.format("Highest Usage: %s%.2f MB", color, Math.abs(highestCurrentUsageRecordMB));
             }
 
             if (maxMemUsed != 0) {
-                double maxMemUsedMB = maxMemUsed / 1024.0;
-                highestRAMUsage = String.format("Highest RAM Used: %.2f MB", maxMemUsedMB);
+                double highestRAMUsedRecordedMB = highestRAMUsedRecord / 1024.0;
+                highestRAMUsedRecorded = String.format("Highest RAM Used: %.2f MB", highestRAMUsedRecordedMB);
             }
 
-            return highestMemoryUsagePerSecond + "§r / " + highestRAMUsage;
+            return highestCurrentUsageRecorded + "§r / " + highestRAMUsedRecorded;
         } finally {
             lock.unlock();
         }
@@ -242,11 +242,11 @@ public class AndroidRAMInfo {
         return "§4";
     }
 
-    private static void resetMaxMemoryUsageRecord() {
+    private static void resetHighestUsageRecord() {
         lock.lock();
         try {
             maxMemUsed = 0;
-            maxMemUsedPerSecond = 0;
+            highestCurrentUsageRecord = 0;
         } finally {
             lock.unlock();
         }
