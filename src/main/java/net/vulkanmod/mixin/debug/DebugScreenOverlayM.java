@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes() + "/" + MemoryType.GPU_MEM.maxSize() + "MB");
         strings.add("");
         strings.add("VulkanMod " + getVersion());
-        strings.add("CPU: " + SystemInfo.cpuInfo + (isPojav ? " (Processor)" : ""));
+        strings.add("CPU: " + SystemInfo.cpuInfo + (isPojav && isCPUInfoAvailable() ? " (Processor)" : ""));
         strings.add("GPU: " + Vulkan.getDevice().deviceName);
         strings.add("Driver: " + Vulkan.getDevice().driverVersion);
         strings.add("Loader: " + Vulkan.getDevice().vkInstanceLoaderVersion);
@@ -87,8 +88,8 @@ public abstract class DebugScreenOverlayM {
             strings.add("Device RAM Info:");
             strings.add(AndroidRAMInfo.getMemoryInfo());
             strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
-            strings.add(AndroidRAMInfo.getMemoryUsagePerSecond());
-            strings.add(AndroidRAMInfo.getHighestMemoryAndRAMUsage());
+            strings.add(AndroidRAMInfo.getCurrentUsage());
+            strings.add(AndroidRAMInfo.getHighestMemoryUsedRecord());
             strings.add(AndroidRAMInfo.getBuffersInfo());
             if (Initializer.CONFIG.showlowRAM) {
                 strings.add(AndroidRAMInfo.getAvailableRAMWarn());
@@ -98,14 +99,13 @@ public abstract class DebugScreenOverlayM {
         return strings;
     }
 
+    private static boolean isCPUInfoAvailable() {
+        File cpuInfoFile = new File("/proc/cpuinfo");
+        return cpuInfoFile.exists() && cpuInfoFile.canRead();
+    }
+
     private static boolean isRunningOnPojav() {
-        if (System.getenv("POJAV_ENVIRON") != null) { //PojavLauncher
-            return true;
-        }
-        if (System.getenv("SCL_ENVIRON") != null) { //SolCraftLauncher
-            return true;
-        }
-        return System.getenv("POJAV_RENDERER") != null;
+        return System.getenv("POJAV_ENVIRON") != null || System.getenv("SCL_ENVIRON") != null || System.getenv("POJAV_RENDERER") != null;
     }
 
     private long getOffHeapMemory() {
