@@ -104,7 +104,7 @@ public abstract class DebugScreenOverlayM {
         return cpuInfoFile.exists() && cpuInfoFile.canRead();
     }
 
-    private static boolean isRunningOnAndroid() {
+    private static boolean isRunningOnPojav() {
         return System.getenv("POJAV_ENVIRON") != null || System.getenv("SCL_ENVIRON") != null || System.getenv("POJAV_RENDERER") != null;
     }
 
