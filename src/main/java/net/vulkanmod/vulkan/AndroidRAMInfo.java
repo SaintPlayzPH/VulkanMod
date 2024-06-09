@@ -147,7 +147,7 @@ public class AndroidRAMInfo {
         }
     }
 
-    public static String getMemoryUsagePerSecond() {
+    public static String getCurrentUsage() {
         lock.lock();
         try {
             if (prevMemUsed != 0) {
