@@ -163,8 +163,8 @@ public abstract class Options {
                         new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
                                 new Integer[]{1, 2},
                                 value -> {
-                                   config.presentMode = Device.isMailboxSupported() ? value : 1;
-                                   Renderer.scheduleSwapChainUpdate();
+                                   config.presentMode = Device.isMailboxSupported(physicalDevice, surface) ? value : 1;
+                                   Renderer.scheduleSwapChainUpdate(physicalDevice, surface);
                                 }, () -> Device.isMailboxSupported() && config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
