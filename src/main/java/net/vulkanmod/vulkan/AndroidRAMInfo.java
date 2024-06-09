@@ -124,12 +124,11 @@ public class AndroidRAMInfo {
                 double memTotalMB = memTotal / 1024.0;
                 double usedMemoryMB = (memTotal - memFree) / 1024.0;
                 return String.format("RAM: %.2f/%.2f MB", usedMemoryMB, memTotalMB);
-            } else {
-                return "RAM: Unavailable";
             }
         } finally {
             lock.unlock();
         }
+        return "RAM: Unavailable";
     }
 
     public static String getRAMInfo() {
@@ -138,13 +137,13 @@ public class AndroidRAMInfo {
                     .filter(line -> line.startsWith("MemTotal"))
                     .map(line -> {
                         long sizeKB = Long.parseLong(line.split("\\s+")[1]);
-                        double sizeGB = sizeKB / 1048576.0; // Convert KB to GB
+                        double sizeGB = sizeKB / 1048576.0;
                         return String.format("%.2f GB", sizeGB);
                     })
                     .findFirst()
                     .orElse("Unknown");
         } catch (IOException e) {
-            Initializer.LOGGER.error("Can't obtain your RAM!");
+            Initializer.LOGGER.error("Can't obtain your RAM!", e);
             return "Unknown";
         }
     }
@@ -156,12 +155,11 @@ public class AndroidRAMInfo {
                 double memUsedDiffMB = memUsedDifference / 1024.0;
                 String color = memUsedDifference > 0 ? "§c↑" : memUsedDifference < 0 ? "§a↓" : "";
                 return String.format("Current Usage: %s%.2f MB", color, Math.abs(memUsedDiffMB));
-            } else {
-                return "Current Usage: Unavailable";
             }
         } finally {
             lock.unlock();
         }
+        return "Current Usage: Unavailable";
     }
 
     public static String getAvailableMemoryInfo() {
@@ -172,32 +170,28 @@ public class AndroidRAMInfo {
                 long freeMemoryPercentage = (memFree * 100) / memTotal;
                 String colorPerc = getColorPercentage(freeMemoryPercentage);
                 return String.format("Available RAM: %.2f MB / %s%d%%", memFreeMB, colorPerc, freeMemoryPercentage);
-            } else {
-                return "Available RAM: Unavailable";
             }
         } finally {
             lock.unlock();
         }
+        return "Available RAM: Unavailable";
     }
 
     public static String getHighestMemoryAndRAMUsage() {
         lock.lock();
         try {
-            String highestMemoryUsagePerSecond;
+            String highestMemoryUsagePerSecond = "Highest Usage: Unavailable";
+            String highestRAMUsage = "Highest RAM Used: Unavailable";
+
             if (maxMemUsedPerSecond != 0) {
                 double maxMemUsedPerSecondMB = maxMemUsedPerSecond / 1024.0;
-                String color = maxMemUsedPerSecond > 0 ? "§c↑" : maxMemUsedPerSecond < 0 ? "§a↓" : "";
+                String color = maxMemUsedPerSecond > 0 ? "§c↑" : "§a↓";
                 highestMemoryUsagePerSecond = String.format("Highest Usage: %s%.2f MB", color, Math.abs(maxMemUsedPerSecondMB));
-            } else {
-                highestMemoryUsagePerSecond = "Highest Usage: Unavailable";
             }
 
-            String highestRAMUsage;
             if (maxMemUsed != 0) {
                 double maxMemUsedMB = maxMemUsed / 1024.0;
                 highestRAMUsage = String.format("Highest RAM Used: %.2f MB", maxMemUsedMB);
-            } else {
-                highestRAMUsage = "Highest RAM Used: Unavailable";
             }
 
             return highestMemoryUsagePerSecond + "§r / " + highestRAMUsage;
@@ -212,17 +206,15 @@ public class AndroidRAMInfo {
             if (memBuffers != 0) {
                 double buffersMB = memBuffers / 1024.0;
                 return String.format("Buffers: %.2f MB", buffersMB);
-            } else {
-                return "Buffers: No Buffers";
             }
         } finally {
             lock.unlock();
         }
+        return "Buffers: No Buffers";
     }
 
     private static long extractMemoryValue(String memoryLine) {
-        String[] parts = memoryLine.split("\\s+");
-        return Long.parseLong(parts[1]);
+        return Long.parseLong(memoryLine.split("\\s+")[1]);
     }
 
     private static boolean isRunningOnAndroid() {
@@ -230,9 +222,9 @@ public class AndroidRAMInfo {
     }
 
     public static String getAvailableRAMWarn() {
-        double memFreeMB = memFree / 1024.0;
         lock.lock();
         try {
+            double memFreeMB = memFree / 1024.0;
             if (memFreeMB < 500) {
                 return memFreeMB > 300 ? "RAM running low, the game will start to lag." : "RAM running very low, the game will lag significantly and has a chance to crash.";
             }
@@ -243,17 +235,11 @@ public class AndroidRAMInfo {
     }
 
     private static String getColorPercentage(long freeMemoryPercentage) {
-        if (freeMemoryPercentage > 20) {
-            return "§a";
-        } else if (freeMemoryPercentage >= 16) {
-            return "§e";
-        } else if (freeMemoryPercentage >= 11) {
-            return "§6";
-        } else if (freeMemoryPercentage >= 6) {
-            return "§c";
-        } else {
-            return "§4";
-        }
+        if (freeMemoryPercentage > 20) return "§a";
+        if (freeMemoryPercentage >= 16) return "§e";
+        if (freeMemoryPercentage >= 11) return "§6";
+        if (freeMemoryPercentage >= 6) return "§c";
+        return "§4";
     }
 
     private static void resetMaxMemoryUsageRecord() {
