@@ -1,6 +1,5 @@
 package net.vulkanmod.vulkan.device;
 
-import net.vulkanmod.Initializer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
@@ -56,6 +55,7 @@ public class Device {
 
         if (this.availableFeatures.features().multiDrawIndirect() && this.availableFeatures11.shaderDrawParameters())
             this.drawIndirectSupported = true;
+
     }
 
     private static String decodeVendor(int i) {
