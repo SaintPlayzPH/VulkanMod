@@ -13,7 +13,6 @@ import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.*;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
 import java.util.stream.IntStream;
@@ -163,9 +162,9 @@ public abstract class Options {
                         new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
                                 new Integer[]{1, 2},
                                 value -> {
-                                   config.presentMode = Device.isMailboxSupported(physicalDevice, surface) ? value : 1;
-                                   Renderer.scheduleSwapChainUpdate(physicalDevice, surface);
-                                }, () -> Device.isMailboxSupported() && config.presentMode)
+                                   config.presentMode = Device.isMailboxSupported ? value : 1;
+                                   Renderer.scheduleSwapChainUpdate();
+                                }, () -> Device.isMailboxSupported && config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
                                         case 1 -> "FIFO (VSync)";
