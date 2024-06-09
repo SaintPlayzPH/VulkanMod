@@ -29,10 +29,20 @@ public class AndroidRAMInfo {
     static {
         executorService = Executors.newScheduledThreadPool(2);
 
-        executorService.scheduleAtFixedRate(AndroidRAMInfo::getAllMemoryInfo, 0, Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100, TimeUnit.MILLISECONDS);
-
         lastResetHighUsageRec = Initializer.CONFIG.resetHighUsageRec;
         initializeResetMaxMemoryThread();
+    }
+
+    private static void scheduleMemoryUpdateTask() {
+        executorService.scheduleAtFixedRate(AndroidRAMInfo::getAllMemoryInfo,
+                0, Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100, TimeUnit.MILLISECONDS);
+    }
+
+    public static void updateScheduledTask() {
+        executorService.shutdown();
+        executorService.schedule(() -> {
+            scheduleMemoryUpdateTask();
+        }, 0, TimeUnit.MILLISECONDS);
     }
 
     private static void initializeResetMaxMemoryThread() {
