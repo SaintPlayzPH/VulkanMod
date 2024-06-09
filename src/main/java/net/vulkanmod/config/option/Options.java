@@ -13,8 +13,10 @@ import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.*;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
+import java.nio.IntBuffer;
 import java.util.stream.IntStream;
 
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
@@ -25,7 +27,39 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
-    Device device = new Device();
+
+    public boolean isMailboxSupported(VkPhysicalDevice physicalDevice, long surface) {
+        Initializer.LOGGER.info("Checking for Mailbox compatibility of your device!");
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer presentModeCount = stack.ints(0);
+
+            int result = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, null);
+            if (result != VK_SUCCESS) {
+                throw new RuntimeException("Failed to retrieve present mode count");
+            }
+
+            int count = presentModeCount.get(0);
+            if (count > 0) {
+                IntBuffer presentModes = stack.mallocInt(count);
+
+                result = vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, presentModeCount, presentModes);
+                if (result != VK_SUCCESS) {
+                    throw new RuntimeException("Failed to retrieve present modes");
+                }
+
+                for (int i = 0; i < count; i++) {
+                    if (presentModes.get(i) == VK_PRESENT_MODE_MAILBOX_KHR) {
+                        Initializer.LOGGER.info("Present Mode: Mailbox (FastSync) is supported.");
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Initializer.LOGGER.error("Error checking mailbox support: ", e);
+        }
+        Initializer.LOGGER.info("Present Mode: Mailbox (FastSync) is not supported.");
+        return false;
+    }
 
     private static boolean isRunningOnPhone() {
         if (System.getenv("POJAV_ENVIRON") != null) { //PojavLauncher
@@ -163,8 +197,8 @@ public abstract class Options {
                         new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
                                 new Integer[]{1, 2},
                                 value -> {
-                                   config.presentMode = device.isMailboxSupported ? value : 1;
-                                   Renderer.scheduleSwapChainUpdate();
+                                   config.presentMode = isMailboxSupported(physicalDevice, surface) ? value : 1;
+                                   isMailboxSupported(physicalDevice, surface) && Renderer.scheduleSwapChainUpdate();
                                 }, () -> config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
