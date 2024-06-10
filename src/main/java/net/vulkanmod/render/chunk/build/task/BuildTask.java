@@ -186,13 +186,13 @@ public class BuildTask extends ChunkTask {
         if (!Initializer.CONFIG.fastLeavesFix) {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
-                default -> TerrainRenderType.TRANSLUCENT;
+                case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
             };
         } else {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
                 case CUTOUT -> TerrainRenderType.CUTOUT;
-                default -> TerrainRenderType.TRANSLUCENT;
+                case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
             };
         }
     }
