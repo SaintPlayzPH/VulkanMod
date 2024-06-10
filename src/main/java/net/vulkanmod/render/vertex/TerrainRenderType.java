@@ -7,11 +7,11 @@ import net.vulkanmod.vulkan.VRenderSystem;
 import java.util.EnumSet;
 
 public enum TerrainRenderType {
-    SOLID(0.0f, 262144 /*BIG_BUFFER_SIZE*/),
-    CUTOUT_MIPPED(0.5f, 262144 /*MEDIUM_BUFFER_SIZE*/),
-    CUTOUT(0.1f, 131072 /*SMALL_BUFFER_SIZE*/),
-    TRANSLUCENT(0.0f, 131072 /*SMALL_BUFFER_SIZE*/),
-    TRIPWIRE(0.1f, 131072 /*SMALL_BUFFER_SIZE*/);
+    SOLID(RenderType.solid(), 2097152 /*BIG_BUFFER_SIZE*/),
+    CUTOUT_MIPPED(RenderType.cutoutMipped(), 131072 /*SMALL_BUFFER_SIZE*/),
+    CUTOUT(RenderType.cutout(), 131072 /*SMALL_BUFFER_SIZE*/),
+    TRANSLUCENT(RenderType.translucent(), 262144 /*MEDIUM_BUFFER_SIZE*/),
+    TRIPWIRE(RenderType.tripwire(), 262144 /*MEDIUM_BUFFER_SIZE*/);
 
     public static final TerrainRenderType[] VALUES = TerrainRenderType.values();
 
