@@ -2,6 +2,7 @@ package net.vulkanmod.render;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.build.thread.ThreadBuilderPack;
 import net.vulkanmod.render.vertex.CustomVertexFormat;
 import net.vulkanmod.render.vertex.TerrainRenderType;
