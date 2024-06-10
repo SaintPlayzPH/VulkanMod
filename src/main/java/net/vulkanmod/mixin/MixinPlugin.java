@@ -27,11 +27,19 @@ public class MixinPlugin implements IMixinConfigPlugin {
         
         if (mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostChainM") || 
             mixinClassName.equals("net.vulkanmod.mixin.compatibility.PostPassM")) {
-            // Check if CONFIG is initialized and postEffect is true
-            boolean shouldApply = Initializer.CONFIG != null && !Initializer.CONFIG.postEffectFix;
-            Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApply);
-            return shouldApply;
+            // Check if CONFIG is initialized and postEffectFix is false
+            boolean shouldApplyPostEffectFix = Initializer.CONFIG != null && !Initializer.CONFIG.postEffectFix;
+            Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApplyPostEffectFix);
+            return shouldApplyPostEffectFix;
         }
+        
+        if (mixinClassName.equals("net.vulkanmod.mixin.chunk.CubicSamplerM")) {
+            // Check if CONFIG is initialized and gaussianSkyBlending is true
+            boolean shouldApplyGaussianSkyBlending = Initializer.CONFIG != null && Initializer.CONFIG.gaussianSkyBlending;
+            Initializer.LOGGER.info("Checking mixin " + mixinClassName + ": " + shouldApplyGaussianSkyBlending);
+            return shouldApplyGaussianSkyBlending;
+        }
+        
         return true; // Apply all other mixins by default
     }
 

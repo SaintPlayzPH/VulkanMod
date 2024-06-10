@@ -61,5 +61,7 @@
   "vulkanmod.options.resetHighUsageRec": "Resetovat záznamy o vysokém využití",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Povolte pro resetování nejvyšších záznamů o využití paměti a RAM každých 45 sekund",
   "vulkanmod.options.presentMode": "Režim zobrazení",
-  "vulkanmod.options.presentMode.tooltip": "Režim zobrazení:\n\n- FIFO (VSync):\n  Synchronizuje zobrazení snímků s obnovovací frekvencí displeje. Zajišťuje pravidelné intervaly, ale může způsobit zasekávání.\n\n- Mailbox (FastSync):\n  Maximalizuje obnovovací frekvenci a rychlost odezvy. Poskytuje plynulé vykreslování, ale spotřebovává více zdrojů. Není podporováno na všech zařízeních."
+  "vulkanmod.options.presentMode.tooltip": "Režim zobrazení:\n\n- FIFO (VSync):\n  Synchronizuje zobrazení snímků s obnovovací frekvencí displeje. Zajišťuje pravidelné intervaly, ale může způsobit zasekávání.\n\n- Mailbox (FastSync):\n  Maximalizuje obnovovací frekvenci a rychlost odezvy. Poskytuje plynulé vykreslování, ale spotřebovává více zdrojů. Není podporováno na všech zařízeních.",
+  "vulkanmod.options.gaussianSkyBlending": "Rychlejší Gaussovské Míchání Oblohy",
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Tato možnost používá extrémně agresivní optimalizace, takže nemusí reprodukovat oblohu na 100% přesně jako vanilla.\n\nVyžaduje restart hry!"
 }

@@ -1,26 +1,19 @@
 package net.vulkanmod.vulkan.memory;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import net.vulkanmod.Initializer;
 
 public class MemoryCleanup {
-    private static final int CLEANUP_INTERVAL_MS = 30 * 1000;
+    private static final int CLEANUP_INTERVAL_MINUTES = 1;
     private static final Lock lock = new ReentrantLock();
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     static {
-        Thread memoryCleanupThread = new Thread(() -> {
-            while (true) {
-                cleanUpMemory();
-                try {
-                    Thread.sleep(CLEANUP_INTERVAL_MS);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        });
-        memoryCleanupThread.setDaemon(true);
-        memoryCleanupThread.start();
+        scheduler.scheduleAtFixedRate(MemoryCleanup::cleanUpMemory, 0, CLEANUP_INTERVAL_MINUTES, TimeUnit.MINUTES);
     }
 
     private static void cleanUpMemory() {
@@ -32,6 +25,4 @@ public class MemoryCleanup {
             lock.unlock();
         }
     }
-
-    public static void start() {}
 }

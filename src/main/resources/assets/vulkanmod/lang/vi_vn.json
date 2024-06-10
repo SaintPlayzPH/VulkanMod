@@ -61,5 +61,7 @@
   "vulkanmod.options.resetHighUsageRec": "Đặt Lại Bản Ghi Sử Dụng Cao",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Bật để đặt lại bản ghi sử dụng bộ nhớ và RAM cao nhất mỗi 45 giây",
   "vulkanmod.options.presentMode": "Chế Độ Trình Chiếu",
-  "vulkanmod.options.presentMode.tooltip": "Chế Độ Trình Chiếu:\n\n- FIFO (VSync):\n  Đồng bộ hóa việc trình chiếu khung hình với tốc độ làm mới của màn hình. Đảm bảo khoảng thời gian đều đặn nhưng có thể gây ra hiện tượng giật hình.\n\n- Mailbox (FastSync):\n  Tối đa hóa tốc độ khung hình và độ phản hồi. Cung cấp hiển thị mượt mà nhưng tiêu tốn nhiều tài nguyên hơn. Không được hỗ trợ trên tất cả các thiết bị."
+  "vulkanmod.options.presentMode.tooltip": "Chế Độ Trình Chiếu:\n\n- FIFO (VSync):\n  Đồng bộ hóa việc trình chiếu khung hình với tốc độ làm mới của màn hình. Đảm bảo khoảng thời gian đều đặn nhưng có thể gây ra hiện tượng giật hình.\n\n- Mailbox (FastSync):\n  Tối đa hóa tốc độ khung hình và độ phản hồi. Cung cấp hiển thị mượt mà nhưng tiêu tốn nhiều tài nguyên hơn. Không được hỗ trợ trên tất cả các thiết bị.",
+  "vulkanmod.options.gaussianSkyBlending": "Trộn Gaussian Bầu Trời Nhanh Hơn",
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Tùy chọn này sử dụng các Tối ưu hóa cực kỳ tích cực, vì vậy có thể không tái tạo lại Bầu trời chính xác 100% như phiên bản gốc.\n\nYêu cầu khởi động lại Trò chơi!"
 }
