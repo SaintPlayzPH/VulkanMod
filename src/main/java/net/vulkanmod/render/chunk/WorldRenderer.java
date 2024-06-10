@@ -326,7 +326,7 @@ public class WorldRenderer {
 
             GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
             renderer.bindGraphicsPipeline(pipeline);
-            Renderer.getDrawer().bindAutoIndexBuffer(commandBuffer, 7);
+            Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
 
             renderer.uploadAndBindUBOs(pipeline);
 
