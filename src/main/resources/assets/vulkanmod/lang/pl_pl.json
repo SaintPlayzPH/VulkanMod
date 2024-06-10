@@ -63,5 +63,7 @@
   "vulkanmod.options.presentMode": "Tryb prezentacji",
   "vulkanmod.options.presentMode.tooltip": "Tryb prezentacji:\n\n- FIFO (VSync):\n  Synchronizuje prezentację klatek z częstotliwością odświeżania wyświetlacza. Zapewnia regularne odstępy, ale może wprowadzać zacięcia.\n\n- Mailbox (FastSync):\n  Maksymalizuje liczbę klatek na sekundę i szybkość reakcji. Zapewnia płynne renderowanie, ale zużywa więcej zasobów. Nieobsługiwane na wszystkich urządzeniach.",
   "vulkanmod.options.gaussianSkyBlending": "Szybsze Gaussowskie Mieszanie Nieba",
-  "vulkanmod.options.gaussianSkyBlending.tooltip": "Ta opcja wykorzystuje ekstremalnie agresywne optymalizacje, więc może nie odtworzyć nieba w 100% tak dokładnie jak w wersji vanilla.\n\nWymaga ponownego uruchomienia gry!"
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Ta opcja wykorzystuje ekstremalnie agresywne optymalizacje, więc może nie odtworzyć nieba w 100% tak dokładnie jak w wersji vanilla.\n\nWymaga ponownego uruchomienia gry!",
+  "vulkanmod.options.fastLeavesFix": "Szybka Naprawa Liści",
+  "vulkanmod.options.fastLeavesFix.tooltip": "(OSTRZEŻENIE: EKSPERYMENTALNE)\n\nWpływa na FPS zarówno na grafikach Eleganckich/Szybkich\n\nUżywa alternatywnego trybu renderowania do przywrócenia szybkich liści na szybkiej grafice\n\nZalecane do użycia z *Per RenderType AreaBuffers*\n\nBardzo eksperymentalne: Może zmniejszyć wydajność, nawet na grafikach eleganckich"
 }

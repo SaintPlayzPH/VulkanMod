@@ -63,5 +63,7 @@
   "vulkanmod.options.presentMode": "Present Mode",
   "vulkanmod.options.presentMode.tooltip": "Present Mode:\n\n- FIFO (VSync):\n  Synchronizes frame presentation with the display's refresh rate. Ensures regular intervals but may introduce stutter.\n\n- Mailbox (FastSync):\n  Maximizes frame rate and responsiveness. Provides smooth rendering but consumes more resources. Not supported on all devices.",
   "vulkanmod.options.gaussianSkyBlending": "Faster Gaussian Sky Blending",
-  "vulkanmod.options.gaussianSkyBlending.tooltip": "This option uses extremely aggressive Optimisations, so may not reproduce the Sky 100% as accurately to vanilla.\n\nRequires Game to Restart!"
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "This option uses extremely aggressive Optimisations, so may not reproduce the Sky 100% as accurately to vanilla.\n\nRequires Game to Restart!",
+  "vulkanmod.options.fastLeavesFix": "Fast Leaves Fix",
+  "vulkanmod.options.fastLeavesFix.tooltip": "(WARNING: EXPERIMENTAL)\n\nEffects FPS on both Fancy/Fast Graphics\n\nUses an Alternate Rendering Mode to restore Fast Leaves on Fast Graphics\n\nRecommended to use with *Per RenderType AreaBuffers*\n\nExtremely experimental: May Decrease performance, even on Fancy Graphics"
 }

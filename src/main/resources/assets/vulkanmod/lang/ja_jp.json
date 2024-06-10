@@ -63,5 +63,7 @@
   "vulkanmod.options.presentMode": "プレゼントモード",
   "vulkanmod.options.presentMode.tooltip": "プレゼントモード:\n\n- FIFO (VSync):\n  フレームの表示をディスプレイのリフレッシュレートに同期します。規則的な間隔を確保しますが、スタッタを引き起こす可能性があります。\n\n- メールボックス (FastSync):\n  フレームレートと応答性を最大化します。スムーズなレンダリングを提供しますが、より多くのリソースを消費します。すべてのデバイスでサポートされているわけではありません。",
   "vulkanmod.options.gaussianSkyBlending": "高速ガウス空ブレンディング",
-  "vulkanmod.options.gaussianSkyBlending.tooltip": "このオプションは非常に積極的な最適化を使用するため、バニラと同じように100%正確に空を再現できない可能性があります。\n\nゲームの再起動が必要です！"
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "このオプションは非常に積極的な最適化を使用するため、バニラと同じように100%正確に空を再現できない可能性があります。\n\nゲームの再起動が必要です！",
+  "vulkanmod.options.fastLeavesFix": "高速葉修正",
+  "vulkanmod.options.fastLeavesFix.tooltip": "(警告: 実験的)\n\nファンシー/ファストグラフィックスの両方にFPSの影響\n\nファストグラフィックスで高速葉を復元するための代替レンダリングモードを使用\n\n*Per RenderType AreaBuffers*と一緒に使用することをお勧めします\n\n非常に実験的：ファンシーグラフィックスでもパフォーマンスが低下する可能性があります"
 }

@@ -63,5 +63,7 @@
   "vulkanmod.options.presentMode": "显示模式",
   "vulkanmod.options.presentMode.tooltip": "显示模式:\n\n- FIFO (垂直同步):\n  将帧显示与显示器的刷新率同步。确保定期的间隔，但可能会引入卡顿。\n\n- Mailbox (快速同步):\n  最大化帧率和响应速度。提供流畅的渲染，但消耗更多资源。并非所有设备都支持。",
   "vulkanmod.options.gaussianSkyBlending": "更快的高斯天空混合",
-  "vulkanmod.options.gaussianSkyBlending.tooltip": "此选项使用极其激进的优化，因此可能无法100%准确再现原版的天空。\n\n需要重新启动游戏！"
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "此选项使用极其激进的优化，因此可能无法100%准确再现原版的天空。\n\n需要重新启动游戏！",
+  "vulkanmod.options.fastLeavesFix": "快速叶子修复",
+  "vulkanmod.options.fastLeavesFix.tooltip": "（警告：实验性）\n\n影响高级/快速图形的FPS\n\n使用替代渲染模式以在快速图形上恢复快速叶子\n\n建议与*每个渲染类型区域缓冲区*一起使用\n\n极其实验：可能会降低性能，即使在高级图形上也是如此"
 }

@@ -63,5 +63,7 @@
   "vulkanmod.options.presentMode": "Mode Presentasi",
   "vulkanmod.options.presentMode.tooltip": "Mode Presentasi:\n\n- FIFO (VSync):\n  Menyinkronkan presentasi bingkai dengan kecepatan refresh layar. Memastikan interval reguler tetapi mungkin memperkenalkan gagap.\n\n- Mailbox (FastSync):\n  Memaksimalkan kecepatan bingkai dan responsivitas. Memberikan rendering yang halus tetapi mengkonsumsi lebih banyak sumber daya. Tidak didukung di semua perangkat.",
   "vulkanmod.options.gaussianSkyBlending": "Pencampuran Langit Gaussian Lebih Cepat",
-  "vulkanmod.options.gaussianSkyBlending.tooltip": "Opsi ini menggunakan Optimasi yang sangat agresif, jadi mungkin tidak mereproduksi Langit 100% seakurat vanilla.\n\nMemerlukan Restart Game!"
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Opsi ini menggunakan Optimasi yang sangat agresif, jadi mungkin tidak mereproduksi Langit 100% seakurat vanilla.\n\nMemerlukan Restart Game!",
+  "vulkanmod.options.fastLeavesFix": "Perbaikan Daun Cepat",
+  "vulkanmod.options.fastLeavesFix.tooltip": "(PERINGATAN: EKSPERIMENTAL)\n\nMempengaruhi FPS pada Grafik Mewah/Cepat\n\nMenggunakan Mode Rendering Alternatif untuk mengembalikan Daun Cepat pada Grafik Cepat\n\nDirekomendasikan untuk digunakan dengan *Per RenderType AreaBuffers*\n\nSangat eksperimental: Dapat Menurunkan kinerja, bahkan pada Grafik Mewah"
 }

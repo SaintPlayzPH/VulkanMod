@@ -63,5 +63,7 @@
   "vulkanmod.options.presentMode": "Mode ng Presentasyon",
   "vulkanmod.options.presentMode.tooltip": "Mode ng Presentasyon:\n\n- FIFO (VSync):\n  Isinasabay ang presentasyon ng frame sa rate ng refresh ng display. Tinitiyak ang regular na mga pagitan ngunit maaaring magpakilala ng stutter.\n\n- Mailbox (FastSync):\n  Pinakamataas ang frame rate at pagiging tumutugon. Nagbibigay ng makinis na rendering ngunit kumokonsumo ng mas maraming mapagkukunan. Hindi sinusuportahan sa lahat ng mga aparato.",
   "vulkanmod.options.gaussianSkyBlending": "Mas Mabilis na Gaussian Sky Blending",
-  "vulkanmod.options.gaussianSkyBlending.tooltip": "Ang opsyong ito ay gumagamit ng lubos na agresibong mga Pag-optimize, kaya maaaring hindi nito muling gawin ang kalangitan nang 100% nang tumpak tulad ng sa vanilla.\n\nNangangailangan ng pag-restart ng Laro!"
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Ang opsyong ito ay gumagamit ng lubos na agresibong mga Pag-optimize, kaya maaaring hindi nito muling gawin ang kalangitan nang 100% nang tumpak tulad ng sa vanilla.\n\nNangangailangan ng pag-restart ng Laro!",
+  "vulkanmod.options.fastLeavesFix": "Pag-ayos ng Mabilis na Dahon",
+  "vulkanmod.options.fastLeavesFix.tooltip": "(BABALA: EXPERIMENTAL)\n\nNakakaapekto sa FPS sa parehong Fancy/Mabilis na Graphics\n\nGumagamit ng Alternatibong Mode ng Pag-render upang maibalik ang Mabilis na Dahon sa Mabilis na Graphics\n\nInirerekomenda na gamitin kasama ng *Per RenderType AreaBuffers*\n\nLubhang eksperimental: Maaaring Bawasan ang pagganap, kahit sa Fancy Graphics"
 }
