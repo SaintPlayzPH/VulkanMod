@@ -142,7 +142,7 @@ public class Renderer {
             commandBuffers.forEach(commandBuffer -> vkFreeCommandBuffers(device, Vulkan.getCommandPool(), commandBuffer));
         }
 
-        commandBuffers = new ArrayList<>(framesNum);
+        commandBuffers = new ObjectArrayList<>(framesNum);
 
         try (MemoryStack stack = stackPush()) {
 
@@ -165,9 +165,9 @@ public class Renderer {
     }
 
     private void createSyncObjects() {
-        imageAvailableSemaphores = new ArrayList<>(framesNum);
-        renderFinishedSemaphores = new ArrayList<>(framesNum);
-        inFlightFences = new ArrayList<>(framesNum);
+        imageAvailableSemaphores = new ObjectArrayList<>(framesNum);
+        renderFinishedSemaphores = new ObjectArrayList<>(framesNum);
+        inFlightFences = new ObjectArrayList<>(framesNum);
 
         try (MemoryStack stack = stackPush()) {
 
