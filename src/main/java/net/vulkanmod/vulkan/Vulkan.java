@@ -1,5 +1,8 @@
 package net.vulkanmod.vulkan;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.framebuffer.SwapChain;
@@ -20,7 +23,6 @@ import org.lwjgl.vulkan.*;
 
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-import java.util.*;
 
 import static java.util.stream.Collectors.toSet;
 import static net.vulkanmod.vulkan.util.VUtil.asPointerBuffer;
@@ -45,11 +47,11 @@ public class Vulkan {
     //    public static final boolean DYNAMIC_RENDERING = true;
     public static final boolean DYNAMIC_RENDERING = false;
 
-    public static final Set<String> VALIDATION_LAYERS;
+    public static final ObjectSet<String> VALIDATION_LAYERS;
 
     static {
         if (ENABLE_VALIDATION_LAYERS) {
-            VALIDATION_LAYERS = new HashSet<>();
+            VALIDATION_LAYERS = new ObjectOpenHashSet<>();
             VALIDATION_LAYERS.add("VK_LAYER_KHRONOS_validation");
 //            VALIDATION_LAYERS.add("VK_LAYER_KHRONOS_synchronization2");
 
@@ -59,16 +61,16 @@ public class Vulkan {
         }
     }
 
-    public static final Set<String> REQUIRED_EXTENSION = getRequiredExtensionSet();
+    public static final ObjectSet<String> REQUIRED_EXTENSION = getRequiredExtensionSet();
 
-    private static Set<String> getRequiredExtensionSet() {
-        ArrayList<String> extensions = new ArrayList<>(List.of(VK_KHR_SWAPCHAIN_EXTENSION_NAME));
+    private static ObjectSet<String> getRequiredExtensionSet() {
+        ObjectArrayList<String> extensions = new ObjectArrayList<>(List.of(VK_KHR_SWAPCHAIN_EXTENSION_NAME));
 
         if (DYNAMIC_RENDERING) {
             extensions.add(VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME);
         }
 
-        return new HashSet<>(extensions);
+        return new ObjectOpenHashSet<>(extensions);
     }
 
     private static int debugCallback(int messageSeverity, int messageType, long pCallbackData, long pUserData) {
@@ -268,7 +270,7 @@ public class Vulkan {
 
             vkEnumerateInstanceLayerProperties(layerCount, availableLayers);
 
-            Set<String> availableLayerNames = availableLayers.stream()
+            ObjectSet<String> availableLayerNames = availableLayers.stream()
                     .map(VkLayerProperties::layerNameString)
                     .collect(toSet());
 
@@ -476,4 +478,3 @@ public class Vulkan {
         return DeviceManager.device;
     }
 }
-
