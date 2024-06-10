@@ -143,15 +143,13 @@ public enum Queue {
         return currentCmdBuffer != null ? VK_NULL_HANDLE : submitCommands(commandBuffer);
     }
 
-    public void trimCmdPool()
-    {
-        if(commandPool==null) return;
+    public void trimCmdPool() {
+        if (commandPool == null) return;
         VK11.vkTrimCommandPool(Vulkan.getVkDevice(), this.commandPool.id, 0);
     }
 
-    public static void trimCmdPools()
-    {
-        for(var queue : Queue.values()) {
+    public static void trimCmdPools() {
+        for (Queue queue : Queue.values()) {
             queue.trimCmdPool();
         }
     }
