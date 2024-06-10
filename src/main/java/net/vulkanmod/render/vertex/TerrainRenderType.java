@@ -16,51 +16,34 @@ public enum TerrainRenderType {
     public static final TerrainRenderType[] VALUES = TerrainRenderType.values();
 
     public static final EnumSet<TerrainRenderType> COMPACT_RENDER_TYPES = EnumSet.of(CUTOUT_MIPPED, TRANSLUCENT);
-    public static final EnumSet<TerrainRenderType> SEMI_COMPACT_RENDER_TYPES = EnumSet.of(CUTOUT_MIPPED, CUTOUT, TRANSLUCENT);
+    public static final EnumSet<TerrainRenderType> ALL_RENDER_TYPES = EnumSet.allOf(TerrainRenderType.class);
 
-    static {
-        SEMI_COMPACT_RENDER_TYPES.add(CUTOUT);
-        SEMI_COMPACT_RENDER_TYPES.add(CUTOUT_MIPPED);
-        SEMI_COMPACT_RENDER_TYPES.add(TRANSLUCENT);
+    public final int maxSize;  //Not sure if this should be changed to UINT16_INDEX_MAX * vertexSize
+    public final int initialSize; //Only used W/ Per RenderTy[e AreaBuffers
+ 
+    TerrainRenderType(RenderType renderType, int initialSize) {
 
-        COMPACT_RENDER_TYPES.add(CUTOUT_MIPPED);
-        COMPACT_RENDER_TYPES.add(TRANSLUCENT);
-    }
-
-    public final float alphaCutout;
-    public final int initialSize;
-
-    TerrainRenderType(float alphaCutout, int initialSize) {
-        this.alphaCutout = alphaCutout;
+        this.maxSize = renderType.bufferSize();
         this.initialSize = initialSize;
-    }
-
-    public void setCutoutUniform() {
-        VRenderSystem.alphaCutout = this.alphaCutout;
     }
 
     public static TerrainRenderType get(RenderType renderType) {
         return ((ExtendedRenderType)renderType).getTerrainRenderType();
     }
 
-    public static TerrainRenderType get(String name) {
-        return switch (name) {
-            case "solid" -> TerrainRenderType.SOLID;
-            case "cutout" -> TerrainRenderType.CUTOUT;
-            case "cutout_mipped" -> TerrainRenderType.CUTOUT_MIPPED;
-            case "translucent" -> TerrainRenderType.TRANSLUCENT;
-            case "tripwire" -> TerrainRenderType.TRIPWIRE;
-            default -> null;
-        };
+    public static EnumSet<TerrainRenderType> getActiveLayers() {
+        return Initializer.CONFIG.uniqueOpaqueLayer ? COMPACT_RENDER_TYPES : ALL_RENDER_TYPES;
     }
 
-    public static RenderType getRenderType(TerrainRenderType renderType) {
-        return switch (renderType) {
-            case SOLID -> RenderType.solid();
-            case CUTOUT -> RenderType.cutout();
-            case CUTOUT_MIPPED -> RenderType.cutoutMipped();
-            case TRANSLUCENT -> RenderType.translucent();
-            case TRIPWIRE -> RenderType.tripwire();
+    public static TerrainRenderType get(String renderType) {
+        return switch (renderType)
+        {
+            case "solid" -> SOLID;
+            case "cutout_mipped" -> CUTOUT_MIPPED;
+            case "cutout" -> CUTOUT;
+            case "translucent" -> TRANSLUCENT;
+            case "tripwire" -> TRIPWIRE;
+            default -> throw new IllegalStateException("Unexpected value: " + renderType);
         };
     }
 }
