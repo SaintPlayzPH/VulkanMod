@@ -2,6 +2,8 @@ package net.vulkanmod.vulkan;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.client.Minecraft;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.gl.GlFramebuffer;
@@ -34,9 +36,6 @@ import org.lwjgl.vulkan.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import static com.mojang.blaze3d.platform.GlConst.GL_COLOR_BUFFER_BIT;
 import static com.mojang.blaze3d.platform.GlConst.GL_DEPTH_BUFFER_BIT;
@@ -80,17 +79,17 @@ public class Renderer {
         return imageIndex;
     }
 
-    private final Set<GraphicsPipeline> usedPipelines = new ObjectOpenHashSet<>();
+    private final ObjectSet<GraphicsPipeline> usedPipelines = new ObjectOpenHashSet<>();
     private long boundPipeline;
 
     private Drawer drawer;
 
     private int framesNum;
     private int imagesNum;
-    private List<VkCommandBuffer> commandBuffers;
-    private ArrayList<Long> imageAvailableSemaphores;
-    private ArrayList<Long> renderFinishedSemaphores;
-    private ArrayList<Long> inFlightFences;
+    private ObjectList<VkCommandBuffer> commandBuffers;
+    private ObjectArrayList<Long> imageAvailableSemaphores;
+    private ObjectArrayList<Long> renderFinishedSemaphores;
+    private ObjectArrayList<Long> inFlightFences;
 
     private Framebuffer boundFramebuffer;
     private RenderPass boundRenderPass;
@@ -103,7 +102,7 @@ public class Renderer {
 
     MainPass mainPass = DefaultMainPass.create();
 
-    private final List<Runnable> onResizeCallbacks = new ObjectArrayList<>();
+    private final ObjectList<Runnable> onResizeCallbacks = new ObjectArrayList<>();
 
     public Renderer() {
         device = Vulkan.getVkDevice();
