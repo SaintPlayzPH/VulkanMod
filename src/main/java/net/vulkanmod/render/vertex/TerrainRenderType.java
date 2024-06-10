@@ -37,7 +37,7 @@ public enum TerrainRenderType {
     }
 
     public static EnumSet<TerrainRenderType> getActiveLayers() {
-        return !Initializer.CONFIG.uniqueOpaqueLayer ? COMPACT_RENDER_TYPES : SEMI_COMPACT_RENDER_TYPES;
+        return !Initializer.CONFIG.fastLeavesFix ? COMPACT_RENDER_TYPES : SEMI_COMPACT_RENDER_TYPES;
     }
     
     public void setCutoutUniform() {
