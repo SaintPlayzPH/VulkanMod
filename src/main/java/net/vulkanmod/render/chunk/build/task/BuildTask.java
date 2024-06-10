@@ -134,14 +134,10 @@ public class BuildTask extends ChunkTask {
                     if (blockState.getRenderShape() == RenderShape.MODEL) {
                         renderType = TerrainRenderType.get(ItemBlockRenderTypes.getChunkRenderType(blockState));
 
-                        if (Initializer.CONFIG.uniqueOpaqueLayer) {
-                            if (blockState.getBlock() instanceof LeavesBlock) {
-                                // Custom logic to render leaves as opaque with black color
-                                renderType = TerrainRenderType.SOLID;
-                                bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
-                            } else if (blockState.getBlock() instanceof GrassBlock) {
-                                renderType = TerrainRenderType.CUTOUT;
-                            }
+                        if(Initializer.CONFIG.fastLeavesFix)
+                        {
+                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? CUTOUT : CUTOUT_MIPPED;
+                            else if(blockState.getBlock() instanceof GrassBlock) renderType = CUTOUT;
                         }
 
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
@@ -187,7 +183,7 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-        if (!Initializer.CONFIG.uniqueOpaqueLayer) {
+        if (!Initializer.CONFIG.fastLeavesFix) {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
                 default -> TerrainRenderType.TRANSLUCENT;
