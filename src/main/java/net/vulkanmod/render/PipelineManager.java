@@ -62,7 +62,7 @@ public abstract class PipelineManager {
         return switch (renderType)
         {
             case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
-            case CUTOUT_MIPPED -> Initializer.CONFIG.uniqueOpaqueLayer ? terrainShaderEarlyZ : terrainShader;
+            case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
             case CUTOUT -> terrainShader;
         };
     }
