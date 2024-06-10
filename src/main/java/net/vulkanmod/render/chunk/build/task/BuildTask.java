@@ -136,8 +136,8 @@ public class BuildTask extends ChunkTask {
 
                         if(Initializer.CONFIG.fastLeavesFix)
                         {
-                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? CUTOUT : CUTOUT_MIPPED;
-                            else if(blockState.getBlock() instanceof GrassBlock) renderType = CUTOUT;
+                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
+                            else if(blockState.getBlock() instanceof GrassBlock) renderType = TerrainRenderType.CUTOUT;
                         }
 
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
