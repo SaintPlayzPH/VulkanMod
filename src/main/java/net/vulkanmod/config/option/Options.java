@@ -240,13 +240,13 @@ public abstract class Options {
                                     default -> Component.translatable("vulkanmod.options.unknown");
                                 })
                                 .setTooltip(Component.translatable("vulkanmod.options.ao.subBlock.tooltip")),
-                        new SwitchOption(Component.translatable("vulkanmod.options.uniqueOpaqueLayer"),
+                        new SwitchOption(Component.translatable("vulkanmod.options.fastLeavesFix"),
                                 value -> {
-                                    config.uniqueOpaqueLayer = value;
+                                    config.fastLeavesFix = value;
                                     minecraft.levelRenderer.allChanged();
                                 },
-                                () -> config.uniqueOpaqueLayer)
-                                .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
+                                () -> config.fastLeavesFix)
+                                .setTooltip(Component.translatable("vulkanmod.options.fastLeavesFix.tooltip")),
                         new RangeOption(Component.translatable("options.biomeBlendRadius"),
                                 0, 7, 1,
                                 value -> {
