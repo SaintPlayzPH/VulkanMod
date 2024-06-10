@@ -61,5 +61,7 @@
   "vulkanmod.options.resetHighUsageRec": "Restablecer registros de uso alto",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Habilitar para restablecer los registros de mayor uso de memoria y RAM cada 45 segundos",
   "vulkanmod.options.presentMode": "Modo de Presentación",
-  "vulkanmod.options.presentMode.tooltip": "Modo de Presentación:\n\n- FIFO (VSync):\n  Sincroniza la presentación de cuadros con la tasa de refresco de la pantalla. Asegura intervalos regulares, pero puede introducir tartamudeo.\n\n- Mailbox (FastSync):\n  Maximiza la tasa de cuadros y la capacidad de respuesta. Proporciona un renderizado suave pero consume más recursos. No compatible con todos los dispositivos."
+  "vulkanmod.options.presentMode.tooltip": "Modo de Presentación:\n\n- FIFO (VSync):\n  Sincroniza la presentación de cuadros con la tasa de refresco de la pantalla. Asegura intervalos regulares, pero puede introducir tartamudeo.\n\n- Mailbox (FastSync):\n  Maximiza la tasa de cuadros y la capacidad de respuesta. Proporciona un renderizado suave pero consume más recursos. No compatible con todos los dispositivos.",
+  "vulkanmod.options.gaussianSkyBlending": "Mezcla de Cielo Gaussiano Más Rápida",
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Esta opción utiliza optimizaciones extremadamente agresivas, por lo que puede no reproducir el cielo al 100% tan exactamente como en la versión original.\n\n¡Requiere reiniciar el juego!"
 }

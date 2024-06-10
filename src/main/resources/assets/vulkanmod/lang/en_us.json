@@ -61,5 +61,7 @@
   "vulkanmod.options.resetHighUsageRec": "Reset High Usage Records",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Enable to reset highest memory and RAM usage records every 45 seconds",
   "vulkanmod.options.presentMode": "Present Mode",
-  "vulkanmod.options.presentMode.tooltip": "Present Mode:\n\n- FIFO (VSync):\n  Synchronizes frame presentation with the display's refresh rate. Ensures regular intervals but may introduce stutter.\n\n- Mailbox (FastSync):\n  Maximizes frame rate and responsiveness. Provides smooth rendering but consumes more resources. Not supported on all devices."
+  "vulkanmod.options.presentMode.tooltip": "Present Mode:\n\n- FIFO (VSync):\n  Synchronizes frame presentation with the display's refresh rate. Ensures regular intervals but may introduce stutter.\n\n- Mailbox (FastSync):\n  Maximizes frame rate and responsiveness. Provides smooth rendering but consumes more resources. Not supported on all devices.",
+  "vulkanmod.options.gaussianSkyBlending": "Faster Gaussian Sky Blending",
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "This option uses extremely aggressive Optimisations, so may not reproduce the Sky 100% as accurately to vanilla.\n\nRequires Game to Restart!"
 }

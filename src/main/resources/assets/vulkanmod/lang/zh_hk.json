@@ -61,5 +61,7 @@
   "vulkanmod.options.resetHighUsageRec": "重置高使用記錄",
   "vulkanmod.options.resetHighUsageRec.tooltip": "啟用以每45秒重置一次最高記憶體和RAM使用記錄",
   "vulkanmod.options.presentMode": "顯示模式",
-  "vulkanmod.options.presentMode.tooltip": "顯示模式:\n\n- FIFO (垂直同步):\n  將幀顯示與顯示器的刷新率同步。確保定期的間隔，但可能會引入卡頓。\n\n- Mailbox (快速同步):\n  最大化幀率和響應速度。提供流暢的渲染，但消耗更多資源。並非所有設備都支持。"
+  "vulkanmod.options.presentMode.tooltip": "顯示模式:\n\n- FIFO (垂直同步):\n  將幀顯示與顯示器的刷新率同步。確保定期的間隔，但可能會引入卡頓。\n\n- Mailbox (快速同步):\n  最大化幀率和響應速度。提供流暢的渲染，但消耗更多資源。並非所有設備都支持。",
+  "vulkanmod.options.gaussianSkyBlending": "更快的高斯天空混合",
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "此選項使用極其激進的優化，因此可能無法100%準確再現原版的天空。\n\n需要重新啟動遊戲！"
 }

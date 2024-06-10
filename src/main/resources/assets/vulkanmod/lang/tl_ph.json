@@ -61,5 +61,7 @@
   "vulkanmod.options.resetHighUsageRec": "I-reset ang Mga Rekord ng Mataas na Paggamit",
   "vulkanmod.options.resetHighUsageRec.tooltip": "Paganahin upang i-reset ang pinakamataas na rekord ng paggamit ng memory at RAM bawat 45 segundo",
   "vulkanmod.options.presentMode": "Mode ng Presentasyon",
-  "vulkanmod.options.presentMode.tooltip": "Mode ng Presentasyon:\n\n- FIFO (VSync):\n  Isinasabay ang presentasyon ng frame sa rate ng refresh ng display. Tinitiyak ang regular na mga pagitan ngunit maaaring magpakilala ng stutter.\n\n- Mailbox (FastSync):\n  Pinakamataas ang frame rate at pagiging tumutugon. Nagbibigay ng makinis na rendering ngunit kumokonsumo ng mas maraming mapagkukunan. Hindi sinusuportahan sa lahat ng mga aparato."
+  "vulkanmod.options.presentMode.tooltip": "Mode ng Presentasyon:\n\n- FIFO (VSync):\n  Isinasabay ang presentasyon ng frame sa rate ng refresh ng display. Tinitiyak ang regular na mga pagitan ngunit maaaring magpakilala ng stutter.\n\n- Mailbox (FastSync):\n  Pinakamataas ang frame rate at pagiging tumutugon. Nagbibigay ng makinis na rendering ngunit kumokonsumo ng mas maraming mapagkukunan. Hindi sinusuportahan sa lahat ng mga aparato.",
+  "vulkanmod.options.gaussianSkyBlending": "Mas Mabilis na Gaussian Sky Blending",
+  "vulkanmod.options.gaussianSkyBlending.tooltip": "Ang opsyong ito ay gumagamit ng lubos na agresibong mga Pag-optimize, kaya maaaring hindi nito muling gawin ang kalangitan nang 100% nang tumpak tulad ng sa vanilla.\n\nNangangailangan ng pag-restart ng Laro!"
 }
