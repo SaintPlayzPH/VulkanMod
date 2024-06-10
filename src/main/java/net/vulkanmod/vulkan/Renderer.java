@@ -109,10 +109,10 @@ public class Renderer {
         device = Vulkan.getVkDevice();
         framesNum = Initializer.CONFIG.frameQueueSize;
         imagesNum = getSwapChain().getImagesNum();
-	addOnResizeCallback(Queue::trimCmdPools);
-	addOnResizeCallback(() -> {
+
+        addOnResizeCallback(() -> {
             VK11.vkTrimCommandPool(device, Vulkan.getCommandPool(), 0);
-            Queue.GraphicsQueue.trimCmdPool();
+            Queue.trimCmdPools();
         });
     }
 
