@@ -64,8 +64,7 @@ public abstract class PipelineManager {
     }
 
     public static GraphicsPipeline getTerrainShader(TerrainRenderType renderType) {
-        PipelineManager manager = new PipelineManager();
-        if (manager.isGraphicsFancy()) {
+        if (isGraphicsFancy()) {
             return shaderGetter.apply(renderType);
         } else {
             return switch (renderType) {
