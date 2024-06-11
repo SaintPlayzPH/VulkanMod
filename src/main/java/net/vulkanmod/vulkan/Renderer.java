@@ -614,7 +614,7 @@ public class Renderer {
         
         try(MemoryStack stack = stackPush()) {
             VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
-            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
+            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y);
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
             x = transformedOffset.x();
@@ -630,7 +630,7 @@ public class Renderer {
             viewport.maxDepth(1.0f);
 
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
+            scissor.offset(transformedOffset);
             scissor.extent(transformedExtent);
 
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
