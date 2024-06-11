@@ -23,17 +23,12 @@ import net.vulkanmod.render.chunk.build.thread.BuilderResources;
 import net.vulkanmod.render.chunk.build.thread.ThreadBuilderPack;
 import net.vulkanmod.render.vertex.TerrainBufferBuilder;
 import net.vulkanmod.render.vertex.TerrainRenderType;
-import net.vulkanmod.vulkan.Booleans;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class BuildTask extends ChunkTask {
     @Nullable
     protected RenderRegion region;
-
-    public boolean isGraphicsFancy() {
-        return Booleans.fancyGraphics;
-    }
 
     public BuildTask(RenderSection renderSection, RenderRegion renderRegion, boolean highPriority) {
         super(renderSection);
@@ -139,11 +134,11 @@ public class BuildTask extends ChunkTask {
                     if (blockState.getRenderShape() == RenderShape.MODEL) {
                         renderType = TerrainRenderType.get(ItemBlockRenderTypes.getChunkRenderType(blockState));
 
-                        if(Initializer.CONFIG.fastLeavesFix && !isGraphicsFancy()) {
+                        if(Initializer.CONFIG.fastLeavesFix) {
                             if (blockState.getBlock() instanceof LeavesBlock)
                                 renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
-                            else if(blockState.getBlock() instanceof GrassBlock)
-                                renderType = TerrainRenderType.CUTOUT;
+                          //  else if(blockState.getBlock() instanceof GrassBlock)
+                          //      renderType = TerrainRenderType.CUTOUT;
                         }
 
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
@@ -189,7 +184,7 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-        if (!Initializer.CONFIG.fastLeavesFix && !isGraphicsFancy()) {
+        if (!Initializer.CONFIG.fastLeavesFix) {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
                 case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
