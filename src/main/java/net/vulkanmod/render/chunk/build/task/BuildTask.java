@@ -183,7 +183,7 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-        if (!Initializer.CONFIG.fastLeavesFix) {
+        if (!Initializer.CONFIG.fastLeavesFix && !a) {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
                 case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
