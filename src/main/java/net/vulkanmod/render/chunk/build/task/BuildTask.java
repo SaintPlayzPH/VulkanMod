@@ -28,6 +28,7 @@ import org.joml.Vector3f;
 
 public class BuildTask extends ChunkTask {
     @Nullable
+    private static boolean fancyGraphics = Minecraft.useFancyGraphics();
     protected RenderRegion region;
 
     public BuildTask(RenderSection renderSection, RenderRegion renderRegion, boolean highPriority) {
@@ -134,10 +135,11 @@ public class BuildTask extends ChunkTask {
                     if (blockState.getRenderShape() == RenderShape.MODEL) {
                         renderType = TerrainRenderType.get(ItemBlockRenderTypes.getChunkRenderType(blockState));
 
-                        if(Initializer.CONFIG.fastLeavesFix)
-                        {
-                            if(blockState.getBlock() instanceof LeavesBlock) renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
-                            else if(blockState.getBlock() instanceof GrassBlock) renderType = TerrainRenderType.CUTOUT;
+                        if(Initializer.CONFIG.fastLeavesFix && !fancyGraphics) {
+                            if (blockState.getBlock() instanceof LeavesBlock)
+                                renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
+                            else if(blockState.getBlock() instanceof GrassBlock)
+                                renderType = TerrainRenderType.CUTOUT;
                         }
 
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
@@ -183,7 +185,7 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-        if (!Initializer.CONFIG.fastLeavesFix && !a) {
+        if (!Initializer.CONFIG.fastLeavesFix) {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
                 case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
