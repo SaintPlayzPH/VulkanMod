@@ -23,10 +23,6 @@ public abstract class PipelineManager {
         TERRAIN_VERTEX_FORMAT = format;
     }
 
-    public static boolean isGraphicsFancy() {
-        return Booleans.fancyGraphics;
-    }
-
     static GraphicsPipeline terrainShaderEarlyZ, terrainShader, fastBlitPipeline;
 
     private static Function<TerrainRenderType, GraphicsPipeline> shaderGetter;
@@ -39,7 +35,14 @@ public abstract class PipelineManager {
     }
 
     public static void setDefaultShader() {
-        setShaderGetter(renderType -> renderType == TerrainRenderType.TRANSLUCENT ? terrainShaderEarlyZ : terrainShader);
+        setShaderGetter(renderType ->
+            switch (renderType) {
+                case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
+                case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
+                case CUTOUT -> terrainShader;
+                default -> throw new IllegalArgumentException("Invalid render type: " + renderType);
+            }
+        );
     }
 
     private static void createBasicPipelines() {
@@ -64,15 +67,7 @@ public abstract class PipelineManager {
     }
 
     public static GraphicsPipeline getTerrainShader(TerrainRenderType renderType) {
-        if (isGraphicsFancy()) {
-            return shaderGetter.apply(renderType);
-        } else {
-            return switch (renderType) {
-                case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
-                case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
-                case CUTOUT -> terrainShader;
-            };
-        }
+        return shaderGetter.apply(renderType);
     }
 
     public static void setShaderGetter(Function<TerrainRenderType, GraphicsPipeline> consumer) {
