@@ -648,36 +648,35 @@ public class Renderer {
      * @param h the viewport/scissor operation height
      * @return same offset2D with transformations applied as necessary
      */
-    private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
-        int pretransformFlags = Vulkan.getPretransformFlags();
-        if(pretransformFlags == 0) {
-            offset2D.set(x, y);
-            return offset2D;
-        }
-        Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
-        int framebufferWidth = boundFramebuffer.getWidth();
-        int framebufferHeight = boundFramebuffer.getHeight();
-        switch (pretransformFlags) {
-            case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                offset2D.x(framebufferWidth - h - y);
-                offset2D.y(x);
-            }
-            case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
-                offset2D.x(framebufferWidth - w - x);
-                offset2D.y(framebufferHeight - h - y);
-            }
-            case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
-                offset2D.x(y);
-                offset2D.y(framebufferHeight - w - x);
-            }
-            default -> {
-                offset2D.x(x);
-                offset2D.y(y);
-            }
-        }
+    private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y) {
+    int pretransformFlags = Vulkan.getPretransformFlags();
+    if (pretransformFlags == 0) {
+        offset2D.set(x, y);
         return offset2D;
     }
-
+    Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+    int framebufferWidth = boundFramebuffer.getWidth();
+    int framebufferHeight = boundFramebuffer.getHeight();
+    switch (pretransformFlags) {
+        case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
+            offset2D.x(framebufferWidth - y);
+            offset2D.y(x);
+        }
+        case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
+            offset2D.x(framebufferWidth - x);
+            offset2D.y(framebufferHeight - y);
+        }
+        case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
+            offset2D.x(y);
+            offset2D.y(framebufferHeight - x);
+        }
+        default -> {
+            offset2D.x(x);
+            offset2D.y(y);
+        }
+    }
+    return offset2D;
+    }
     /**
      * Transform the width and height from Minecraft coordinate space to the Vulkan coordinate space
      * and write them to VkExtent2D
