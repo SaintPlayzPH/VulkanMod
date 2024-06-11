@@ -23,13 +23,17 @@ import net.vulkanmod.render.chunk.build.thread.BuilderResources;
 import net.vulkanmod.render.chunk.build.thread.ThreadBuilderPack;
 import net.vulkanmod.render.vertex.TerrainBufferBuilder;
 import net.vulkanmod.render.vertex.TerrainRenderType;
+import net.vulkanmod.vulkan.Booleans;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 public class BuildTask extends ChunkTask {
     @Nullable
-    private static boolean fancyGraphics = Minecraft.useFancyGraphics();
     protected RenderRegion region;
+
+    public boolean isGraphicsFancy() {
+        return Booleans.fancyGraphics;
+    }
 
     public BuildTask(RenderSection renderSection, RenderRegion renderRegion, boolean highPriority) {
         super(renderSection);
@@ -135,7 +139,7 @@ public class BuildTask extends ChunkTask {
                     if (blockState.getRenderShape() == RenderShape.MODEL) {
                         renderType = TerrainRenderType.get(ItemBlockRenderTypes.getChunkRenderType(blockState));
 
-                        if(Initializer.CONFIG.fastLeavesFix && !fancyGraphics) {
+                        if(Initializer.CONFIG.fastLeavesFix && !isGraphicsFancy()) {
                             if (blockState.getBlock() instanceof LeavesBlock)
                                 renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
                             else if(blockState.getBlock() instanceof GrassBlock)
@@ -185,7 +189,7 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-        if (!Initializer.CONFIG.fastLeavesFix) {
+        if (!Initializer.CONFIG.fastLeavesFix && !isGraphicsFancy()) {
             return switch (renderType) {
                 case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
                 case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
