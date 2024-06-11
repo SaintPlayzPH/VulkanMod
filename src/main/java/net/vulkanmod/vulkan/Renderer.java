@@ -695,28 +695,27 @@ public class Renderer {
     }
 
     public static void setScissor(int x, int y, int width, int height) {
-        if (INSTANCE.boundFramebuffer == null)
-            return;
+    if (INSTANCE.boundFramebuffer == null)
+        return;
+    
+    try (MemoryStack stack = stackPush()) {
+        VkExtent2D extent = VkExtent2D.malloc(stack);
+        Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+        transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
+        int framebufferHeight = extent.height();
+
+        VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
         
-        try(MemoryStack stack = stackPush()) {
+        // Transform (x, y) without using width and height for the offset
+        int transformedY = framebufferHeight - (y + height); // Adjust y based on framebuffer height
+        scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, transformedY));
+        
+        // Transform the scissor width/height
+        scissor.extent(transformToExtent(extent, width, height));
 
-        	VkExtent2D extent = VkExtent2D.malloc(stack);
-            Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
-            // Since our x and y are still in Minecraft's coordinate space, pre-transform the framebuffer's width and height to get expected results.
-            transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
-            int framebufferHeight = extent.height();
-
-            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            // Use this corrected height to transform from OpenGL to Vulkan coordinate space.
-
-            scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
-            // Reuse the extent to transform the scissor width/height
-            scissor.extent(transformToExtent(extent, width, height));
-
-
-            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
-        }
+        vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
     }
+}
 
     public static void resetViewport() {
         try (MemoryStack stack = stackPush()) {
