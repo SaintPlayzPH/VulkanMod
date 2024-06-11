@@ -6,6 +6,7 @@ import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.build.thread.ThreadBuilderPack;
 import net.vulkanmod.render.vertex.CustomVertexFormat;
 import net.vulkanmod.render.vertex.TerrainRenderType;
+import net.vulkanmod.vulkan.Booleans;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import net.vulkanmod.vulkan.shader.Pipeline;
 import net.vulkanmod.vulkan.shader.SPIRVUtils;
@@ -20,6 +21,10 @@ public abstract class PipelineManager {
 
     public static void setTerrainVertexFormat(VertexFormat format) {
         TERRAIN_VERTEX_FORMAT = format;
+    }
+
+    public boolean isGraphicsFancy() {
+        return Booleans.fancyGraphics;
     }
 
     static GraphicsPipeline terrainShaderEarlyZ, terrainShader, fastBlitPipeline;
@@ -59,12 +64,16 @@ public abstract class PipelineManager {
     }
 
     public static GraphicsPipeline getTerrainShader(TerrainRenderType renderType) {
-        return switch (renderType)
-        {
-            case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
-            case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
-            case CUTOUT -> terrainShader;
-        };
+        if (isGraphicsFancy()) {
+            return shaderGetter.apply(renderType);
+        } else {
+            return switch (renderType)
+            {
+                case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
+                case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
+                case CUTOUT -> terrainShader;
+            };
+        }
     }
 
     public static void setShaderGetter(Function<TerrainRenderType, GraphicsPipeline> consumer) {
