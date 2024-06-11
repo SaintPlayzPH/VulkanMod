@@ -23,7 +23,7 @@ public abstract class PipelineManager {
         TERRAIN_VERTEX_FORMAT = format;
     }
 
-    public boolean isGraphicsFancy() {
+    public static boolean isGraphicsFancy() {
         return Booleans.fancyGraphics;
     }
 
@@ -64,11 +64,11 @@ public abstract class PipelineManager {
     }
 
     public static GraphicsPipeline getTerrainShader(TerrainRenderType renderType) {
-        if (isGraphicsFancy()) {
+        PipelineManager manager = new PipelineManager();
+        if (manager.isGraphicsFancy()) {
             return shaderGetter.apply(renderType);
         } else {
-            return switch (renderType)
-            {
+            return switch (renderType) {
                 case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
                 case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
                 case CUTOUT -> terrainShader;
