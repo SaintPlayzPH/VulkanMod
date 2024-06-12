@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Kết xuất sương mù. Tắt tính năng này có thể cải thiện hiệu suất một chút.",
   "vulkanmod.options.renderEntityOutline": "Kết Xuất Viền Đối Tượng",
   "vulkanmod.options.renderEntityOutline.tooltip": "Hiển thị Đường viền thực thể màu trắng trên thực thể khi bị ảnh hưởng bởi hiệu ứng sáng. Tắt điều này có thể cải thiện hiệu suất rất nhiều và cũng sửa chữa vấn đề hiển thị nửa màn hình với ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Bộ đệm theo khu vực loại kết xuất",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(CẢNH BÁO: THỬ NGHIỆM)\n\nCó thể cải thiện hiệu suất kết xuất Chunk.\n\nRất cụ thể với kiến trúc: Có thể không có tác dụng trên một số thiết bị",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Chế Độ VRAM Thấp",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Giảm việc sử dụng VRAM khoảng 20%\nCó thể Tăng/Giảm FPS: Phụ thuộc vào kiến trúc GPU\n(Có thể tăng hiệu suất trên các card Nvidia cũ)",
   "vulkanmod.options.excludeSampledUsage": "Loại Trừ Sử Dụng Mẫu",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Khi được bật, tùy chọn này tối ưu hóa hình ảnh chỉ cho các hoạt động kết xuất, nâng cao hiệu quả và tránh các vấn đề nén tiềm năng, đặc biệt trên các nền tảng di động. Tuy nhiên, nó hạn chế hình ảnh chỉ là mục tiêu kết xuất, do đó cấm lấy mẫu trực tiếp trong các shader.",
   "vulkanmod.options.swapchainImages": "Hình Ảnh Chuỗi Trao Đổi",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Trộn Gaussian Bầu Trời Nhanh Hơn",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Tùy chọn này sử dụng các Tối ưu hóa cực kỳ tích cực, vì vậy có thể không tái tạo lại Bầu trời chính xác 100% như phiên bản gốc.\n\nYêu cầu khởi động lại Trò chơi!",
   "vulkanmod.options.fastLeavesFix": "Sửa Lá Nhanh",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(CẢNH BÁO: THỰC NGHIỆM)\n\nẢnh hưởng đến FPS trên cả Đồ họa Đẹp/Nhanh\n\nSử dụng Chế độ Kết xuất Thay thế để khôi phục Lá Nhanh trên Đồ họa Nhanh\n\nKhuyến nghị sử dụng với *Per RenderType AreaBuffers*\n\nRất thực nghiệm: Có thể giảm hiệu suất, ngay cả trên Đồ họa Đẹp"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(CẢNH BÁO: THỰC NGHIỆM)\n\nẢnh hưởng đến FPS trên cả Đồ họa Đẹp/Nhanh\n\nSử dụng Chế độ Kết xuất Thay thế để khôi phục Lá Nhanh trên Đồ họa Nhanh\n\nKhuyến nghị sử dụng với *Low VRAM Mode*\n\nRất thực nghiệm: Có thể giảm hiệu suất, ngay cả trên Đồ họa Đẹp",
+  "vulkanmod.options.depthWrite": "Vô Hiệu Hóa Viết Độ Sâu Nếu Là Trong Suốt",
+  "vulkanmod.options.depthWrite.tooltip": "THỬ NGHIỆM: Vô hiệu hóa viết độ sâu trên các đối tượng trong suốt (ví dụ, khối băng). Có thể gây lỗi hiển thị trực quan trên các đối tượng trong suốt"
 }

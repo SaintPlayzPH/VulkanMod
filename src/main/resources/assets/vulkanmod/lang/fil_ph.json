@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "I-render ang ulap. Ang pag-disable nito ay maaaring magpabuti ng kaunti sa performance.",
   "vulkanmod.options.renderEntityOutline": "I-render ang Outline ng Entity",
   "vulkanmod.options.renderEntityOutline.tooltip": "Ipinapakita ang Puting Guhit ng Entidad sa entidad kapag naapektuhan ng kislap na epekto. Ang pag-disable nito ay maaaring magpabuti ng performance nang malaki at nag-aayos din ng pag-render sa kalahati ng screen na may ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Per RenderType AreaBuffers",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(BABALA: EKSPERIMENTAL)\n\nPotensyal na nagpapabuti ng performance ng Chunk Rendering.\n\nNapaka Architecture specific: Maaaring walang epekto sa ilang Devices",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Mababang Mode ng VRAM",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Bawasan ang paggamit ng VRAM ng mga halos 20%\nPwedeng Taasan/Babain ang FPS: Depende sa arkitektura ng GPU\n(Nakakatulong sa performance sa mga Lumang Kard ng Nvidia)",
   "vulkanmod.options.excludeSampledUsage": "Tanggalin ang Sampled Usage",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Kapag naka-enable, ang opsyon na ito ay optimize ang imahe para sa mga operasyon sa pag-render lamang, nagpapahusay ng kahusayan, at iniiwasan ang mga potensyal na isyu sa compression, lalo na sa mga mobile na plataporma. Gayunpaman, nililimitahan nito ang imahe na maging isang render target lamang, kaya't ipinagbabawal ang direktang sampling sa shaders.",
   "vulkanmod.options.swapchainImages": "Mga Swapchain na Imahe",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Mas Mabilis na Gaussian Sky Blending",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Ang opsyong ito ay gumagamit ng lubos na agresibong optimisasyon, kaya maaaring hindi nito muling gawin ang kalangitan nang 100% nang tumpak tulad ng sa vanilla.\n\nNangangailangan ng pag-restart ng Laro!",
   "vulkanmod.options.fastLeavesFix": "Pag-ayos ng Mabilis na Dahon",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(BABALA: EXPERIMENTAL)\n\nNakakaapekto sa FPS sa parehong Fancy/Mabilis na Graphics\n\nGumagamit ng Alternatibong Mode ng Pag-render upang maibalik ang Mabilis na Dahon sa Mabilis na Graphics\n\nInirerekomenda na gamitin kasama ng *Per RenderType AreaBuffers*\n\nLubhang eksperimental: Maaaring Bawasan ang pagganap, kahit sa Fancy Graphics"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(BABALA: EXPERIMENTAL)\n\nNakakaapekto sa FPS sa parehong Fancy/Mabilis na Graphics\n\nGumagamit ng Alternatibong Mode ng Pag-render upang maibalik ang Mabilis na Dahon sa Mabilis na Graphics\n\nInirerekomenda na gamitin kasama ng *Low VRAM Mode*\n\nLubhang eksperimental: Maaaring Bawasan ang pagganap, kahit sa Fancy Graphics",
+  "vulkanmod.options.depthWrite": "I-disable ang Pagsusulat ng Lalim kung Translucent",
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Inaalis ang pagsusulat ng lalim sa mga translucent na bagay (hal. Ice Block). Maaaring magdulot ng visual rendering bug sa translucent na mga bagay"
 }
