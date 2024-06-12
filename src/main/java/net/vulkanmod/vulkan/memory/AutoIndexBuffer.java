@@ -142,11 +142,11 @@ public class AutoIndexBuffer {
         LINES;
     
         public static int getIndexCount(DrawType drawType, int vertexCount) {
-            switch (drawType) {
-                case QUADS, LINES -> return vertexCount * 3 / 2;
-                case TRIANGLE_FAN -> return (vertexCount - 2) * 3;
-                case TRIANGLE_STRIP -> return (vertexCount - 2) * 3;
-                default -> return 0;
+            return switch (drawType) {
+                case QUADS, LINES -> vertexCount * 3 / 2;
+                case TRIANGLE_FAN -> (vertexCount - 2) * 3;
+                case TRIANGLE_STRIP -> (vertexCount - 2) * 3;
+                default -> 0;
             };
         }
 
