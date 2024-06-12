@@ -207,12 +207,20 @@ public class ChunkAreaManager {
             DrawBuffers drawBuffers = chunkArea.drawBuffers;
             if (drawBuffers.isAllocated()) {
 
-                var vertexBuffers = drawBuffers.getVertexBuffers();
+                var vertexBuffer = drawBuffers.getVertexBuffer();
+                if (vertexBuffer != null) {
+                    vbSize += vertexBuffer.getSize();
+                    vbUsed += vertexBuffer.getUsed();
+                    frag += vertexBuffer.fragmentation();
+                }
+                else {
+                    var vertexBuffers = drawBuffers.getVertexBuffers();
 
-                for (var buffer : vertexBuffers.values()) {
-                    vbSize += buffer.getSize();
-                    vbUsed += buffer.getUsed();
-                    frag += buffer.fragmentation();
+                    for (var buffer : vertexBuffers.values()) {
+                        vbSize += buffer.getSize();
+                        vbUsed += buffer.getUsed();
+                        frag += buffer.fragmentation();
+                    }
                 }
 
                 var indexBuffer = drawBuffers.getIndexBuffer();
