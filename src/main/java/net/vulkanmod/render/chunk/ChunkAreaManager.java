@@ -6,8 +6,6 @@ import net.vulkanmod.render.chunk.util.CircularIntList;
 import net.vulkanmod.render.chunk.util.Util;
 import org.joml.Vector3i;
 
-import java.util.Map;
-
 public class ChunkAreaManager {
     static final int WIDTH = 8;
     static final int HEIGHT = 8;
@@ -38,11 +36,11 @@ public class ChunkAreaManager {
         int relativeHeight = height - (minHeight >> 4);
         this.ySize = (relativeHeight & 0x5) == 0 ? (relativeHeight >> AREA_SH_Y) : (relativeHeight >> AREA_SH_Y) + 1;
 
-        // Check if width is even
+        //check if width is even
         if ((t & 1) == 0)
             t++;
         this.xzSize = t;
-        // TODO: Make even size work
+        //TODO make even size work
 
         this.size = xzSize * ySize * xzSize;
         this.chunkAreasArr = new ChunkArea[size];
@@ -90,7 +88,7 @@ public class ChunkAreaManager {
         } else {
             xRangeStart = 0;
             xRangeEnd = -deltaX - 1;
-            xComplStart = xRangeEnd + 1;
+            xComplStart = xRangeEnd;
             xComplEnd = this.xzSize - 1;
         }
 
@@ -126,6 +124,7 @@ public class ChunkAreaManager {
 
                     chunkArea.setPosition(x1, y1, z1);
                     chunkArea.releaseBuffers();
+
                 }
             }
         }
@@ -148,6 +147,7 @@ public class ChunkAreaManager {
 
                     chunkArea.setPosition(x1, y1, z1);
                     chunkArea.releaseBuffers();
+
                 }
             }
         }
@@ -176,6 +176,7 @@ public class ChunkAreaManager {
     }
 
     public void updateFrustumVisibility(VFrustum frustum) {
+
         for (ChunkArea chunkArea : this.chunkAreasArr) {
             chunkArea.updateFrustum(frustum);
         }
@@ -205,12 +206,22 @@ public class ChunkAreaManager {
         for (ChunkArea chunkArea : this.chunkAreasArr) {
             DrawBuffers drawBuffers = chunkArea.drawBuffers;
             if (drawBuffers.isAllocated()) {
-                var vertexBuffer = drawBuffers.getVertexBuffer();
-                var vertexBuffers = drawBuffers.getVertexBuffers();
 
-                vbSize += getTotalBufferSize(vertexBuffer, vertexBuffers);
-                vbUsed += getTotalBufferUsed(vertexBuffer, vertexBuffers);
-                frag += getTotalBufferFragmentation(vertexBuffer, vertexBuffers);
+                var vertexBuffer = drawBuffers.getVertexBuffer();
+                if (vertexBuffer != null) {
+                    vbSize += vertexBuffer.getSize();
+                    vbUsed += vertexBuffer.getUsed();
+                    frag += vertexBuffer.fragmentation();
+                }
+                else {
+                    var vertexBuffers = drawBuffers.getVertexBuffers();
+
+                    for (var buffer : vertexBuffers.values()) {
+                        vbSize += buffer.getSize();
+                        vbUsed += buffer.getUsed();
+                        frag += buffer.fragmentation();
+                    }
+                }
 
                 var indexBuffer = drawBuffers.getIndexBuffer();
                 if (indexBuffer != null) {
@@ -236,42 +247,4 @@ public class ChunkAreaManager {
         };
     }
 
-    private long getTotalBufferSize(AreaBuffer vertexBuffer, EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers) {
-        long totalSize = 0;
-        if (vertexBuffer != null) {
-            totalSize += vertexBuffer.getSize();
-        }
-        if (vertexBuffers != null) {
-            for (AreaBuffer buffer : vertexBuffers.values()) {
-                totalSize += buffer.getSize();
-            }
-        }
-        return totalSize;
-    }
-
-    private long getTotalBufferUsed(AreaBuffer vertexBuffer, EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers) {
-        long totalUsed = 0;
-        if (vertexBuffer != null) {
-            totalUsed += vertexBuffer.getUsed();
-        }
-        if (vertexBuffers != null) {
-            for (AreaBuffer buffer : vertexBuffers.values()) {
-                totalUsed += buffer.getUsed();
-            }
-        }
-        return totalUsed;
-    }
-
-    private long getTotalBufferFragmentation(AreaBuffer vertexBuffer, EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers) {
-        long totalFragmentation = 0;
-        if (vertexBuffer != null) {
-            totalFragmentation += vertexBuffer.fragmentation();
-        }
-        if (vertexBuffers != null) {
-            for (AreaBuffer buffer : vertexBuffers.values()) {
-                totalFragmentation += buffer.fragmentation();
-            }
-        }
-        return totalFragmentation;
-    }
 }
