@@ -336,7 +336,7 @@ public class WorldRenderer {
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
-                var queue = chunkArea.sectionQueue;
+                var queue = chunkArea.sectionQueue.get(terrainRenderType);
                 DrawBuffers drawBuffers = chunkArea.drawBuffers;
 
                 renderer.uploadAndBindUBOs(pipeline);
