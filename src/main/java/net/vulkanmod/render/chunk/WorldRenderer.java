@@ -300,6 +300,76 @@ public class WorldRenderer {
     }
 
     public void renderSectionLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
+        if (Initializer.CONFIG.depthWrite) {
+            renderSectionLayer1(renderType, poseStack, camX, camY, camZ, projection);
+        } else {
+            renderSectionLayer2(renderType, poseStack, camX, camY, camZ, projection);
+        }
+    }
+
+    public void renderSectionLayer1(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
+        TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
+        renderType.setupRenderState();
+
+        this.sortTranslucentSections(camX, camY, camZ);
+
+        this.minecraft.getProfiler().push("filterempty");
+        this.minecraft.getProfiler().popPush(() -> "render_" + renderType);
+
+        final boolean isTranslucent = terrainRenderType == TerrainRenderType.TRANSLUCENT;
+        final boolean indirectDraw = Initializer.CONFIG.indirectDraw;
+
+        VRenderSystem.applyMVP(poseStack.last().pose(), projection);
+
+        Renderer renderer = Renderer.getInstance();
+        GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+        renderer.bindGraphicsPipeline(pipeline);
+
+        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+
+        int currentFrame = Renderer.getCurrentFrame();
+        Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
+        if (allowedRenderTypes.contains(terrainRenderType)) {
+            terrainRenderType.setCutoutUniform();
+
+            for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
+                ChunkArea chunkArea = iterator.next();
+                var queue = chunkArea.sectionQueue;
+                DrawBuffers drawBuffers = chunkArea.drawBuffers;
+
+                renderer.uploadAndBindUBOs(pipeline);
+                if (drawBuffers.getAreaBuffer(terrainRenderType) != null && queue.size() > 0) {
+
+                    drawBuffers.bindBuffers(Renderer.getCommandBuffer(), pipeline, terrainRenderType, camX, camY, camZ);
+                    renderer.uploadAndBindUBOs(pipeline);
+
+                    if (indirectDraw)
+                        drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
+                    else
+                        drawBuffers.buildDrawBatchesDirect(queue, terrainRenderType);
+                }
+            }
+        }
+
+        if (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE) {
+            indirectBuffers[currentFrame].submitUploads();
+//            uniformBuffers.submitUploads();
+        }
+
+        //Need to reset push constants in case the pipeline will still be used for rendering
+        if (!indirectDraw) {
+            VRenderSystem.setChunkOffset(0, 0, 0);
+            renderer.pushConstants(pipeline);
+        }
+
+        this.minecraft.getProfiler().pop();
+        renderType.clearRenderState();
+
+        VRenderSystem.applyMVP(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix());
+    }
+
+    public void renderSectionLayer2(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
         TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
         renderType.setupRenderState();
 
