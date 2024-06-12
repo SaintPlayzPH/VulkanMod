@@ -34,12 +34,15 @@ public class ChunkAreaManager {
         this.sectionGridWidth = width;
 
         int t = (width >> AREA_SH_XZ) + 2;
-        int relativeHeight = height - (minHeight >> SEC_SH);
+
+        int relativeHeight = height - (minHeight >> 4);
         this.ySize = (relativeHeight & 0x5) == 0 ? (relativeHeight >> AREA_SH_Y) : (relativeHeight >> AREA_SH_Y) + 1;
 
-        // Ensure t is odd
-        if ((t & 1) == 0) t++;
+        // Check if width is even
+        if ((t & 1) == 0)
+            t++;
         this.xzSize = t;
+        // TODO: Make even size work
 
         this.size = xzSize * ySize * xzSize;
         this.chunkAreasArr = new ChunkArea[size];
@@ -47,9 +50,9 @@ public class ChunkAreaManager {
         for (int j = 0; j < this.xzSize; ++j) {
             for (int k = 0; k < this.ySize; ++k) {
                 for (int l = 0; l < this.xzSize; ++l) {
-                    int index = this.getAreaIndex(j, k, l);
-                    Vector3i position = new Vector3i(j << BLOCK_TO_AREA_SH_XZ, k << BLOCK_TO_AREA_SH_Y, l << BLOCK_TO_AREA_SH_XZ);
-                    this.chunkAreasArr[index] = new ChunkArea(index, position, minHeight);
+                    int i1 = this.getAreaIndex(j, k, l);
+                    Vector3i vector3i = new Vector3i(j << BLOCK_TO_AREA_SH_XZ, k << BLOCK_TO_AREA_SH_Y, l << BLOCK_TO_AREA_SH_XZ);
+                    this.chunkAreasArr[i1] = new ChunkArea(i1, vector3i, minHeight);
                 }
             }
         }
@@ -65,66 +68,111 @@ public class ChunkAreaManager {
         int deltaX = Mth.clamp(xS - this.prevX, -this.xzSize, this.xzSize);
         int deltaZ = Mth.clamp(zS - this.prevZ, -this.xzSize, this.xzSize);
 
-        int xStart = Math.floorMod(xS - this.xzSize / 2, this.xzSize);
-        int zStart = Math.floorMod(zS - this.xzSize / 2, this.xzSize);
+        int xAbsChunkIndex = xS - this.xzSize / 2;
+        int xStart = Math.floorMod(xAbsChunkIndex, this.xzSize); // needs positive modulo
+        int zAbsChunkIndex = zS - this.xzSize / 2;
+        int zStart = Math.floorMod(zAbsChunkIndex, this.xzSize);
 
         CircularIntList xList = new CircularIntList(this.xzSize, xStart);
         CircularIntList zList = new CircularIntList(this.xzSize, zStart);
-
         CircularIntList.OwnIterator xIterator = xList.iterator();
         CircularIntList.OwnIterator zIterator = zList.iterator();
 
-        int xRangeStart = deltaX >= 0 ? this.xzSize - deltaX : 0;
-        int xRangeEnd = deltaX >= 0 ? this.xzSize - 1 : -deltaX - 1;
-        int xComplStart = deltaX >= 0 ? 0 : xRangeEnd;
-        int xComplEnd = deltaX >= 0 ? xRangeStart - 1 : this.xzSize - 1;
+        int xRangeStart;
+        int xRangeEnd;
+        int xComplStart;
+        int xComplEnd;
+        if (deltaX >= 0) {
+            xRangeStart = this.xzSize - deltaX;
+            xRangeEnd = this.xzSize - 1;
+            xComplStart = 0;
+            xComplEnd = xRangeStart - 1;
+        } else {
+            xRangeStart = 0;
+            xRangeEnd = -deltaX - 1;
+            xComplStart = xRangeEnd + 1;
+            xComplEnd = this.xzSize - 1;
+        }
 
-        int zRangeStart = deltaZ >= 0 ? this.xzSize - deltaZ : 0;
-        int zRangeEnd = deltaZ >= 0 ? this.xzSize - 1 : -deltaZ - 1;
+        int zRangeStart;
+        int zRangeEnd;
+        if (deltaZ >= 0) {
+            zRangeStart = this.xzSize - deltaZ;
+            zRangeEnd = this.xzSize - 1;
+        } else {
+            zRangeStart = 0;
+            zRangeEnd = -deltaZ - 1;
+        }
 
         CircularIntList.RangeIterator xRangeIterator = xList.rangeIterator(xRangeStart, xRangeEnd);
         CircularIntList.RangeIterator xComplIterator = xList.rangeIterator(xComplStart, xComplEnd);
         CircularIntList.RangeIterator zRangeIterator = zList.rangeIterator(zRangeStart, zRangeEnd);
 
-        updateChunkAreas(xS, zS, xRangeIterator, zIterator, xRangeStart);
-        updateChunkAreas(xS, zS, xComplIterator, zRangeIterator, xComplStart);
+        xAbsChunkIndex = xS - this.xzSize / 2 + xRangeStart;
+        for (int xRelativeIndex; xRangeIterator.hasNext(); xAbsChunkIndex++) {
+            xRelativeIndex = xRangeIterator.next();
+            int x1 = (xAbsChunkIndex << (AREA_SH_XZ + SEC_SH));
+
+            zIterator.restart();
+            zAbsChunkIndex = zS - (this.xzSize >> 1);
+
+            for (int zRelativeIndex; zIterator.hasNext(); zAbsChunkIndex++) {
+                zRelativeIndex = zIterator.next();
+                int z1 = (zAbsChunkIndex << (AREA_SH_XZ + SEC_SH));
+
+                for (int yRel = 0; yRel < this.ySize; ++yRel) {
+                    int y1 = this.minHeight + (yRel << (AREA_SH_Y + SEC_SH));
+                    ChunkArea chunkArea = this.chunkAreasArr[this.getAreaIndex(xRelativeIndex, yRel, zRelativeIndex)];
+
+                    chunkArea.setPosition(x1, y1, z1);
+                    chunkArea.releaseBuffers();
+                }
+            }
+        }
+
+        xAbsChunkIndex = xS - this.xzSize / 2 + xComplStart;
+        for (int xRelativeIndex; xComplIterator.hasNext(); xAbsChunkIndex++) {
+            xRelativeIndex = xComplIterator.next();
+            int x1 = (xAbsChunkIndex << (AREA_SH_XZ + SEC_SH));
+
+            zRangeIterator.restart();
+            zAbsChunkIndex = zS - (this.xzSize >> 1) + zRangeStart;
+
+            for (int zRelativeIndex; zRangeIterator.hasNext(); zAbsChunkIndex++) {
+                zRelativeIndex = zRangeIterator.next();
+                int z1 = (zAbsChunkIndex << (AREA_SH_XZ + SEC_SH));
+
+                for (int yRel = 0; yRel < this.ySize; ++yRel) {
+                    int y1 = this.minHeight + (yRel << (AREA_SH_Y + SEC_SH));
+                    ChunkArea chunkArea = this.chunkAreasArr[this.getAreaIndex(xRelativeIndex, yRel, zRelativeIndex)];
+
+                    chunkArea.setPosition(x1, y1, z1);
+                    chunkArea.releaseBuffers();
+                }
+            }
+        }
 
         this.prevX = xS;
         this.prevZ = zS;
     }
 
-    private void updateChunkAreas(int xS, int zS, CircularIntList.RangeIterator xIterator, CircularIntList.OwnIterator zIterator, int xStart) {
-        int xAbsChunkIndex = xS - this.xzSize / 2 + xStart;
-        while (xIterator.hasNext()) {
-            int xRelativeIndex = xIterator.next();
-            int xPos = xAbsChunkIndex++ << BLOCK_TO_AREA_SH_XZ;
-
-            zIterator.restart();
-            int zAbsChunkIndex = zS - this.xzSize / 2;
-
-            while (zIterator.hasNext()) {
-                int zRelativeIndex = zIterator.next();
-                int zPos = zAbsChunkIndex++ << BLOCK_TO_AREA_SH_XZ;
-
-                for (int yRel = 0; yRel < this.ySize; ++yRel) {
-                    int yPos = this.minHeight + (yRel << BLOCK_TO_AREA_SH_Y);
-                    ChunkArea chunkArea = this.chunkAreasArr[this.getAreaIndex(xRelativeIndex, yRel, zRelativeIndex)];
-                    chunkArea.setPosition(xPos, yPos, zPos);
-                    chunkArea.releaseBuffers();
-                }
-            }
-        }
-    }
-
     public ChunkArea getChunkArea(RenderSection section, int x, int y, int z) {
-        int areaX = x >> (AREA_SH_XZ + SEC_SH);
-        int areaY = (y - this.minHeight) >> (AREA_SH_Y + SEC_SH);
-        int areaZ = z >> (AREA_SH_XZ + SEC_SH);
+        ChunkArea chunkArea;
 
-        int xRel = Math.floorMod(areaX, this.xzSize);
-        int zRel = Math.floorMod(areaZ, this.xzSize);
+        int shX = AREA_SH_XZ + 4;
+        int shY = AREA_SH_Y + 4;
+        int shZ = AREA_SH_XZ + 4;
 
-        return this.chunkAreasArr[this.getAreaIndex(xRel, areaY, zRel)];
+        int AreaX = x >> shX;
+        int AreaY = (y - this.minHeight) >> shY;
+        int AreaZ = z >> shZ;
+
+        int x1 = Math.floorMod(AreaX, this.xzSize);
+        int z1 = Math.floorMod(AreaZ, this.xzSize);
+
+        chunkArea = this.chunkAreasArr[this.getAreaIndex(x1, AreaY, z1)];
+
+        return chunkArea;
     }
 
     public void updateFrustumVisibility(VFrustum frustum) {
@@ -157,9 +205,12 @@ public class ChunkAreaManager {
         for (ChunkArea chunkArea : this.chunkAreasArr) {
             DrawBuffers drawBuffers = chunkArea.drawBuffers;
             if (drawBuffers.isAllocated()) {
-                vbSize += getTotalBufferSize(drawBuffers.getVertexBuffer(), drawBuffers.getVertexBuffers());
-                vbUsed += getTotalBufferUsed(drawBuffers.getVertexBuffer(), drawBuffers.getVertexBuffers());
-                frag += getTotalBufferFragmentation(drawBuffers.getVertexBuffer(), drawBuffers.getVertexBuffers());
+                var vertexBuffer = drawBuffers.getVertexBuffer();
+                var vertexBuffers = drawBuffers.getVertexBuffers();
+
+                vbSize += getTotalBufferSize(vertexBuffer, vertexBuffers);
+                vbUsed += getTotalBufferUsed(vertexBuffer, vertexBuffers);
+                frag += getTotalBufferFragmentation(vertexBuffer, vertexBuffers);
 
                 var indexBuffer = drawBuffers.getIndexBuffer();
                 if (indexBuffer != null) {
@@ -172,47 +223,6 @@ public class ChunkAreaManager {
             }
         }
 
-        return formatStats(vbSize, vbUsed, ibSize, ibUsed, frag, count);
-    }
-
-    private long getTotalBufferSize(DrawBuffers.Buffer vertexBuffer, Map<?, DrawBuffers.Buffer> vertexBuffers) {
-        long size = 0;
-        if (vertexBuffer != null) {
-            size += vertexBuffer.getSize();
-        } else {
-            for (DrawBuffers.Buffer buffer : vertexBuffers.values()) {
-                size += buffer.getSize();
-            }
-        }
-        return size;
-    }
-
-    private long getTotalBufferUsed(DrawBuffers.Buffer vertexBuffer, Map<?, DrawBuffers.Buffer> vertexBuffers) {
-        long used = 0;
-        if (vertexBuffer != null) {
-            used += vertexBuffer.getUsed();
-        } else {
-            for (DrawBuffers.Buffer buffer : vertexBuffers.values()) {
-                used += buffer.getUsed();
-            }
-        }
-        return used;
-    }
-
-    private long getTotalBufferFragmentation(DrawBuffers.Buffer vertexBuffer, Map<?, DrawBuffers.Buffer> vertexBuffers) {
-        long frag = 0;
-        if (vertexBuffer != null) {
-            frag += vertexBuffer.fragmentation();
-        } else {
-            for (DrawBuffers.Buffer buffer : vertexBuffers.values()) {
-                frag += buffer.fragmentation();
-            }
-        }
-        return frag;
-    }
-
-    private String[] formatStats(long vbSize, long vbUsed, long ibSize, long ibUsed, long frag, int count) {
-        // Convert sizes from bytes to megabytes
         vbSize /= 1024 * 1024;
         vbUsed /= 1024 * 1024;
         ibSize /= 1024 * 1024;
@@ -220,9 +230,48 @@ public class ChunkAreaManager {
         frag /= 1024 * 1024;
 
         return new String[]{
-            String.format("Vertex Buffers: %d/%d MB", vbUsed, vbSize),
-            String.format("Index Buffers: %d/%d MB", ibUsed, ibSize),
-            String.format("Allocations: %d Frag: %d MB", count, frag)
+                String.format("Vertex Buffers: %d/%d MB", vbUsed, vbSize),
+                String.format("Index Buffers: %d/%d MB", ibUsed, ibSize),
+                String.format("Allocations: %d Frag: %d MB", count, frag)
         };
+    }
+
+    private long getTotalBufferSize(AreaBuffer vertexBuffer, EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers) {
+        long totalSize = 0;
+        if (vertexBuffer != null) {
+            totalSize += vertexBuffer.getSize();
+        }
+        if (vertexBuffers != null) {
+            for (AreaBuffer buffer : vertexBuffers.values()) {
+                totalSize += buffer.getSize();
+            }
+        }
+        return totalSize;
+    }
+
+    private long getTotalBufferUsed(AreaBuffer vertexBuffer, EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers) {
+        long totalUsed = 0;
+        if (vertexBuffer != null) {
+            totalUsed += vertexBuffer.getUsed();
+        }
+        if (vertexBuffers != null) {
+            for (AreaBuffer buffer : vertexBuffers.values()) {
+                totalUsed += buffer.getUsed();
+            }
+        }
+        return totalUsed;
+    }
+
+    private long getTotalBufferFragmentation(AreaBuffer vertexBuffer, EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers) {
+        long totalFragmentation = 0;
+        if (vertexBuffer != null) {
+            totalFragmentation += vertexBuffer.fragmentation();
+        }
+        if (vertexBuffers != null) {
+            for (AreaBuffer buffer : vertexBuffers.values()) {
+                totalFragmentation += buffer.fragmentation();
+            }
+        }
+        return totalFragmentation;
     }
 }
