@@ -81,17 +81,15 @@ public class DrawBuffers {
     }
 
     //Exploit Pass by Reference to allow all keys to be the same AreaBufferObject (if perRenderTypeAreaBuffers is disabled)
-    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType renderType) {
-        return this.vertexBuffers.computeIfAbsent(
-            renderType, renderType1 -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, renderType.initialSize, VERTEX_SIZE) : this.vertexBuffer);
+    private AreaBuffer getAreaBufferCheckedAlloc(TerrainRenderType r) {
+        return this.areaBufferTypes.computeIfAbsent(r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
     }
-
-    public AreaBuffer getAreaBuffer(TerrainRenderType r) {
-        return this.vertexBuffers.get(r);
+    private AreaBuffer getAreaBuffer(TerrainRenderType r) {
+        return this.areaBufferTypes.get(r);
     }
 
     private boolean hasRenderType(TerrainRenderType r) {
-        return this.vertexBuffers.containsKey(r);
+        return this.areaBufferTypes.containsKey(r);
     }
 
     private int encodeSectionOffset(int xOffset, int yOffset, int zOffset) {
@@ -174,7 +172,7 @@ public class DrawBuffers {
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var vertexBuffer = getAreaBuffer(terrainRenderType);
-            nvkCmdBindVertexBuffers(commandBuffer, 0, 1, stack.npointer(vertexBuffer.getId()), stack.npointer(0));
+            nvkCmdBindVertexBuffers(commandBuffer, 0, 1, stack.npointer(getAreaBuffer(terrainRenderType).getId()), stack.npointer(0));
             updateChunkAreaOrigin(commandBuffer, pipeline, camX, camY, camZ, stack);
         }
 
@@ -187,12 +185,11 @@ public class DrawBuffers {
         if (!this.allocated)
             return;
 
-        if (this.vertexBuffer == null) {
-            this.vertexBuffers.values().forEach(AreaBuffer::freeBuffer);
-        } else
-            this.vertexBuffer.freeBuffer();
-
-        this.vertexBuffers.clear();
+        if(this.vertexBuffer==null) {
+            this.areaBufferTypes.values().forEach(AreaBuffer::freeBuffer);
+        }
+        else this.vertexBuffer.freeBuffer();
+        this.areaBufferTypes.clear();
         if (this.indexBuffer != null)
             this.indexBuffer.freeBuffer();
 
