@@ -305,14 +305,9 @@ public class SwapChain extends Framebuffer {
 
         // Check the configuration option
         switch (Initializer.CONFIG.presentMode) {
-            case 1: // FIFO mode
-                requestedMode = VK_PRESENT_MODE_FIFO_KHR;
-                break;
-            case 2: // Mailbox mode
-                requestedMode = VK_PRESENT_MODE_MAILBOX_KHR;
-                break;
-            default: // Default to FIFO mode
-                requestedMode = defUncappedMode;
+            case 1 -> requestedMode = VK_PRESENT_MODE_FIFO_KHR;
+            case 2 -> requestedMode = VK_PRESENT_MODE_MAILBOX_KHR;
+            default -> requestedMode = defUncappedMode;
         }
 
         // If the requested mode is supported, use it

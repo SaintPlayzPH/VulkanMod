@@ -1,6 +1,7 @@
 package net.vulkanmod.render.chunk.build;
 
 import com.google.common.collect.Queues;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.ChunkArea;
 import net.vulkanmod.render.chunk.RenderSection;
 import net.vulkanmod.render.chunk.buffer.UploadManager;
@@ -12,8 +13,6 @@ import net.vulkanmod.render.chunk.build.thread.BuilderResources;
 import net.vulkanmod.render.vertex.TerrainRenderType;
 
 import org.jetbrains.annotations.Nullable;
-import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.Queue;
 
 public class TaskDispatcher {
@@ -149,6 +148,13 @@ public class TaskDispatcher {
     }
 
     private void doSectionUpdate(CompileResult compileResult) {
+        if (Initializer.CONFIG.depthWrite) {
+            doSectionUpdateDisable(compileResult);
+        } else {
+            doSectionUpdateDefault(compileResult);
+        }
+    }
+    private void doSectionUpdateDefault(CompileResult compileResult) {
         RenderSection section = compileResult.renderSection;
         ChunkArea renderArea = section.getChunkArea();
         DrawBuffers drawBuffers = renderArea.getDrawBuffers();
@@ -170,6 +176,19 @@ public class TaskDispatcher {
         else {
             UploadBuffer uploadBuffer = compileResult.renderedLayers.get(TerrainRenderType.TRANSLUCENT);
             drawBuffers.upload(section, uploadBuffer, TerrainRenderType.TRANSLUCENT);
+        }
+    }
+
+    private void doSectionUpdateDisable(CompileResult compileResult) {
+        RenderSection section = compileResult.renderSection;
+        DrawBuffers drawBuffers = section.getChunkArea().getDrawBuffers();
+
+        if(compileResult.fullUpdate) {
+            compileResult.renderedLayers.forEach((key, uploadBuffer) -> drawBuffers.upload(section, uploadBuffer, key));
+            compileResult.updateSection();
+        }
+        else {
+            drawBuffers.upload(section, compileResult.renderedLayers.get(TerrainRenderType.TRANSLUCENT), TerrainRenderType.TRANSLUCENT);
         }
     }
 

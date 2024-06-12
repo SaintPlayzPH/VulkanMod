@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Rendurrz teh fog. Disablin dis may improov purformans a bit.",
   "vulkanmod.options.renderEntityOutline": "Rendurr Entitee Outlyn",
   "vulkanmod.options.renderEntityOutline.tooltip": "Renders Teh White Entity Outlinez on entiti wen affected by glowy effectz. Disabling dis may improf performans a lots and also fixes half skreen rendering with ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Pur RendurrType Areabuffurz",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(WARNIN: XPERIMENTUL)\n\nPotenshully improovz purformans ov Chunk Rendurrin.\n\nVery Arkiteckshur spesifik: May hav no effek on sum Devices",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Low VRAM Mode",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Reducez VRAM usage by approx 20%\nMay Increz/Decreas FPS: Depens on GPU arkitectur\n(Can boost performans on Old Nvidia cards)",
   "vulkanmod.options.excludeSampledUsage": "Eksklude Sampld Usaj",
   "vulkanmod.options.excludeSampledUsage.tooltip": "When enabld, dis opshun optimiziz teh imaj solee fur rendurrin opshunz, enhansin effishunsee, an avoidin potenshul kompresseeon ishuz, partikularly on mowbile platformz. Howevur, it restriktz teh imaj to bein solee a rendurr target, thuz prohibitin direkt samplin in shaderz.",
   "vulkanmod.options.swapchainImages": "Swapchain Imajez",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Faster Gaussian Sky Blending",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Dis option uses extremely aggresive Optimisationz, so may not reproduce teh Sky 100% as accurately to vanilla.\n\nRequires Game to Restart!",
   "vulkanmod.options.fastLeavesFix": "Fast Leaves Fix",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(WARNIN: EXPERIMENTUL)\n\nAffects FPS on both Fanceh/Fast Grafix\n\nUzes an Alternat Renderin Mode tu restore Fast Leaves on Fast Grafix\n\nRekomended tu use wif *Per RenderType AreaBuffers*\n\nXtremeleh experimentul: May Decreas performance, even on Fanceh Grafix"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(WARNIN: EXPERIMENTUL)\n\nAffects FPS on both Fanceh/Fast Grafix\n\nUzes an Alternat Renderin Mode tu restore Fast Leaves on Fast Grafix\n\nRekomended tu use wif *Low VRAM Mode*\n\nXtremeleh experimentul: May Decreas performance, even on Fanceh Grafix",
+  "vulkanmod.options.depthWrite": "Disabl Dep Wriet if Translucen",
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables dep writin on translucen objecs (e.g., Ice Blok). May cause visual renderin bug on translucen objecs"
 }

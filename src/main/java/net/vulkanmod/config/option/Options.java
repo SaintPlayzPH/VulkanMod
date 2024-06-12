@@ -350,6 +350,13 @@ public abstract class Options {
                                 },
                                 () -> config.perRenderTypeAreaBuffers)
                                 .setTooltip(Component.translatable("vulkanmod.options.perRenderTypeAreaBuffers.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.depthWrite"),
+                                value -> {
+                                    config.depthWrite = value;
+                                    minecraft.levelRenderer.allChanged();
+                                },
+                                () -> config.depthWrite)
+                                .setTooltip(Component.translatable("vulkanmod.options.depthWrite.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.gaussianSkyBlending"),
                                 value -> {
                                     config.gaussianSkyBlending = value;

@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Renderuje mgłę. Wyłączenie tego może poprawić wydajność.",
   "vulkanmod.options.renderEntityOutline": "Renderowanie Konturów Jednostek",
   "vulkanmod.options.renderEntityOutline.tooltip": "Renderuje białą obwódkę jednostki na jednostce, gdy jest dotknięta efektem świecenia. Wyłączenie tego może znacznie poprawić wydajność, a także naprawić renderowanie na pół ekranu z ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Bufory obszarowe na typ renderowania",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(OSTRZEŻENIE: EKSPERYMENTALNE)\n\nMoże potencjalnie poprawić wydajność renderowania chunków.\n\nBardzo specyficzne dla architektury: Może nie mieć wpływu na niektóre urządzenia.",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Tryb Niskiej Pamięci VRAM",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Zmniejsza użycie VRAM o około 20%\nMoże zwiększyć/zmniejszyć FPS: Zależy od architektury GPU\n(Może zwiększyć wydajność na starych kartach Nvidia)",
   "vulkanmod.options.excludeSampledUsage": "Wyklucz Użycie Próbkowane",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Kiedy włączone, ta opcja optymalizuje obraz wyłącznie pod kątem operacji renderowania, zwiększając wydajność i unikając potencjalnych problemów z kompresją, szczególnie na platformach mobilnych. Jednakże, ogranicza to obraz do bycia wyłącznie celem renderowania, zakazując bezpośredniego próbkowania w shaderach.",
   "vulkanmod.options.swapchainImages": "Obrazy Swapchain",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Szybsze Gaussowskie Mieszanie Nieba",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Ta opcja wykorzystuje ekstremalnie agresywne optymalizacje, więc może nie odtworzyć nieba w 100% tak dokładnie jak w wersji vanilla.\n\nWymaga ponownego uruchomienia gry!",
   "vulkanmod.options.fastLeavesFix": "Szybka Naprawa Liści",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(OSTRZEŻENIE: EKSPERYMENTALNE)\n\nWpływa na FPS zarówno na grafikach Eleganckich/Szybkich\n\nUżywa alternatywnego trybu renderowania do przywrócenia szybkich liści na szybkiej grafice\n\nZalecane do użycia z *Per RenderType AreaBuffers*\n\nBardzo eksperymentalne: Może zmniejszyć wydajność, nawet na grafikach eleganckich"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(OSTRZEŻENIE: EKSPERYMENTALNE)\n\nWpływa na FPS zarówno na grafikach Eleganckich/Szybkich\n\nUżywa alternatywnego trybu renderowania do przywrócenia szybkich liści na szybkiej grafice\n\nZalecane do użycia z *Low VRAM Mode*\n\nBardzo eksperymentalne: Może zmniejszyć wydajność, nawet na grafikach eleganckich",
+  "vulkanmod.options.depthWrite": "Wyłącz Zapis Głębokości, Jeśli Przezroczysty",
+  "vulkanmod.options.depthWrite.tooltip": "EXPERYMENTALNE: Wyłącza zapisywanie głębokości na obiektach przezroczystych (np. Blok Lodowy). Może powodować błędy wizualne w renderowaniu obiektów przezroczystych"
 }

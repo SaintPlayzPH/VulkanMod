@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "霧をレンダリングします。これを無効にすると、パフォーマンスが若干向上する場合があります。",
   "vulkanmod.options.renderEntityOutline": "エンティティのアウトラインをレンダリング",
   "vulkanmod.options.renderEntityOutline.tooltip": "発光効果によって影響を受けたときに、エンティティに白いエンティティの輪郭をレンダリングします。これを無効にすると、パフォーマンスが大幅に向上し、ASRで半分の画面がレンダリングされる問題も解消されます。",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "レンダリングタイプごとのエリアバッファ",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "（警告：実験的）\n\nチャンクレンダリングのパフォーマンスを向上させる可能性があります。\n\n非常にアーキテクチャに依存：一部のデバイスでは効果がない場合があります。",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "低VRAMモード",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "VRAMの使用量を約20%削減します\nFPSを増減する可能性があります：GPUアーキテクチャに依存します\n(古いNvidiaカードでパフォーマンスを向上させることができます)",
   "vulkanmod.options.excludeSampledUsage": "サンプル使用を除外",
   "vulkanmod.options.excludeSampledUsage.tooltip": "有効にすると、このオプションは画像をレンダリング操作のみに最適化し、効率を向上させ、特にモバイルプラットフォームでの圧縮の問題を回避します。ただし、画像をレンダリングターゲットのみに限定し、シェーダーでの直接サンプリングを禁止します。",
   "vulkanmod.options.swapchainImages": "スワップチェーン画像",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "高速ガウス空ブレンディング",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "このオプションは非常に積極的な最適化を使用するため、バニラと同じように100%正確に空を再現できない可能性があります。\n\nゲームの再起動が必要です！",
   "vulkanmod.options.fastLeavesFix": "高速葉修正",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(警告: 実験的)\n\nファンシー/ファストグラフィックスの両方にFPSの影響\n\nファストグラフィックスで高速葉を復元するための代替レンダリングモードを使用\n\n*Per RenderType AreaBuffers*と一緒に使用することをお勧めします\n\n非常に実験的：ファンシーグラフィックスでもパフォーマンスが低下する可能性があります"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(警告: 実験的)\n\nファンシー/ファストグラフィックスの両方にFPSの影響\n\nファストグラフィックスで高速葉を復元するための代替レンダリングモードを使用\n\n*Low VRAM Mode*と一緒に使用することをお勧めします\n\n非常に実験的：ファンシーグラフィックスでもパフォーマンスが低下する可能性があります",
+  "vulkanmod.options.depthWrite": "半透明の場合は深度書き込みを無効にする",
+  "vulkanmod.options.depthWrite.tooltip": "実験的：半透明オブジェクト（例：氷のブロック）での深度書き込みを無効にします。半透明オブジェクトで視覚的なレンダリングバグが発生する可能性があります"
 }

@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Vykresluje mlhu. Zakázání může mírně zlepšit výkon.",
   "vulkanmod.options.renderEntityOutline": "Vykreslit obrys entity",
   "vulkanmod.options.renderEntityOutline.tooltip": "Zobrazuje bílý obrys entity na entitě, když je ovlivněna zářivým efektem. Vypnutím tohoto může být výkon výrazně zlepšen a také opravuje zobrazení poloviny obrazovky s ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Oblastní buffery podle typu vykreslování",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(UPOZORNĚNÍ: EXPERIMENTÁLNÍ)\n\nPotenciálně zlepšuje výkon vykreslování chunků.\n\nVelmi závislé na architektuře: Na některých zařízeních nemusí mít žádný účinek.",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Nízký režim VRAM",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Sníží spotřebu VRAM o přibližně 20%\nMůže zvýšit/snížit FPS: Závisí na architektuře GPU\n(Může zvýšit výkon na starých kartách Nvidia)",
   "vulkanmod.options.excludeSampledUsage": "Vyloučit použití vzorkování",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Když je povoleno, tato možnost optimalizuje obraz pouze pro operace vykreslování, zvyšuje efektivitu a vyhýbá se potenciálním problémům s kompresí, zejména na mobilních platformách. Omezí však obraz pouze na cílový render, což zakazuje přímé vzorkování v shaderech.",
   "vulkanmod.options.swapchainImages": "Obrázky Swapchainu",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Rychlejší Gaussovské Míchání Oblohy",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Tato možnost používá extrémně agresivní optimalizace, takže nemusí reprodukovat oblohu na 100% přesně jako vanilla.\n\nVyžaduje restart hry!",
   "vulkanmod.options.fastLeavesFix": "Rychlá Oprava Listí",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(VAROVÁNÍ: EXPERIMENTÁLNÍ)\n\nOvlivňuje FPS na obou Elegantní/Rychlé grafice\n\nPoužívá alternativní režim vykreslování k obnovení rychlých listí na rychlé grafice\n\nDoporučeno používat s *Per RenderType AreaBuffers*\n\nExtrémně experimentální: Může snížit výkon, i na elegantní grafice"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(VAROVÁNÍ: EXPERIMENTÁLNÍ)\n\nOvlivňuje FPS na obou Elegantní/Rychlé grafice\n\nPoužívá alternativní režim vykreslování k obnovení rychlých listí na rychlé grafice\n\nDoporučeno používat s *Low VRAM Mode*\n\nExtrémně experimentální: Může snížit výkon, i na elegantní grafice",
+  "vulkanmod.options.depthWrite": "Vypnout zápis hloubky, pokud je průhledný",
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTÁLNÍ: Zakáže zápis hloubky na průhledných objektech (např. Ledový blok). Může způsobit vizuální chybu při vykreslování průhledných objektů"
 }

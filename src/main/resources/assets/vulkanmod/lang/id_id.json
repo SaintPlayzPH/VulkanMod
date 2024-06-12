@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Merender kabut. Menonaktifkan ini dapat sedikit meningkatkan kinerja.",
   "vulkanmod.options.renderEntityOutline": "Render Garis Luar Entitas",
   "vulkanmod.options.renderEntityOutline.tooltip": "Render kontur Entitas Putih pada entitas saat terkena efek bercahaya. Menonaktifkan ini dapat meningkatkan performa secara signifikan dan juga memperbaiki render setengah layar dengan ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Buffer Area Per Tipe Render",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(PERINGATAN: EKSPERIMEN)\n\nPotensial meningkatkan kinerja Render Chunk.\n\nSangat spesifik arsitektur: Mungkin tidak berpengaruh pada beberapa perangkat",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Mode VRAM Rendah",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Mengurangi penggunaan VRAM sekitar 20%\nMungkin Meningkat/Menurunkan FPS: Bergantung pada arsitektur GPU\n(Dapat meningkatkan performa pada kartu Nvidia lama)",
   "vulkanmod.options.excludeSampledUsage": "Kecualikan Penggunaan Sampled",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Saat diaktifkan, opsi ini mengoptimalkan gambar hanya untuk operasi rendering, meningkatkan efisiensi, dan menghindari potensi masalah kompresi, terutama pada platform mobile. Namun, ini membatasi gambar untuk hanya menjadi target rendering, sehingga melarang sampling langsung di shader.",
   "vulkanmod.options.swapchainImages": "Gambar Swapchain",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Pencampuran Langit Gaussian Lebih Cepat",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Opsi ini menggunakan Optimasi yang sangat agresif, jadi mungkin tidak mereproduksi Langit 100% seakurat vanilla.\n\nMemerlukan Restart Game!",
   "vulkanmod.options.fastLeavesFix": "Perbaikan Daun Cepat",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(PERINGATAN: EKSPERIMENTAL)\n\nMempengaruhi FPS pada Grafik Mewah/Cepat\n\nMenggunakan Mode Rendering Alternatif untuk mengembalikan Daun Cepat pada Grafik Cepat\n\nDirekomendasikan untuk digunakan dengan *Per RenderType AreaBuffers*\n\nSangat eksperimental: Dapat Menurunkan kinerja, bahkan pada Grafik Mewah"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(PERINGATAN: EKSPERIMENTAL)\n\nMempengaruhi FPS pada Grafik Mewah/Cepat\n\nMenggunakan Mode Rendering Alternatif untuk mengembalikan Daun Cepat pada Grafik Cepat\n\nDirekomendasikan untuk digunakan dengan *Low VRAM Mode*\n\nSangat eksperimental: Dapat Menurunkan kinerja, bahkan pada Grafik Mewah",
+  "vulkanmod.options.depthWrite": "Nonaktifkan Tulisan Kedalaman jika Translucent",
+  "vulkanmod.options.depthWrite.tooltip": "EKSPEIMENTAL: Menonaktifkan penulisan kedalaman pada objek translucent (mis. Blok Es). Dapat menyebabkan bug rendering visual pada objek translucent"
 }

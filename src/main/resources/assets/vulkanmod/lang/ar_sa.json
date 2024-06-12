@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "يعرض الضباب. تعطيله قد يحسن الأداء قليلًا.",
   "vulkanmod.options.renderEntityOutline": "عرض مخطط الكائن",
   "vulkanmod.options.renderEntityOutline.tooltip": "يقوم بتقديم مخطط كيان أبيض على الكيان عند التأثير بالتأثير المضيء. قد يؤدي تعطيل هذا إلى تحسين الأداء كثيرًا ويصلح أيضًا العرض النصفي للشاشة مع ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "مخازن المنطقة لكل نوع عرض",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(تحذير: تجريبي)\n\nقد يحسن أداء عرض الشرائح.\n\nيعتمد بشكل كبير على البنية: قد لا يكون له تأثير على بعض الأجهزة.",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "وضع VRAM المنخفض",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "يقلل من استخدام VRAM بنسبة تقريبية 20%\nقد يزيد/يقلل FPS: يعتمد على بنية وحدة المعالجة الرسومية\n(يمكن زيادة الأداء على بطاقات Nvidia القديمة)",
   "vulkanmod.options.excludeSampledUsage": "استبعاد استخدام العينة",
   "vulkanmod.options.excludeSampledUsage.tooltip": "عند التمكين، يحسن هذا الخيار الصورة فقط لعمليات العرض، مما يعزز الكفاءة ويتجنب مشكلات الضغط المحتملة، خاصة على الأنظمة المحمولة. لكنه يحد من الصورة فقط لتكون هدفًا للرسم، مما يمنع العينات المباشرة في المظللات.",
   "vulkanmod.options.swapchainImages": "صور سلسلة التبديل",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "مزج السماء الغاوسي السريع",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "يستخدم هذا الخيار تحسينات شديدة العدوانية، لذلك قد لا يعيد إنتاج السماء بنسبة 100% بدقة كما في النسخة الأصلية.\n\nيتطلب إعادة تشغيل اللعبة!",
   "vulkanmod.options.fastLeavesFix": "إصلاح الأوراق السريع",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(تحذير: تجريبي)\n\nيؤثر على FPS في الرسومات الأنيقة / السريعة\n\nيستخدم وضع عرض بديل لاستعادة الأوراق السريعة في الرسومات السريعة\n\nيوصى باستخدامه مع *Per RenderType AreaBuffers*\n\nتجريبي للغاية: قد يقلل الأداء، حتى في الرسومات الأنيقة"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(تحذير: تجريبي)\n\nيؤثر على FPS في الرسومات الأنيقة / السريعة\n\nيستخدم وضع عرض بديل لاستعادة الأوراق السريعة في الرسومات السريعة\n\nيوصى باستخدامه مع *Low VRAM Mode*\n\nتجريبي للغاية: قد يقلل الأداء، حتى في الرسومات الأنيقة",
+  "vulkanmod.options.depthWrite": "تعطيل كتابة العمق إذا كانت شفافة",
+  "vulkanmod.options.depthWrite.tooltip": "تجريبي: يعطل كتابة العمق على الكائنات الشفافة (على سبيل المثال، كتلة الجليد). قد يسبب خطأ في التقديم البصري على الكائنات الشفافة"
 }

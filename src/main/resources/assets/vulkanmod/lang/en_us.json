@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Renders the fog. Disabling this may improve performance a bit.",
   "vulkanmod.options.renderEntityOutline": "Render Entity Outline",
   "vulkanmod.options.renderEntityOutline.tooltip": "Renders White Entity Outline on entity when affected by glowing effect. Disabling this may improve performance a lot and also fixes half screen rendering with ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Per RenderType AreaBuffers",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(WARNING: EXPERIMENTAL)\n\nPotentially improves performance of Chunk Rendering.\n\nVery Architecture specific: May have no effect on some Devices",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Low VRAM Mode",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Reduces VRAM usage by approx 20%\nMay Increase/Decrease FPS: Depends on GPU architecture\n(Can boost performance on Old Nvidia cards)",
   "vulkanmod.options.excludeSampledUsage": "Exclude Sampled Usage",
   "vulkanmod.options.excludeSampledUsage.tooltip": "When enabled, this option optimizes the image solely for rendering operations, enhancing efficiency, and avoiding potential compression issues, particularly on mobile platforms. However, it restricts the image to being solely a render target, thus prohibiting direct sampling in shaders.",
   "vulkanmod.options.swapchainImages": "Swapchain Images",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Faster Gaussian Sky Blending",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "This option uses extremely aggressive Optimisations, so may not reproduce the Sky 100% as accurately to vanilla.\n\nRequires Game to Restart!",
   "vulkanmod.options.fastLeavesFix": "Fast Leaves Fix",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(WARNING: EXPERIMENTAL)\n\nEffects FPS on both Fancy/Fast Graphics\n\nUses an Alternate Rendering Mode to restore Fast Leaves on Fast Graphics\n\nRecommended to use with *Per RenderType AreaBuffers*\n\nExtremely experimental: May Decrease performance, even on Fancy Graphics"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(WARNING: EXPERIMENTAL)\n\nEffects FPS on both Fancy/Fast Graphics\n\nUses an Alternate Rendering Mode to restore Fast Leaves on Fast Graphics\n\nRecommended to use with *Low VRAM Mode*\n\nExtremely experimental: May Decrease performance, even on Fancy Graphics",
+  "vulkanmod.options.depthWrite": "Disable Depth Write if Translucent",
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables depth writing on translucent objects (e.g., Ice Block). May cause visual rendering bug on translucent objects"
 }

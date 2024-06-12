@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "Renderiza la niebla. Deshabilitar esto puede mejorar un poco el rendimiento.",
   "vulkanmod.options.renderEntityOutline": "Renderizar el Contorno de Entidades",
   "vulkanmod.options.renderEntityOutline.tooltip": "Renderiza el contorno de la entidad en blanco en la entidad cuando está afectada por el efecto brillante. Desactivar esto puede mejorar mucho el rendimiento y también soluciona la representación de media pantalla con ASR.",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "Buffers de Área por Tipo de Renderizado",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "(ADVERTENCIA: EXPERIMENTAL)\n\nPotencialmente mejora el rendimiento del Renderizado de Chunks.\n\nMuy específico de la arquitectura: Puede no tener efecto en algunos dispositivos",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "Modo de VRAM Baja",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "Reduce el uso de VRAM en aproximadamente un 20%\nPuede aumentar/disminuir los FPS: Depende de la arquitectura de la GPU\n(Puede aumentar el rendimiento en tarjetas Nvidia antiguas)",
   "vulkanmod.options.excludeSampledUsage": "Excluir Uso de Muestreo",
   "vulkanmod.options.excludeSampledUsage.tooltip": "Cuando está habilitada, esta opción optimiza la imagen únicamente para operaciones de renderizado, mejorando la eficiencia y evitando posibles problemas de compresión, particularmente en plataformas móviles. Sin embargo, restringe la imagen a ser únicamente un objetivo de renderizado, prohibiendo así el muestreo directo en los shaders.",
   "vulkanmod.options.swapchainImages": "Imágenes de la Cadena de Intercambio",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "Mezcla de Cielo Gaussiano Más Rápida",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "Esta opción utiliza optimizaciones extremadamente agresivas, por lo que puede no reproducir el cielo al 100% tan exactamente como en la versión original.\n\n¡Requiere reiniciar el juego!",
   "vulkanmod.options.fastLeavesFix": "Solución de Hojas Rápidas",
-  "vulkanmod.options.fastLeavesFix.tooltip": "(ADVERTENCIA: EXPERIMENTAL)\n\nAfecta el FPS tanto en gráficos Elegantes/Rápidos\n\nUtiliza un modo de renderizado alternativo para restaurar las hojas rápidas en gráficos rápidos\n\nRecomendado usar con *Per RenderType AreaBuffers*\n\nExtremadamente experimental: Puede disminuir el rendimiento, incluso en gráficos elegantes"
+  "vulkanmod.options.fastLeavesFix.tooltip": "(ADVERTENCIA: EXPERIMENTAL)\n\nAfecta el FPS tanto en gráficos Elegantes/Rápidos\n\nUtiliza un modo de renderizado alternativo para restaurar las hojas rápidas en gráficos rápidos\n\nRecomendado usar con *Low VRAM Mode*\n\nExtremadamente experimental: Puede disminuir el rendimiento, incluso en gráficos elegantes",
+  "vulkanmod.options.depthWrite": "Desactivar Escritura de Profundidad si es Translúcido",
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Desactiva la escritura de profundidad en objetos translúcidos (por ejemplo, Bloque de Hielo). Puede causar errores visuales en el renderizado de objetos translúcidos"
 }

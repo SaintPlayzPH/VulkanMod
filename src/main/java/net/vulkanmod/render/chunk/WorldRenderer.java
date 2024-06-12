@@ -47,6 +47,7 @@ import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.lwjgl.vulkan.VK11;
+import org.lwjgl.vulkan.VkCommandBuffer;
 import java.util.*;
 
 public class WorldRenderer {
@@ -300,6 +301,14 @@ public class WorldRenderer {
     }
 
     public void renderSectionLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
+        if (Initializer.CONFIG.depthWrite) {
+            renderSectionLayerDisable(renderType, poseStack, camX, camY, camZ, projection);
+        } else {
+            renderSectionLayerDefault(renderType, poseStack, camX, camY, camZ, projection);
+        }
+    }
+
+    public void renderSectionLayerDefault(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
         TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
         renderType.setupRenderState();
 
@@ -353,6 +362,61 @@ public class WorldRenderer {
         if (!indirectDraw) {
             VRenderSystem.setChunkOffset(0, 0, 0);
             renderer.pushConstants(pipeline);
+        }
+
+        this.minecraft.getProfiler().pop();
+        renderType.clearRenderState();
+
+        VRenderSystem.applyMVP(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix());
+    }
+
+    public void renderSectionLayerDisable(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
+        TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
+        renderType.setupRenderState();
+
+        this.sortTranslucentSections(camX, camY, camZ);
+
+        this.minecraft.getProfiler().push("filterempty");
+        this.minecraft.getProfiler().popPush(() -> "render_" + renderType);
+
+        final boolean isTranslucent = terrainRenderType == TerrainRenderType.TRANSLUCENT;
+        final boolean indirectDraw = Initializer.CONFIG.indirectDraw;
+
+        VRenderSystem.applyMVP(poseStack.last().pose(), projection);
+
+        final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
+        int currentFrame = Renderer.getCurrentFrame();
+        Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
+        if (allowedRenderTypes.contains(terrainRenderType)) {
+            VRenderSystem.depthMask(!isTranslucent);
+            Renderer renderer = Renderer.getInstance();
+            GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+            renderer.bindGraphicsPipeline(pipeline);
+
+            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+            Renderer.getDrawer().bindIndexBuffer(commandBuffer, indexBuffer);
+
+            renderer.uploadAndBindUBOs(pipeline);
+            for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
+                ChunkArea chunkArea = iterator.next();
+                var queue = chunkArea.sectionQueue;
+                DrawBuffers drawBuffers = chunkArea.drawBuffers;
+
+                if (drawBuffers.getAreaBuffer(terrainRenderType) != null && queue.size() > 0) {
+
+                    drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
+
+                    if (indirectDraw)
+                        drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
+                    else
+                        drawBuffers.buildDrawBatchesDirect(queue, terrainRenderType);
+                }
+            }
+        }
+
+        if (indirectDraw && (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE)) {
+            indirectBuffers[currentFrame].submitUploads();
+//            uniformBuffers.submitUploads();
         }
 
         this.minecraft.getProfiler().pop();

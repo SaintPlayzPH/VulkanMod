@@ -38,8 +38,8 @@
   "vulkanmod.options.renderFog.tooltip": "渲染霧氣。禁用此選項可能會稍微提高性能。",
   "vulkanmod.options.renderEntityOutline": "渲染實體輪廓",
   "vulkanmod.options.renderEntityOutline.tooltip": "在實體受到發光效果影響時，在實體上呈現白色實體輪廓。禁用此功能可能會大大提高性能，並修復 ASR 半屏幕渲染問題。",
-  "vulkanmod.options.perRenderTypeAreaBuffers": "每種渲染類型的區域緩衝區",
-  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "（警告：實驗性）\n\n可能提高塊渲染性能。\n\n非常依賴架構：對某些設備可能沒有影響。",
+  "vulkanmod.options.perRenderTypeAreaBuffers": "低VRAM模式",
+  "vulkanmod.options.perRenderTypeAreaBuffers.tooltip": "將VRAM使用量減少約20%\n可能增加/減少FPS：取決於GPU架構\n（可以增強舊版Nvidia卡的性能）",
   "vulkanmod.options.excludeSampledUsage": "排除取樣使用",
   "vulkanmod.options.excludeSampledUsage.tooltip": "啟用後，此選項將優化圖像僅用於渲染操作，增強效率，並避免潛在的壓縮問題，特別是在移動平台上。但是，它將圖像限制為僅用於渲染目標，從而禁止在著色器中直接取樣。",
   "vulkanmod.options.swapchainImages": "交換鏈圖像",
@@ -65,5 +65,7 @@
   "vulkanmod.options.gaussianSkyBlending": "更快的高斯天空混合",
   "vulkanmod.options.gaussianSkyBlending.tooltip": "此選項使用極其激進的優化，因此可能無法100%準確再現原版的天空。\n\n需要重新啟動遊戲！",
   "vulkanmod.options.fastLeavesFix": "快速葉修復",
-  "vulkanmod.options.fastLeavesFix.tooltip": "（警告：實驗性）\n\n影響高級/快速圖形的FPS\n\n使用替代渲染模式以在快速圖形上恢復快速葉子\n\n建議與*每個渲染類型區域緩衝區*一起使用\n\n極其實驗：可能會降低性能，即使在高級圖形上也是如此"
+  "vulkanmod.options.fastLeavesFix.tooltip": "（警告：實驗性）\n\n影響高級/快速圖形的FPS\n\n使用替代顯示模式以恢復快速圖形中的葉子\n\n建議與*低 VRAM 模式*一起使用\n\n極其實驗：可能降低性能，甚至在高級圖形上也是如此",
+  "vulkanmod.options.depthWrite": "如果半透明則禁用深度寫入",
+  "vulkanmod.options.depthWrite.tooltip": "實驗性：禁用半透明對象的深度寫入（例如，冰塊）。可能會導致半透明對象的視覺渲染錯誤"
 }
