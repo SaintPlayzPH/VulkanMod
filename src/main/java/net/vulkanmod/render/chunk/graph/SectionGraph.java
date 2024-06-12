@@ -200,7 +200,7 @@ public class SectionGraph {
         byte frustumRes = renderSection.getChunkArea().inFrustum(renderSection.frustumIndex);
         if (frustumRes > FrustumIntersection.INTERSECT) {
             return true;
-        if (frustumRes == FrustumIntersection.INTERSECT) {
+        } if (frustumRes == FrustumIntersection.INTERSECT) {
             return !frustum.testFrustum(renderSection.xOffset, renderSection.yOffset, renderSection.zOffset,
                     renderSection.xOffset + 16, renderSection.yOffset + 16, renderSection.zOffset + 16);
         }
