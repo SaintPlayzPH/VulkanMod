@@ -34,7 +34,7 @@ public class DrawBuffers {
 
     private boolean allocated = false;
     AreaBuffer vertexBuffer, indexBuffer;
-    private final EnumMap<TerrainRenderType, AreaBuffer> areaBufferTypes = new EnumMap<>(TerrainRenderType.class);
+    private final EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers = new EnumMap<>(TerrainRenderType.class);
 
     public DrawBuffers(int index, Vector3i origin, int minHeight) {
         this.index = index;
@@ -81,15 +81,15 @@ public class DrawBuffers {
     }
 
     //Exploit Pass by Reference to allow all keys to be the same AreaBufferObject (if perRenderTypeAreaBuffers is disabled)
-    private AreaBuffer getAreaBufferCheckedAlloc(TerrainRenderType r) {
-        return this.areaBufferTypes.computeIfAbsent(r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
-    }
-    private AreaBuffer getAreaBuffer(TerrainRenderType r) {
-        return this.areaBufferTypes.get(r);
+    private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
+        return this.areaBufferTypes.computeIfAbsent(r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
+
+    public AreaBuffer getAreaBuffer(TerrainRenderType r) {
+        return this.vertexBuffers.get(r);
     }
 
     private boolean hasRenderType(TerrainRenderType r) {
-        return this.areaBufferTypes.containsKey(r);
+        return this.vertexBuffers.containsKey(r);
     }
 
     private int encodeSectionOffset(int xOffset, int yOffset, int zOffset) {
@@ -172,7 +172,7 @@ public class DrawBuffers {
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             var vertexBuffer = getAreaBuffer(terrainRenderType);
-            nvkCmdBindVertexBuffers(commandBuffer, 0, 1, stack.npointer(getAreaBuffer(terrainRenderType).getId()), stack.npointer(0));
+            nvkCmdBindVertexBuffers(commandBuffer, 0, 1, stack.npointer(vertexBuffer.getId()), stack.npointer(0));
             updateChunkAreaOrigin(commandBuffer, pipeline, camX, camY, camZ, stack);
         }
 
@@ -185,11 +185,12 @@ public class DrawBuffers {
         if (!this.allocated)
             return;
 
-        if(this.vertexBuffer==null) {
-            this.areaBufferTypes.values().forEach(AreaBuffer::freeBuffer);
-        }
-        else this.vertexBuffer.freeBuffer();
-        this.areaBufferTypes.clear();
+        if (this.vertexBuffer == null) {
+            this.vertexBuffers.values().forEach(AreaBuffer::freeBuffer);
+        } else
+            this.vertexBuffer.freeBuffer();
+
+        this.vertexBuffers.clear();
         if (this.indexBuffer != null)
             this.indexBuffer.freeBuffer();
 
@@ -228,4 +229,3 @@ public class DrawBuffers {
         }
     }
 }
-    
