@@ -9,71 +9,74 @@ import org.joml.Vector3i;
 import java.util.Arrays;
 
 public class ChunkArea {
+    private static final int FRUSTUM_SIZE = 64;
+    private static final int CHUNK_WIDTH = 8 << 4; // 128
+    private static final int HALF_WIDTH = CHUNK_WIDTH >> 1;
+    private static final int QUARTER_WIDTH = HALF_WIDTH >> 1;
+
     public final int index;
-    private final byte[] inFrustum = new byte[64];
+    private final byte[] inFrustum = new byte[FRUSTUM_SIZE];
 
     final Vector3i position;
 
     DrawBuffers drawBuffers;
 
-    //Help JIT optimisations by hardcoding the queue size to the max possible ChunkArea limit
+    // Help JIT optimizations by hardcoding the queue size to the max possible ChunkArea limit
     public final StaticQueue<RenderSection> sectionQueue = new StaticQueue<>(512);
 
-    public ChunkArea(int i, Vector3i origin, int minHeight) {
-        this.index = i;
+    public ChunkArea(int index, Vector3i origin, int minHeight) {
+        this.index = index;
         this.position = origin;
-        this.drawBuffers = new DrawBuffers(i, origin, minHeight);
+        this.drawBuffers = new DrawBuffers(index, origin, minHeight);
     }
 
     public void updateFrustum(VFrustum frustum) {
-    int frustumResult = frustum.cubeInFrustum(this.position.x(), this.position.y(), this.position.z(),
-            this.position.x() + (8 << 4), this.position.y() + (8 << 4), this.position.z() + (8 << 4));
+        int frustumResult = frustum.cubeInFrustum(
+                position.x(), position.y(), position.z(),
+                position.x() + CHUNK_WIDTH, position.y() + CHUNK_WIDTH, position.z() + CHUNK_WIDTH
+        );
 
-    if (frustumResult == FrustumIntersection.INTERSECT) {
-        int width = 8 << 4;
-        int l = width >> 1;
+        if (frustumResult == FrustumIntersection.INTERSECT) {
+            updateFrustumRecursive(frustum, position.x(), position.y(), position.z(), CHUNK_WIDTH, 0);
+        } else {
+            Arrays.fill(inFrustum, (byte) frustumResult);
+        }
+    }
 
-        for (int x1 = 0; x1 < 2; x1++) {
-            float xMin = this.position.x() + x1 * l;
-            float xMax = xMin + l;
-            for (int y1 = 0; y1 < 2; y1++) {
-                float yMin = this.position.y() + y1 * l;
-                float yMax = yMin + l;
-                for (int z1 = 0; z1 < 2; z1++) {
-                    float zMin = this.position.z() + z1 * l;
-                    float zMax = zMin + l;
+    private void updateFrustumRecursive(VFrustum frustum, float xMin, float yMin, float zMin, int size, int startIdx) {
+        if (size == QUARTER_WIDTH) {
+            int idx = startIdx;
+            for (int i = 0; i < 8; i++) {
+                inFrustum[idx++] = (byte) frustum.cubeInFrustum(
+                        xMin + (i & 1) * QUARTER_WIDTH,
+                        yMin + ((i >> 1) & 1) * QUARTER_WIDTH,
+                        zMin + ((i >> 2) & 1) * QUARTER_WIDTH,
+                        xMin + ((i & 1) + 1) * QUARTER_WIDTH,
+                        yMin + (((i >> 1) & 1) + 1) * QUARTER_WIDTH,
+                        zMin + (((i >> 2) & 1) + 1) * QUARTER_WIDTH
+                );
+            }
+            return;
+        }
 
-                    frustumResult = frustum.cubeInFrustum(xMin, yMin, zMin, xMax, yMax, zMax);
-                    int beginIdx = (x1 << 5) + (y1 << 4) + (z1 << 3);
+        int halfSize = size >> 1;
+        for (int i = 0; i < 8; i++) {
+            float xSubMin = xMin + (i & 1) * halfSize;
+            float ySubMin = yMin + ((i >> 1) & 1) * halfSize;
+            float zSubMin = zMin + ((i >> 2) & 1) * halfSize;
+            int idx = startIdx + (i << 3);
 
-                    if (frustumResult == FrustumIntersection.INTERSECT) {
-                        int l2 = l >> 1;
-                        for (int x2 = 0; x2 < 2; x2++) {
-                            float xMin2 = xMin + x2 * l2;
-                            float xMax2 = xMin2 + l2;
-                            for (int y2 = 0; y2 < 2; y2++) {
-                                float yMin2 = yMin + y2 * l2;
-                                float yMax2 = yMin2 + l2;
-                                for (int z2 = 0; z2 < 2; z2++) {
-                                    float zMin2 = zMin + z2 * l2;
-                                    float zMax2 = zMin2 + l2;
+            int result = frustum.cubeInFrustum(
+                    xSubMin, ySubMin, zSubMin,
+                    xSubMin + halfSize, ySubMin + halfSize, zSubMin + halfSize
+            );
 
-                                    frustumResult = frustum.cubeInFrustum(xMin2, yMin2, zMin2, xMax2, yMax2, zMax2);
-                                    int idx = beginIdx + (x2 << 2) + (y2 << 1) + z2;
-
-                                    this.inFrustum[idx] = (byte) frustumResult;
-                                }
-                            }
-                        }
-                    } else {
-                        Arrays.fill(this.inFrustum, beginIdx, beginIdx + 8, (byte) frustumResult);
-                    }
-                }
+            if (result == FrustumIntersection.INTERSECT) {
+                updateFrustumRecursive(frustum, xSubMin, ySubMin, zSubMin, halfSize, idx);
+            } else {
+                Arrays.fill(inFrustum, idx, idx + 8, (byte) result);
             }
         }
-    } else {
-        Arrays.fill(this.inFrustum, (byte) frustumResult);
-    }
     }
 
     public byte getFrustumIndex(BlockPos pos) {
@@ -81,13 +84,11 @@ public class ChunkArea {
     }
 
     public byte getFrustumIndex(int x, int y, int z) {
-        int dx = x - this.position.x;
-        int dy = y - this.position.y;
-        int dz = z - this.position.z;
+        int dx = x - position.x;
+        int dy = y - position.y;
+        int dz = z - position.z;
 
-        int i = (dx >> 6 << 5)
-                + (dy >> 6 << 4)
-                + (dz >> 6 << 3);
+        int i = (dx >> 6 << 5) + (dy >> 6 << 4) + (dz >> 6 << 3);
 
         int xSub = (dx >> 3) & 0b100;
         int ySub = (dy >> 4) & 0b10;
@@ -97,22 +98,22 @@ public class ChunkArea {
     }
 
     public byte inFrustum(byte i) {
-        return this.inFrustum[i];
+        return inFrustum[i];
     }
 
     public DrawBuffers getDrawBuffers() {
-        return this.drawBuffers;
+        return drawBuffers;
     }
 
     public void resetQueue() {
-        this.sectionQueue.clear();
+        sectionQueue.clear();
     }
 
     public void setPosition(int x, int y, int z) {
-        this.position.set(x, y, z);
+        position.set(x, y, z);
     }
 
     public void releaseBuffers() {
-        this.drawBuffers.releaseBuffers();
+        drawBuffers.releaseBuffers();
     }
 }
