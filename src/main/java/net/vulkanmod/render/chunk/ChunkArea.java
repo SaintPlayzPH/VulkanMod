@@ -48,6 +48,9 @@ public class ChunkArea {
         if (size == QUARTER_WIDTH) {
             int idx = startIdx;
             for (int i = 0; i < 8; i++) {
+               if (idx >= FRUSTUM_SIZE) {
+                    break; // Exit the loop if idx exceeds the array size
+                }
                 inFrustum[idx++] = (byte) frustum.cubeInFrustum(
                         xMin + (i & 1) * QUARTER_WIDTH,
                         yMin + ((i >> 1) & 1) * QUARTER_WIDTH,
@@ -67,16 +70,19 @@ public class ChunkArea {
             float zSubMin = zMin + ((i >> 2) & 1) * halfSize;
             int idx = startIdx + (i << 3);
 
+            if (idx >= FRUSTUM_SIZE) {
+                continue; // Skip if idx exceeds the array size
+            }
+
             int result = frustum.cubeInFrustum(
                     xSubMin, ySubMin, zSubMin,
                     xSubMin + halfSize, ySubMin + halfSize, zSubMin + halfSize
             );
 
-            if (result == FrustumIntersection.INTERSECT) {
-                updateFrustumRecursive(frustum, xSubMin, ySubMin, zSubMin, halfSize, idx);
-            } else {
-                Arrays.fill(inFrustum, idx, idx + 8, (byte) result); // Fill range in the array
-            }
+            inFrustum[idx] = (byte) result;
+
+            // Recursively update for each subdivision
+            updateFrustumRecursive(frustum, xSubMin, ySubMin, zSubMin, halfSize, idx);
         }
     }
 
