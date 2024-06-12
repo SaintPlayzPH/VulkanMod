@@ -1,3 +1,4 @@
+
 package net.vulkanmod.vulkan.memory;
 
 import java.nio.ByteBuffer;
@@ -9,30 +10,22 @@ public class VertexBuffer extends Buffer {
     public VertexBuffer(int size, MemoryType type) {
         super(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, type);
         this.createBuffer(size);
-
     }
 
     public void copyToVertexBuffer(long vertexSize, long vertexCount, ByteBuffer byteBuffer) {
-        //TODO: Skip Redundant/duplicated uploads
-        // Or do upload/Copy Batching here as well
         int bufferSize = (int) (vertexSize * vertexCount);
-//        long bufferSize = byteBuffer.limit();
 
-        if(bufferSize > this.bufferSize - this.usedBytes) {
-            resizeBuffer((this.bufferSize + bufferSize) * 2);
+        if (bufferSize > this.getBufferSize() - this.getUsedBytes()) {
+            resizeBuffer((this.getBufferSize() + bufferSize) * 2);
         }
 
-        this.type.copyToBuffer(this, bufferSize, byteBuffer);
-        offset = usedBytes;
-        usedBytes += bufferSize;
-
+        this.getType().copyToBuffer(this, bufferSize, byteBuffer);
+        setOffset(getUsedBytes());
+        setUsedBytes(getUsedBytes() + bufferSize);
     }
 
     private void resizeBuffer(int newSize) {
-        this.type.freeBuffer(this);
+        this.getType().freeBuffer(this);
         this.createBuffer(newSize);
-
-//        System.out.println("resized vertexBuffer to: " + newSize);
     }
-
 }
