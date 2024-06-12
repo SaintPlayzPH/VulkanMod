@@ -82,7 +82,9 @@ public class DrawBuffers {
 
     //Exploit Pass by Reference to allow all keys to be the same AreaBufferObject (if perRenderTypeAreaBuffers is disabled)
     private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
-        return this.areaBufferTypes.computeIfAbsent(r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
+        return this.vertexBuffers.computeIfAbsent(
+            r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
+    }
 
     public AreaBuffer getAreaBuffer(TerrainRenderType r) {
         return this.vertexBuffers.get(r);
