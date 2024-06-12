@@ -37,6 +37,7 @@ public class ChunkArea {
         );
 
         if (frustumResult == FrustumIntersection.INTERSECT) {
+            Arrays.fill(inFrustum, (byte) FrustumIntersection.INTERSECT); // Initialize entire array
             updateFrustumRecursive(frustum, position.x(), position.y(), position.z(), CHUNK_WIDTH, 0);
         } else {
             Arrays.fill(inFrustum, (byte) frustumResult);
@@ -74,7 +75,7 @@ public class ChunkArea {
             if (result == FrustumIntersection.INTERSECT) {
                 updateFrustumRecursive(frustum, xSubMin, ySubMin, zSubMin, halfSize, idx);
             } else {
-                Arrays.fill(inFrustum, idx, idx + 8, (byte) result);
+                Arrays.fill(inFrustum, idx, idx + 8, (byte) result); // Fill range in the array
             }
         }
     }
