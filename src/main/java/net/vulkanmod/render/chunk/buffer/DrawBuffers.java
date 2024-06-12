@@ -34,7 +34,7 @@ public class DrawBuffers {
 
     private boolean allocated = false;
     AreaBuffer vertexBuffer, indexBuffer;
-    private final EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers = new EnumMap<>(TerrainRenderType.class);
+    private final EnumMap<TerrainRenderType, AreaBuffer> areaBufferTypes = new EnumMap<>(TerrainRenderType.class);
 
     public DrawBuffers(int index, Vector3i origin, int minHeight) {
         this.index = index;
