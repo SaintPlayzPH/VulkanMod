@@ -22,7 +22,8 @@ public class VFrustum {
         double d4 = Math.ceil(this.camY / (double) offset) * (double) offset;
         double d5 = Math.ceil(this.camZ / (double) offset) * (double) offset;
 
-        while (this.intersectAab((float) (d0 - this.camX), (float) (d1 - this.camY), (float) (d2 - this.camZ), (float) (d3 - this.camX), (float) (d4 - this.camY), (float) (d5 - this.camZ)) >= 0) {
+        while (this.intersectAab((float) (d0 - this.camX), (float) (d1 - this.camY), (float) (d2 - this.camZ), 
+                (float) (d3 - this.camX), (float) (d4 - this.camY), (float) (d5 - this.camZ)) >= 0) {
             this.camZ -= (this.viewVector.z() * 4.0F);
             this.camX -= (this.viewVector.x() * 4.0F);
             this.camY -= (this.viewVector.y() * 4.0F);
@@ -39,7 +40,6 @@ public class VFrustum {
 
     public void calculateFrustum(Matrix4f modelViewMatrix, Matrix4f projMatrix) {
         projMatrix.mul(modelViewMatrix, this.matrix);
-
         this.frustum.set(this.matrix, false);
         this.viewVector = this.matrix.transformTranspose(new Vector4f(0.0F, 0.0F, 1.0F, 0.0F));
     }
@@ -69,16 +69,7 @@ public class VFrustum {
     }
 
     public boolean isVisible(AABB aABB) {
-        return this.cubeInFrustum(aABB.minX, aABB.minY, aABB.minZ, aABB.maxX, aABB.maxY, aABB.maxZ);
-    }
-
-    private boolean cubeInFrustum(double d, double e, double f, double g, double h, double i) {
-        float j = (float) (d - this.camX);
-        float k = (float) (e - this.camY);
-        float l = (float) (f - this.camZ);
-        float m = (float) (g - this.camX);
-        float n = (float) (h - this.camY);
-        float o = (float) (i - this.camZ);
-        return this.frustum.testAab(j, k, l, m, n, o);
+        return this.testFrustum((float) aABB.minX, (float) aABB.minY, (float) aABB.minZ, 
+                (float) aABB.maxX, (float) aABB.maxY, (float) aABB.maxZ);
     }
 }
