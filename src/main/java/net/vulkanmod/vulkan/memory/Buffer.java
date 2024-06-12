@@ -4,16 +4,16 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
 
 public class Buffer {
-    private long id;
-    private long allocation;
+    public long id;
+    public long allocation;
 
-    private int bufferSize;
-    private int usedBytes;
-    private int offset;
+    public int bufferSize;
+    public int usedBytes;
+    public int offset;
 
-    private final MemoryType type;
-    private final int usage;
-    private final PointerBuffer data;
+    public final MemoryType type;
+    public final int usage;
+    public final PointerBuffer data;
 
     public Buffer(int usage, MemoryType type) {
         this.usage = usage;
@@ -60,16 +60,28 @@ public class Buffer {
         return bufferSize;
     }
 
-    protected void setBufferSize(int size) {
+    public MemoryType getType() {
+        return type;
+    }
+
+    public void setBufferSize(int size) {
         this.bufferSize = size;
     }
 
-    protected void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    protected void setAllocation(long allocation) {
+    public void setAllocation(long allocation) {
         this.allocation = allocation;
+    }
+
+    public void setUsedBytes(int usedBytes) {
+        this.usedBytes = usedBytes;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 
     public BufferInfo getBufferInfo() {
