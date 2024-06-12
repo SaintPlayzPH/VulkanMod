@@ -6,6 +6,8 @@ import net.vulkanmod.render.chunk.util.CircularIntList;
 import net.vulkanmod.render.chunk.util.Util;
 import org.joml.Vector3i;
 
+import java.util.Map;
+
 public class ChunkAreaManager {
     static final int WIDTH = 8;
     static final int HEIGHT = 8;
@@ -173,36 +175,36 @@ public class ChunkAreaManager {
         return formatStats(vbSize, vbUsed, ibSize, ibUsed, frag, count);
     }
 
-    private long getTotalBufferSize(Buffer vertexBuffer, Map<?, Buffer> vertexBuffers) {
+    private long getTotalBufferSize(DrawBuffers.Buffer vertexBuffer, Map<?, DrawBuffers.Buffer> vertexBuffers) {
         long size = 0;
         if (vertexBuffer != null) {
             size += vertexBuffer.getSize();
         } else {
-            for (Buffer buffer : vertexBuffers.values()) {
+            for (DrawBuffers.Buffer buffer : vertexBuffers.values()) {
                 size += buffer.getSize();
             }
         }
         return size;
     }
 
-    private long getTotalBufferUsed(Buffer vertexBuffer, Map<?, Buffer> vertexBuffers) {
+    private long getTotalBufferUsed(DrawBuffers.Buffer vertexBuffer, Map<?, DrawBuffers.Buffer> vertexBuffers) {
         long used = 0;
         if (vertexBuffer != null) {
             used += vertexBuffer.getUsed();
         } else {
-            for (Buffer buffer : vertexBuffers.values()) {
+            for (DrawBuffers.Buffer buffer : vertexBuffers.values()) {
                 used += buffer.getUsed();
             }
         }
         return used;
     }
 
-    private long getTotalBufferFragmentation(Buffer vertexBuffer, Map<?, Buffer> vertexBuffers) {
+    private long getTotalBufferFragmentation(DrawBuffers.Buffer vertexBuffer, Map<?, DrawBuffers.Buffer> vertexBuffers) {
         long frag = 0;
         if (vertexBuffer != null) {
             frag += vertexBuffer.fragmentation();
         } else {
-            for (Buffer buffer : vertexBuffers.values()) {
+            for (DrawBuffers.Buffer buffer : vertexBuffers.values()) {
                 frag += buffer.fragmentation();
             }
         }
