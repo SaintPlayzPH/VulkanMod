@@ -147,7 +147,7 @@ public class AutoIndexBuffer {
                 case TRIANGLE_FAN -> return (vertexCount - 2) * 3;
                 case TRIANGLE_STRIP -> return (vertexCount - 2) * 3;
                 default -> return 0;
-            }
+            };
         }
 
         public static int getTriangleStripIndexCount(int vertexCount) {
