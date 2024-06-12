@@ -170,7 +170,7 @@ public class SectionGraph {
                 continue;
 
             if (!renderSection.isCompletelyEmpty()) {
-                renderSection.getChunkArea().sectionQueue.add(renderSection);
+                renderSection.getChunkArea().addDrawCmds(renderSection.getDrawParametersArray());
                 this.chunkAreaQueue.add(renderSection.getChunkArea());
                 this.nonEmptyChunks++;
             }
