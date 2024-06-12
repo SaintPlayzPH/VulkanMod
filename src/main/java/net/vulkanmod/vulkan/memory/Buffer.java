@@ -25,7 +25,7 @@ public class Buffer {
         this.type.createBuffer(this, bufferSize);
 
         if (this.type.mappable()) {
-            MemoryManager.getInstance().map(this.allocation, this.data);
+            MemoryManager.getInstance().Map(this.allocation, this.data);
         }
     }
 
