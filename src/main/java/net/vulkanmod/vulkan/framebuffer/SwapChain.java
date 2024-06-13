@@ -49,7 +49,8 @@ public class SwapChain extends Framebuffer {
     private int pretransformFlags;
     public boolean isBGRAformat;
     private boolean vsync = false;
-    private boolean mcvsync = Options.enableVsync().get();
+    Options options = new Options();
+    private boolean mcvsync = options.enableVsync().get();
 
     private int[] glIds;
 
@@ -75,11 +76,6 @@ public class SwapChain extends Framebuffer {
         }
 
         createSwapChain();
-    }
-
-    public boolean isVSyncEnabled() {
-        boolean vsyncEnabled = Booleans.isVsyncEnabled();
-        return vsyncEnabled;
     }
 
     private void createSwapChain() {
