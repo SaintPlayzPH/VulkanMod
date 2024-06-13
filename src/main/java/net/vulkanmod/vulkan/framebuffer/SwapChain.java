@@ -1,6 +1,7 @@
 package net.vulkanmod.vulkan.framebuffer;
 
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
+import net.minecraft.client.Options;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.gl.GlTexture;
 import net.vulkanmod.render.util.MathUtil;
@@ -37,6 +38,8 @@ public class SwapChain extends Framebuffer {
 
     private final Long2ReferenceOpenHashMap<long[]> FBO_map = new Long2ReferenceOpenHashMap<>();
 
+    private static Options minecraftOptions = minecraft.options;
+    private static int pretransformFlagsInfo = Vulkan.getPretransformFlags();
     private long swapChainId = VK_NULL_HANDLE;
     private List<VulkanImage> swapChainImages;
     private VkExtent2D extent2D;
@@ -48,7 +51,6 @@ public class SwapChain extends Framebuffer {
     private int pretransformFlags;
     public boolean isBGRAformat;
     private boolean vsync = false;
-    // private boolean vsync2 = false;
     private int[] glIds;
 
     public SwapChain() {
@@ -75,6 +77,10 @@ public class SwapChain extends Framebuffer {
         createSwapChain();
     }
 
+    private boolean isVsync() {
+        return (minecraftOptions.enableVsync().get() == true || Initializer.CONFIG.presentMode == 1) && (pretransformFlagsInfo == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlagsInfo == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR);
+    }
+
     private void createSwapChain() {
         try (MemoryStack stack = stackPush()) {
             VkDevice device = Vulkan.getVkDevice();
@@ -99,12 +105,8 @@ public class SwapChain extends Framebuffer {
 
             // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
             // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            //if (Initializer.CONFIG.presentMode == 1) {
-            //   vsync2 = true;
-            //}
- 
-            //int requestedImages = vsync2 ? surfaceProperties.capabilities.minImageCount() : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
-            int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
+            int requestedImages = isVsync() ? surfaceProperties.capabilities.minImageCount() : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
+            //int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
 
             IntBuffer imageCount = stack.ints(requestedImages);
 
