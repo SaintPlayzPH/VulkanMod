@@ -1,6 +1,7 @@
 package net.vulkanmod.vulkan.framebuffer;
 
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.gl.GlTexture;
@@ -38,7 +39,8 @@ public class SwapChain extends Framebuffer {
 
     private final Long2ReferenceOpenHashMap<long[]> FBO_map = new Long2ReferenceOpenHashMap<>();
 
-    private static net.minecraft.client.Options minecraftOptions = minecraft.options;
+    private static Minecraft minecraft = Minecraft.getInstance();
+    private static Options minecraftOptions = minecraft.options;
     private static int pretransformFlagsInfo = Vulkan.getPretransformFlags();
     private long swapChainId = VK_NULL_HANDLE;
     private List<VulkanImage> swapChainImages;
