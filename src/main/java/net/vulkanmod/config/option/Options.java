@@ -22,6 +22,7 @@ import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR
 import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
 
 public abstract class Options {
+    int pretransformFlags = Vulkan.getPretransformFlags();
     public static boolean fullscreenDirty = false;
     static Config config = Initializer.CONFIG;
     static Minecraft minecraft = Minecraft.getInstance();
@@ -401,7 +402,7 @@ public abstract class Options {
                     value -> {
                         config.imageCount = minecraftOptions.enableVsync().get() == true && (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? minImageCount : value;
                         Renderer.scheduleSwapChainUpdate();
-                    }, () -> minecraftOptions.enableVsync().get() && config.imageCount)
+                    }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
                     value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
