@@ -48,7 +48,7 @@ public class SwapChain extends Framebuffer {
     private int pretransformFlags;
     public boolean isBGRAformat;
     private boolean vsync = false;
-    private boolean vsync2 = false;
+    // private boolean vsync2 = false;
     private int[] glIds;
 
     public SwapChain() {
@@ -99,11 +99,12 @@ public class SwapChain extends Framebuffer {
 
             // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
             // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            if (Initializer.CONFIG.presentMode == 1) {
-                vsync2 = true;
-            }
+            //if (Initializer.CONFIG.presentMode == 1) {
+            //   vsync2 = true;
+            //}
  
-            int requestedImages = vsync2 ? surfaceProperties.capabilities.minImageCount() : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
+            //int requestedImages = vsync2 ? surfaceProperties.capabilities.minImageCount() : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
+            int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
 
             IntBuffer imageCount = stack.ints(requestedImages);
 
