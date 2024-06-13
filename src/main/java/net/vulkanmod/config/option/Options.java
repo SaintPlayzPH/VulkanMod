@@ -22,7 +22,7 @@ import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR
 import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
 
 public abstract class Options {
-    int pretransformFlags = Vulkan.getPretransformFlags();
+    static int pretransformFlags = Vulkan.getPretransformFlags();
     public static boolean fullscreenDirty = false;
     static Config config = Initializer.CONFIG;
     static Minecraft minecraft = Minecraft.getInstance();
