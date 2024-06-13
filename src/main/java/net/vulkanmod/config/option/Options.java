@@ -126,6 +126,7 @@ public abstract class Options {
                                 value -> {
                                     minecraftOptions.enableVsync().set(value);
                                     window.updateVsync(value);
+                                    Renderer.scheduleSwapChainUpdate();
                                 },
                                 () -> minecraftOptions.enableVsync().get()),
                 }),
