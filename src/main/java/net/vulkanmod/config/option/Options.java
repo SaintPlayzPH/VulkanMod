@@ -400,7 +400,7 @@ public abstract class Options {
             new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
                     maxImageCount, 1,
                     value -> {
-                        config.imageCount = minecraftOptions.enableVsync().get() == true && (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? minImageCount : value;
+                        config.imageCount = (minecraftOptions.enableVsync().get() == true && config.presentMode == 1) && (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? minImageCount : value;
                         Renderer.scheduleSwapChainUpdate();
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
