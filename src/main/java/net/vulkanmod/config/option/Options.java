@@ -162,7 +162,7 @@ public abstract class Options {
                                 value -> {
                                    config.presentMode = value;
                                    Renderer.scheduleSwapChainUpdate();
-                                }, () -> config.presentMode && config.imageCount)
+                                }, () -> config.presentMode)
                                 .setTranslator(value -> {
                                     String t = switch (value) {
                                         case 1 -> "FIFO (VSync)";
