@@ -9,6 +9,6 @@ public class Booleans {
     // public static boolean fancyGraphics = Minecraft.useFancyGraphics();
 
     public static boolean isVsyncEnabled() {
-        return minecraftOptions.enableVsync();
+        return minecraftOptions.enableVsync().get();
     }
 }
