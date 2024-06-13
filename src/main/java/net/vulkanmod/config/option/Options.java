@@ -18,6 +18,8 @@ import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import java.util.stream.IntStream;
 
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR;
+import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
 
 public abstract class Options {
     public static boolean fullscreenDirty = false;
@@ -397,9 +399,9 @@ public abstract class Options {
             new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
                     maxImageCount, 1,
                     value -> {
-                        config.imageCount = minecraftOptions.enableVsync().get() == true ? minImageCount : value;
+                        config.imageCount = minecraftOptions.enableVsync().get() == true && (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? minImageCount : value;
                         Renderer.scheduleSwapChainUpdate();
-                    }, () -> config.imageCount)
+                    }, () -> minecraftOptions.enableVsync().get() && config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
                     value -> config.showAndroidRAM = isRunningOnPhone() ? value : false,
