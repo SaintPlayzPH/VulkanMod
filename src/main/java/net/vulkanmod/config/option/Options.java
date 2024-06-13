@@ -188,7 +188,7 @@ public abstract class Options {
         return new OptionBlock[]{
                 new OptionBlock("", new Option<?>[]{
                         new RangeOption(Component.translatable("options.renderDistance"),
-                                2, 32, 1,
+                                2, minecraftOptions.renderDistance(), 1,
                                 (value) -> minecraftOptions.renderDistance().set(value),
                                 () -> minecraftOptions.renderDistance().get()),
                         new RangeOption(Component.translatable("options.simulationDistance"),
@@ -397,7 +397,7 @@ public abstract class Options {
             new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
                     maxImageCount, 1,
                     value -> {
-                        config.imageCount = value;
+                        config.imageCount = minecraftOptions.enableVsync().get(true) ? minImageCount : value;
                         Renderer.scheduleSwapChainUpdate();
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
