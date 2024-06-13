@@ -461,6 +461,9 @@ public class Vulkan {
         return swapChain.getPretransformMatrix();
     }
     public static int getPretransformFlags() {
+        if (swapChain == null)
+            return 0;
+        
         return swapChain.getPretransformFlags();
     }
 
