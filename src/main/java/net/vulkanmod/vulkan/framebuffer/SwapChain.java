@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.gl.GlTexture;
 import net.vulkanmod.render.util.MathUtil;
+import net.vulkanmod.vulkan.Booleans;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
@@ -75,6 +76,11 @@ public class SwapChain extends Framebuffer {
         createSwapChain();
     }
 
+    public boolean isVSyncEnabled() {
+        boolean vsyncEnabled = Booleans.isVsyncEnabled();
+        return vsyncEnabled;
+    }
+
     private void createSwapChain() {
         try (MemoryStack stack = stackPush()) {
             VkDevice device = Vulkan.getVkDevice();
@@ -99,7 +105,7 @@ public class SwapChain extends Framebuffer {
 
             // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
             // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
+            int requestedImages = isVSyncEnabled() ? Math.max(capabilities.minImageCount(), surfaceProperties.capabilities.minImageCount()) : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
 
             IntBuffer imageCount = stack.ints(requestedImages);
 
