@@ -18,8 +18,6 @@ import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import java.util.stream.IntStream;
 
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR;
-import static org.lwjgl.vulkan.KHRSurface.VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
 
 public abstract class Options {
     static int pretransformFlags = Vulkan.getPretransformFlags();
@@ -400,7 +398,7 @@ public abstract class Options {
             new RangeOption(Component.translatable("vulkanmod.options.swapchainImages"), minImageCount,
                     maxImageCount, 1,
                     value -> {
-                        config.imageCount = (minecraftOptions.enableVsync().get() == true && config.presentMode == 1) && (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? minImageCount : value;
+                        config.imageCount = value;
                         Renderer.scheduleSwapChainUpdate();
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
