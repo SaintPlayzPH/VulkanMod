@@ -36,7 +36,6 @@ public class SwapChain extends Framebuffer {
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
 
     private final Long2ReferenceOpenHashMap<long[]> FBO_map = new Long2ReferenceOpenHashMap<>();
-    private static int pretransformFlagsInfo = Vulkan.getPretransformFlags();
     private long swapChainId = VK_NULL_HANDLE;
     private List<VulkanImage> swapChainImages;
     private VkExtent2D extent2D;
@@ -98,7 +97,7 @@ public class SwapChain extends Framebuffer {
 
             // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
             // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            int requestedImages = (isVsync() || Initializer.CONFIG.presentMode == 1) && (pretransformFlagsInfo == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlagsInfo == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? surfaceProperties.capabilities.minImageCount() : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
+            int requestedImages = Initializer.CONFIG.presentMode == 1 ? surfaceProperties.capabilities.minImageCount() : Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
             //int requestedImages = Math.max(Initializer.CONFIG.imageCount, surfaceProperties.capabilities.minImageCount());
 
             IntBuffer imageCount = stack.ints(requestedImages);
