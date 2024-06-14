@@ -405,7 +405,7 @@ public abstract class Options {
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
                     value -> config.showAndroidRAM = isRunningOnCompatDevice() ? value : false,
-                    () -> isRunningOnPhone() && config.showAndroidRAM)
+                    () -> isRunningOnCompatDevice() && config.showAndroidRAM)
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnPhone")
                             .append(Component.literal(isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
