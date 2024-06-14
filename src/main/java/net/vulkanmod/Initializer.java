@@ -5,7 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.vulkanmod.config.Config;
 import net.vulkanmod.config.Platform;
 import net.vulkanmod.config.video.VideoModeManager;
-import net.vulkanmod.vulkan.AndroidRAMInfo;
+import net.vulkanmod.vulkan.DeviceRAMInfo;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +18,7 @@ public class Initializer implements ClientModInitializer {
 
     private static String VERSION;
     public static Config CONFIG;
-    public static boolean loggedAndroid = false;
+    public static boolean loggedDevice = false;
 
     // Static block to ensure CONFIG is initialized early
     static {
@@ -40,11 +40,11 @@ public class Initializer implements ClientModInitializer {
                 .getVersion().getFriendlyString();
 
         LOGGER.info("==> VulkanMod <==");
-        if (isRunningOnMobile() && !loggedAndroid) {
+        if (isRunningOnMobile() && !loggedDevice) {
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
-            LOGGER.info("• Phone RAM: " + AndroidRAMInfo.getRAMInfo());
-            loggedAndroid = true;
+            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
+            loggedDevice = true;
         }
         Platform.init();
         VideoModeManager.init();
