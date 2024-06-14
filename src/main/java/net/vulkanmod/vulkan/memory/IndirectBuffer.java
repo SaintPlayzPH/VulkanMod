@@ -20,44 +20,62 @@ public class IndirectBuffer extends Buffer {
 
     public void recordCopyCmd(ByteBuffer byteBuffer) {
         int size = byteBuffer.remaining();
-
-        if (size > this.bufferSize - this.usedBytes) {
-            resizeBuffer();
-        }
+        ensureCapacity(size);
 
         if (this.type.mappable()) {
             this.type.copyToBuffer(this, size, byteBuffer);
         } else {
-            if (commandBuffer == null)
-                commandBuffer = DeviceManager.getTransferQueue().beginCommands();
-
-            StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
-            stagingBuffer.copyBuffer(size, byteBuffer);
-
-            TransferQueue.uploadBufferCmd(commandBuffer.getHandle(), stagingBuffer.id, stagingBuffer.offset, this.getId(), this.getUsedBytes(), size);
+            handleNonMappableCopy(size, byteBuffer);
         }
 
-        offset = usedBytes;
-        usedBytes += size;
+        updateUsage(size);
+    }
+
+    private void ensureCapacity(int size) {
+        if (size > this.bufferSize - this.usedBytes) {
+            resizeBuffer();
+        }
+    }
+
+    private void handleNonMappableCopy(int size, ByteBuffer byteBuffer) {
+        if (commandBuffer == null) {
+            commandBuffer = DeviceManager.getTransferQueue().beginCommands();
+        }
+
+        StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
+        stagingBuffer.copyBuffer(size, byteBuffer);
+
+        TransferQueue.uploadBufferCmd(
+            commandBuffer.getHandle(),
+            stagingBuffer.getId(),
+            stagingBuffer.getOffset(),
+            this.getId(),
+            this.getUsedBytes(),
+            size
+        );
     }
 
     private void resizeBuffer() {
         MemoryManager.getInstance().addToFreeable(this);
-        int newSize = this.bufferSize + (this.bufferSize >> 1);
+        int newSize = this.bufferSize + (this.bufferSize >> 1); // increase by 1.5 times
         this.createBuffer(newSize);
-        this.usedBytes = 0;
+        this.usedBytes = 0; // reset usedBytes to 0 after resizing
+    }
+
+    private void updateUsage(int size) {
+        this.offset = this.usedBytes;
+        this.usedBytes += size;
     }
 
     public void submitUploads() {
-        if (commandBuffer == null)
-            return;
-
-        DeviceManager.getTransferQueue().submitCommands(commandBuffer);
-        Synchronization.INSTANCE.addCommandBuffer(commandBuffer);
-        commandBuffer = null;
+        if (commandBuffer != null) {
+            DeviceManager.getTransferQueue().submitCommands(commandBuffer);
+            Synchronization.INSTANCE.addCommandBuffer(commandBuffer);
+            commandBuffer = null;
+        }
     }
 
-    //debug
+    // debug method
     public ByteBuffer getByteBuffer() {
         return this.data.getByteBuffer(0, this.bufferSize);
     }
