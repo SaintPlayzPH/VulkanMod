@@ -80,7 +80,7 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 - This will not support 32-bit devices **(e.g. Desktops, Mobile, etc...)** but this modified version may still works on **Desktop** (not sure).
 - The **modifier** has no plan to publish this publicly on **any platforms (e.g YouTube, Mediafire, etc...)**.
 - This modification of **VulkanMod** is **UNOFFICIAL**.
-- Use main branch **"1.20.4"** and don't worry about **Malware**, or **any viruses** because this **modified** version doesn't **APPLY** any **malicious files or codes** and trust ne, I have **5 YEARS** of coding experience and I know to trace **any malicious files** at all.
+- Use main branch **"1.20.4"** and don't worry about **Malware**, or **any viruses** because this **modified** version doesn't **APPLY** any **malicious files or codes** and trust me, I have **5 YEARS** of coding experience and I know to trace **any malicious files** at all.
 - Please **DON'T report any crashes/bugs or upload** on **VulkanMod Discord** related to **PojavLauncher**.
 - This is for my personal use, but you can try it for yourself **(device compatibility is not guaranteed)**.
 
