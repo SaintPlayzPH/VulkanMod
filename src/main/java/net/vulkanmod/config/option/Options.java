@@ -403,15 +403,15 @@ public abstract class Options {
                         Renderer.scheduleSwapChainUpdate();
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
-            new SwitchOption(Component.translatable("vulkanmod.options.showPhoneRAMInfo"),
+            new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
                     value -> config.showAndroidRAM = isRunningOnCompatDevice() ? value : false,
                     () -> isRunningOnCompatDevice() && config.showAndroidRAM)
                     .setTooltip(
-                    Component.translatable("vulkanmod.options.runningOnPhone")
+                    Component.translatable("vulkanmod.options.runningOnAndroidLinux")
                             .append(Component.literal(isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
                             .append("\n\n")
-                            .append(Component.translatable("vulkanmod.options.showPhoneRAMInfo.tooltip"))),
-            new RangeOption(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay"), 0, 10, 1,
+                            .append(Component.translatable("vulkanmod.options.showDeviceRAMInfo.tooltip"))),
+            new RangeOption(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay"), 0, 10, 1,
                     value -> {
                         if (value == 0) return Component.translatable("0.01s");
                         else if (value == 1) return Component.translatable("0.1s");
@@ -428,7 +428,7 @@ public abstract class Options {
                     },
                     value -> config.ramInfoUpdate = value,
                     () -> config.ramInfoUpdate)
-                    .setTooltip(Component.translatable("vulkanmod.options.phoneRAMInfoUpdateDelay.tooltip")),
+                    .setTooltip(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showPojavInfo"),
                     value -> config.pojavInfo = value,
                     () -> config.pojavInfo)
