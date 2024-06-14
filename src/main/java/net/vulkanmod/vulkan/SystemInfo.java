@@ -14,7 +14,7 @@ public class SystemInfo {
         cpuInfo = isRunningOnAndroid() ? getProcessorNameForAndroid() : getProcessorNameForDesktop();
     }
 
-    private static String getProcessorNameForAndroid() {
+    public static String getProcessorNameForAndroid() {
         Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
 
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
@@ -29,7 +29,7 @@ public class SystemInfo {
         }
     }
 
-    private static String getProcessorNameForDesktop() {
+    public static String getProcessorNameForDesktop() {
        Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
 
         var centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
