@@ -35,12 +35,12 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 <table>
     <tr>
       <th> SaintPlayz/Shadow Discord server</th>
-      <th> Ko-Fi</th>
+      <th> Ko-Fi (xCollateral)</th>
     </tr>
   <tr>
     <td style="text-align:center"> 
         <a href="https://discord.com/invite/CHX4dUSTqs"> 
-            <img alt="Discord" align="top" src="https://img.shields.io/discord/963180553547419670?style=flat-square&logo=discord&logoColor=%23FFFFFF&label=Vulkanmod%20official%20discord%20server&labelColor=%235865F2&color=%235865F2">
+            <img alt="Discord" align="top" src="https://img.shields.io/discord/963180553547419670?style=flat-square&logo=discord&logoColor=%23FFFFFF&label=SaintPlayz/Shadow%20Vulkanmod%20unofficial%20discord%20server&labelColor=%235865F2&color=%235865F2">
         </a>
      </td>
     <td>
