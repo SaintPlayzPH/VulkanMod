@@ -29,18 +29,6 @@ public interface VertexConsumerM {
         Matrix4f matrix4f = matrixEntry.pose();
         normal.mul(matrixEntry.normal());
 
-        float LayerX =  Float.intBitsToFloat(js[0 + 4]);
-        float LayerY =  Float.intBitsToFloat(js[0 + 5]);
-
-//        final float yy = 0.0009765625f;
-//        final float xx = 0.001953125f;
-        final float v1 = LayerX * 1024;
-        final float v2 = LayerY * 512;
-
-        int xTileLayerOffset = (int) (v1 /16);
-        int yTileLayerOffset = (int) (v2 /16);
-        int baseArrayLayer = (yTileLayerOffset * 64) + xTileLayerOffset;
-
         int j = js.length / 8;
 
         for (int k = 0; k < j; ++k) {
@@ -67,24 +55,13 @@ public interface VertexConsumerM {
             }
 
             int light = lights[k];
-            //float u = Float.intBitsToFloat(js[i + 4]);
-            //float v = Float.intBitsToFloat(js[i + 5]);
-
-            final float u = switch (k)
-            {
-                default -> 0;
-                case 2, 3 -> 1;
-            };
-            final float v= switch (k)
-            {
-                default -> 0;
-                case 1, 2 -> 1;
-            };
+            float u = Float.intBitsToFloat(js[i + 4]);
+            float v = Float.intBitsToFloat(js[i + 5]);
 
             Vector4f vector4f = new Vector4f(x, y, z, 1.0f);
             vector4f.mul(matrix4f);
 
-            this.vertex(vector4f.x(), vector4f.y(), vector4f.z(), r, g, b, 1.0f, u, v, overlay | baseArrayLayer, light, normal.x(), normal.y(), normal.z());
+            this.vertex(vector4f.x(), vector4f.y(), vector4f.z(), r, g, b, 1.0f, u, v, overlay, light, normal.x(), normal.y(), normal.z());
         }
 
     }
