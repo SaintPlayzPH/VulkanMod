@@ -34,7 +34,7 @@ public class DeviceRAMInfo {
         scheduleResetHighestMemoryUsageRecordTask();
 
         // Watcher thread for configuration changes
-        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 1, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(DeviceRAMInfo::updateConfigDependentThreads, 0, 1, TimeUnit.SECONDS);
     }
 
     private static void scheduleMemoryUpdateTask() {
@@ -42,7 +42,7 @@ public class DeviceRAMInfo {
             memoryUpdateFuture.cancel(true);
         }
         memoryUpdateFuture = executorService.scheduleAtFixedRate(
-            AndroidRAMInfo::getAllMemoryInfo,
+            DeviceRAMInfo::getAllMemoryInfo,
             0,
             Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100,
             TimeUnit.MILLISECONDS
@@ -55,7 +55,7 @@ public class DeviceRAMInfo {
         }
         if (Initializer.CONFIG.resetHighUsageRec) {
             resetMaxMemoryFuture = executorService.scheduleAtFixedRate(
-                AndroidRAMInfo::resetHighestUsageRecord,
+                DeviceRAMInfo::resetHighestUsageRecord,
                 0,
                 45,
                 TimeUnit.SECONDS
@@ -76,7 +76,7 @@ public class DeviceRAMInfo {
     }
 
     public static void getAllMemoryInfo() {
-        if (isRunningOnCompatDevice() && Initializer.CONFIG.showAndroidRAM) {
+        if (isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 lock.lock();
