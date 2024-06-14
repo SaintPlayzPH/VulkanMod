@@ -5,7 +5,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.WorldRenderer;
-import net.vulkanmod.vulkan.AndroidRAMInfo;
+import net.vulkanmod.vulkan.DeviceRAMInfo;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
@@ -56,6 +56,7 @@ public abstract class DebugScreenOverlayM {
         long usedMemory = totalMemory - freeMemory;
         int pretransformFlags = Vulkan.getPretransformFlags();
         boolean isPojav = isRunningOnPojav();
+        boolean isCompat = isRunningOnCompatDevice();
 
         strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
         strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
@@ -65,7 +66,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes() + "/" + MemoryType.GPU_MEM.maxSize() + "MB");
         strings.add("");
         strings.add("VulkanMod " + getVersion());
-        strings.add("CPU: " + SystemInfo.cpuInfo + (isPojav && isCPUInfoAvailable() ? " (Processor)" : ""));
+        strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable() ? " (Processor)" : ""));
         strings.add("GPU: " + Vulkan.getDevice().deviceName);
         strings.add("Driver: " + Vulkan.getDevice().driverVersion);
         strings.add("Loader: " + Vulkan.getDevice().vkInstanceLoaderVersion);
@@ -83,16 +84,16 @@ public abstract class DebugScreenOverlayM {
                             ((pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR || pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) ? "§aYes§r" : "§cNo§r"));
             }
         }
-        if (isPojav && Initializer.CONFIG.showAndroidRAM) {
+        if (isCompat && Initializer.CONFIG.showDeviceRAM) {
             strings.add("");
             strings.add("Device RAM Info:");
-            strings.add(AndroidRAMInfo.getMemoryInfo());
-            strings.add(AndroidRAMInfo.getAvailableMemoryInfo());
-            strings.add(AndroidRAMInfo.getCurrentUsage());
-            strings.add(AndroidRAMInfo.getHighestMemoryUsedRecord());
-            strings.add(AndroidRAMInfo.getBuffersInfo());
+            strings.add(DeviceRAMInfo.getMemoryInfo());
+            strings.add(DeviceRAMInfo.getAvailableMemoryInfo());
+            strings.add(DeviceRAMInfo.getCurrentUsage());
+            strings.add(DeviceRAMInfo.getHighestMemoryUsedRecord());
+            strings.add(DeviceRAMInfo.getBuffersInfo());
             if (Initializer.CONFIG.showlowRAM) {
-                strings.add(AndroidRAMInfo.getAvailableRAMWarn());
+                strings.add(DeviceRAMInfo.getAvailableRAMWarn());
             }
         }
         
@@ -104,6 +105,11 @@ public abstract class DebugScreenOverlayM {
         return cpuInfoFile.exists() && cpuInfoFile.canRead();
     }
 
+    private static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
+    }
+
     private static boolean isRunningOnPojav() {
         return System.getenv("POJAV_ENVIRON") != null || System.getenv("SCL_ENVIRON") != null || System.getenv("POJAV_RENDERER") != null;
     }
@@ -112,3 +118,4 @@ public abstract class DebugScreenOverlayM {
         return bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed());
     }
 }
+            

@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class AndroidRAMInfo {
+public class DeviceRAMInfo {
     public static long highestCurrentUsageRecord = 0;
     public static long highestRAMUsedRecord = 0;
     public static long memBuffers = 0;
@@ -34,7 +34,7 @@ public class AndroidRAMInfo {
         scheduleResetHighestMemoryUsageRecordTask();
 
         // Watcher thread for configuration changes
-        executorService.scheduleAtFixedRate(AndroidRAMInfo::updateConfigDependentThreads, 0, 1, TimeUnit.SECONDS);
+        executorService.scheduleAtFixedRate(DeviceRAMInfo::updateConfigDependentThreads, 0, 1, TimeUnit.SECONDS);
     }
 
     private static void scheduleMemoryUpdateTask() {
@@ -42,7 +42,7 @@ public class AndroidRAMInfo {
             memoryUpdateFuture.cancel(true);
         }
         memoryUpdateFuture = executorService.scheduleAtFixedRate(
-            AndroidRAMInfo::getAllMemoryInfo,
+            DeviceRAMInfo::getAllMemoryInfo,
             0,
             Initializer.CONFIG.ramInfoUpdate == 0 ? 10 : Initializer.CONFIG.ramInfoUpdate * 100,
             TimeUnit.MILLISECONDS
@@ -55,7 +55,7 @@ public class AndroidRAMInfo {
         }
         if (Initializer.CONFIG.resetHighUsageRec) {
             resetMaxMemoryFuture = executorService.scheduleAtFixedRate(
-                AndroidRAMInfo::resetHighestUsageRecord,
+                DeviceRAMInfo::resetHighestUsageRecord,
                 0,
                 45,
                 TimeUnit.SECONDS
@@ -76,7 +76,7 @@ public class AndroidRAMInfo {
     }
 
     public static void getAllMemoryInfo() {
-        if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
+        if (isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 lock.lock();
@@ -221,8 +221,9 @@ public class AndroidRAMInfo {
         return Long.parseLong(memoryLine.split("\\s+")[1]);
     }
 
-    private static boolean isRunningOnAndroid() {
-        return System.getenv("POJAV_ENVIRON") != null || System.getenv("SCL_ENVIRON") != null || System.getenv("POJAV_RENDERER") != null;
+    private static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
     }
 
     public static String getAvailableRAMWarn() {

@@ -15,7 +15,7 @@ import java.util.Collections;
 public class Config {
 
     public int frameQueueSize = 2;
-    public boolean showAndroidRAM = true;
+    public boolean showDeviceRAM = true;
     public boolean pojavInfo = false;
     public VideoModeSet.VideoMode videoMode = VideoModeManager.getFirstAvailable().getVideoMode();
     public boolean windowedFullscreen = false;
