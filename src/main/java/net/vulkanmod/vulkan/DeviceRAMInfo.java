@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class AndroidRAMInfo {
+public class DeviceRAMInfo {
     public static long highestCurrentUsageRecord = 0;
     public static long highestRAMUsedRecord = 0;
     public static long memBuffers = 0;
