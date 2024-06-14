@@ -7,10 +7,10 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
 public class UniformBuffer extends Buffer {
 
-    private final static int minOffset = (int) DeviceManager.deviceProperties.limits().minUniformBufferOffsetAlignment();
+    private static final int MIN_OFFSET = (int) DeviceManager.deviceProperties.limits().minUniformBufferOffsetAlignment();
 
     public static int getAlignedSize(int uploadSize) {
-        return align(uploadSize, minOffset);
+        return align(uploadSize, MIN_OFFSET);
     }
 
     public UniformBuffer(int size, MemoryType memoryType) {
@@ -19,8 +19,9 @@ public class UniformBuffer extends Buffer {
     }
 
     public void checkCapacity(int size) {
-        if (size > this.bufferSize - this.usedBytes) {
-            resizeBuffer((this.bufferSize + size) * 2);
+        int requiredCapacity = this.usedBytes + size;
+        if (requiredCapacity > this.bufferSize) {
+            resizeBuffer(Math.max(this.bufferSize * 2, requiredCapacity));
         }
     }
 
