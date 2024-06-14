@@ -76,7 +76,7 @@ public class AndroidRAMInfo {
     }
 
     public static void getAllMemoryInfo() {
-        if (isRunningOnAndroid() && Initializer.CONFIG.showAndroidRAM) {
+        if (isRunningOnCompatDevice() && Initializer.CONFIG.showAndroidRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 lock.lock();
@@ -221,8 +221,9 @@ public class AndroidRAMInfo {
         return Long.parseLong(memoryLine.split("\\s+")[1]);
     }
 
-    private static boolean isRunningOnAndroid() {
-        return System.getenv("POJAV_ENVIRON") != null || System.getenv("SCL_ENVIRON") != null || System.getenv("POJAV_RENDERER") != null;
+    private static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
     }
 
     public static String getAvailableRAMWarn() {
