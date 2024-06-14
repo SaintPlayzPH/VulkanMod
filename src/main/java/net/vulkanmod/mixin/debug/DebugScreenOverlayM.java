@@ -66,7 +66,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes() + "/" + MemoryType.GPU_MEM.maxSize() + "MB");
         strings.add("");
         strings.add("VulkanMod " + getVersion());
-        strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isCPUInfoAvailable() ? " (Processor)" : ""));
+        strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable() ? " (Processor)" : ""));
         strings.add("GPU: " + Vulkan.getDevice().deviceName);
         strings.add("Driver: " + Vulkan.getDevice().driverVersion);
         strings.add("Loader: " + Vulkan.getDevice().vkInstanceLoaderVersion);
