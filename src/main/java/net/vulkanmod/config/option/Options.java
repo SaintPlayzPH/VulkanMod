@@ -404,8 +404,8 @@ public abstract class Options {
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
-                    value -> config.showAndroidRAM = isRunningOnCompatDevice() ? value : false,
-                    () -> isRunningOnCompatDevice() && config.showAndroidRAM)
+                    value -> config.showDeviceRAM = isRunningOnCompatDevice() ? value : false,
+                    () -> isRunningOnCompatDevice() && config.showDeviceRAM)
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnAndroidLinux")
                             .append(Component.literal(isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
