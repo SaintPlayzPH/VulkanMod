@@ -8,8 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class SystemInfo {
-    private static boolean procObtained = false;
-    private static boolean cpuObtained = false;
     public static final String cpuInfo;
 
     static {
@@ -17,9 +15,7 @@ public class SystemInfo {
     }
 
     private static String getProcessorNameForAndroid() {
-        if (!procObtained) {
-            Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
-        }
+        Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
 
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
             return br.lines()
@@ -34,9 +30,7 @@ public class SystemInfo {
     }
 
     private static String getProcessorNameForDesktop() {
-        if (!cpuObtained) {
-            Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
-        }
+       Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
 
         var centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
         return centralProcessor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
