@@ -2,6 +2,7 @@
 layout(early_fragment_tests) in;
 layout (constant_id = 0) const bool USE_FOG = true;
 #include "light.glsl"
+#include "fog.glsl"
 
 layout(binding = 2) uniform sampler2D Sampler0;
 
