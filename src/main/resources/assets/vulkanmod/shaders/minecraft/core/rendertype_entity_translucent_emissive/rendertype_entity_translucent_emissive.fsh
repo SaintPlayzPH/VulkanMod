@@ -1,15 +1,7 @@
 #version 450
 layout (constant_id = 0) const bool USE_FOG = true;
 
-float linear_fog_fade(float vertexDistance, float fogStart, float fogEnd) {
-    if (vertexDistance <= fogStart) {
-        return 1.0;
-    } else if (vertexDistance >= fogEnd) {
-        return 0.0;
-    }
-
-    return smoothstep(fogEnd, fogStart, vertexDistance);
-}
+#include "fog.glsl"
 
 layout(binding = 2) uniform sampler2D Sampler0;
 
