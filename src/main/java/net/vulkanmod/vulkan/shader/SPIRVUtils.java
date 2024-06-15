@@ -58,8 +58,7 @@ public class SPIRVUtils {
             throw new RuntimeException("Failed to create compiler options");
         }
 
-        if(OPTIMIZATIONS)
-            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
+        shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_zero);
 
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
@@ -103,7 +102,7 @@ public class SPIRVUtils {
 
         time += (System.nanoTime() - startTime) / 1000000.0f;
 
-        return new SPIRV(result, shaderc_result_get_bytes(result));
+        return new SPIRV(result, shaderc_result_get_length(result));
     }
 
     private static SPIRV readFromStream(InputStream inputStream) {
@@ -113,7 +112,7 @@ public class SPIRVUtils {
             buffer.put(bytes);
             buffer.position(0);
 
-            return new SPIRV(MemoryUtil.memAddress(buffer), buffer);
+            return new SPIRV(MemoryUtil.memAddress(buffer), bytes.length);
         } catch (Exception e) {
             e.printStackTrace();
         }
