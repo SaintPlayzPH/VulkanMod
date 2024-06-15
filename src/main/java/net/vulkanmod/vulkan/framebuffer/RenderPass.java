@@ -121,7 +121,8 @@ public class RenderPass {
                             .srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
                             .dstStageMask(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
                             .srcAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-                            .dstAccessMask(VK_ACCESS_SHADER_READ_BIT);
+                            .dstAccessMask(VK_ACCESS_SHADER_READ_BIT)
+                            .dependencyFlags(VK_DEPENDENCY_BY_REGION_BIT);
 
                     renderPassInfo.pDependencies(subpassDependencies);
                 }
