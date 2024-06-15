@@ -38,6 +38,7 @@ public class Config {
     public boolean showlowRAM = false;
     public boolean gaussianSkyBlending = false;
     public boolean depthWrite = false;
+    public boolean feo = false;
     public int presentMode = 1;
     public int ramInfoUpdate = 1;
     public int imageCount = 3;
