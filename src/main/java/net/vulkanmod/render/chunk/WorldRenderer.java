@@ -73,8 +73,6 @@ public class WorldRenderer {
     private SectionGraph sectionGraph;
     private boolean graphNeedsUpdate;
 
-    private final Set<BlockEntity> globalBlockEntities = Sets.newHashSet();
-
     private final TaskDispatcher taskDispatcher;
 
     private double xTransparentOld;
@@ -249,9 +247,6 @@ public class WorldRenderer {
             }
 
             this.taskDispatcher.clearBatchQueue();
-            synchronized (this.globalBlockEntities) {
-                this.globalBlockEntities.clear();
-            }
 
             this.sectionGrid = new SectionGrid(this.level, this.renderDistance);
             this.sectionGraph = new SectionGraph(this.level, this.sectionGrid, this.taskDispatcher);
@@ -322,17 +317,18 @@ public class WorldRenderer {
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
 
-        Renderer renderer = Renderer.getInstance();
-        GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
-        renderer.bindGraphicsPipeline(pipeline);
-
-        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
-
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            terrainRenderType.setCutoutUniform();
+            Renderer renderer = Renderer.getInstance();
+            GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+            renderer.bindGraphicsPipeline(pipeline);
+
+            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+            final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
+            Renderer.getDrawer().bindIndexBuffer(commandBuffer, indexBuffer);
+
+            renderer.uploadAndBindUBOs(pipeline);
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
@@ -342,8 +338,7 @@ public class WorldRenderer {
                 renderer.uploadAndBindUBOs(pipeline);
                 if (drawBuffers.getAreaBuffer(terrainRenderType) != null && queue.size() > 0) {
 
-                    drawBuffers.bindBuffers(Renderer.getCommandBuffer(), pipeline, terrainRenderType, camX, camY, camZ);
-                    renderer.uploadAndBindUBOs(pipeline);
+                    drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
 
                     if (indirectDraw)
                         drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
@@ -353,16 +348,12 @@ public class WorldRenderer {
             }
         }
 
-        if (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE) {
+        if (indirectDraw && (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE)) {
             indirectBuffers[currentFrame].submitUploads();
 //            uniformBuffers.submitUploads();
         }
 
         //Need to reset push constants in case the pipeline will still be used for rendering
-        if (!indirectDraw) {
-            VRenderSystem.setChunkOffset(0, 0, 0);
-            renderer.pushConstants(pipeline);
-        }
 
         this.minecraft.getProfiler().pop();
         renderType.clearRenderState();
@@ -380,7 +371,7 @@ public class WorldRenderer {
         this.minecraft.getProfiler().popPush(() -> "render_" + renderType);
 
         final boolean isTranslucent = terrainRenderType == TerrainRenderType.TRANSLUCENT;
-        final boolean indirectDraw = Initializer.CONFIG.indirectDraw;
+        final boolean indirectDraw  Initializer.CONFIG.indirectDraw;
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
 
