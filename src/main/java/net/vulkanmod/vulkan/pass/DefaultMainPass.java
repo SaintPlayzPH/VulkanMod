@@ -39,7 +39,7 @@ public class DefaultMainPass implements MainPass {
         }
     }
 
-    private void normalRenderPass() {
+    private void lighterRenderPass() {
         RenderPass.Builder builder = RenderPass.builder(this.mainFramebuffer);
 
         // Configure color attachment
@@ -63,12 +63,12 @@ public class DefaultMainPass implements MainPass {
         this.auxRenderPass = builder.build();
     }
 
-    private void lighterRenderPass() {
+    private void normalRenderPass() {
         RenderPass.Builder builder = RenderPass.builder(this.mainFramebuffer);
 
         // Configure color attachment
         builder.getColorAttachmentInfo()
-           .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+           .setFinalLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
            .setOps(VK_ATTACHMENT_LOAD_OP_DONT_CARE, VK_ATTACHMENT_STORE_OP_STORE);
 
         // Configure depth attachment
