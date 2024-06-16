@@ -1,5 +1,6 @@
 package net.vulkanmod.vulkan.pass;
 
+import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.framebuffer.*;
@@ -23,6 +24,7 @@ public class DefaultMainPass implements MainPass {
 
     private RenderPass mainRenderPass;
     private RenderPass auxRenderPass;
+    private boolean logged = false;
 
     DefaultMainPass() {
         this.mainFramebuffer = Vulkan.getSwapChain();
@@ -32,23 +34,23 @@ public class DefaultMainPass implements MainPass {
 
     private void createRenderPasses() {
         RenderPass.Builder builder = RenderPass.builder(this.mainFramebuffer);
+        builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
-        // Configure color attachment
-        builder.getColorAttachmentInfo()
-            .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-
-        // Configure depth attachment
-        builder.getDepthAttachmentInfo();
+        if (Initializer.CONFIG.feo) {
+            if (!logged) {
+                Initializer.LOGGER.warn("Using Fix Entity Outline Post-effect, this will slightly impact performance!");
+                logged = true;
+            }
+            builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
+        }
 
         this.mainRenderPass = builder.build();
 
         // Create an auxiliary RenderPass needed in case of main target rebinding
         builder = RenderPass.builder(this.mainFramebuffer);
-        builder.getColorAttachmentInfo()
-           .setOps(VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_STORE_OP_STORE)
-           .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-        builder.getDepthAttachmentInfo()
-           .setOps(VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_STORE_OP_STORE);
+        builder.getColorAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_STORE_OP_STORE);
+        builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_STORE_OP_STORE);
+        builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
         this.auxRenderPass = builder.build();
     }
