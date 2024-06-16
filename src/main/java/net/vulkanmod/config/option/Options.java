@@ -276,12 +276,6 @@ public abstract class Options {
                                 },
                                 () -> config.postEffectFix)
                                 .setTooltip(Component.translatable("vulkanmod.options.fixPostEffectBug.tooltip")),
-                        new SwitchOption(Component.translatable("vulkanmod.options.feo"),
-                                value -> {
-                                    config.feo = value;
-                                },
-                                () -> config.feo)
-                                .setTooltip(Component.translatable("vulkanmod.options.feo.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.renderSkyFog"),
                                 value -> {
                                     config.renderSkyFog = value;
