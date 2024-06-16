@@ -1,6 +1,5 @@
 package net.vulkanmod.vulkan.pass;
 
-import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.framebuffer.*;
