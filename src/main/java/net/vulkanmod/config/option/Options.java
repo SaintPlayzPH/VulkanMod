@@ -12,7 +12,6 @@ import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
-import net.vulkanmod.vulkan.pass.DefaultMainPass;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
@@ -280,7 +279,6 @@ public abstract class Options {
                         new SwitchOption(Component.translatable("vulkanmod.options.feo"),
                                 value -> {
                                     config.feo = value;
-                                    DefaultMainPass.renderPassUpdate = true;
                                 },
                                 () -> config.feo)
                                 .setTooltip(Component.translatable("vulkanmod.options.feo.tooltip")),
