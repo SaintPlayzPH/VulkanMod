@@ -247,6 +247,7 @@ public class RenderPass {
     public static class AttachmentInfo {
         final Type type;
         final int format;
+        int initialLayout;
         int finalLayout;
         int loadOp;
         int storeOp;
@@ -258,6 +259,7 @@ public class RenderPass {
 
             this.loadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
             this.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+            this.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
         }
 
         public AttachmentInfo setOps(int loadOp, int storeOp) {
@@ -269,6 +271,12 @@ public class RenderPass {
 
         public AttachmentInfo setLoadOp(int loadOp) {
             this.loadOp = loadOp;
+
+            return this;
+        }
+
+        public AttachmentInfo setInitialLayout(int initialLayout) {
+            this.initialLayout = initialLayout;
 
             return this;
         }
