@@ -98,7 +98,6 @@ public class BuildTask extends ChunkTask {
         BlockRenderer blockRenderer = builderResources.blockRenderer;
 
         LiquidRenderer liquidRenderer = builderResources.liquidRenderer;
-        liquidRenderer.setupSprites();
 
         BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
 
