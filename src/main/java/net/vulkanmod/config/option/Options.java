@@ -124,6 +124,13 @@ public abstract class Options {
                                     window.setFramerateLimit(value);
                                 },
                                 () -> minecraftOptions.framerateLimit().get()),
+                        new SwitchOption(Component.translatable("vulkanmod.options.forceFIFOVsync"),
+                                value -> {
+                                    config.forceFIFOVsync = value;
+                                    Renderer.scheduleSwapChainUpdate();
+                                },
+                                () -> config.forceFIFOVsync),
+                                .setTooltip(Component.translatable("vulkanmod.options.forceFIFOVsync.tooltip")),
                         new SwitchOption(Component.translatable("options.vsync"),
                                 value -> {
                                     minecraftOptions.enableVsync().set(value);
