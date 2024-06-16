@@ -58,8 +58,7 @@ public class SPIRVUtils {
             throw new RuntimeException("Failed to create compiler options");
         }
 
-        if(OPTIMIZATIONS)
-            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
+        shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_zero);
 
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
@@ -103,7 +102,7 @@ public class SPIRVUtils {
 
         time += (System.nanoTime() - startTime) / 1000000.0f;
 
-        return new SPIRV(result, shaderc_result_get_bytes(result));
+        return new SPIRV(result, shaderc_result_get_length(result));
     }
 
     private static SPIRV readFromStream(InputStream inputStream) {
@@ -113,7 +112,7 @@ public class SPIRVUtils {
             buffer.put(bytes);
             buffer.position(0);
 
-            return new SPIRV(MemoryUtil.memAddress(buffer), buffer);
+            return new SPIRV(MemoryUtil.memAddress(buffer), bytes.length);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -209,25 +208,17 @@ public class SPIRVUtils {
         }
     }
 
-    public static final class SPIRV implements NativeResource {
-
-        private final long handle;
-        private ByteBuffer bytecode;
-
-        public SPIRV(long handle, ByteBuffer bytecode) {
-            this.handle = handle;
-            this.bytecode = bytecode;
-        }
+    public record SPIRV(long handle, long size_t) implements NativeResource {
 
         public ByteBuffer bytecode() {
-            return bytecode;
-        }
+                return shaderc_result_get_bytes(handle, size_t);
+            }
 
-        @Override
-        public void free() {
-//            shaderc_result_release(handle);
-            bytecode = null; // Help the GC
+            @Override
+            public void free() {
+                shaderc_result_release(handle);
+    //            size_t = null; // Help the GC
+            }
         }
-    }
 
 }
