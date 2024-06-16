@@ -296,7 +296,7 @@ public class WorldRenderer {
         this.onAllChangedCallbacks.clear();
     }
 
-    private void renderSectionLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
+    public void renderSectionLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
         boolean depthWrite = Initializer.CONFIG.depthWrite;
         TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
         renderType.setupRenderState();
