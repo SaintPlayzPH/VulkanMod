@@ -25,19 +25,15 @@ public class DefaultMainPass implements MainPass {
     private RenderPass mainRenderPass;
     private RenderPass auxRenderPass;
     private boolean logged = false;
-    public static boolean renderPassUpdate = false;
 
     DefaultMainPass() {
         this.mainFramebuffer = Vulkan.getSwapChain();
 
-        if (renderPassUpdate) {
-            createRenderPasses();
-            renderPassUpdate = false;
-        }
         createRenderPasses();
     }
 
     private void createRenderPasses() {
+        // Initial creation of render passes based on current feo configuration
         RenderPass.Builder builder = RenderPass.builder(this.mainFramebuffer);
         builder.getColorAttachmentInfo().setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
         builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
@@ -49,7 +45,7 @@ public class DefaultMainPass implements MainPass {
             }
             builder.getDepthAttachmentInfo().setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
             builder.getDepthAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-            builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
+            builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_DONT_CARE, VK_ATTACHMENT_STORE_OP_STORE);
         }
 
         this.mainRenderPass = builder.build();
