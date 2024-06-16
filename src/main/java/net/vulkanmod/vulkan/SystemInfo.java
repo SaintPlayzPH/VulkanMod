@@ -9,13 +9,17 @@ import java.io.IOException;
 
 public class SystemInfo {
     public static final String cpuInfo;
+    private static boolean logged = false;
 
     static {
         cpuInfo = isRunningOnAndroid() ? getProcessorNameForAndroid() : getProcessorNameForDesktop();
     }
 
     public static String getProcessorNameForAndroid() {
-        Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
+        if (!logged) {
+            Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
+            logged = true;
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
             return br.lines()
@@ -30,7 +34,10 @@ public class SystemInfo {
     }
 
     public static String getProcessorNameForDesktop() {
-       Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
+        if (!logged) {
+           Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
+            logged = true;
+        }
 
         var centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
         return centralProcessor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
