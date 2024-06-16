@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Fast Leaves Fix",
   "vulkanmod.options.fastLeavesFix.tooltip": "(WARNING: EXPERIMENTAL)\n\nEffects FPS on both Fancy/Fast Graphics\n\nUses an Alternate Rendering Mode to restore Fast Leaves on Fast Graphics\n\nRecommended to use with *Low VRAM Mode*\n\nExtremely experimental: May Decrease performance, even on Fancy Graphics",
   "vulkanmod.options.depthWrite": "Disable Depth Write if Translucent",
-  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables depth writing on translucent objects (e.g., Ice Block). May cause visual rendering bug on translucent objects"
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables depth writing on translucent objects (e.g., Ice Block). May cause visual rendering bug on translucent objects",
+  "vulkanmod.options.forceFIFOVsync": "Force FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Forces the FIFO to lock on display's refresh rate and also fixes delay with huge swapchain images."
 }

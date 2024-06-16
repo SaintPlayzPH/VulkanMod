@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Solución de Hojas Rápidas",
   "vulkanmod.options.fastLeavesFix.tooltip": "(ADVERTENCIA: EXPERIMENTAL)\n\nAfecta el FPS tanto en gráficos Elegantes/Rápidos\n\nUtiliza un modo de renderizado alternativo para restaurar las hojas rápidas en gráficos rápidos\n\nRecomendado usar con *Low VRAM Mode*\n\nExtremadamente experimental: Puede disminuir el rendimiento, incluso en gráficos elegantes",
   "vulkanmod.options.depthWrite": "Desactivar Escritura de Profundidad si es Translúcido",
-  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Desactiva la escritura de profundidad en objetos translúcidos (por ejemplo, Bloque de Hielo). Puede causar errores visuales en el renderizado de objetos translúcidos"
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Desactiva la escritura de profundidad en objetos translúcidos (por ejemplo, Bloque de Hielo). Puede causar errores visuales en el renderizado de objetos translúcidos",
+  "vulkanmod.options.forceFIFOVsync": "Forzar FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Fuerza el FIFO a bloquearse en la tasa de refresco de la pantalla y también soluciona el retraso con imágenes grandes de la cadena de intercambio."
 }

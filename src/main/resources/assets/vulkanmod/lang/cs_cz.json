@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Rychlá Oprava Listí",
   "vulkanmod.options.fastLeavesFix.tooltip": "(VAROVÁNÍ: EXPERIMENTÁLNÍ)\n\nOvlivňuje FPS na obou Elegantní/Rychlé grafice\n\nPoužívá alternativní režim vykreslování k obnovení rychlých listí na rychlé grafice\n\nDoporučeno používat s *Low VRAM Mode*\n\nExtrémně experimentální: Může snížit výkon, i na elegantní grafice",
   "vulkanmod.options.depthWrite": "Vypnout zápis hloubky, pokud je průhledný",
-  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTÁLNÍ: Zakáže zápis hloubky na průhledných objektech (např. Ledový blok). Může způsobit vizuální chybu při vykreslování průhledných objektů"
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTÁLNÍ: Zakáže zápis hloubky na průhledných objektech (např. Ledový blok). Může způsobit vizuální chybu při vykreslování průhledných objektů",
+  "vulkanmod.options.forceFIFOVsync": "Vynutit FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Vynutí FIFO, aby se uzamklo na obnovovací frekvenci displeje, a opravuje zpoždění u velkých obrázků swapchain."
 }

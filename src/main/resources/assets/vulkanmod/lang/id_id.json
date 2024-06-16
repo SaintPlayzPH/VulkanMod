@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Perbaikan Daun Cepat",
   "vulkanmod.options.fastLeavesFix.tooltip": "(PERINGATAN: EKSPERIMENTAL)\n\nMempengaruhi FPS pada Grafik Mewah/Cepat\n\nMenggunakan Mode Rendering Alternatif untuk mengembalikan Daun Cepat pada Grafik Cepat\n\nDirekomendasikan untuk digunakan dengan *Low VRAM Mode*\n\nSangat eksperimental: Dapat Menurunkan kinerja, bahkan pada Grafik Mewah",
   "vulkanmod.options.depthWrite": "Nonaktifkan Tulisan Kedalaman jika Translucent",
-  "vulkanmod.options.depthWrite.tooltip": "EKSPEIMENTAL: Menonaktifkan penulisan kedalaman pada objek translucent (mis. Blok Es). Dapat menyebabkan bug rendering visual pada objek translucent"
+  "vulkanmod.options.depthWrite.tooltip": "EKSPEIMENTAL: Menonaktifkan penulisan kedalaman pada objek translucent (mis. Blok Es). Dapat menyebabkan bug rendering visual pada objek translucent",
+  "vulkanmod.options.forceFIFOVsync": "Paksa FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Memaksa FIFO untuk mengunci pada kecepatan refresh layar dan juga memperbaiki keterlambatan dengan gambar swapchain yang besar."
 }

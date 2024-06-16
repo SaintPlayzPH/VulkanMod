@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Szybka Naprawa Liści",
   "vulkanmod.options.fastLeavesFix.tooltip": "(OSTRZEŻENIE: EKSPERYMENTALNE)\n\nWpływa na FPS zarówno na grafikach Eleganckich/Szybkich\n\nUżywa alternatywnego trybu renderowania do przywrócenia szybkich liści na szybkiej grafice\n\nZalecane do użycia z *Low VRAM Mode*\n\nBardzo eksperymentalne: Może zmniejszyć wydajność, nawet na grafikach eleganckich",
   "vulkanmod.options.depthWrite": "Wyłącz Zapis Głębokości, Jeśli Przezroczysty",
-  "vulkanmod.options.depthWrite.tooltip": "EXPERYMENTALNE: Wyłącza zapisywanie głębokości na obiektach przezroczystych (np. Blok Lodowy). Może powodować błędy wizualne w renderowaniu obiektów przezroczystych"
+  "vulkanmod.options.depthWrite.tooltip": "EXPERYMENTALNE: Wyłącza zapisywanie głębokości na obiektach przezroczystych (np. Blok Lodowy). Może powodować błędy wizualne w renderowaniu obiektów przezroczystych",
+  "vulkanmod.options.forceFIFOVsync": "Wymuś FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Wymusza blokadę FIFO na częstotliwości odświeżania ekranu i naprawia opóźnienie przy dużych obrazach swapchain."
 }
