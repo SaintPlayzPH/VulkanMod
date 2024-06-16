@@ -35,12 +35,10 @@ public class DefaultMainPass implements MainPass {
 
         // Configure color attachment
         builder.getColorAttachmentInfo()
-            .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
-            .setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
+            .setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
         // Configure depth attachment
-        builder.getDepthAttachmentInfo()
-           .setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
+        builder.getDepthAttachmentInfo();
 
         this.mainRenderPass = builder.build();
 
