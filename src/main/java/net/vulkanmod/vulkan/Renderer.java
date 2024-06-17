@@ -731,8 +731,8 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-        	VkExtent2D extent = VkExtent2D.malloc(stack);
-            Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+            VkExtent2D extent = VkExtent2D.malloc(stack);
+            Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
             
