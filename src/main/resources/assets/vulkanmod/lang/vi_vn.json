@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Sửa Lá Nhanh",
   "vulkanmod.options.fastLeavesFix.tooltip": "(CẢNH BÁO: THỰC NGHIỆM)\n\nẢnh hưởng đến FPS trên cả Đồ họa Đẹp/Nhanh\n\nSử dụng Chế độ Kết xuất Thay thế để khôi phục Lá Nhanh trên Đồ họa Nhanh\n\nKhuyến nghị sử dụng với *Low VRAM Mode*\n\nRất thực nghiệm: Có thể giảm hiệu suất, ngay cả trên Đồ họa Đẹp",
   "vulkanmod.options.depthWrite": "Vô Hiệu Hóa Viết Độ Sâu Nếu Là Trong Suốt",
-  "vulkanmod.options.depthWrite.tooltip": "THỬ NGHIỆM: Vô hiệu hóa viết độ sâu trên các đối tượng trong suốt (ví dụ, khối băng). Có thể gây lỗi hiển thị trực quan trên các đối tượng trong suốt"
+  "vulkanmod.options.depthWrite.tooltip": "THỬ NGHIỆM: Vô hiệu hóa viết độ sâu trên các đối tượng trong suốt (ví dụ, khối băng). Có thể gây lỗi hiển thị trực quan trên các đối tượng trong suốt",
+  "vulkanmod.options.forceFIFOVsync": "Buộc FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Buộc FIFO khóa vào tần số làm mới của màn hình và cũng khắc phục độ trễ với các hình ảnh swapchain lớn."
 }

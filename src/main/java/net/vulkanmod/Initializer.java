@@ -28,11 +28,11 @@ public class Initializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         if (System.getenv("POJAV_ENVIRON") != null) {
-       	    LOGGER.info("=> We're running on PojavLauncher! <=");
-	}
-	if (System.getenv("SCL_ENVIRON") != null) {
-       	    LOGGER.info("=> We're running on SolCraftLauncher! <=");
-	}
+            LOGGER.info("=> We're running on PojavLauncher! <=");
+        }
+        if (System.getenv("SCL_ENVIRON") != null) {
+            LOGGER.info("=> We're running on SolCraftLauncher! <=");
+        }
         VERSION = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .get()
@@ -46,9 +46,36 @@ public class Initializer implements ClientModInitializer {
             LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
             loggedDevice = true;
         }
+        Renderer.recompile = true;
+        LOGGER.info("==> Config Logger <===");
+        LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
+        LOGGER.info("Show Device RAM: " + CONFIG.showDeviceRAM);
+        LOGGER.info("Show Pojav Info: " + CONFIG.pojavInfo);
+        LOGGER.info("Advanced Culling: " + CONFIG.advCulling);
+        LOGGER.info("Indirect Draw: " + CONFIG.indirectDraw);
+        LOGGER.info("Low VRAM Mode: " + CONFIG.perRenderTypeAreaBuffers);
+        LOGGER.info("Fast Leaves Fix: " + CONFIG.fastLeavesFix);
+        LOGGER.info("Entity Culling: " + CONFIG.entityCulling);
+        LOGGER.info("Animations: " + CONFIG.animations);
+        LOGGER.info("Render Sky: " + CONFIG.renderSky);
+        LOGGER.info("Render Sky Fog: " + CONFIG.renderSkyFog);
+        LOGGER.info("Render Cloud Fog: " + CONFIG.renderCloudFog);
+        LOGGER.info("Fix Post-effect Bug: " + CONFIG.postEffectFix);
+        LOGGER.info("Render Fog: " + CONFIG.renderFog);
+        LOGGER.info("Entity Outline: " + CONFIG.entityOutline);
+        LOGGER.info("Exclude Sampled Usage: " + CONFIG.dontUseImageSampled);
+        LOGGER.info("Reset Highest Usage Records: " + CONFIG.resetHighUsageRec);
+        LOGGER.info("Show Low RAM Warning: " + CONFIG.showlowRAM);
+        LOGGER.info("Faster Gaussian Sky Blending: " + CONFIG.gaussianSkyBlending);
+        LOGGER.info("Disable Depth Write if Translucent: " + CONFIG.depthWrite);
+        LOGGER.info("Force FIFO VSync: " + CONFIG.forceFIFOVsync);
+        LOGGER.info("Present Mode: " + CONFIG.presentMode);
+        LOGGER.info("Device RAM Info update delay: " + CONFIG.ramInfoUpdate);
+        LOGGER.info("Swapchain Images: " + CONFIG.imageCount);
+        LOGGER.info("Device: " + CONFIG.device);
+        LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
         Platform.init();
         VideoModeManager.init();
-	Renderer.recompile = true;
     }
 
     private static void initializeConfig() {
@@ -71,7 +98,7 @@ public class Initializer implements ClientModInitializer {
     }
 
     private static boolean isRunningOnMobile() {
-        return System.getenv("POJAV_RENDERER") != null;
+        return System.getenv("SCL_RENDERER") != null || System.getenv("POJAV_RENDERER") != null || System.getenv("POJAV_ENVIRON") != null || System.getenv("POJAV_ENVIRON") != null;
     }
 
     public static String getVersion() {

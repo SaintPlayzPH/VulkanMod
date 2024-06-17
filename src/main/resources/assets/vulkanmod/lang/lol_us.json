@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "Fast Leaves Fix",
   "vulkanmod.options.fastLeavesFix.tooltip": "(WARNIN: EXPERIMENTUL)\n\nAffects FPS on both Fanceh/Fast Grafix\n\nUzes an Alternat Renderin Mode tu restore Fast Leaves on Fast Grafix\n\nRekomended tu use wif *Low VRAM Mode*\n\nXtremeleh experimentul: May Decreas performance, even on Fanceh Grafix",
   "vulkanmod.options.depthWrite": "Disabl Dep Wriet if Translucen",
-  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables dep writin on translucen objecs (e.g., Ice Blok). May cause visual renderin bug on translucen objecs"
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables dep writin on translucen objecs (e.g., Ice Blok). May cause visual renderin bug on translucen objecs",
+  "vulkanmod.options.forceFIFOVsync": "force FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "forces da FIFO to lock on display's Refresh Rate an also fixes delay wif huge Swapchain images."
 }

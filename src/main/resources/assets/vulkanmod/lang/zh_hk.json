@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "快速葉修復",
   "vulkanmod.options.fastLeavesFix.tooltip": "（警告：實驗性）\n\n影響高級/快速圖形的FPS\n\n使用替代顯示模式以恢復快速圖形中的葉子\n\n建議與*低 VRAM 模式*一起使用\n\n極其實驗：可能降低性能，甚至在高級圖形上也是如此",
   "vulkanmod.options.depthWrite": "如果半透明則禁用深度寫入",
-  "vulkanmod.options.depthWrite.tooltip": "實驗性：禁用半透明對象的深度寫入（例如，冰塊）。可能會導致半透明對象的視覺渲染錯誤"
+  "vulkanmod.options.depthWrite.tooltip": "實驗性：禁用半透明對象的深度寫入（例如，冰塊）。可能會導致半透明對象的視覺渲染錯誤",
+  "vulkanmod.options.forceFIFOVsync": "強制 FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "強制 FIFO 鎖定在顯示器的刷新率上，並修復大交換鏈圖像的延遲問題。"
 }

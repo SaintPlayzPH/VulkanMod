@@ -68,5 +68,7 @@
   "vulkanmod.options.fastLeavesFix": "Pag-ayos ng Mabilis na Dahon",
   "vulkanmod.options.fastLeavesFix.tooltip": "(BABALA: EXPERIMENTAL)\n\nNakakaapekto sa FPS sa parehong Fancy/Mabilis na Graphics\n\nGumagamit ng Alternatibong Mode ng Pag-render upang maibalik ang Mabilis na Dahon sa Mabilis na Graphics\n\nInirerekomenda na gamitin kasama ng *Low VRAM Mode*\n\nLubhang eksperimental: Maaaring Bawasan ang pagganap, kahit sa Fancy Graphics",
   "vulkanmod.options.depthWrite": "I-disable ang Pagsusulat ng Lalim kung Translucent",
-  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Inaalis ang pagsusulat ng lalim sa mga translucent na bagay (hal. Ice Block). Maaaring magdulot ng visual rendering bug sa translucent na mga bagay"
+  "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Inaalis ang pagsusulat ng lalim sa mga translucent na bagay (hal. Ice Block). Maaaring magdulot ng visual rendering bug sa translucent na mga bagay",
+  "vulkanmod.options.forceFIFOVsync": "Piliting FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Pinipilit ang FIFO na mag-lock sa refresh rate ng display at inaayos din ang delay sa malalaking swapchain na imahe."
 }

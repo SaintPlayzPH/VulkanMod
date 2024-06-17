@@ -156,6 +156,13 @@ public abstract class Options {
                                 () -> (int) (minecraftOptions.gamma().get() * 100.0)),
                 }),
                 new OptionBlock("", new Option<?>[]{
+                        new SwitchOption(Component.translatable("vulkanmod.options.forceFIFOVsync"),
+                                value -> {
+                                    config.forceFIFOVsync = value;
+                                    Renderer.scheduleSwapChainUpdate();
+                                },
+                                () -> config.forceFIFOVsync)
+                                .setTooltip(Component.translatable("vulkanmod.options.forceFIFOVsync.tooltip")),
                         new CyclingOption<>(Component.translatable("vulkanmod.options.presentMode"),
                                 new Integer[]{1, 2},
                                 value -> {
@@ -231,7 +238,7 @@ public abstract class Options {
                                     else
                                         minecraftOptions.ambientOcclusion().set(false);
 
-                                    Initializer.CONFIG.ambientOcclusion = value;
+                                    config.ambientOcclusion = value;
 
                                     minecraft.levelRenderer.allChanged();
                                 },

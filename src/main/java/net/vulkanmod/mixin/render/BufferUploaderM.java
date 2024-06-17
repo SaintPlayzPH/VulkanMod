@@ -3,6 +3,7 @@ package net.vulkanmod.mixin.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.VertexBuffer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.vulkan.Renderer;
@@ -25,28 +26,41 @@ public class BufferUploaderM {
      * @author
      */
     @Overwrite
-    public static void drawWithShader(BufferBuilder.RenderedBuffer buffer) {
+    public static void drawWithShader(BufferBuilder.RenderedBuffer renderedBuffer) {
         RenderSystem.assertOnRenderThread();
-        buffer.release();
 
-        BufferBuilder.DrawState parameters = buffer.drawState();
+        BufferBuilder.DrawState parameters = renderedBuffer.drawState();
 
         Renderer renderer = Renderer.getInstance();
 
-        if(parameters.vertexCount() <= 0) {
-            return;
+        if (parameters.vertexCount() > 0) {
+            ShaderInstance shaderInstance = RenderSystem.getShader();
+            // Used to update legacy shader uniforms
+            // TODO it would be faster to allocate a buffer from stack and set all values
+            shaderInstance.apply();
+
+            GraphicsPipeline pipeline = ((ShaderMixed)(shaderInstance)).getPipeline();
+            VRenderSystem.setPrimitiveTopologyGL(parameters.mode().asGLMode);
+            renderer.bindGraphicsPipeline(pipeline);
+            renderer.uploadAndBindUBOs(pipeline);
+            Renderer.getDrawer().draw(renderedBuffer.vertexBuffer(), parameters.mode(), parameters.format(), parameters.vertexCount());
         }
 
-        ShaderInstance shaderInstance = RenderSystem.getShader();
-        // Used to update legacy shader uniforms
-        // TODO it would be faster to allocate a buffer from stack and set all values
-        shaderInstance.apply();
+        renderedBuffer.release();
+    }
 
-        GraphicsPipeline pipeline = ((ShaderMixed)(shaderInstance)).getPipeline();
-        VRenderSystem.setPrimitiveTopologyGL(parameters.mode().asGLMode);
-        renderer.bindGraphicsPipeline(pipeline);
-        renderer.uploadAndBindUBOs(pipeline);
-        Renderer.getDrawer().draw(buffer.vertexBuffer(), parameters.mode(), parameters.format(), parameters.vertexCount());
+    /**
+     * @author
+     */
+    @Overwrite
+    public static void draw(BufferBuilder.RenderedBuffer renderedBuffer) {
+        BufferBuilder.DrawState parameters = renderedBuffer.drawState();
+
+        if (parameters.vertexCount() > 0) {
+            Renderer.getDrawer().draw(renderedBuffer.vertexBuffer(), parameters.mode(), parameters.format(), parameters.vertexCount());
+        }
+
+        renderedBuffer.release();
     }
 
 }

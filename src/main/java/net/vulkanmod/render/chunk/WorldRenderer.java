@@ -46,6 +46,7 @@ import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.vulkan.VK11;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import java.util.*;
@@ -297,10 +298,6 @@ public class WorldRenderer {
 
     public void renderSectionLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
         boolean depthWrite = Initializer.CONFIG.depthWrite;
-        renderSectionLayerInternal(renderType, poseStack, camX, camY, camZ, projection, depthWrite);
-    }
-
-    private void renderSectionLayerInternal(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection, boolean depthWrite) {
         TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
         renderType.setupRenderState();
 
@@ -313,6 +310,7 @@ public class WorldRenderer {
         final boolean indirectDraw = Initializer.CONFIG.indirectDraw;
 
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
+        VRenderSystem.setPrimitiveTopologyGL(GL11.GL_TRIANGLES);
 
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;

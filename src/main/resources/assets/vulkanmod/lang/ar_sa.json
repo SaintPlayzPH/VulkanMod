@@ -67,5 +67,7 @@
   "vulkanmod.options.fastLeavesFix": "إصلاح الأوراق السريع",
   "vulkanmod.options.fastLeavesFix.tooltip": "(تحذير: تجريبي)\n\nيؤثر على FPS في الرسومات الأنيقة / السريعة\n\nيستخدم وضع عرض بديل لاستعادة الأوراق السريعة في الرسومات السريعة\n\nيوصى باستخدامه مع *Low VRAM Mode*\n\nتجريبي للغاية: قد يقلل الأداء، حتى في الرسومات الأنيقة",
   "vulkanmod.options.depthWrite": "تعطيل كتابة العمق إذا كانت شفافة",
-  "vulkanmod.options.depthWrite.tooltip": "تجريبي: يعطل كتابة العمق على الكائنات الشفافة (على سبيل المثال، كتلة الجليد). قد يسبب خطأ في التقديم البصري على الكائنات الشفافة"
+  "vulkanmod.options.depthWrite.tooltip": "تجريبي: يعطل كتابة العمق على الكائنات الشفافة (على سبيل المثال، كتلة الجليد). قد يسبب خطأ في التقديم البصري على الكائنات الشفافة",
+  "vulkanmod.options.forceFIFOVsync": "فرض FIFO VSync",
+  "vulkanmod.options.forceFIFOVsync.tooltip": "يجبر FIFO على القفل بمعدل تحديث العرض ويصلح التأخير مع صور السلسلة التبادلية الكبيرة."
 }

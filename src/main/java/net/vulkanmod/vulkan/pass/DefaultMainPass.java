@@ -23,7 +23,6 @@ public class DefaultMainPass implements MainPass {
 
     private RenderPass mainRenderPass;
     private RenderPass auxRenderPass;
-    private boolean logged = false;
 
     DefaultMainPass() {
         this.mainFramebuffer = Vulkan.getSwapChain();
