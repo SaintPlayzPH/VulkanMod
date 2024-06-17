@@ -639,15 +639,12 @@ public class Renderer {
     }
 
     public static void setViewport(int x, int y, int width, int height) {
-        if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
-            return;
-
-        try (MemoryStack stack = stackPush()) {
-            // Transform extent and offset based on pretransform flags
+	if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
+        return;
+	
+        try(MemoryStack stack = stackPush()) {
             VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
             VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
-        
-            // Prepare the viewport buffer
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
             x = transformedOffset.x();
@@ -655,48 +652,38 @@ public class Renderer {
             width = transformedExtent.width();
             height = transformedExtent.height();
 
-            // Set the viewport parameters
             viewport.x(x);
-            viewport.y(height + y);  // Correct the y coordinate
+            viewport.y(height + y);
             viewport.width(width);
-            viewport.height(-height);  // Invert the height for Vulkan's coordinate system
+            viewport.height(-height);
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
 
-            // Prepare the scissor rectangle
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
             scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
             scissor.extent(transformedExtent);
 
-            // Record the commands to set the viewport and scissor in the command buffer
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
     }
 
     public static void resetViewport() {
-        if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
-            return;
-
-        int width = getSwapChain().getWidth();
-        int height = getSwapChain().getHeight();
-
         try (MemoryStack stack = stackPush()) {
-            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
+            int width = getSwapChain().getWidth();
+            int height = getSwapChain().getHeight();
+	    
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
-
-            int transformedWidth = transformedExtent.width();
-            int transformedHeight = transformedExtent.height();
-
+	    
             viewport.x(0.0f);
-            viewport.y(transformedHeight); // Start at the top of the transformed height
-            viewport.width(transformedWidth);
-            viewport.height(-transformedHeight); // Invert height for Vulkan's coordinate system
-            viewport.minDepth(0.0f);
+            viewport.y(height);
+            viewport.width(width);
+            viewport.height(-height);
+	    viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
-
+	    
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
-        }
+    	}
     }
     
     private static VkExtent2D transformToExtent(VkExtent2D extent2D, int w, int h) {
@@ -711,17 +698,13 @@ public class Renderer {
     
     private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
         int pretransformFlags = Vulkan.getPretransformFlags();
-    
-        if (pretransformFlags == 0) {
-            // No transformation needed
+        if(pretransformFlags == 0) {
             offset2D.set(x, y);
             return offset2D;
         }
-    
         Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
         int framebufferWidth = boundFramebuffer.getWidth();
         int framebufferHeight = boundFramebuffer.getHeight();
-    
         switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
                 offset2D.x(framebufferWidth - h - y);
@@ -748,22 +731,14 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
+        	VkExtent2D extent = VkExtent2D.malloc(stack);
             Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
-
-            VkExtent2D extent = VkExtent2D.malloc(stack);
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
-
-            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
             
-          // Adjust y coordinate to Vulkan's coordinate system
-            int adjustedY = framebufferHeight - (y + height);
-        
-            VkOffset2D offset = VkOffset2D.malloc(stack);
-            transformToOffset(offset, x, adjustedY, width, height);
-        
-            scissor.offset(offset);
-            scissor.extent(transformToExtent(VkExtent2D.malloc(stack), width, height));
+            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+            scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
+            scissor.extent(transformToExtent(extent, width, height));
 
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
@@ -774,18 +749,7 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
-
-            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-
-            // Reset scissor to cover the entire framebuffer
-            VkOffset2D offset = VkOffset2D.malloc(stack);
-            offset.x(0);
-            offset.y(0);
-
-            scissor.offset(offset);
-            scissor.extent(transformToExtent(VkExtent2D.malloc(stack), boundFramebuffer.getWidth(), boundFramebuffer.getHeight()));
-
+            VkRect2D.Buffer scissor = INSTANCE.boundFramebuffer.scissor(stack);
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
     }
