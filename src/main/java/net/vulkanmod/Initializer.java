@@ -52,32 +52,32 @@ public class Initializer implements ClientModInitializer {
         // Recompile Renderer and log config
         Renderer.recompile = true;
         LOGGER.info("==> Config Logger <===");
-        LOGGER.info("Frame Queue Size: " + config.frameQueueSize);
-        LOGGER.info("Show Device RAM: " + config.showDeviceRAM);
-        LOGGER.info("Show Pojav Info: " + config.pojavInfo);
-        LOGGER.info("Advanced Culling: " + config.advCulling);
-        LOGGER.info("Indirect Draw: " + config.indirectDraw);
-        LOGGER.info("Low VRAM Mode: " + config.perRenderTypeAreaBuffers);
-        LOGGER.info("Fast Leaves Fix: " + config.fastLeavesFix);
-        LOGGER.info("Entity Culling: " + config.entityCulling);
-        LOGGER.info("Animations: " + config.animations);
-        LOGGER.info("Render Sky: " + config.renderSky);
-        LOGGER.info("Render Sky Fog: " + config.renderSkyFog);
-        LOGGER.info("Render Cloud Fog: " + config.renderCloudFog);
-        LOGGER.info("Fix Post-effect Bug: " + config.postEffectFix);
-        LOGGER.info("Render Fog: " + config.renderFog);
-        LOGGER.info("Entity Outline: " + config.entityOutline);
-        LOGGER.info("Exclude Sampled Usage: " + config.dontUseImageSampled);
-        LOGGER.info("Reset Highest Usage Records: " + config.resetHighUsageRec);
-        LOGGER.info("Show Low RAM Warning: " + config.showlowRAM);
-        LOGGER.info("Faster Gaussian Sky Blending: " + config.gaussianSkyBlending);
-        LOGGER.info("Disable Depth Write if Translucent: " + config.depthWrite);
-        LOGGER.info("Force FIFO VSync: " + config.forceFIFOVsync);
-        LOGGER.info("Present Mode: " + config.presentMode);
-        LOGGER.info("Device RAM Info update delay: " + config.ramInfoUpdate);
-        LOGGER.info("Swapchain Images: " + config.imageCount);
-        LOGGER.info("Device: " + config.device);
-        LOGGER.info("Ambient Occlusion: " + config.ambientOcclusion);
+        LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
+        LOGGER.info("Show Device RAM: " + CONFIG.showDeviceRAM);
+        LOGGER.info("Show Pojav Info: " + CONFIG.pojavInfo);
+        LOGGER.info("Advanced Culling: " + CONFIG.advCulling);
+        LOGGER.info("Indirect Draw: " + CONFIG.indirectDraw);
+        LOGGER.info("Low VRAM Mode: " + CONFIG.perRenderTypeAreaBuffers);
+        LOGGER.info("Fast Leaves Fix: " + CONFIG.fastLeavesFix);
+        LOGGER.info("Entity Culling: " + CONFIG.entityCulling);
+        LOGGER.info("Animations: " + CONFIG.animations);
+        LOGGER.info("Render Sky: " + CONFIG.renderSky);
+        LOGGER.info("Render Sky Fog: " + CONFIG.renderSkyFog);
+        LOGGER.info("Render Cloud Fog: " + CONFIG.renderCloudFog);
+        LOGGER.info("Fix Post-effect Bug: " + CONFIG.postEffectFix);
+        LOGGER.info("Render Fog: " + CONFIG.renderFog);
+        LOGGER.info("Entity Outline: " + CONFIG.entityOutline);
+        LOGGER.info("Exclude Sampled Usage: " + CONFIG.dontUseImageSampled);
+        LOGGER.info("Reset Highest Usage Records: " + CONFIG.resetHighUsageRec);
+        LOGGER.info("Show Low RAM Warning: " + CONFIG.showlowRAM);
+        LOGGER.info("Faster Gaussian Sky Blending: " + CONFIG.gaussianSkyBlending);
+        LOGGER.info("Disable Depth Write if Translucent: " + CONFIG.depthWrite);
+        LOGGER.info("Force FIFO VSync: " + CONFIG.forceFIFOVsync);
+        LOGGER.info("Present Mode: " + CONFIG.presentMode);
+        LOGGER.info("Device RAM Info update delay: " + CONFIG.ramInfoUpdate);
+        LOGGER.info("Swapchain Images: " + CONFIG.imageCount);
+        LOGGER.info("Device: " + CONFIG.device);
+        LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
     }
 
     private static void initializeConfig() {
