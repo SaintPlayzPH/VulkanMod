@@ -668,6 +668,25 @@ public class Renderer {
         }
     }
 
+    public static void setViewport2(int x, int y, int width, int height) {
+        try(MemoryStack stack = stackPush()) {
+            VkViewport.Buffer viewport = VkViewport.calloc(1, stack);
+            viewport.x(x);
+            viewport.y(height + y);
+            viewport.width(width);
+            viewport.height(-height);
+            viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
+
+            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+            scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
+            scissor.extent(VkExtent2D.malloc(stack).set(width, height));
+
+            vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
+            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
+        }
+    }
+
     public static void resetViewport() {
         try (MemoryStack stack = stackPush()) {
             int width = getSwapChain().getWidth();
