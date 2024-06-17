@@ -311,7 +311,6 @@ public class Renderer {
 
             int vkResult;
 
-            // Set up submission info
             VkSubmitInfo submitInfo = VkSubmitInfo.calloc(stack);
             submitInfo.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO);
 
@@ -320,28 +319,30 @@ public class Renderer {
             submitInfo.pWaitDstStageMask(stack.ints(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT));
 
             submitInfo.pSignalSemaphores(stack.longs(renderFinishedSemaphores.get(currentFrame)));
+
             submitInfo.pCommandBuffers(stack.pointers(currentCmdBuffer));
 
-            // Reset the fence before submitting
-            vkResetFences(device, inFlightFences.get(currentFrame));
+            vkResetFences(device, stack.longs(inFlightFences.get(currentFrame)));
 
-            // Submit the command buffer to the graphics queue
+            Synchronization.INSTANCE.waitFences();
+
             if ((vkResult = vkQueueSubmit(DeviceManager.getGraphicsQueue().queue(), submitInfo, inFlightFences.get(currentFrame))) != VK_SUCCESS) {
+                vkResetFences(device, stack.longs(inFlightFences.get(currentFrame)));
                 throw new RuntimeException("Failed to submit draw command buffer: " + vkResult);
             }
 
-            // Set up present info
             VkPresentInfoKHR presentInfo = VkPresentInfoKHR.calloc(stack);
             presentInfo.sType(VK_STRUCTURE_TYPE_PRESENT_INFO_KHR);
+
             presentInfo.pWaitSemaphores(stack.longs(renderFinishedSemaphores.get(currentFrame)));
+
             presentInfo.swapchainCount(1);
             presentInfo.pSwapchains(stack.longs(Vulkan.getSwapChain().getId()));
+
             presentInfo.pImageIndices(stack.ints(imageIndex));
 
-            // Present the swapchain image
             vkResult = vkQueuePresentKHR(DeviceManager.getPresentQueue().queue(), presentInfo);
 
-            // Handle swapchain recreation if necessary
             if (vkResult == VK_ERROR_OUT_OF_DATE_KHR || vkResult == VK_SUBOPTIMAL_KHR || swapChainUpdate) {
                 swapChainUpdate = true;
                 return;
@@ -349,12 +350,8 @@ public class Renderer {
                 throw new RuntimeException("Failed to present swap chain image");
             }
 
-            // Update current frame index
             currentFrame = (currentFrame + 1) % framesNum;
         }
-
-        // Move fence waiting outside of stack allocation to minimize stack usage
-        Synchronization.INSTANCE.waitFences();
     }
 
     public void endRenderPass() {
@@ -642,33 +639,39 @@ public class Renderer {
     }
 
     public static void setViewport(int x, int y, int width, int height) {
-	if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
+    if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
         return;
-	
-        try(MemoryStack stack = stackPush()) {
-            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
-            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
-            VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
-            x = transformedOffset.x();
-            y = transformedOffset.y();
-            width = transformedExtent.width();
-            height = transformedExtent.height();
+    try (MemoryStack stack = stackPush()) {
+        // Transform extent and offset based on pretransform flags
+        VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
+        VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
+        
+        // Prepare the viewport buffer
+        VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
-            viewport.x(x);
-            viewport.y(height + y);
-            viewport.width(width);
-            viewport.height(-height);
-            viewport.minDepth(0.0f);
-            viewport.maxDepth(1.0f);
+        x = transformedOffset.x();
+        y = transformedOffset.y();
+        width = transformedExtent.width();
+        height = transformedExtent.height();
 
-            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
-            scissor.extent(transformedExtent);
+        // Set the viewport parameters
+        viewport.x(x);
+        viewport.y(height + y);  // Correct the y coordinate
+        viewport.width(width);
+        viewport.height(-height);  // Invert the height for Vulkan's coordinate system
+        viewport.minDepth(0.0f);
+        viewport.maxDepth(1.0f);
 
-            vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
-            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
-        }
+        // Prepare the scissor rectangle
+        VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+        scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
+        scissor.extent(transformedExtent);
+
+        // Record the commands to set the viewport and scissor in the command buffer
+        vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
+        vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
+    }
     }
 
     public static void resetViewport() {
@@ -701,16 +704,20 @@ public class Renderer {
     
     private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
         int pretransformFlags = Vulkan.getPretransformFlags();
-        if(pretransformFlags == 0) {
+    
+        if (pretransformFlags == 0) {
+            // No transformation needed
             offset2D.set(x, y);
             return offset2D;
         }
+    
         Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
         int framebufferWidth = boundFramebuffer.getWidth();
         int framebufferHeight = boundFramebuffer.getHeight();
+    
         switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                offset2D.x(framebufferWidth - h - y);
+                offset2D.x(framebufferHeight - h - y); // Note: framebufferWidth is replaced with framebufferHeight
                 offset2D.y(x);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
@@ -719,7 +726,7 @@ public class Renderer {
             }
             case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
                 offset2D.x(y);
-                offset2D.y(framebufferHeight - w - x);
+                offset2D.y(framebufferWidth - w - x); // Note: framebufferHeight is replaced with framebufferWidth
             }
             default -> {
                 offset2D.x(x);
@@ -734,14 +741,22 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            VkExtent2D extent = VkExtent2D.malloc(stack);
             Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+
+            VkExtent2D extent = VkExtent2D.malloc(stack);
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
-            
+
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
-            scissor.extent(transformToExtent(extent, width, height));
+            
+        // Adjust y coordinate to Vulkan's coordinate system
+            int adjustedY = framebufferHeight - (y + height);
+        
+            VkOffset2D offset = VkOffset2D.malloc(stack);
+            transformToOffset(offset, x, adjustedY, width, height);
+        
+            scissor.offset(offset);
+            scissor.extent(transformToExtent(VkExtent2D.malloc(stack), width, height));
 
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
