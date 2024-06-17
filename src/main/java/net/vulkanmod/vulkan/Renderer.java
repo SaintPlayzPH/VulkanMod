@@ -311,6 +311,7 @@ public class Renderer {
 
             int vkResult;
 
+            // Set up submission info
             VkSubmitInfo submitInfo = VkSubmitInfo.calloc(stack);
             submitInfo.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO);
 
@@ -319,29 +320,28 @@ public class Renderer {
             submitInfo.pWaitDstStageMask(stack.ints(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT));
 
             submitInfo.pSignalSemaphores(stack.longs(renderFinishedSemaphores.get(currentFrame)));
-
             submitInfo.pCommandBuffers(stack.pointers(currentCmdBuffer));
 
+            // Reset the fence before submitting
             vkResetFences(device, inFlightFences.get(currentFrame));
 
-            Synchronization.INSTANCE.waitFences();
-
+            // Submit the command buffer to the graphics queue
             if ((vkResult = vkQueueSubmit(DeviceManager.getGraphicsQueue().queue(), submitInfo, inFlightFences.get(currentFrame))) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to submit draw command buffer: " + vkResult);
             }
 
+            // Set up present info
             VkPresentInfoKHR presentInfo = VkPresentInfoKHR.calloc(stack);
             presentInfo.sType(VK_STRUCTURE_TYPE_PRESENT_INFO_KHR);
-
             presentInfo.pWaitSemaphores(stack.longs(renderFinishedSemaphores.get(currentFrame)));
-
             presentInfo.swapchainCount(1);
             presentInfo.pSwapchains(stack.longs(Vulkan.getSwapChain().getId()));
-
             presentInfo.pImageIndices(stack.ints(imageIndex));
 
+            // Present the swapchain image
             vkResult = vkQueuePresentKHR(DeviceManager.getPresentQueue().queue(), presentInfo);
 
+            // Handle swapchain recreation if necessary
             if (vkResult == VK_ERROR_OUT_OF_DATE_KHR || vkResult == VK_SUBOPTIMAL_KHR || swapChainUpdate) {
                 swapChainUpdate = true;
                 return;
@@ -349,8 +349,12 @@ public class Renderer {
                 throw new RuntimeException("Failed to present swap chain image");
             }
 
+            // Update current frame index
             currentFrame = (currentFrame + 1) % framesNum;
         }
+
+        // Move fence waiting outside of stack allocation to minimize stack usage
+        Synchronization.INSTANCE.waitFences();
     }
 
     public void endRenderPass() {
