@@ -756,7 +756,7 @@ public class Renderer {
 
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
             
-        // Adjust y coordinate to Vulkan's coordinate system
+          // Adjust y coordinate to Vulkan's coordinate system
             int adjustedY = framebufferHeight - (y + height);
         
             VkOffset2D offset = VkOffset2D.malloc(stack);
@@ -774,7 +774,18 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-            VkRect2D.Buffer scissor = INSTANCE.boundFramebuffer.scissor(stack);
+            Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+
+            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+
+            // Reset scissor to cover the entire framebuffer
+            VkOffset2D offset = VkOffset2D.malloc(stack);
+            offset.x(0);
+            offset.y(0);
+
+            scissor.offset(offset);
+            scissor.extent(transformToExtent(VkExtent2D.malloc(stack), boundFramebuffer.getWidth(), boundFramebuffer.getHeight()));
+
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
     }
