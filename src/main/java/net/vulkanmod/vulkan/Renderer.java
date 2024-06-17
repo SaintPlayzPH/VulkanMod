@@ -349,7 +349,7 @@ public class Renderer {
                 throw new RuntimeException("Failed to present swap chain image");
             }
 
-            currentFrame = (currentFrame + 1) % framesNum;
+            currentFrame = (currentFrame + 8) % framesNum;
         }
     }
 
