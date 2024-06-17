@@ -46,10 +46,6 @@ public class Initializer implements ClientModInitializer {
             LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
             loggedDevice = true;
         }
-        Platform.init();
-        VideoModeManager.init();
-        
-        // Recompile Renderer and log config
         Renderer.recompile = true;
         LOGGER.info("==> Config Logger <===");
         LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
@@ -78,6 +74,8 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Swapchain Images: " + CONFIG.imageCount);
         LOGGER.info("Device: " + CONFIG.device);
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
+        Platform.init();
+        VideoModeManager.init();
     }
 
     private static void initializeConfig() {
