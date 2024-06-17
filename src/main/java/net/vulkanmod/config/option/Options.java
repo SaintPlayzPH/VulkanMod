@@ -16,6 +16,7 @@ import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 
 import java.util.stream.IntStream;
 
+import static net.vulkanmod.vulkan.Vulkan.getSurface;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 
 public abstract class Options {
