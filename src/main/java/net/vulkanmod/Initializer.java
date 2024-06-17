@@ -51,37 +51,6 @@ public class Initializer implements ClientModInitializer {
         
         // Recompile Renderer and log config
         Renderer.recompile = true;
-        logConfig(CONFIG);
-    }
-
-    private static void initializeConfig() {
-        var configPath = FabricLoader.getInstance()
-                .getConfigDir()
-                .resolve("vulkanmod_settings.json");
-
-        CONFIG = loadConfig(configPath);
-    }
-
-    private static Config loadConfig(Path path) {
-        Config config = Config.load(path);
-
-        if (config == null) {
-            config = new Config();
-            config.write();
-        }
-
-        return config;
-    }
-
-    private static boolean isRunningOnMobile() {
-        return System.getenv("POJAV_RENDERER") != null;
-    }
-
-    public static String getVersion() {
-        return VERSION;
-    }
-
-    private static void logConfig(Config config) {
         LOGGER.info("==> Config Logger <===");
         LOGGER.info("Frame Queue Size: " + config.frameQueueSize);
         LOGGER.info("Show Device RAM: " + config.showDeviceRAM);
@@ -109,5 +78,32 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Swapchain Images: " + config.imageCount);
         LOGGER.info("Device: " + config.device);
         LOGGER.info("Ambient Occlusion: " + config.ambientOcclusion);
+    }
+
+    private static void initializeConfig() {
+        var configPath = FabricLoader.getInstance()
+                .getConfigDir()
+                .resolve("vulkanmod_settings.json");
+
+        CONFIG = loadConfig(configPath);
+    }
+
+    private static Config loadConfig(Path path) {
+        Config config = Config.load(path);
+
+        if (config == null) {
+            config = new Config();
+            config.write();
+        }
+
+        return config;
+    }
+
+    private static boolean isRunningOnMobile() {
+        return System.getenv("SCL_RENDERER") != null || System.getenv("POJAV_RENDERER") != null || System.getenv("POJAV_ENVIRON") != null || System.getenv("POJAV_ENVIRON") != null;
+    }
+
+    public static String getVersion() {
+        return VERSION;
     }
 }
