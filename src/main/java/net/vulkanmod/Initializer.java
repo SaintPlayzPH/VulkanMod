@@ -82,6 +82,7 @@ public class Initializer implements ClientModInitializer {
     }
 
     private static void logConfig(Config config) {
+        LOGGER.info("==> Config Logger <===");
         LOGGER.info("Frame Queue Size: " + config.frameQueueSize);
         LOGGER.info("Show Device RAM: " + config.showDeviceRAM);
         LOGGER.info("Show Pojav Info: " + config.pojavInfo);
@@ -94,7 +95,7 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Render Sky: " + config.renderSky);
         LOGGER.info("Render Sky Fog: " + config.renderSkyFog);
         LOGGER.info("Render Cloud Fog: " + config.renderCloudFog);
-        LOGGER.info("Post-effect Fix: " + config.postEffectFix);
+        LOGGER.info("Fix Post-effect Bug: " + config.postEffectFix);
         LOGGER.info("Render Fog: " + config.renderFog);
         LOGGER.info("Entity Outline: " + config.entityOutline);
         LOGGER.info("Exclude Sampled Usage: " + config.dontUseImageSampled);
@@ -104,8 +105,8 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Disable Depth Write if Translucent: " + config.depthWrite);
         LOGGER.info("Force FIFO VSync: " + config.forceFIFOVsync);
         LOGGER.info("Present Mode: " + config.presentMode);
-        LOGGER.info("RAM Info Update: " + config.ramInfoUpdate);
-        LOGGER.info("Image Count: " + config.imageCount);
+        LOGGER.info("Device RAM Info update delay: " + config.ramInfoUpdate);
+        LOGGER.info("Swapchain Images: " + config.imageCount);
         LOGGER.info("Device: " + config.device);
         LOGGER.info("Ambient Occlusion: " + config.ambientOcclusion);
     }
