@@ -74,7 +74,8 @@ public class ShaderInstanceM implements ShaderMixed {
 
         try {
             if(Pipeline.class.getResourceAsStream(String.format("/assets/vulkanmod/shaders/minecraft/core/%s/%s.json", name, name)) == null) {
-                createLegacyShader(resourceProvider, new ResourceLocation("shaders/core/" + name + ".json"), format);
+                ResourceLocation res = ResourceLocation(name);
+                createLegacyShader(resourceProvider, new ResourceLocation(res.getNamespace(), "shaders/core/" + res.getPath() + ".json"), format);
                 return;
             }
 
