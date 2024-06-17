@@ -717,7 +717,7 @@ public class Renderer {
     
         switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                offset2D.x(framebufferHeight - h - y); // Note: framebufferWidth is replaced with framebufferHeight
+                offset2D.x(framebufferWidth - h - y); // Note: framebufferWidth is replaced with framebufferHeight
                 offset2D.y(x);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
@@ -726,7 +726,7 @@ public class Renderer {
             }
             case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
                 offset2D.x(y);
-                offset2D.y(framebufferWidth - w - x); // Note: framebufferHeight is replaced with framebufferWidth
+                offset2D.y(framebufferHeight - w - x); // Note: framebufferHeight is replaced with framebufferWidth
             }
             default -> {
                 offset2D.x(x);
