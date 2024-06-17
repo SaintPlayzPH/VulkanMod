@@ -639,57 +639,64 @@ public class Renderer {
     }
 
     public static void setViewport(int x, int y, int width, int height) {
-    if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
-        return;
+        if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
+            return;
 
-    try (MemoryStack stack = stackPush()) {
-        // Transform extent and offset based on pretransform flags
-        VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
-        VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
+        try (MemoryStack stack = stackPush()) {
+            // Transform extent and offset based on pretransform flags
+            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
+            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
         
-        // Prepare the viewport buffer
-        VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
+            // Prepare the viewport buffer
+            VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
-        x = transformedOffset.x();
-        y = transformedOffset.y();
-        width = transformedExtent.width();
-        height = transformedExtent.height();
+            x = transformedOffset.x();
+            y = transformedOffset.y();
+            width = transformedExtent.width();
+            height = transformedExtent.height();
 
-        // Set the viewport parameters
-        viewport.x(x);
-        viewport.y(height + y);  // Correct the y coordinate
-        viewport.width(width);
-        viewport.height(-height);  // Invert the height for Vulkan's coordinate system
-        viewport.minDepth(0.0f);
-        viewport.maxDepth(1.0f);
+            // Set the viewport parameters
+            viewport.x(x);
+            viewport.y(height + y);  // Correct the y coordinate
+            viewport.width(width);
+            viewport.height(-height);  // Invert the height for Vulkan's coordinate system
+            viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
 
-        // Prepare the scissor rectangle
-        VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-        scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
-        scissor.extent(transformedExtent);
+            // Prepare the scissor rectangle
+            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+            scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
+            scissor.extent(transformedExtent);
 
-        // Record the commands to set the viewport and scissor in the command buffer
-        vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
-        vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
-    }
+            // Record the commands to set the viewport and scissor in the command buffer
+            vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
+            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
+        }
     }
 
     public static void resetViewport() {
+        if (!INSTANCE.recordingCmds || INSTANCE.boundFramebuffer == null)
+            return;
+
+        int width = getSwapChain().getWidth();
+        int height = getSwapChain().getHeight();
+
         try (MemoryStack stack = stackPush()) {
-            int width = getSwapChain().getWidth();
-            int height = getSwapChain().getHeight();
-	    
+            VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
-	    
+
+            int transformedWidth = transformedExtent.width();
+            int transformedHeight = transformedExtent.height();
+
             viewport.x(0.0f);
-            viewport.y(height);
-            viewport.width(width);
-            viewport.height(-height);
-	    viewport.minDepth(0.0f);
+            viewport.y(transformedHeight); // Start at the top of the transformed height
+            viewport.width(transformedWidth);
+            viewport.height(-transformedHeight); // Invert height for Vulkan's coordinate system
+            viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
-	    
+
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
-    	}
+        }
     }
     
     private static VkExtent2D transformToExtent(VkExtent2D extent2D, int w, int h) {
@@ -717,7 +724,7 @@ public class Renderer {
     
         switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                offset2D.x(framebufferWidth - h - y); // Note: framebufferWidth is replaced with framebufferHeight
+                offset2D.x(framebufferWidth - h - y);
                 offset2D.y(x);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
@@ -726,7 +733,7 @@ public class Renderer {
             }
             case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
                 offset2D.x(y);
-                offset2D.y(framebufferHeight - w - x); // Note: framebufferHeight is replaced with framebufferWidth
+                offset2D.y(framebufferHeight - w - x);
             }
             default -> {
                 offset2D.x(x);
