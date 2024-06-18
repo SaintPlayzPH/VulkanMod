@@ -202,7 +202,7 @@ public abstract class VRenderSystem {
     public static void setPolygonModeGL(final int mode) {
         VRenderSystem.polygonMode = switch (mode) {
             case GL11.GL_POINT -> VK_POLYGON_MODE_POINT;
-            case GL11.GL_LINE -> VK_POLYGON_MODE_LINE;
+            case GL11.GL_LINE, GL11.GL_FRONT_AND_BACK -> VK_POLYGON_MODE_LINE;
             case GL11.GL_FILL -> VK_POLYGON_MODE_FILL;
             default -> throw new RuntimeException(String.format("Unknown GL polygon mode: %s", mode));
         };
