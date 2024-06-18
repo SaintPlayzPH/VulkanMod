@@ -654,7 +654,7 @@ public class Renderer {
             height = transformedExtent.height();
 
             viewport.x(x);
-            viewport.y(y); // No need to flip y here
+            viewport.y(y); // Adjust y based on rotation
             viewport.width(width);
             viewport.height(height);
             viewport.minDepth(0.0f);
@@ -697,9 +697,9 @@ public class Renderer {
 
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
             viewport.x(0.0f);
-            viewport.y(0.0f);
+            viewport.y(height);
             viewport.width(width);
-            viewport.height(height);
+            viewport.height(-height);
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
 
