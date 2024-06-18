@@ -698,32 +698,26 @@ public class Renderer {
     
     private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
         int pretransformFlags = Vulkan.getPretransformFlags();
-        if(pretransformFlags == 0) {
-            offset2D.set(x, y);
-            return offset2D;
+        if (pretransformFlags == 0) {
+            return offset2D.set(x, y);
         }
+
         Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
         int framebufferWidth = boundFramebuffer.getWidth();
         int framebufferHeight = boundFramebuffer.getHeight();
-        switch (pretransformFlags) {
+
+        return switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                offset2D.x(framebufferWidth - h - y);
-                offset2D.y(x);
+                yield offset2D.set(framebufferWidth - h - y, x);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
-                offset2D.x(framebufferWidth - w - x);
-                offset2D.y(framebufferHeight - h - y);
+                yield offset2D.set(framebufferWidth - w - x, framebufferHeight - h - y);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
-                offset2D.x(y);
-                offset2D.y(framebufferHeight - w - x);
+                yield offset2D.set(y, framebufferHeight - w - x);
             }
-            default -> {
-                offset2D.x(x);
-                offset2D.y(y);
-            }
-        }
-        return offset2D;
+            default -> offset2D.set(x, y);
+        };
     }
 
     public static void setScissor(int x, int y, int width, int height) {
