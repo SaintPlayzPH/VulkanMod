@@ -675,8 +675,8 @@ public class Renderer {
 	    
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 	    
-            viewport.x(height);
-            viewport.y(0.0f);
+            viewport.x(0.0f);
+            viewport.y(height);
             viewport.width(width);
             viewport.height(-height);
 	    viewport.minDepth(0.0f);
