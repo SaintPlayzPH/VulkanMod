@@ -412,7 +412,7 @@ public abstract class Pipeline {
             vkUpdateDescriptorSets(DEVICE, descriptorWrites, null);
         }
 
-        private boolean transitionSamplers(UniformBuffers uniformBuffers) {
+        private boolean transitionSamplers(UniformBuffer uniformBuffers) {
             boolean changed = false;
             for(int j = 0; j < imageDescriptors.size(); ++j) {
                 ImageDescriptor imageDescriptor = imageDescriptors.get(j);
