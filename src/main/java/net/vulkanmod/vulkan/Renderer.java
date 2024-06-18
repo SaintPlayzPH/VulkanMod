@@ -654,9 +654,9 @@ public class Renderer {
             height = transformedExtent.height();
 
             viewport.x(x);
-            viewport.y(height + y); // Flip Y-axis for Vulkan's coordinate system
+            viewport.y(y); // No need to flip y here
             viewport.width(width);
-            viewport.height(-height); // Negative height for Y-axis flip
+            viewport.height(height);
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
 
@@ -664,7 +664,27 @@ public class Renderer {
             scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
             scissor.extent(transformedExtent);
 
-            Initializer.LOGGER.info("Setting viewport: x=%d, y=%d, width=%d, height=%d%n", x, y, width, height);
+            Initializer.LOGGER.info(String.format("Setting viewport: x=%d, y=%d, width=%d, height=%d", x, y, width, height));
+            vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
+            vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
+        }
+    }
+
+    public static void setViewport2(int x, int y, int width, int height) {
+        try (MemoryStack stack = stackPush()) {
+            VkViewport.Buffer viewport = VkViewport.calloc(1, stack);
+            viewport.x(x);
+            viewport.y(y);
+            viewport.width(width);
+            viewport.height(height);
+            viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
+
+            VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
+            scissor.offset(VkOffset2D.malloc(stack).set(0, 0));
+            scissor.extent(VkExtent2D.malloc(stack).set(width, height));
+
+            Initializer.LOGGER.info(String.format("Setting viewport2: x=%d, y=%d, width=%d, height=%d", x, y, width, height));
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
@@ -677,13 +697,13 @@ public class Renderer {
 
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
             viewport.x(0.0f);
-            viewport.y(height);
+            viewport.y(0.0f);
             viewport.width(width);
-            viewport.height(-height);
+            viewport.height(height);
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
 
-            Initializer.LOGGER.info("Resetting viewport: width=%d, height=%d%n", width, height);
+            Initializer.LOGGER.info(String.format("Resetting viewport: width=%d, height=%d", width, height));
             vkCmdSetViewport(INSTANCE.currentCmdBuffer, 0, viewport);
         }
     }
@@ -692,10 +712,10 @@ public class Renderer {
         int pretransformFlags = Vulkan.getPretransformFlags();
         if (pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR ||
             pretransformFlags == VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) {
-            Initializer.LOGGER.info("Transforming extent for 90/270 rotation: (%d, %d)%n", h, w);
+            Initializer.LOGGER.info(String.format("Transforming extent for 90/270 rotation: (%d, %d)", h, w));
             return extent2D.set(h, w);
         } else {
-            Initializer.LOGGER.info("Transforming extent for no rotation or 180: (%d, %d)%n", w, h);
+            Initializer.LOGGER.info(String.format("Transforming extent for no rotation or 180: (%d, %d)", w, h));
             return extent2D.set(w, h);
         }
     }
@@ -712,15 +732,15 @@ public class Renderer {
 
         return switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                Initializer.LOGGER.info("Offset for 90 rotation: (%d, %d)%n", framebufferWidth - h - y, x);
+                Initializer.LOGGER.info(String.format("Offset for 90 rotation: (%d, %d)", framebufferWidth - h - y, x));
                 yield offset2D.set(framebufferWidth - h - y, x);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
-                Initializer.LOGGER.info("Offset for 180 rotation: (%d, %d)%n", framebufferWidth - w - x, framebufferHeight - h - y);
+                Initializer.LOGGER.info(String.format("Offset for 180 rotation: (%d, %d)", framebufferWidth - w - x, framebufferHeight - h - y));
                 yield offset2D.set(framebufferWidth - w - x, framebufferHeight - h - y);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
-                Initializer.LOGGER.info("Offset for 270 rotation: (%d, %d)%n", y, framebufferHeight - w - x);
+                Initializer.LOGGER.info(String.format("Offset for 270 rotation: (%d, %d)", y, framebufferHeight - w - x));
                 yield offset2D.set(y, framebufferHeight - w - x);
             }
             default -> offset2D.set(x, y);
@@ -742,7 +762,7 @@ public class Renderer {
             scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
             scissor.extent(transformToExtent(extent, width, height));
 
-            Initializer.LOGGER.info("Setting scissor: x=%d, y=%d, width=%d, height=%d%n", x, y, width, height);
+            Initializer.LOGGER.info(String.format("Setting scissor: x=%d, y=%d, width=%d, height=%d", x, y, width, height));
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
         }
     }
