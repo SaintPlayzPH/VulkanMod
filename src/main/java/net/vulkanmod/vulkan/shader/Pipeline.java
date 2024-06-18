@@ -257,8 +257,8 @@ public abstract class Pipeline {
             try (MemoryStack stack = stackPush()) {
 
                 this.updateUniforms(uniformBuffer);
-                this.updateDescriptorSet(stack, uniformBuffers);
-
+                this.updateDescriptorSet(stack, uniformBuffer);
+  
                 vkCmdBindDescriptorSets(commandBuffer, bindPoint, pipeline.pipelineLayout,
                         0, stack.longs(currentSet), dynamicOffsets);
             }
