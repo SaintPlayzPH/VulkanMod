@@ -74,9 +74,7 @@ public class PostPassM {
         VRenderSystem.disableCull();
         RenderSystem.depthFunc(519);
 
-        // Log the target dimensions and set the viewport correctly
-        Initializer.LOGGER.info(String.format("PostPassM: Setting viewport with outTarget dimensions: width=%d, height=%d", this.outTarget.width, this.outTarget.height));
-        Renderer.setViewport(0, 0, this.outTarget.width, this.outTarget.height);
+        Renderer.setViewport(0, this.outTarget.height, this.outTarget.width, -this.outTarget.height);
         Renderer.resetScissor();
 
         this.effect.apply();
