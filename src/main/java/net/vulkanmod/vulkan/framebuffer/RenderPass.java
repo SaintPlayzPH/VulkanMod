@@ -3,7 +3,6 @@ package net.vulkanmod.vulkan.framebuffer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.memory.MemoryManager;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
@@ -26,14 +25,14 @@ public class RenderPass {
         this.depthAttachmentInfo = depthAttachmentInfo;
 
         int count = 0;
-        if (colorAttachmentInfo != null)
+        if(colorAttachmentInfo != null)
             count++;
-        if (depthAttachmentInfo != null)
+        if(depthAttachmentInfo != null)
             count++;
 
         this.attachmentCount = count;
 
-        if (!Vulkan.DYNAMIC_RENDERING) {
+        if(!Vulkan.DYNAMIC_RENDERING) {
             framebuffer.addRenderPass(this);
 
             createRenderPass();
@@ -43,7 +42,7 @@ public class RenderPass {
 
     private void createRenderPass() {
 
-        try (MemoryStack stack = MemoryStack.stackPush()) {
+        try(MemoryStack stack = MemoryStack.stackPush()) {
             VkAttachmentDescription.Buffer attachments = VkAttachmentDescription.calloc(attachmentCount, stack);
             VkAttachmentReference.Buffer attachmentRefs = VkAttachmentReference.calloc(attachmentCount, stack);
 
@@ -53,7 +52,7 @@ public class RenderPass {
             int i = 0;
 
             // Color attachment
-            if (colorAttachmentInfo != null) {
+            if(colorAttachmentInfo != null) {
                 VkAttachmentDescription colorAttachment = attachments.get(i);
                 colorAttachment.format(colorAttachmentInfo.format)
                         .samples(VK_SAMPLE_COUNT_1_BIT)
@@ -61,7 +60,7 @@ public class RenderPass {
                         .storeOp(colorAttachmentInfo.storeOp)
                         .stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE)
                         .stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE)
-                        .initialLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
+                        .initialLayout(VK_IMAGE_LAYOUT_UNDEFINED)
                         .finalLayout(colorAttachmentInfo.finalLayout);
 
                 VkAttachmentReference colorAttachmentRef = attachmentRefs.get(0)
@@ -75,7 +74,7 @@ public class RenderPass {
             }
 
             // Depth-Stencil attachment
-            if (depthAttachmentInfo != null) {
+            if(depthAttachmentInfo != null) {
                 VkAttachmentDescription depthAttachment = attachments.get(i);
                 depthAttachment.format(depthAttachmentInfo.format)
                         .samples(VK_SAMPLE_COUNT_1_BIT)
@@ -99,38 +98,33 @@ public class RenderPass {
                     .pSubpasses(subpass);
 
             //Layout transition subpass depency
-            switch (colorAttachmentInfo.finalLayout) {
-                case VK_IMAGE_LAYOUT_PRESENT_SRC_KHR -> {
-                    VkSubpassDependency.Buffer subpassDependencies = VkSubpassDependency.calloc(1, stack);
-                    subpassDependencies.get(0)
-                            .srcSubpass(VK_SUBPASS_EXTERNAL)
-                            .dstSubpass(0)
-                            .srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-                            .dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-                            .srcAccessMask(0)
-                            .dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-                            .dependencyFlags(VK_DEPENDENCY_BY_REGION_BIT);
+            if(colorAttachmentInfo.finalLayout == VK_IMAGE_LAYOUT_PRESENT_SRC_KHR) {
+                VkSubpassDependency.Buffer vkSubpassDependency = VkSubpassDependency.calloc(2, stack);
 
-                    renderPassInfo.pDependencies(subpassDependencies);
-                }
-                case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL -> {
-                    VkSubpassDependency.Buffer subpassDependencies = VkSubpassDependency.calloc(1, stack);
-                    subpassDependencies.get(0)
-                            .srcSubpass(0)
-                            .dstSubpass(VK_SUBPASS_EXTERNAL)
-                            .srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
-                            .dstStageMask(VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
-                            .srcAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-                            .dstAccessMask(VK_ACCESS_SHADER_READ_BIT)
-                            .dependencyFlags(VK_DEPENDENCY_BY_REGION_BIT);
 
-                    renderPassInfo.pDependencies(subpassDependencies);
-                }
+                vkSubpassDependency.get(0) //Execution Dependency to handle colour Attachment Writes + Present Output (Hopefully)
+                        .srcSubpass(VK_SUBPASS_EXTERNAL)
+                        .dstSubpass(0)
+                        .srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT) //Must Match .pWaitDstStageMask() to form Dependency chain
+                        .dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
+                        .srcAccessMask(0)  //We only care about above Dependency chain with .pWaitDstStageMask(), so skip wait on PREV cmdBuffer
+                        .dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT) //THIS CmdBuffer to finish Load Op clear
+                        .dependencyFlags(VK_DEPENDENCY_BY_REGION_BIT); //Restrict to Fragment only Regions/Ops
+
+                vkSubpassDependency.get(1) //Mem Barrier for Depth Attachment
+                        .srcSubpass(VK_SUBPASS_EXTERNAL)
+                        .dstSubpass(0)
+                        .srcStageMask(VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT) //Might be faster than (LATE_FRAGMENT_TESTS|EARLY_FRAGMENT_TESTS)
+                        .dstStageMask(VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT) //Might be faster than (LATE_FRAGMENT_TESTS|EARLY_FRAGMENT_TESTS)
+                        .srcAccessMask(VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT) //PREV CmdBuffer to finish Writing to Depth Attachment
+                        .dstAccessMask(VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT) //THIS CmdBuffer to finish Load Op clear
+                        .dependencyFlags(VK_DEPENDENCY_BY_REGION_BIT); //Restrict to Fragment only Regions/Ops
+                renderPassInfo.pDependencies(vkSubpassDependency);
             }
 
             LongBuffer pRenderPass = stack.mallocLong(1);
 
-            if (vkCreateRenderPass(Vulkan.getVkDevice(), renderPassInfo, null, pRenderPass) != VK_SUCCESS) {
+            if(vkCreateRenderPass(Vulkan.getVkDevice(), renderPassInfo, null, pRenderPass) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create render pass");
             }
 
@@ -140,12 +134,12 @@ public class RenderPass {
 
     public void beginRenderPass(VkCommandBuffer commandBuffer, long framebufferId, MemoryStack stack) {
 
-        if (colorAttachmentInfo != null
-                && framebuffer.getColorAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_PRESENT_SRC_KHR)
-            framebuffer.getColorAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-        if (depthAttachmentInfo != null
-                && framebuffer.getDepthAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
-            framebuffer.getDepthAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+//        if(colorAttachmentInfo != null
+//                && framebuffer.getColorAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL)
+//            framebuffer.getColorAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+//        if(depthAttachmentInfo != null
+//                && framebuffer.getDepthAttachment().getCurrentLayout() != VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+//            framebuffer.getDepthAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
         VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.calloc(stack);
         renderPassInfo.sType$Default();
@@ -171,10 +165,10 @@ public class RenderPass {
     public void endRenderPass(VkCommandBuffer commandBuffer) {
         vkCmdEndRenderPass(commandBuffer);
 
-        if (colorAttachmentInfo != null)
+        if(colorAttachmentInfo != null)
             framebuffer.getColorAttachment().setCurrentLayout(colorAttachmentInfo.finalLayout);
 
-        if (depthAttachmentInfo != null)
+        if(depthAttachmentInfo != null)
             framebuffer.getDepthAttachment().setCurrentLayout(depthAttachmentInfo.finalLayout);
 
         Renderer.getInstance().setBoundRenderPass(null);
@@ -195,7 +189,7 @@ public class RenderPass {
         renderingInfo.layerCount(1);
 
         // Color attachment
-        if (colorAttachmentInfo != null) {
+        if(colorAttachmentInfo != null) {
             VkRenderingAttachmentInfo.Buffer colorAttachment = VkRenderingAttachmentInfo.calloc(1, stack);
             colorAttachment.sType(KHRDynamicRendering.VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR);
             colorAttachment.imageView(framebuffer.getColorAttachment().getImageView());
@@ -208,7 +202,7 @@ public class RenderPass {
         }
 
         //Depth attachment
-        if (depthAttachmentInfo != null) {
+        if(depthAttachmentInfo != null) {
             VkRenderingAttachmentInfo depthAttachment = VkRenderingAttachmentInfo.calloc(stack);
             depthAttachment.sType(KHRDynamicRendering.VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR);
             depthAttachment.imageView(framebuffer.getDepthAttachment().getImageView());
@@ -234,10 +228,8 @@ public class RenderPass {
     public void cleanUp() {
         //TODO
 
-        if (!Vulkan.DYNAMIC_RENDERING)
-            MemoryManager.getInstance().addFrameOp(
-                    () -> vkDestroyRenderPass(Vulkan.getVkDevice(), this.id, null));
-
+        if(!Vulkan.DYNAMIC_RENDERING)
+            vkDestroyRenderPass(Vulkan.getVkDevice(), this.id, null);
     }
 
     public long getId() {
@@ -292,7 +284,7 @@ public class RenderPass {
     }
 
     public static Builder builder(Framebuffer framebuffer) {
-        return new Builder(framebuffer);
+        return  new Builder(framebuffer);
     }
 
     public static class Builder {
@@ -303,9 +295,9 @@ public class RenderPass {
         public Builder(Framebuffer framebuffer) {
             this.framebuffer = framebuffer;
 
-            if (framebuffer.hasColorAttachment)
+            if(framebuffer.hasColorAttachment)
                 colorAttachmentInfo = new AttachmentInfo(AttachmentInfo.Type.COLOR, framebuffer.format).setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
-            if (framebuffer.hasDepthAttachment)
+            if(framebuffer.hasDepthAttachment)
                 depthAttachmentInfo = new AttachmentInfo(AttachmentInfo.Type.DEPTH, framebuffer.depthFormat).setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_DONT_CARE);
         }
 
@@ -314,10 +306,10 @@ public class RenderPass {
         }
 
         public Builder setLoadOp(int loadOp) {
-            if (colorAttachmentInfo != null) {
+            if(colorAttachmentInfo != null) {
                 colorAttachmentInfo.setLoadOp(loadOp);
             }
-            if (depthAttachmentInfo != null) {
+            if(depthAttachmentInfo != null) {
                 depthAttachmentInfo.setLoadOp(loadOp);
             }
 
