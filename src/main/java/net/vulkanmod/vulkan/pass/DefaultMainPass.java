@@ -32,7 +32,6 @@ public class DefaultMainPass implements MainPass {
 
     private void createRenderPasses() {
         RenderPass.Builder builder = RenderPass.builder(this.mainFramebuffer);
-        builder.getColorAttachmentInfo().setInitialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
         builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
         builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_DONT_CARE, VK_ATTACHMENT_STORE_OP_STORE);
 
