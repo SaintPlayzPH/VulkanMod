@@ -3,6 +3,7 @@ package net.vulkanmod.vulkan.framebuffer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.memory.MemoryManager;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
 
@@ -228,8 +229,9 @@ public class RenderPass {
     public void cleanUp() {
         //TODO
 
-        if(!Vulkan.DYNAMIC_RENDERING)
-            vkDestroyRenderPass(Vulkan.getVkDevice(), this.id, null);
+        if (!Vulkan.DYNAMIC_RENDERING)
+            MemoryManager.getInstance().addFrameOp(
+                    () -> vkDestroyRenderPass(Vulkan.getVkDevice(), this.id, null));
     }
 
     public long getId() {
