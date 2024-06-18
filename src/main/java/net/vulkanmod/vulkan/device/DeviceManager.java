@@ -332,7 +332,7 @@ public abstract class DeviceManager {
     public static void destroy() {
         GraphicsQueue.cleanUp();
         TransferQueue.cleanUp();
-        GraphicsQueue.cleanUp();
+        FakeTransferQueue.cleanUp();
 
         vkDestroyDevice(vkDevice, null);
     }
