@@ -74,7 +74,7 @@ public class PostPassM {
         VRenderSystem.disableCull();
         RenderSystem.depthFunc(519);
 
-        Renderer.setViewport(0, this.outTarget.height, this.outTarget.width, -this.outTarget.height);
+        Renderer.setViewport(this.outTarget.height, 0, this.outTarget.width, -this.outTarget.height);
         Renderer.resetScissor();
 
         this.effect.apply();
