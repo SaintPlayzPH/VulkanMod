@@ -674,8 +674,8 @@ public class Renderer {
             int height = getSwapChain().getHeight();
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 	    
-            viewport.x(0.0f);
-            viewport.y(height);
+            viewport.x(height);
+            viewport.y(0.0f);
             viewport.width(width);
             viewport.height(-height);
 	    viewport.minDepth(0.0f);
