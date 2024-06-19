@@ -1,5 +1,6 @@
 package net.vulkanmod.vulkan.queue;
 
+import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Vulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkDevice;
