@@ -672,11 +672,10 @@ public class Renderer {
         try (MemoryStack stack = stackPush()) {
             int width = getSwapChain().getWidth();
             int height = getSwapChain().getHeight();
-	    int pretransformFlags = Vulkan.getPretransformFlags();
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 	    
-            viewport.x(pretransformFlags == 0 ? 0.0f : height);
-            viewport.y(pretransformFlags == 0 ? height : 0.0f);
+            viewport.x(0.0f);
+            viewport.y(height);
             viewport.width(width);
             viewport.height(-height);
 	    viewport.minDepth(0.0f);
@@ -712,8 +711,6 @@ public class Renderer {
         try (MemoryStack stack = stackPush()) {
             VkExtent2D extent = VkExtent2D.malloc(stack);
 	    VkOffset2D offset = VkOffset2D.malloc(stack);
-          //  Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
-          //  transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
             scissor.offset(transformToOffset(offset, x, y));
