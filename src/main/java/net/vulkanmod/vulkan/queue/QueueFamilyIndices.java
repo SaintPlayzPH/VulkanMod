@@ -1,9 +1,7 @@
 package net.vulkanmod.vulkan.queue;
 
 import net.vulkanmod.Initializer;
-import net.vulkanmod.vulkan.Vulkan;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
 
@@ -31,6 +29,7 @@ public class QueueFamilyIndices {
 
             if (queueFamilyCount.get(0) == 1) {
                 transferFamily = presentFamily = graphicsFamily = computeFamily = 0;
+                Initializer.LOGGER.info("Found single queue family. All queues supported.");
                 return true;
             }
 
@@ -42,18 +41,22 @@ public class QueueFamilyIndices {
 
                 if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0) {
                     graphicsFamily = i;
+                    Initializer.LOGGER.info("Found graphics queue family: " + i);
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         presentFamily = i;
+                        Initializer.LOGGER.info("Found compute queue family also supporting present: " + i);
                     }
                 }
                 if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
                         && (queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
                     transferFamily = i;
+                    Initializer.LOGGER.info("Found transfer queue family: " + i);
                 }
 
                 if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         presentFamily = i;
+                        Initializer.LOGGER.info("Found compute queue family as present fallback: " + i);
                     }
                 }
                 if (isComplete()) break;
@@ -63,7 +66,7 @@ public class QueueFamilyIndices {
                 presentFamily = computeFamily;
                 Initializer.LOGGER.warn("Using compute queue as present fallback");
             }
-            
+
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 int fallback = VK_QUEUE_FAMILY_IGNORED;
                 for (int i = 0; i < queueFamilies.capacity(); i++) {
@@ -74,6 +77,7 @@ public class QueueFamilyIndices {
                         if ((queueFlags & (VK_QUEUE_GRAPHICS_BIT)) == 0) {
                             transferFamily = i;
                             fallback = i;
+                            Initializer.LOGGER.info("Using transfer queue family with no graphics support: " + i);
                         }
                     }
 
@@ -90,6 +94,7 @@ public class QueueFamilyIndices {
 
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         computeFamily = i;
+                        Initializer.LOGGER.info("Found compute queue family: " + i);
                         break;
                     }
                 }
