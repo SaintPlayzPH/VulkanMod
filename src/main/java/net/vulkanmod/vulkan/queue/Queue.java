@@ -19,11 +19,12 @@ public enum Queue {
     GraphicsQueue(QueueFamilyIndices.graphicsFamily, true, 0),
     FakeTransferQueue(QueueFamilyIndices.graphicsFamily, true, 0),
     TransferQueue(QueueFamilyIndices.transferFamily, true, 0),
-    PresentQueue(QueueFamilyIndices.presentFamily, false, 0);
+    PresentQueue(QueueFamilyIndices.presentFamily, false, 0),
+    ComputeQueue(QueueFamilyIndices.computeFamily, true, 0);
+
     private CommandPool.CommandBuffer currentCmdBuffer;
     private final CommandPool commandPool;
     private final int familyIndex;
-
     private final VkQueue queue;
 
     public CommandPool.CommandBuffer beginCommands() {
@@ -31,8 +32,7 @@ public enum Queue {
     }
 
     Queue(int familyIndex, boolean initCommandPool, int queueIndex) {
-        try (MemoryStack stack = MemoryStack.stackPush())
-        {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             PointerBuffer pQueue = stack.mallocPointer(1);
             this.familyIndex = familyIndex;
             vkGetDeviceQueue(DeviceManager.vkDevice, this.familyIndex, queueIndex, pQueue);
@@ -45,11 +45,13 @@ public enum Queue {
     public long submitCommands(CommandPool.CommandBuffer commandBuffer) {
         return this.commandPool.submitCommands(commandBuffer, queue);
     }
-    
-    public VkQueue queue() { return this.queue; }
+
+    public VkQueue queue() {
+        return this.queue;
+    }
 
     public void cleanUp() {
-        if(commandPool != null)
+        if (commandPool != null)
             commandPool.cleanUp();
     }
 
@@ -58,37 +60,27 @@ public enum Queue {
     }
 
     public long copyBufferCmd(long srcBuffer, long srcOffset, long dstBuffer, long dstOffset, long size) {
-
         try (MemoryStack stack = stackPush()) {
-
             CommandPool.CommandBuffer commandBuffer = beginCommands();
-
             VkBufferCopy.Buffer copyRegion = VkBufferCopy.calloc(1, stack);
             copyRegion.size(size);
             copyRegion.srcOffset(srcOffset);
             copyRegion.dstOffset(dstOffset);
-
             vkCmdCopyBuffer(commandBuffer.getHandle(), srcBuffer, dstBuffer, copyRegion);
-
             this.submitCommands(commandBuffer);
             Synchronization.INSTANCE.addCommandBuffer(commandBuffer);
-
             return commandBuffer.fence;
         }
     }
 
     public void uploadBufferImmediate(long srcBuffer, long srcOffset, long dstBuffer, long dstOffset, long size) {
-
         try (MemoryStack stack = stackPush()) {
             CommandPool.CommandBuffer commandBuffer = this.beginCommands();
-
             VkBufferCopy.Buffer copyRegion = VkBufferCopy.calloc(1, stack);
             copyRegion.size(size);
             copyRegion.srcOffset(srcOffset);
             copyRegion.dstOffset(dstOffset);
-
             vkCmdCopyBuffer(commandBuffer.getHandle(), srcBuffer, dstBuffer, copyRegion);
-
             this.submitCommands(commandBuffer);
             vkWaitForFences(Vulkan.getVkDevice(), commandBuffer.fence, true, VUtil.UINT64_MAX);
             commandBuffer.reset();
@@ -96,21 +88,17 @@ public enum Queue {
     }
 
     public void uploadBufferCmd(VkCommandBuffer commandBuffer, long srcBuffer, long srcOffset, long dstBuffer, long dstOffset, long size) {
-
         try (MemoryStack stack = stackPush()) {
-
             VkBufferCopy.Buffer copyRegion = VkBufferCopy.calloc(1, stack);
             copyRegion.size(size);
             copyRegion.srcOffset(srcOffset);
             copyRegion.dstOffset(dstOffset);
-
             vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, copyRegion);
         }
     }
 
     public void uploadBufferCmds(CommandPool.CommandBuffer commandBuffer, long srcBuffer, Long2ObjectMap.FastEntrySet<ObjectArrayFIFOQueue<SubCopyCommand>> dstBuffers) {
-
-        try(MemoryStack stack = stackPush()) {
+        try (MemoryStack stack = stackPush()) {
             for (var a : dstBuffers) {
                 ObjectArrayFIFOQueue<SubCopyCommand> subCmdUploads = a.getValue();
                 VkBufferCopy.Buffer vkBufferCopies = VkBufferCopy.malloc(subCmdUploads.size(), stack);
@@ -118,12 +106,11 @@ public enum Queue {
                     SubCopyCommand subCopyCommand = subCmdUploads.dequeue();
                     subCpy.set(subCopyCommand.srcOffset(), subCopyCommand.dstOffset(), subCopyCommand.bufferSize());
                 }
-
                 vkCmdCopyBuffer(commandBuffer.getHandle(), srcBuffer, a.getLongKey(), vkBufferCopies);
             }
         }
     }
-    
+
     public void startRecording() {
         currentCmdBuffer = beginCommands();
     }
@@ -131,7 +118,6 @@ public enum Queue {
     public void endRecordingAndSubmit() {
         long fence = submitCommands(currentCmdBuffer);
         Synchronization.INSTANCE.addCommandBuffer(currentCmdBuffer);
-
         currentCmdBuffer = null;
     }
 
@@ -159,8 +145,7 @@ public enum Queue {
     }
 
     public void BufferBarrier(VkCommandBuffer commandBuffer, long bufferhdle, int size_t, int srcAccess, int dstAccess, int srcStage, int dstStage) {
-
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             VkBufferMemoryBarrier.Buffer memBarrier = VkBufferMemoryBarrier.calloc(1, stack)
                     .sType$Default()
                     .buffer(bufferhdle)
@@ -169,87 +154,51 @@ public enum Queue {
                     .srcAccessMask(srcAccess)
                     .dstAccessMask(dstAccess)
                     .size(size_t);
-
-            vkCmdPipelineBarrier(commandBuffer,
-                    srcStage, dstStage,
-                    0,
-                    null,
-                    memBarrier,
-                    null);
-
+            vkCmdPipelineBarrier(commandBuffer, srcStage, dstStage, 0, null, memBarrier, null);
         }
     }
 
     public void MemoryBarrier(VkCommandBuffer commandBuffer, int srcAccess, int dstAccess, int srcStage, int dstStage) {
-
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             VkMemoryBarrier.Buffer memBarrier = VkMemoryBarrier.calloc(1, stack)
                     .sType$Default()
                     .srcAccessMask(srcAccess)
                     .dstAccessMask(dstAccess);
-
-            vkCmdPipelineBarrier(commandBuffer,
-                    srcStage, dstStage,
-                    0,
-                    memBarrier,
-                    null,
-                    null);
-
+            vkCmdPipelineBarrier(commandBuffer, srcStage, dstStage, 0, memBarrier, null, null);
         }
     }
 
-
-    //Using barrier batching to allow Driver optimisations
     public void MultiBufferBarriers(VkCommandBuffer commandBuffer, LongSet bufferhdles, int srcAccess, int dstAccess, int srcStage, int dstStage) {
-
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             VkBufferMemoryBarrier.Buffer memBarriers = VkBufferMemoryBarrier.malloc(bufferhdles.size(), stack);
-                    int i = 0;
+            int i = 0;
             for (var a : bufferhdles) {
-
                 memBarriers.get(i).sType$Default()
-                    .buffer(a)
-                    .pNext(0)
-                    .offset(0)
-                    .srcQueueFamilyIndex(this.familyIndex)
-                    .dstQueueFamilyIndex(this.familyIndex)
-                    .srcAccessMask(srcAccess) //Not sure if VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT or VK_ACCESS_INDEX_READ_BIT is Faster
-                    .dstAccessMask(dstAccess)
-                    .size(~0 /*VK_WHOLE_SIZE*/);
+                        .buffer(a)
+                        .pNext(0)
+                        .offset(0)
+                        .srcQueueFamilyIndex(this.familyIndex)
+                        .dstQueueFamilyIndex(this.familyIndex)
+                        .srcAccessMask(srcAccess)
+                        .dstAccessMask(dstAccess)
+                        .size(~0 /*VK_WHOLE_SIZE*/);
                 i++;
             }
-
-            vkCmdPipelineBarrier(commandBuffer,
-                    srcStage, dstStage,
-                    0,
-                    null,
-                    memBarriers,
-                    null);
-
+            vkCmdPipelineBarrier(commandBuffer, srcStage, dstStage, 0, null, memBarriers, null);
         }
     }
 
     public void GigaBarrier(VkCommandBuffer commandBuffer, int srcStage, int dstStage, boolean flushReads) {
-
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             VkMemoryBarrier.Buffer memBarrier = VkMemoryBarrier.calloc(1, stack);
             memBarrier.sType$Default();
-            memBarrier.srcAccessMask(flushReads ? VK_ACCESS_MEMORY_WRITE_BIT|VK_ACCESS_MEMORY_READ_BIT : 0);
-            memBarrier.dstAccessMask(flushReads ? VK_ACCESS_MEMORY_WRITE_BIT|VK_ACCESS_MEMORY_READ_BIT : VK_ACCESS_MEMORY_WRITE_BIT);
-
-            vkCmdPipelineBarrier(commandBuffer,
-                    srcStage, dstStage,
-                    0,
-                    memBarrier,
-                    null,
-                    null);
+            memBarrier.srcAccessMask(flushReads ? VK_ACCESS_MEMORY_WRITE_BIT | VK_ACCESS_MEMORY_READ_BIT : 0);
+            memBarrier.dstAccessMask(flushReads ? VK_ACCESS_MEMORY_WRITE_BIT | VK_ACCESS_MEMORY_READ_BIT : VK_ACCESS_MEMORY_WRITE_BIT);
+            vkCmdPipelineBarrier(commandBuffer, srcStage, dstStage, 0, memBarrier, null, null);
         }
     }
 
     public void updateBuffer(CommandPool.CommandBuffer commandBuffer, long id, int baseOffset, long bufferPtr, int sizeT) {
-
         nvkCmdUpdateBuffer(commandBuffer.getHandle(), id, baseOffset, sizeT, bufferPtr);
-
     }
 }
-                            
