@@ -644,11 +644,11 @@ public class Renderer {
 	
         try(MemoryStack stack = stackPush()) {
             VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
-            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
+           // VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
-            x = transformedOffset.x();
-            y = transformedOffset.y();
+           // x = transformedOffset.x();
+           // y = transformedOffset.y();
             width = transformedExtent.width();
             height = transformedExtent.height();
 
