@@ -321,7 +321,6 @@ public class WorldRenderer {
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            terrainRenderType.setCutoutUniform();
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
