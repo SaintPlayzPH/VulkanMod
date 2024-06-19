@@ -30,7 +30,7 @@ public class QueueFamilyIndices {
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, null);
 
             if (queueFamilyCount.get(0) == 1) {
-                transferFamily = presentFamily = graphicsFamily = 0;
+                transferFamily = presentFamily = graphicsFamily = computeFamily = 0;
                 return true;
             }
 
@@ -50,9 +50,6 @@ public class QueueFamilyIndices {
                         && (queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
                     transferFamily = i;
                 }
-                if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0 && (queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) {
-                    computeFamily = i;
-                }
 
                 if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
@@ -62,6 +59,11 @@ public class QueueFamilyIndices {
                 if (isComplete()) break;
             }
 
+            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                presentFamily = computeFamily;
+                Initializer.LOGGER.warn("Using compute queue as present fallback");
+            }
+            
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 int fallback = VK_QUEUE_FAMILY_IGNORED;
                 for (int i = 0; i < queueFamilies.capacity(); i++) {
@@ -82,9 +84,15 @@ public class QueueFamilyIndices {
                 }
             }
 
-            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-                presentFamily = computeFamily;
-                Initializer.LOGGER.warn("Using compute queue as present fallback");
+            if (computeFamily == VK_QUEUE_FAMILY_IGNORED) {
+                for (int i = 0; i < queueFamilies.capacity(); i++) {
+                    int queueFlags = queueFamilies.get(i).queueFlags();
+
+                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
+                        computeFamily = i;
+                        break;
+                    }
+                }
             }
 
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
