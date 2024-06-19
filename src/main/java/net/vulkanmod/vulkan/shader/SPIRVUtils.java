@@ -26,7 +26,7 @@ import static org.lwjgl.system.MemoryUtil.memASCII;
 import static org.lwjgl.util.shaderc.Shaderc.*;
 
 public class SPIRVUtils {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final boolean OPTIMIZATIONS = true;
 
     private static long compiler;
@@ -58,7 +58,8 @@ public class SPIRVUtils {
             throw new RuntimeException("Failed to create compiler options");
         }
 
-        shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_zero);
+        if(OPTIMIZATIONS)
+            shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
 
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
