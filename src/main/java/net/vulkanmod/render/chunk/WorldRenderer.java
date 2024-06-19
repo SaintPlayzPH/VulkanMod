@@ -297,7 +297,6 @@ public class WorldRenderer {
     }
 
     public void renderSectionLayer(RenderType renderType, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projection) {
-        boolean depthWrite = Initializer.CONFIG.depthWrite;
         TerrainRenderType terrainRenderType = TerrainRenderType.get(renderType);
         renderType.setupRenderState();
 
@@ -312,30 +311,28 @@ public class WorldRenderer {
         VRenderSystem.applyMVP(poseStack.last().pose(), projection);
         VRenderSystem.setPrimitiveTopologyGL(GL11.GL_TRIANGLES);
 
+        Renderer renderer = Renderer.getInstance();
+        GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
+        renderer.bindGraphicsPipeline(pipeline);
+
+        IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
+        Renderer.getDrawer().bindIndexBuffer(Renderer.getCommandBuffer(), indexBuffer);
+
         int currentFrame = Renderer.getCurrentFrame();
         Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
-            if (depthWrite) {
-                VRenderSystem.depthMask(!isTranslucent);
-            }
-
-            Renderer renderer = Renderer.getInstance();
-            GraphicsPipeline pipeline = PipelineManager.getTerrainShader(terrainRenderType);
-            renderer.bindGraphicsPipeline(pipeline);
-
-            IndexBuffer indexBuffer = Renderer.getDrawer().getQuadsIndexBuffer().getIndexBuffer();
-            final VkCommandBuffer commandBuffer = Renderer.getCommandBuffer();
-            Renderer.getDrawer().bindIndexBuffer(commandBuffer, indexBuffer);
-
-            renderer.uploadAndBindUBOs(pipeline);
+            terrainRenderType.setCutoutUniform();
 
             for (Iterator<ChunkArea> iterator = this.sectionGraph.getChunkAreaQueue().iterator(isTranslucent); iterator.hasNext(); ) {
                 ChunkArea chunkArea = iterator.next();
                 var queue = chunkArea.sectionQueue;
                 DrawBuffers drawBuffers = chunkArea.drawBuffers;
 
+                renderer.uploadAndBindUBOs(pipeline);
                 if (drawBuffers.getAreaBuffer(terrainRenderType) != null && queue.size() > 0) {
-                    drawBuffers.bindBuffers(commandBuffer, pipeline, terrainRenderType, camX, camY, camZ);
+
+                    drawBuffers.bindBuffers(Renderer.getCommandBuffer(), pipeline, terrainRenderType, camX, camY, camZ);
+                    renderer.uploadAndBindUBOs(pipeline);
 
                     if (indirectDraw)
                         drawBuffers.buildDrawBatchesIndirect(indirectBuffers[currentFrame], queue, terrainRenderType);
@@ -345,8 +342,15 @@ public class WorldRenderer {
             }
         }
 
-        if (indirectDraw && (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE)) {
+        if (terrainRenderType == TerrainRenderType.CUTOUT || terrainRenderType == TerrainRenderType.TRIPWIRE) {
             indirectBuffers[currentFrame].submitUploads();
+//            uniformBuffers.submitUploads();
+        }
+
+        //Need to reset push constants in case the pipeline will still be used for rendering
+        if (!indirectDraw) {
+            VRenderSystem.setChunkOffset(0, 0, 0);
+            renderer.pushConstants(pipeline);
         }
 
         this.minecraft.getProfiler().pop();
