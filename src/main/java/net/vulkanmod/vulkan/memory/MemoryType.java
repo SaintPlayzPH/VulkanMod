@@ -10,6 +10,7 @@ import org.lwjgl.vulkan.VkMemoryType;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static net.vulkanmod.vulkan.queue.Queue.GraphicsQueue;
 import static org.lwjgl.vulkan.VK10.*;
 
 public enum MemoryType {
@@ -92,7 +93,7 @@ public enum MemoryType {
         if (!this.mappable()) {
             StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
             stagingBuffer.copyBuffer(bufferSize, byteBuffer);
-            DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), buffer.getUsedBytes(), bufferSize);
+            GraphicsQueue.copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), buffer.getUsedBytes(), bufferSize);
         } else {
             VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), bufferSize, buffer.getUsedBytes());
         }
@@ -108,7 +109,7 @@ public enum MemoryType {
             int bufferSize = byteBuffer.remaining();
             StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
             stagingBuffer.copyBuffer(bufferSize, byteBuffer);
-            DeviceManager.getTransferQueue().copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), dstOffset, bufferSize);
+            GraphicsQueue.copyBufferCmd(stagingBuffer.id, stagingBuffer.offset, buffer.getId(), dstOffset, bufferSize);
         } else {
             VUtil.memcpy(byteBuffer, buffer.data.getByteBuffer(0, buffer.bufferSize), byteBuffer.remaining(), dstOffset);
         }
