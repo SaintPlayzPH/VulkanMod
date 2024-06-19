@@ -14,6 +14,12 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class QueueFamilyIndices {
 
+    public static int graphicsFamily = VK_QUEUE_FAMILY_IGNORED;
+    public static int presentFamily = VK_QUEUE_FAMILY_IGNORED;
+    public static int transferFamily = VK_QUEUE_FAMILY_IGNORED;
+    public static int computeFamily = VK_QUEUE_FAMILY_IGNORED;
+
+    public static boolean hasDedicatedTransferQueue = false;
 
     public static boolean findQueueFamilies(VkPhysicalDevice device) {
 
@@ -38,13 +44,16 @@ public class QueueFamilyIndices {
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         presentFamily = i;
                     }
-                } if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
+                }
+                if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
                         && (queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
                     transferFamily = i;
                 }
+                if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0 && (queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) {
+                    computeFamily = i;
+                }
 
                 if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         presentFamily = i;
                     }
@@ -72,7 +81,10 @@ public class QueueFamilyIndices {
                 }
             }
 
-
+            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                presentFamily = computeFamily;
+                Initializer.LOGGER.warn("Using compute queue as present fallback");
+            }
 
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
 
@@ -80,23 +92,16 @@ public class QueueFamilyIndices {
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (presentFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with present support.");
+            if (computeFamily == VK_QUEUE_FAMILY_IGNORED)
+                throw new RuntimeException("Unable to find queue family with compute support.");
 
             return isComplete();
         }
     }
 
-    public enum Family {
-        Graphics,
-        Transfer,
-        Compute
-    }
-
-    public static int graphicsFamily, presentFamily, transferFamily = VK_QUEUE_FAMILY_IGNORED;
-
-    public static boolean hasDedicatedTransferQueue = false;
-
     public static boolean isComplete() {
-        return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED && transferFamily != VK_QUEUE_FAMILY_IGNORED;
+        return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED
+                && transferFamily != VK_QUEUE_FAMILY_IGNORED && computeFamily != VK_QUEUE_FAMILY_IGNORED;
     }
 
     public static boolean isSuitable() {
@@ -104,7 +109,7 @@ public class QueueFamilyIndices {
     }
 
     public static int[] unique() {
-        return IntStream.of(graphicsFamily, presentFamily, transferFamily).distinct().toArray();
+        return IntStream.of(graphicsFamily, presentFamily, transferFamily, computeFamily).distinct().toArray();
     }
 
     public static int[] array() {
