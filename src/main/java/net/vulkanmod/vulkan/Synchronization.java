@@ -18,7 +18,7 @@ public class Synchronization {
     private final LongBuffer fences;
     private int idx = 0;
 
-    private final ObjectArrayList<CommandPool.CommandBuffer> commandBuffers = new ObjectArrayList<>();
+    private ObjectArrayList<CommandPool.CommandBuffer> commandBuffers = new ObjectArrayList<>();
 
     Synchronization(int allocSize) {
         this.fences = MemoryUtil.memAllocLong(allocSize);
@@ -45,7 +45,9 @@ public class Synchronization {
 
         fences.limit(idx);
 
-        vkWaitForFences(device, fences, true, VUtil.UINT64_MAX);
+        for (int i = 0; i < idx; i++) {
+            vkWaitForFences(device, fences.get(i), true, VUtil.UINT64_MAX);
+        }
 
         this.commandBuffers.forEach(CommandPool.CommandBuffer::reset);
         this.commandBuffers.clear();
