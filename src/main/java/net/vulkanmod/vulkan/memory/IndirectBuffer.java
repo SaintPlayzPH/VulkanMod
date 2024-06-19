@@ -7,7 +7,7 @@ import net.vulkanmod.vulkan.queue.CommandPool;
 
 import java.nio.ByteBuffer;
 
-import static net.vulkanmod.vulkan.queue.Queue.TransferQueue;
+import static net.vulkanmod.vulkan.queue.Queue.GraphicsQueue;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
 
 public class IndirectBuffer extends Buffer {
@@ -39,7 +39,7 @@ public class IndirectBuffer extends Buffer {
 
     private void handleNonMappableCopy(int size, ByteBuffer byteBuffer) {
         if (commandBuffer == null) {
-            commandBuffer = DeviceManager.getTransferQueue().beginCommands();
+            commandBuffer = GraphicsQueue.beginCommands();
         }
 
         StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
@@ -69,7 +69,7 @@ public class IndirectBuffer extends Buffer {
 
     public void submitUploads() {
         if (commandBuffer != null) {
-            DeviceManager.getTransferQueue().submitCommands(commandBuffer);
+            GraphicsQueue.submitCommands(commandBuffer);
             Synchronization.INSTANCE.addCommandBuffer(commandBuffer);
             commandBuffer = null;
         }
