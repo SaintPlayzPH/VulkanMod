@@ -57,9 +57,7 @@ public class Synchronization {
     public static void waitFence(long fence) {
         VkDevice device = Vulkan.getVkDevice();
 
-        for (int i = 0; i < idx; i++) {
-            vkWaitForFences(device, fences, true, VUtil.UINT64_MAX);
-        }
+        vkWaitForFences(device, fence, true, VUtil.UINT64_MAX);
     }
 
     public static boolean checkFenceStatus(long fence) {
