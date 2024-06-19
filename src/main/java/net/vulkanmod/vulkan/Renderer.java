@@ -644,11 +644,11 @@ public class Renderer {
 	
         try(MemoryStack stack = stackPush()) {
             VkExtent2D transformedExtent = transformToExtent(VkExtent2D.malloc(stack), width, height);
-           // VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y, width, height);
+            VkOffset2D transformedOffset = transformToOffset(VkOffset2D.malloc(stack), x, y);
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 
-           // x = transformedOffset.x();
-           // y = transformedOffset.y();
+            x = transformedOffset.x();
+            y = transformedOffset.y();
             width = transformedExtent.width();
             height = transformedExtent.height();
 
@@ -696,28 +696,13 @@ public class Renderer {
         }
     }
     
-    private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
+    private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y) {
         int pretransformFlags = Vulkan.getPretransformFlags();
         if (pretransformFlags == 0) {
             return offset2D.set(x, y);
-        }
-
-        Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
-        int framebufferWidth = boundFramebuffer.getWidth();
-        int framebufferHeight = boundFramebuffer.getHeight();
-
-        return switch (pretransformFlags) {
-            case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                yield offset2D.set(framebufferWidth - h - y, x);
-            }
-            case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
-                yield offset2D.set(framebufferWidth - w - x, framebufferHeight - h - y);
-            }
-            case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
-                yield offset2D.set(y, framebufferHeight - w - x);
-            }
-            default -> offset2D.set(x, y);
-        };
+	} else {
+	    return offset2D.set(y, x);
+	}
     }
 
     public static void setScissor(int x, int y, int width, int height) {
@@ -728,10 +713,9 @@ public class Renderer {
             VkExtent2D extent = VkExtent2D.malloc(stack);
             Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
-            int framebufferHeight = extent.height();
             
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            scissor.offset(transformToOffset(VkOffset2D.malloc(stack), x, framebufferHeight - (y + height), width, height));
+            scissor.offset(transformToOffset(extent, x, y);
             scissor.extent(transformToExtent(extent, width, height));
 
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
