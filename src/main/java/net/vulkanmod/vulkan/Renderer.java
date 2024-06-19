@@ -675,8 +675,8 @@ public class Renderer {
 	    int pretransformFlags = Vulkan.getPretransformFlags();
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
 	    
-            viewport.x(pretransformFlags ? 0.0f : height);
-            viewport.y(pretransformFlags ? height : 0.0f);
+            viewport.x(pretransformFlags == 0 ? 0.0f : height);
+            viewport.y(pretransformFlags == 0 ? height : 0.0f);
             viewport.width(width);
             viewport.height(-height);
 	    viewport.minDepth(0.0f);
