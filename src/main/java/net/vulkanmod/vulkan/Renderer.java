@@ -711,11 +711,12 @@ public class Renderer {
 
         try (MemoryStack stack = stackPush()) {
             VkExtent2D extent = VkExtent2D.malloc(stack);
+	    VkOffset2D offset = VkOffset2D.malloc(stack);
             Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             
             VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack);
-            scissor.offset(transformToOffset(extent, x, y));
+            scissor.offset(transformToOffset(offset, x, y));
             scissor.extent(transformToExtent(extent, width, height));
 
             vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor);
