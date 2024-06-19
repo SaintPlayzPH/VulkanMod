@@ -18,7 +18,7 @@ public class Synchronization {
     private final LongBuffer fences;
     private int idx = 0;
 
-    private ObjectArrayList<CommandPool.CommandBuffer> commandBuffers = new ObjectArrayList<>();
+    private final ObjectArrayList<CommandPool.CommandBuffer> commandBuffers = new ObjectArrayList<>();
 
     Synchronization(int allocSize) {
         this.fences = MemoryUtil.memAllocLong(allocSize);
@@ -58,7 +58,7 @@ public class Synchronization {
         VkDevice device = Vulkan.getVkDevice();
 
         for (int i = 0; i < idx; i++) {
-            vkWaitForFences(device, fences.get(i), true, VUtil.UINT64_MAX);
+            vkWaitForFences(device, fences, true, VUtil.UINT64_MAX);
         }
     }
 
