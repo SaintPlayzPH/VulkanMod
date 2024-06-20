@@ -93,21 +93,35 @@ public class MemoryManager {
     }
 
     public void createBuffer(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-        try (var stack = MemoryStack.stackPush()) {
-            var bufferInfo = VkBufferCreateInfo.callocStack(stack);
+        try (MemoryStack stack = stackPush()) {
+            VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.callocStack(stack);
             bufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
             bufferInfo.size(size);
             bufferInfo.usage(usage);
             bufferInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
 
-            var allocationInfo = VmaAllocationCreateInfo.callocStack(stack);
+            VmaAllocationCreateInfo allocationInfo = VmaAllocationCreateInfo.callocStack(stack);
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
-            if (result != VK_SUCCESS) {
+
+            // Check for out-of-memory error
+            if (result == VK_ERROR_OUT_OF_MEMORY) {
+                handleOutOfMemoryError(size, usage, properties, pBuffer, pBufferMemory);
+            } else if (result != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
             }
         }
+    }
+
+    private void handleOutOfMemoryError(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
+        Initializer.LOGGER.error("Failed to create buffer due to out-of-memory");
+
+        // Implement your fallback strategy here
+        // For demonstration, retry with smaller size and default usage
+        Initializer.LOGGER.warn("Trying a fallback strategy...");
+
+        createBuffer(size / 2, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, properties, pBuffer, pBufferMemory);
     }
 
     private String translateVulkanResult(int result) {
@@ -124,12 +138,13 @@ public class MemoryManager {
             case VK_ERROR_DEVICE_LOST -> "The logical or physical device has been lost";
             case VK_ERROR_MEMORY_MAP_FAILED -> "Mapping of a memory object has failed";
             case VK_ERROR_LAYER_NOT_PRESENT -> "A requested layer is not present or could not be loaded";
-            case VK_ERROR_EXTENSION_NOT_PRESENT -> "A requested extension is not supported";
-            case VK_ERROR_FEATURE_NOT_PRESENT -> "A requested feature is not supported";
-            case VK_ERROR_INCOMPATIBLE_DRIVER -> "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
             case VK_ERROR_TOO_MANY_OBJECTS -> "Too many objects of the type have already been created";
+            case VK_ERROR_INCOMPATIBLE_DRIVER -> "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
             case VK_ERROR_FORMAT_NOT_SUPPORTED -> "A requested format is not supported on this device";
             case VK_ERROR_FRAGMENTED_POOL -> "A pool allocation has failed due to fragmentation of the pool's memory";
+            case VK_ERROR_EXTENSION_NOT_PRESENT -> "A requested extension is not supported";
+            case VK_ERROR_OUT_OF_MEMORY -> "Out of memory - Failed to allocate Vulkan resource";
+            case VK_ERROR_FEATURE_NOT_PRESENT -> "A requested feature is not supported";
             default -> "Unknown error";
         };
     }
