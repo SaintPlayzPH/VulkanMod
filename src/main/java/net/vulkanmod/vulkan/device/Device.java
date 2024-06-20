@@ -42,7 +42,6 @@ public class Device {
         this.vendorId = properties.vendorID();
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
-        this.driverName = decodeDriverName(properties.driverVersion());
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkDriverVersion = decDefVersion(properties.apiVersion());
         this.vkInstanceLoaderVersion = decDefVersion(getVkVer());
@@ -60,38 +59,7 @@ public class Device {
             this.drawIndirectSupported = true;
 
     }
-
-    public static String decodeDriverName(int driverVersion) {
-        return switch (driverVersion) {
-            case VK_DRIVER_ID_AMD_PROPRIETARY -> "AMD (Proprietary)";
-            case VK_DRIVER_ID_AMD_OPEN_SOURCE -> "AMD (Open Source)";
-            case VK_DRIVER_ID_MESA_RADV -> "Mesa RADV";
-            case VK_DRIVER_ID_NVIDIA_PROPRIETARY -> "Nvidia (Proprietary)";
-            case VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS -> "Intel (Proprietary Windows)";
-            case VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA -> "Intel Open Source Mesa";
-            case VK_DRIVER_ID_IMAGINATION_PROPRIETARY -> "Imagination (Proprietary)";
-            case VK_DRIVER_ID_QUALCOMM_PROPRIETARY -> "Qualcomm (Proprietary)";
-            case VK_DRIVER_ID_ARM_PROPRIETARY -> "ARM (Proprietary)";
-            case VK_DRIVER_ID_GOOGLE_SWIFTSHADER -> "Google SwiftShader";
-            case VK_DRIVER_ID_GGP_PROPRIETARY -> "GGP (Proprietary)";
-            case VK_DRIVER_ID_BROADCOM_PROPRIETARY -> "Broadcom (Proprietary)";
-            case VK_DRIVER_ID_MESA_LLVMPIPE -> "Mesa LLVMPIPE";
-            case VK_DRIVER_ID_MOLTENVK -> "MoltenVK";
-            case VK_DRIVER_ID_COREAVI_PROPRIETARY -> "CoreAVI (Proprietary)";
-            case VK_DRIVER_ID_JUICE_PROPRIETARY -> "Juice (Proprietary)";
-            case VK_DRIVER_ID_VERISILICON_PROPRIETARY -> "VeriSilicon (Proprietary)";
-            case VK_DRIVER_ID_MESA_TURNIP -> "Mesa TURNIP";
-            case VK_DRIVER_ID_MESA_V3DV -> "Mesa V3DV";
-            case VK_DRIVER_ID_MESA_PANVK -> "Mesa PANVK";
-            case VK_DRIVER_ID_SAMSUNG_PROPRIETARY -> "Samsung (Proprietary)";
-            case VK_DRIVER_ID_MESA_VENUS -> "Mesa VENUS";
-            case VK_DRIVER_ID_MESA_DOZEN -> "Mesa DOZEN";
-            case VK_DRIVER_ID_MESA_NVK -> "Mesa NVK";
-            case VK_DRIVER_ID_IMAGINATION_OPEN_SOURCE_MESA -> "Imagination Open Source Mesa";
-            default -> "Unknown Driver";
-        };
-    }
-
+    
     private static String decodeVendor(int i) {
         return switch (i) {
             case (0x10DE) -> "Nvidia";
@@ -129,7 +97,7 @@ public class Device {
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
             if (VK_VERSION_MINOR(vkVer1) < 1) {
-                throw new RuntimeException("Vulkan 1.1 not supported: Only Has: %s".formatted(decDefVersion(vkVer1)));
+                throw new RuntimeException("Vulkan 1.1 required: Only Has: %s".formatted(decDefVersion(vkVer1)));
             }
             return vkVer1;
         }
