@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM_WIN32;
 import static org.lwjgl.glfw.GLFW.glfwGetPlatform;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.VK12.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
 
@@ -40,10 +41,10 @@ public class Device {
         this.vendorId = properties.vendorID();
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
+        this.driverId = decodeDriverName(driverID);
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkDriverVersion = decDefVersion(properties.apiVersion());
         this.vkInstanceLoaderVersion = decDefVersion(getVkVer());
-        
         this.availableFeatures = VkPhysicalDeviceFeatures2.calloc();
         this.availableFeatures.sType$Default();
 
@@ -56,6 +57,37 @@ public class Device {
         if (this.availableFeatures.features().multiDrawIndirect() && this.availableFeatures11.shaderDrawParameters())
             this.drawIndirectSupported = true;
 
+    }
+
+    public static String decodeDriverName(int driverID) {
+        return switch (driverID) {
+            case VK_DRIVER_ID_AMD_PROPRIETARY -> "AMD (Proprietary)";
+            case VK_DRIVER_ID_AMD_OPEN_SOURCE -> "AMD Open Source";
+            case VK_DRIVER_ID_MESA_RADV -> "Mesa RADV";
+            case VK_DRIVER_ID_NVIDIA_PROPRIETARY -> "Nvidia (Proprietary)";
+            case VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS -> "Intel (Proprietary Windows)";
+            case VK_DRIVER_ID_INTEL_OPEN_SOURCE_MESA -> "Intel Open Source Mesa";
+            case VK_DRIVER_ID_IMAGINATION_PROPRIETARY -> "Imagination (Proprietary)";
+            case VK_DRIVER_ID_QUALCOMM_PROPRIETARY -> "Qualcomm (Proprietary)";
+            case VK_DRIVER_ID_ARM_PROPRIETARY -> "ARM (Proprietary)";
+            case VK_DRIVER_ID_GOOGLE_SWIFTSHADER -> "Google SwiftShader";
+            case VK_DRIVER_ID_GGP_PROPRIETARY -> "GGP Proprietary";
+            case VK_DRIVER_ID_BROADCOM_PROPRIETARY -> "Broadcom (Proprietary)";
+            case VK_DRIVER_ID_MESA_LLVMPIPE -> "Mesa LLVMPIPE";
+            case VK_DRIVER_ID_MOLTENVK -> "MoltenVK";
+            case VK_DRIVER_ID_COREAVI_PROPRIETARY -> "CoreAVI (Proprietary)";
+            case VK_DRIVER_ID_JUICE_PROPRIETARY -> "Juice (Proprietary)";
+            case VK_DRIVER_ID_VERISILICON_PROPRIETARY -> "VeriSilicon (Proprietary)";
+            case VK_DRIVER_ID_MESA_TURNIP -> "Mesa TURNIP";
+            case VK_DRIVER_ID_MESA_V3DV -> "Mesa V3DV";
+            case VK_DRIVER_ID_MESA_PANVK -> "Mesa PANVK";
+            case VK_DRIVER_ID_SAMSUNG_PROPRIETARY -> "Samsung (Proprietary)";
+            case VK_DRIVER_ID_MESA_VENUS -> "Mesa VENUS";
+            case VK_DRIVER_ID_MESA_DOZEN -> "Mesa DOZEN";
+            case VK_DRIVER_ID_MESA_NVK -> "Mesa NVK";
+            case VK_DRIVER_ID_IMAGINATION_OPEN_SOURCE_MESA -> "Imagination Open Source Mesa";
+            default -> "Unknown Driver";
+        };
     }
 
     private static String decodeVendor(int i) {
