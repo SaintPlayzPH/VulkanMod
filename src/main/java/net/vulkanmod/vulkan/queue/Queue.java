@@ -167,7 +167,7 @@ public abstract class Queue {
                 }
             }
 
-            if (indices.presentFamily == -1) {
+            if (indices.transferFamily == -1) {
 
                 indices.transferFamily = indices.graphicsFamily;
                 Initializer.LOGGER.warn("Using graphics queue as transfer fallback");
