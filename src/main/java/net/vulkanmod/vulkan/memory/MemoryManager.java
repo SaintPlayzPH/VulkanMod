@@ -105,7 +105,7 @@ public class MemoryManager {
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
             if(result != VK_SUCCESS) {
-                throw new RuntimeException("Failed to create buffer:" + translateVulkanResult(result));
+                throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
             }
         }
     }
