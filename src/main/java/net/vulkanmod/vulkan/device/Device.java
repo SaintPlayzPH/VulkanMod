@@ -23,7 +23,6 @@ public class Device {
     private final int vendorId;
     public final String vendorIdString;
     public final String deviceName;
-    public final String driverName;
     public final String driverVersion;
     public final String vkDriverVersion;
     public final String vkInstanceLoaderVersion;
