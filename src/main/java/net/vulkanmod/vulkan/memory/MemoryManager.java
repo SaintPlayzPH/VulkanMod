@@ -93,24 +93,45 @@ public class MemoryManager {
     }
 
     public void createBuffer(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-
-        try(MemoryStack stack = stackPush()) {
-
-            VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.callocStack(stack);
+        try (var stack = MemoryStack.stackPush()) {
+            var bufferInfo = VkBufferCreateInfo.callocStack(stack);
             bufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
             bufferInfo.size(size);
             bufferInfo.usage(usage);
-            //bufferInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
-//
-            VmaAllocationCreateInfo allocationInfo  = VmaAllocationCreateInfo.callocStack(stack);
-            //allocationInfo.usage(VMA_MEMORY_USAGE_CPU_ONLY);
+            bufferInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
+
+            var allocationInfo = VmaAllocationCreateInfo.callocStack(stack);
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
-            if(result != VK_SUCCESS) {
-                throw new RuntimeException("Failed to create buffer:" + result);
+            if (result != VK_SUCCESS) {
+                throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
             }
         }
+    }
+
+    private String translateVulkanResult(int result) {
+        return switch (result) {
+            case VK_SUCCESS -> "Command successfully completed";
+            case VK_NOT_READY -> "A fence or query has not yet completed";
+            case VK_TIMEOUT -> "A wait operation has not completed in the specified time";
+            case VK_EVENT_SET -> "An event is signaled";
+            case VK_EVENT_RESET -> "An event is unsignaled";
+            case VK_INCOMPLETE -> "A return array was too small for the result";
+            case VK_ERROR_OUT_OF_HOST_MEMORY -> "A host memory allocation has failed";
+            case VK_ERROR_OUT_OF_DEVICE_MEMORY -> "A device memory allocation has failed";
+            case VK_ERROR_INITIALIZATION_FAILED -> "Initialization of an object could not be completed for implementation-specific reasons";
+            case VK_ERROR_DEVICE_LOST -> "The logical or physical device has been lost";
+            case VK_ERROR_MEMORY_MAP_FAILED -> "Mapping of a memory object has failed";
+            case VK_ERROR_LAYER_NOT_PRESENT -> "A requested layer is not present or could not be loaded";
+            case VK_ERROR_EXTENSION_NOT_PRESENT -> "A requested extension is not supported";
+            case VK_ERROR_FEATURE_NOT_PRESENT -> "A requested feature is not supported";
+            case VK_ERROR_INCOMPATIBLE_DRIVER -> "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
+            case VK_ERROR_TOO_MANY_OBJECTS -> "Too many objects of the type have already been created";
+            case VK_ERROR_FORMAT_NOT_SUPPORTED -> "A requested format is not supported on this device";
+            case VK_ERROR_FRAGMENTED_POOL -> "A pool allocation has failed due to fragmentation of the pool's memory";
+            default -> "Unknown error";
+        };
     }
 
     public synchronized void createBuffer(Buffer buffer, int size, int usage, int properties) {
