@@ -57,6 +57,7 @@ public abstract class DebugScreenOverlayM {
         int pretransformFlags = Vulkan.getPretransformFlags();
         boolean isPojav = isRunningOnPojav();
         boolean isCompat = isRunningOnCompatDevice();
+        Device device = Vulkan.getDevice();
 
         strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
         strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
@@ -67,11 +68,11 @@ public abstract class DebugScreenOverlayM {
         strings.add("");
         strings.add("VulkanMod " + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable() ? " (Processor)" : ""));
-        strings.add("GPU: " + Vulkan.getDevice().deviceName);
-        strings.add("ID: " + Vulkan.getDevice().driverName);
-        strings.add("Driver: " + Vulkan.getDevice().driverVersion);
-        strings.add("Loader: " + Vulkan.getDevice().vkInstanceLoaderVersion);
-        strings.add("Vulkan: " + Vulkan.getDevice().vkDriverVersion);
+        strings.add("GPU: " + device.deviceName);
+        strings.add("Driver: " + device.driverVersion);
+        strings.add("Instance: " + device.vkVersion);
+        strings.add("Loader: " + device.vkInstanceLoaderVersion);
+        strings.add("Vulkan: " + device.vkDriverVersion);
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
         strings.add("");
