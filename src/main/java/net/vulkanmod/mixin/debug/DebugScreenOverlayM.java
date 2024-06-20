@@ -70,8 +70,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable() ? " (Processor)" : ""));
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
-        strings.add("Instance: " + device.vkVersion);
-        strings.add("Loader: " + device.vkInstanceLoaderVersion);
+        strings.add("Instance Loader: " + device.vkInstanceLoaderVersion);
         strings.add("Vulkan: " + device.vkDriverVersion);
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
