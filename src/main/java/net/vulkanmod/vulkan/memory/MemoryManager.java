@@ -93,35 +93,21 @@ public class MemoryManager {
     }
 
     public void createBuffer(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-        try (MemoryStack stack = stackPush()) {
+        try(MemoryStack stack = stackPush()) {
+
             VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.callocStack(stack);
             bufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
             bufferInfo.size(size);
             bufferInfo.usage(usage);
-            bufferInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
 
-            VmaAllocationCreateInfo allocationInfo = VmaAllocationCreateInfo.callocStack(stack);
+            VmaAllocationCreateInfo allocationInfo  = VmaAllocationCreateInfo.callocStack(stack);
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
-
-            // Check for out-of-memory error
-            if (result != VK_SUCCESS) {
-                handleOutOfMemoryError(size, usage, properties, pBuffer, pBufferMemory);
-            } else if (result != VK_SUCCESS) {
-                throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
+            if(result != VK_SUCCESS) {
+                throw new RuntimeException("Failed to create buffer:" + translateVulkanResult(result));
             }
         }
-    }
-
-    private void handleOutOfMemoryError(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-        Initializer.LOGGER.error("Failed to create buffer!");
-
-        // Implement your fallback strategy here
-        // For demonstration, retry with smaller size and default usage
-        Initializer.LOGGER.warn("Trying a fallback strategy...");
-
-        createBuffer(size / 2, VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT, properties, pBuffer, pBufferMemory);
     }
 
     private String translateVulkanResult(int result) {
