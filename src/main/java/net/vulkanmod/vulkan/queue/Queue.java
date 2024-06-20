@@ -84,7 +84,7 @@ public abstract class Queue {
             IntBuffer queueFamilyCount = stack.ints(0);
 
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, null);
-.
+
             VkQueueFamilyProperties.Buffer queueFamilies = VkQueueFamilyProperties.mallocStack(queueFamilyCount.get(0), stack);
 
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, queueFamilies);
