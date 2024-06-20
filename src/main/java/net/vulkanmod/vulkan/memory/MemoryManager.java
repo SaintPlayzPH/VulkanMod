@@ -106,7 +106,7 @@ public class MemoryManager {
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
 
             // Check for out-of-memory error
-            if (result == VK_ERROR_OUT_OF_MEMORY) {
+            if (result != VK_SUCCESS) {
                 handleOutOfMemoryError(size, usage, properties, pBuffer, pBufferMemory);
             } else if (result != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
@@ -115,7 +115,7 @@ public class MemoryManager {
     }
 
     private void handleOutOfMemoryError(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-        Initializer.LOGGER.error("Failed to create buffer due to out-of-memory");
+        Initializer.LOGGER.error("Failed to create buffer!");
 
         // Implement your fallback strategy here
         // For demonstration, retry with smaller size and default usage
@@ -143,7 +143,6 @@ public class MemoryManager {
             case VK_ERROR_FORMAT_NOT_SUPPORTED -> "A requested format is not supported on this device";
             case VK_ERROR_FRAGMENTED_POOL -> "A pool allocation has failed due to fragmentation of the pool's memory";
             case VK_ERROR_EXTENSION_NOT_PRESENT -> "A requested extension is not supported";
-            case VK_ERROR_OUT_OF_MEMORY -> "Out of memory - Failed to allocate Vulkan resource";
             case VK_ERROR_FEATURE_NOT_PRESENT -> "A requested feature is not supported";
             default -> "Unknown error";
         };
