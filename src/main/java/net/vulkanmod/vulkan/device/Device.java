@@ -46,7 +46,7 @@ public class Device {
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
-        this.vkVersion = decDefVersion(getVkVer());
+        this.vkVersion = decDefVersion(properties.apiVersion());
 
         this.availableFeatures = VkPhysicalDeviceFeatures2.calloc();
         this.availableFeatures.sType$Default();
