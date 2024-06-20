@@ -702,7 +702,7 @@ public class Renderer {
             return offset2D.set(x, y);
         }
 
-        Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+        Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
         int framebufferWidth = boundFramebuffer.getWidth();
         int framebufferHeight = boundFramebuffer.getHeight();
 
