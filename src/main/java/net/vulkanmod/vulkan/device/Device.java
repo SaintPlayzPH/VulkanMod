@@ -23,6 +23,7 @@ public class Device {
     private final int vendorId;
     public final String vendorIdString;
     public final String deviceName;
+    public final String driverName;
     public final String driverVersion;
     public final String vkDriverVersion;
     public final String vkInstanceLoaderVersion;
@@ -41,10 +42,11 @@ public class Device {
         this.vendorId = properties.vendorID();
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
-        this.driverId = decodeDriverName(driverID);
+        this.driverName = decodeDriverName(properties.driverVersion());
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkDriverVersion = decDefVersion(properties.apiVersion());
         this.vkInstanceLoaderVersion = decDefVersion(getVkVer());
+        
         this.availableFeatures = VkPhysicalDeviceFeatures2.calloc();
         this.availableFeatures.sType$Default();
 
@@ -59,10 +61,10 @@ public class Device {
 
     }
 
-    public static String decodeDriverName(int driverID) {
-        return switch (driverID) {
+    public static String decodeDriverName(int driverVersion) {
+        return switch (driverVersion) {
             case VK_DRIVER_ID_AMD_PROPRIETARY -> "AMD (Proprietary)";
-            case VK_DRIVER_ID_AMD_OPEN_SOURCE -> "AMD Open Source";
+            case VK_DRIVER_ID_AMD_OPEN_SOURCE -> "AMD (Open Source)";
             case VK_DRIVER_ID_MESA_RADV -> "Mesa RADV";
             case VK_DRIVER_ID_NVIDIA_PROPRIETARY -> "Nvidia (Proprietary)";
             case VK_DRIVER_ID_INTEL_PROPRIETARY_WINDOWS -> "Intel (Proprietary Windows)";
@@ -71,7 +73,7 @@ public class Device {
             case VK_DRIVER_ID_QUALCOMM_PROPRIETARY -> "Qualcomm (Proprietary)";
             case VK_DRIVER_ID_ARM_PROPRIETARY -> "ARM (Proprietary)";
             case VK_DRIVER_ID_GOOGLE_SWIFTSHADER -> "Google SwiftShader";
-            case VK_DRIVER_ID_GGP_PROPRIETARY -> "GGP Proprietary";
+            case VK_DRIVER_ID_GGP_PROPRIETARY -> "GGP (Proprietary)";
             case VK_DRIVER_ID_BROADCOM_PROPRIETARY -> "Broadcom (Proprietary)";
             case VK_DRIVER_ID_MESA_LLVMPIPE -> "Mesa LLVMPIPE";
             case VK_DRIVER_ID_MOLTENVK -> "MoltenVK";
