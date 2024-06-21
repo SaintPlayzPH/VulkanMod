@@ -66,7 +66,7 @@ public class Device {
         int minor = Integer.parseInt(versionParts[1]);
 
         if (major < 1 || (major == 1 && minor < 1)) {
-            throw new RuntimeException("Vulkan 1.1.0 or higher is required. Detected version: " + vkVersion);
+            throw new RuntimeException("Vulkan 1.1.0 or higher is required. Detected version: " + vkDriverVersion);
         }
     }
 
