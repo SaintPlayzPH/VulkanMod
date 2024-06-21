@@ -18,6 +18,8 @@ import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.VK10.*;
 
 public abstract class Queue {
+    private static boolean transferQueueLogged = false;
+    private static boolean presentQueueLogged = false;
     private static VkDevice DEVICE;
 
     private static QueueFamilyIndices queueFamilyIndices;
@@ -126,7 +128,10 @@ public abstract class Queue {
                 // Some drivers will not show present support even if some queue supports it
                 // Use compute queue as fallback
 
-                Initializer.LOGGER.warn("Using compute queue as present fallback");
+                if (!presentQueueLogged) {
+                    Initializer.LOGGER.warn("Using compute queue as present fallback");
+                    presentQueueLogged = true;
+                }
                 indices.presentFamily = indices.computeFamily;
             }
 
@@ -154,8 +159,16 @@ public abstract class Queue {
             }
 
             if (indices.transferFamily == -1) {
-                Initializer.LOGGER.warn("Dedicated Transfer Queue is not supported on this device, using fallback Graphics Queue.");
+                if (!transferQueueLogged) {
+                    Initializer.LOGGER.warn("Dedicated Transfer Queue is not supported on this device, using fallback Graphics Queue.");
+                    transferQueueLogged = true;
+                }
                 indices.transferFamily = indices.graphicsFamily;
+            } else {
+                if (!transferQueueLogged) {
+                    Initializer.LOGGER.warn("Dedicated Transfer Queue is supported on this device.");
+                    transferQueueLogged = true;
+                }
             }
 
             if (indices.computeFamily == -1) {
