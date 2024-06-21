@@ -126,8 +126,8 @@ public abstract class Queue {
                 // Some drivers will not show present support even if some queue supports it
                 // Use compute queue as fallback
 
-                indices.presentFamily = indices.computeFamily;
                 Initializer.LOGGER.warn("Using compute queue as present fallback");
+                indices.presentFamily = indices.computeFamily;
             }
 
             if (indices.transferFamily == -1) {
@@ -149,11 +149,13 @@ public abstract class Queue {
                         }
                     }
 
-                    if (fallback == -1)
-                        throw new RuntimeException("Failed to find queue family with transfer support");
-
                     indices.transferFamily = fallback;
                 }
+            }
+
+            if (indices.transferFamily == -1) {
+                Initializer.LOGGER.warn("Dedicated Transfer Queue is not supported on this device, using fallback Graphics Queue.");
+                indices.transferFamily = indices.graphicsFamily;
             }
 
             if (indices.computeFamily == -1) {
@@ -167,6 +169,8 @@ public abstract class Queue {
                 }
             }
 
+            if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED)
+                throw new RuntimeException("Unable to find queue family with transfer support.");
             if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED)
