@@ -166,7 +166,7 @@ public abstract class Queue {
                 indices.transferFamily = indices.graphicsFamily;
             } else {
                 if (!transferQueueLogged) {
-                    Initializer.LOGGER.warn("Dedicated Transfer Queue is supported on this device.");
+                    Initializer.LOGGER.info("Dedicated Transfer Queue is supported on this device.");
                     transferQueueLogged = true;
                 }
             }
