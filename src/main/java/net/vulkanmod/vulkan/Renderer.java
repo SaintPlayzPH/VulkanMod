@@ -45,14 +45,16 @@ import static net.vulkanmod.vulkan.queue.Queue.GraphicsQueue;
 import static net.vulkanmod.vulkan.queue.Queue.TransferQueue;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
-import static org.lwjgl.vulkan.EXTValidation.*;
-import static org.lwjgl.vulkan.KHRErrorCodes.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class Renderer {
+    public static final int VK_ERROR_INCOMPATIBLE_DISPLAY_KHR = 1000003001;
+    public static final int VK_ERROR_VALIDATION_FAILED_EXT = -1000011001;
+    public static final int VK_ERROR_INVALID_SHADER_NV = -1000012000;
+
     public static boolean recomp;
     private static Renderer INSTANCE;
 
