@@ -45,8 +45,11 @@ import static net.vulkanmod.vulkan.queue.Queue.GraphicsQueue;
 import static net.vulkanmod.vulkan.queue.Queue.TransferQueue;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
+import static org.lwjgl.vulkan.EXTValidation.*;
+import static org.lwjgl.vulkan.KHRErrorCodes.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
+import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class Renderer {
