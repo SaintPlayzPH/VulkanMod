@@ -45,6 +45,8 @@ public class SwapChain extends Framebuffer {
 
     private int[] glIds;
 
+    private int desiredTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+
     public SwapChain() {
         this.attachmentCount = 2;
         this.depthFormat = Vulkan.getDefaultDepthFormat();
@@ -91,7 +93,6 @@ public class SwapChain extends Framebuffer {
             }
 
             // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
-            // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
             int requestedImages = Math.max(DEFAULT_IMAGE_COUNT, surfaceProperties.capabilities.minImageCount());
 
             IntBuffer imageCount = stack.ints(requestedImages);
@@ -121,7 +122,9 @@ public class SwapChain extends Framebuffer {
                 createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
             }
 
-            createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
+            // Handle rotation: Choose the desired transform
+            desiredTransform = determineDesiredTransform(surfaceProperties.capabilities.supportedTransforms(), surfaceProperties.capabilities.currentTransform());
+            createInfo.preTransform(desiredTransform);
             createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
             createInfo.presentMode(presentMode);
             createInfo.clipped(true);
@@ -164,6 +167,25 @@ public class SwapChain extends Framebuffer {
 
         createGlIds();
         createDepthResources();
+    }
+
+    private int determineDesiredTransform(int supportedTransforms, int currentTransform) {
+        return switch (currentTransform) {
+            case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR;
+            case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR;
+            case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
+            default -> {
+                if ((supportedTransforms & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) != 0) {
+                    yield VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR;
+                } else if ((supportedTransforms & VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR) != 0) {
+                    yield VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR;
+                } else if ((supportedTransforms & VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR) != 0) {
+                    yield VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
+                } else {
+                    yield currentTransform;
+                }
+            }
+        };
     }
 
     private void createGlIds() {
@@ -316,7 +338,7 @@ public class SwapChain extends Framebuffer {
             return capabilities.currentExtent();
         }
 
-        //Fallback
+        // Fallback
         IntBuffer width = stackGet().ints(0);
         IntBuffer height = stackGet().ints(0);
 
@@ -343,7 +365,7 @@ public class SwapChain extends Framebuffer {
                     }
                 }
             }
-            return VK_PRESENT_MODE_FIFO_KHR; //If None of the request modes exist/are supported by Driver
+            return VK_PRESENT_MODE_FIFO_KHR; // If None of the request modes exist/are supported by Driver
         }
     }
 
