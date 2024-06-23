@@ -710,9 +710,9 @@ public class Renderer {
 
         try (MemoryStack stack = stackPush()) {
             VkViewport.Buffer viewport = VkViewport.malloc(1, stack);
-            viewport.x(x);
+            viewport.x(180.0f);
             viewport.y(height + y);
-            viewport.width(height);
+            viewport.width(width);
             viewport.height(-height);
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
