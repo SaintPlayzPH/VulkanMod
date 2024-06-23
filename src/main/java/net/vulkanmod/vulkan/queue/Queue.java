@@ -158,19 +158,6 @@ public abstract class Queue {
                 }
             }
 
-            if (indices.transferFamily == -1) {
-                if (!transferQueueLogged) {
-                    Initializer.LOGGER.warn("Dedicated Transfer Queue is not supported on this device, using fallback Graphics Queue.");
-                    transferQueueLogged = true;
-                }
-                indices.transferFamily = indices.graphicsFamily;
-            } else {
-                if (!transferQueueLogged) {
-                    Initializer.LOGGER.info("Dedicated Transfer Queue is supported on this device.");
-                    transferQueueLogged = true;
-                }
-            }
-
             if (indices.computeFamily == -1) {
                 for (int i = 0; i < queueFamilies.capacity(); i++) {
                     int queueFlags = queueFamilies.get(i).queueFlags();
@@ -182,9 +169,11 @@ public abstract class Queue {
                 }
             }
 
+            indices.transferFamily = indices.graphicsFamily;
+
             if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with transfer support.");
-            if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
+            if (indis.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with present support.");
