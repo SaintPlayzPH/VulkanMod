@@ -45,9 +45,9 @@ public class PostPassM {
     @Overwrite
     public void process(float f) {
         this.inTarget.unbindWrite();
-        float g = (float)this.outTarget.width;
-        float h = (float)this.outTarget.height;
-        RenderSystem.viewport(0, 0, (int)g, (int)h);
+        float g = (float)this.outTarget.height; // swapped width with height
+        float h = (float)this.outTarget.width;  // swapped width with height
+        RenderSystem.viewport(0, 0, (int)h, (int)g); // swapped width with height
 
         Objects.requireNonNull(this.inTarget);
         this.effect.setSampler("DiffuseSampler", this.inTarget::getColorTextureId);
@@ -58,22 +58,23 @@ public class PostPassM {
 
         for (int i = 0; i < this.auxAssets.size(); ++i) {
             this.effect.setSampler(this.auxNames.get(i), this.auxAssets.get(i));
-            this.effect.safeGetUniform("AuxSize" + i).set((float) this.auxWidths.get(i), (float) this.auxHeights.get(i));
+            this.effect.safeGetUniform("AuxSize" + i).set((float) this.auxHeights.get(i), (float) this.auxWidths.get(i)); // swapped width with height
         }
 
         this.effect.safeGetUniform("ProjMat").set(this.shaderOrthoMatrix);
-        this.effect.safeGetUniform("InSize").set((float)this.inTarget.width, (float)this.inTarget.height);
+        this.effect.safeGetUniform("InSize").set((float)this.inTarget.height, (float)this.inTarget.width); // swapped width with height
         this.effect.safeGetUniform("OutSize").set(g, h);
         this.effect.safeGetUniform("Time").set(f);
         Minecraft minecraft = Minecraft.getInstance();
-        this.effect.safeGetUniform("ScreenSize").set((float)minecraft.getWindow().getWidth(), (float)minecraft.getWindow().getHeight());
+        this.effect.safeGetUniform("ScreenSize").set((float)minecraft.getWindow().getHeight(), (float)minecraft.getWindow().getWidth()); // swapped width with height
 
         this.outTarget.clear(Minecraft.ON_OSX);
         this.outTarget.bindWrite(false);
 
         VRenderSystem.disableCull();
         RenderSystem.depthFunc(519);
-        Renderer.setViewport2(0, this.outTarget.height, this.outTarget.height, -this.outTarget.width);
+
+        Renderer.setViewport(0, this.outTarget.width, this.outTarget.height, -this.outTarget.width); // swapped width with height
         Renderer.resetScissor();
 
         this.effect.apply();
@@ -81,9 +82,9 @@ public class PostPassM {
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         bufferBuilder.vertex(0.0, 0.0, 500.0).endVertex();
-        bufferBuilder.vertex(g, 0.0, 500.0).endVertex();
-        bufferBuilder.vertex(g, h, 500.0).endVertex();
-        bufferBuilder.vertex(0.0, h, 500.0).endVertex();
+        bufferBuilder.vertex(h, 0.0, 500.0).endVertex(); // swapped width with height
+        bufferBuilder.vertex(h, g, 500.0).endVertex(); // swapped width with height
+        bufferBuilder.vertex(0.0, g, 500.0).endVertex(); // swapped width with height
         BufferUploader.draw(bufferBuilder.end());
         RenderSystem.depthFunc(515);
 
