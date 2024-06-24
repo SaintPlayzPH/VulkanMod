@@ -713,7 +713,7 @@ public class Renderer {
             viewport.x(0.0f);
             viewport.y(height + y);
             viewport.width(width);
-            viewport.height(-1280.0f);
+            viewport.height(-height);
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
 
