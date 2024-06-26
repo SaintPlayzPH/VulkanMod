@@ -23,37 +23,39 @@ repositories {
 }
 
 dependencies {
+    // LWJGL dependencies
     include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
+    include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$linuxNatives"))
 
-	include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
-	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
+    include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
+    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
 
-	include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
-	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
+    include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
+    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
 
     // Directly include lib-arm64-shaderc+libvma.jar from GitHub
-    implementation files('https://github.com/SaintPlayzPH/arm64-libs/raw/main/lib-arm64-shaderc+libvma.jar')
-}
+    implementation files("${buildDir}/libs/lib-arm64-shaderc+libvma.jar") {
+        builtBy 'fetchJar'
+    }
 
-dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // Fabric dependencies
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// Needed in order to load mod namespace
-	ext.includeModule = { name ->
-		var module = fabricApi.module(name, project.fabric_version)
-		modImplementation(module)
-		include(module)
-	}
+    // Needed in order to load mod namespace
+    ext.includeModule = { name ->
+        var module = fabricApi.module(name, project.fabric_version)
+        modImplementation(module)
+        include(module)
+    }
 
-	includeModule("fabric-api-base")
-	includeModule("fabric-resource-loader-v0")
-	includeModule("fabric-rendering-fluids-v1")
+    includeModule("fabric-api-base")
+    includeModule("fabric-resource-loader-v0")
+    includeModule("fabric-rendering-fluids-v1")
 }
 
 processResources {
@@ -68,16 +70,15 @@ tasks.withType(JavaCompile).configureEach {
     it.options.release = 17
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
-}
-
-java {
-    withSourcesJar() // Automatically attach sourcesJar to RemapSourcesJar task and "build" task
+tasks.register('fetchJar', Copy) {
+    from(new URL('https://github.com/SaintPlayzPH/arm64-libs/raw/main/lib-arm64-shaderc+libvma.jar'))
+    into "${buildDir}/libs"
 }
 
 jar {
-    from('build/libs') {
+    dependsOn 'fetchJar'
+
+    from("${buildDir}/libs") {
         include 'lib-arm64-shaderc+libvma.jar'
         into 'META-INF/jars'
     }
