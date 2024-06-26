@@ -15,10 +15,6 @@ project.ext.jomlVersion = "1.10.4"
 project.ext.linuxNatives = "natives-linux"
 
 repositories {
-    maven {
-        url 'https://github.com/SaintPlayzPH/arm64-libs/raw/main/'
-    }
-    // Add any additional repositories needed for your dependencies
     mavenCentral()
 }
 
@@ -71,11 +67,6 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 17
-}
-
-tasks.register('fetchJar', Copy) {
-    from(new URL('https://github.com/SaintPlayzPH/arm64-libs/raw/main/lib-arm64-shaderc+libvma.jar'))
-    into "${buildDir}/libs"
 }
 
 loom {
