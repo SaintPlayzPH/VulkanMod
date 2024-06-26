@@ -74,13 +74,6 @@ loom {
 }
 
 jar {
-    dependsOn 'fetchJar'
-
-    from("${buildDir}/libs") {
-        include 'lib-arm64-shaderc+libvma.jar'
-        into 'META-INF/jars'
-    }
-
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
     }
