@@ -102,7 +102,7 @@ public abstract class Queue {
                     if (presentSupport.get(0) == VK_TRUE) {
                         indices.presentFamily = i;
                     }
-                } else if ((queueFlags & (VK_QUEUE_GRAPHICS_BIT)) == 0
+                } else if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0
                         && (queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                     indices.computeFamily = i;
                 } else if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
@@ -149,10 +149,10 @@ public abstract class Queue {
                         }
                     }
 
-                    if (fallback == -1)
-                        throw new RuntimeException("Failed to find queue family with transfer support");
-
-                    indices.transferFamily = fallback;
+                    if (indices.transferFamily == -1) {
+                        indices.transferFamily = indices.graphicsFamily;
+                        Initializer.LOGGER.warn("Using graphics queue as transfer fallback");
+                    }
                 }
             }
 
@@ -167,6 +167,8 @@ public abstract class Queue {
                 }
             }
 
+            if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED)
+                throw new RuntimeException("Unable to find queue family with transfer support.");
             if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED)
