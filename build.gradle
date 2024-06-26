@@ -78,6 +78,10 @@ tasks.register('fetchJar', Copy) {
     into "${buildDir}/libs"
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
+}
+
 jar {
     dependsOn 'fetchJar'
 
