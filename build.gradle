@@ -23,39 +23,42 @@ repositories {
 }
 
 dependencies {
-    // LWJGL dependencies
-    include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$linuxNatives"))
+	include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
 
-    include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
+	include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
 
-    include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
-    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
+	include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
+	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
+}
 
-    // Directly include lib-arm64-shaderc+libvma.jar from GitHub
-    implementation files("${buildDir}/libs/lib-arm64-shaderc+libvma.jar") {
-        builtBy 'fetchJar'
-    }
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+}
 
-    // Fabric dependencies
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // Needed in order to load mod namespace
-    ext.includeModule = { name ->
-        var module = fabricApi.module(name, project.fabric_version)
-        modImplementation(module)
-        include(module)
-    }
+	// Needed in order to load mod namespace
+	ext.includeModule = { name ->
+		var module = fabricApi.module(name, project.fabric_version)
+		modImplementation(module)
+		include(module)
+	}
 
-    includeModule("fabric-api-base")
-    includeModule("fabric-resource-loader-v0")
-    includeModule("fabric-rendering-fluids-v1")
+	includeModule("fabric-api-base")
+	includeModule("fabric-resource-loader-v0")
+	includeModule("fabric-rendering-fluids-v1")
 }
 
 processResources {
