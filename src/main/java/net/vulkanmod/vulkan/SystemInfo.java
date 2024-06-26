@@ -29,7 +29,7 @@ public class SystemInfo {
 
     public static String getProcessorNameForDesktop() {
         CentralProcessor centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
-        cpuInfo = String.format("%s", centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
+        return String.format("%s", centralProcessor.getProcessorIdentifier().getName()).replaceAll("\\s+", " ");
     }
 
     private static boolean isRunningOnAndroid() {
