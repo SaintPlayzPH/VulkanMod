@@ -101,7 +101,7 @@ public abstract class VRenderSystem {
 
     public static void applyProjectionMatrix(Matrix4f mat) {
         Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
-        FloatBuffer projMatrixBuffer = projectionMatrix.buffer().asFloatBuffer();
+        FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
         if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
         	mat.get(projMatrixBuffer);
         } else {
