@@ -16,7 +16,6 @@ public class QueueFamilyIndices {
     public static int graphicsFamily = VK_QUEUE_FAMILY_IGNORED;
     public static int presentFamily = VK_QUEUE_FAMILY_IGNORED;
     public static int transferFamily = VK_QUEUE_FAMILY_IGNORED;
-    public static int computeFamily = VK_QUEUE_FAMILY_IGNORED;
 
     public static boolean hasDedicatedTransferQueue = false;
 
@@ -28,7 +27,7 @@ public class QueueFamilyIndices {
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, null);
 
             if (queueFamilyCount.get(0) == 1) {
-                transferFamily = presentFamily = graphicsFamily = computeFamily = 0;
+                transferFamily = presentFamily = graphicsFamily = 0;
                 Initializer.LOGGER.info("Found single queue family. All queues supported.");
                 return true;
             }
@@ -88,26 +87,12 @@ public class QueueFamilyIndices {
                 }
             }
 
-            if (computeFamily == VK_QUEUE_FAMILY_IGNORED) {
-                for (int i = 0; i < queueFamilies.capacity(); i++) {
-                    int queueFlags = queueFamilies.get(i).queueFlags();
-
-                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
-                        computeFamily = i;
-                        Initializer.LOGGER.info("Found compute queue family: " + i);
-                        break;
-                    }
-                }
-            }
-
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
 
             if (graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (presentFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with present support.");
-            if (computeFamily == VK_QUEUE_FAMILY_IGNORED)
-                throw new RuntimeException("Unable to find queue family with compute support.");
 
             return isComplete();
         }
@@ -115,7 +100,7 @@ public class QueueFamilyIndices {
 
     public static boolean isComplete() {
         return graphicsFamily != VK_QUEUE_FAMILY_IGNORED && presentFamily != VK_QUEUE_FAMILY_IGNORED
-                && transferFamily != VK_QUEUE_FAMILY_IGNORED && computeFamily != VK_QUEUE_FAMILY_IGNORED;
+                && transferFamily != VK_QUEUE_FAMILY_IGNORED;
     }
 
     public static boolean isSuitable() {
@@ -123,7 +108,7 @@ public class QueueFamilyIndices {
     }
 
     public static int[] unique() {
-        return IntStream.of(graphicsFamily, presentFamily, transferFamily, computeFamily).distinct().toArray();
+        return IntStream.of(graphicsFamily, presentFamily, transferFamily).distinct().toArray();
     }
 
     public static int[] array() {
