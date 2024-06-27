@@ -20,7 +20,6 @@ public enum Queue {
     FakeTransferQueue(QueueFamilyIndices.graphicsFamily, true, 0),
     TransferQueue(QueueFamilyIndices.transferFamily, true, 0),
     PresentQueue(QueueFamilyIndices.presentFamily, false, 0),
-    ComputeQueue(QueueFamilyIndices.computeFamily, true, 0);
 
     private CommandPool.CommandBuffer currentCmdBuffer;
     private final CommandPool commandPool;
