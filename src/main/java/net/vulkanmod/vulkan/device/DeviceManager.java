@@ -333,7 +333,6 @@ public abstract class DeviceManager {
         GraphicsQueue.cleanUp();
         TransferQueue.cleanUp();
         FakeTransferQueue.cleanUp();
-        ComputeQueue.cleanUp();
 
         vkDestroyDevice(vkDevice, null);
     }
@@ -348,10 +347,6 @@ public abstract class DeviceManager {
 
     public static Queue getTransferQueue() {
         return TransferQueue;
-    }
-
-    public static Queue getComputeQueue() {
-        return ComputeQueue;
     }
 
     public static SurfaceProperties querySurfaceProperties(VkPhysicalDevice device, MemoryStack stack) {
