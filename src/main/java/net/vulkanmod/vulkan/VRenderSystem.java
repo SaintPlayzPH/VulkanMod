@@ -100,7 +100,13 @@ public abstract class VRenderSystem {
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
-        mat.get(projectionMatrix.buffer.asFloatBuffer());
+        Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
+        FloatBuffer projMatrixBuffer = projectionMatrix.buffer().asFloatBuffer();
+        if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
+        	mat.get(projMatrixBuffer);
+        } else {
+        	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
+        }
     }
 
     public static void calculateMVP() {
