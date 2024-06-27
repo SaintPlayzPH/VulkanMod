@@ -657,9 +657,10 @@ public class Renderer {
     }
 
     private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
-        if (INSTANCE.boundFramebuffer == null)
-            return;
-
+        if (INSTANCE.boundFramebuffer == null) {
+            offset2D.set(x, y);
+            return offset2D;
+        }
         int pretransformFlags = Vulkan.getPretransformFlags();
         if(pretransformFlags == 0) {
             offset2D.set(x, y);
