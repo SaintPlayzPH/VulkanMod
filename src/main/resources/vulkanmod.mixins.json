@@ -87,9 +87,6 @@
 
     "texture.mip.MipmapGeneratorM",
 
-    "compatibility.PostChainM",
-    "compatibility.PostPassM",
-
     "render.block.BakedQuadM",
 
     "voxel.VoxelShapeMixin"
