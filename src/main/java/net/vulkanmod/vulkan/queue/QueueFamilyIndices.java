@@ -61,11 +61,6 @@ public class QueueFamilyIndices {
                 if (isComplete()) break;
             }
 
-            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-                presentFamily = computeFamily;
-                Initializer.LOGGER.warn("Using compute queue as present fallback");
-            }
-
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 int fallback = VK_QUEUE_FAMILY_IGNORED;
                 for (int i = 0; i < queueFamilies.capacity(); i++) {
