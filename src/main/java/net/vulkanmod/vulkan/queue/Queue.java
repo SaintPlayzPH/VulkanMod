@@ -102,7 +102,7 @@ public abstract class Queue {
                     if (presentSupport.get(0) == VK_TRUE) {
                         indices.presentFamily = i;
                     }
-                } else if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0
+                } else if ((queueFlags & (VK_QUEUE_GRAPHICS_BIT)) == 0
                         && (queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                     indices.computeFamily = i;
                 } else if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
