@@ -40,22 +40,18 @@ public class QueueFamilyIndices {
 
                 if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0) {
                     graphicsFamily = i;
-                    Initializer.LOGGER.info("Found graphics queue family: " + i);
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         presentFamily = i;
-                        Initializer.LOGGER.info("Found compute queue family also supporting present: " + i);
                     }
                 }
                 if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
                         && (queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
                     transferFamily = i;
-                    Initializer.LOGGER.info("Found transfer queue family: " + i);
                 }
 
                 if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
                     if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                         presentFamily = i;
-                        Initializer.LOGGER.info("Found compute queue family as present fallback: " + i);
                     }
                 }
                 if (isComplete()) break;
@@ -71,7 +67,6 @@ public class QueueFamilyIndices {
                         if ((queueFlags & (VK_QUEUE_GRAPHICS_BIT)) == 0) {
                             transferFamily = i;
                             fallback = i;
-                            Initializer.LOGGER.info("Using transfer queue family with no graphics support: " + i);
                         }
                     }
 
