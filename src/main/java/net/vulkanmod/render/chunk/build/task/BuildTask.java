@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.PaneBlock;
+import net.minecraft.world.level.block.GlassPaneBlock;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -139,7 +139,7 @@ public class BuildTask extends ChunkTask {
                                 renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
                             else if(blockState.getBlock() instanceof GrassBlock)
                                 renderType = TerrainRenderType.CUTOUT;
-                            else if(blockState.getBlock() instanceof PaneBlock)
+                            else if(blockState.getBlock() instanceof GlassPaneBlock)
                                 renderType = TerrainRenderType.CUTOUT;
                         }
 
