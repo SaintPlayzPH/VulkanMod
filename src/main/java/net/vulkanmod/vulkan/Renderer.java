@@ -264,7 +264,6 @@ public class Renderer {
                 swapChainUpdate = true;
             } else if (vkResult == VK_ERROR_OUT_OF_DATE_KHR || swapChainUpdate) {
                 swapChainUpdate = true;
-	    	recreateSwapChain();
                 return;
             } else if (vkResult != VK_SUCCESS) {
                 throw new RuntimeException("Cannot get image: " + translateVulkanResult(vkResult));
