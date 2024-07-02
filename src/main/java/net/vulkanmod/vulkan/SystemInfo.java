@@ -34,11 +34,6 @@ public class SystemInfo {
     }
 
     public static String getProcessorNameForAndroidNoLog() {
-        if (!logged) {
-            Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
-            logged = true;
-        }
-
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
             return br.lines()
                     .filter(line -> line.startsWith("Hardware"))
@@ -46,7 +41,6 @@ public class SystemInfo {
                     .findFirst()
                     .orElse("Unknown");
         } catch (IOException e) {
-            Initializer.LOGGER.error("Can't obtain your Mobile processor name!", e);
             return "Unknown";
         }
     }
