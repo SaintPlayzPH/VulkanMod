@@ -5,7 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.vulkanmod.config.Config;
 import net.vulkanmod.config.Platform;
 import net.vulkanmod.config.video.VideoModeManager;
-import net.vulkanmod.vulkan.Queue.QueueFamilyIndices;
+import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import net.vulkanmod.vulkan.DeviceRAMInfo;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.SystemInfo;
