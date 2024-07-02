@@ -33,6 +33,24 @@ public class SystemInfo {
         }
     }
 
+    public static String getProcessorNameForAndroidNoLog() {
+        if (!logged) {
+            Initializer.LOGGER.info("Obtaining Processor Name on your Device since you're running on Mobile!");
+            logged = true;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
+            return br.lines()
+                    .filter(line -> line.startsWith("Hardware"))
+                    .map(line -> line.split(":\\s+", 2)[1])
+                    .findFirst()
+                    .orElse("Unknown");
+        } catch (IOException e) {
+            Initializer.LOGGER.error("Can't obtain your Mobile processor name!", e);
+            return "Unknown";
+        }
+    }
+
     public static String getProcessorNameForDesktop() {
         if (!logged) {
            Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
