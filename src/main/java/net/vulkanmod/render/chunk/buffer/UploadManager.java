@@ -53,7 +53,7 @@ public class UploadManager {
             this.dstBuffers.clear();
         }
 
-        TransferQueue.uploadBufferCmd(commandBuffer, stagingBuffer.getId(), stagingBuffer.getOffset(), bufferId, dstOffset, bufferSize);
+        TransferQueue.uploadBufferCmds(commandBuffer, stagingBuffer.getId(), bufferId, dstBuffers);
     }
 
     public void copyBuffer(Buffer src, Buffer dst) {
@@ -75,7 +75,7 @@ public class UploadManager {
         this.dstBuffers.clear();
         this.dstBuffers.add(dst.getId());
 
-        TransferQueue.uploadBufferCmd(commandBuffer, src.getId(), srcOffset, dst.getId(), dstOffset, size);
+        TransferQueue.uploadBufferCmds(commandBuffer, stagingBuffer.getId(), bufferId, dstBuffers);
     }
 
     public void waitUploads() {
