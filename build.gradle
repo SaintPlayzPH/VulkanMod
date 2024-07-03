@@ -19,30 +19,27 @@ project.ext.macosArmNatives = "natives-macos-arm64"
 
 dependencies {
     // LWJGL Vulkan and Vulkan Memory Allocator (VMA) dependencies
-    implementation "org.lwjgl:lwjgl-vulkan:$lwjglVersion"
-    implementation "org.lwjgl:lwjgl-vma:$lwjglVersion"
+    include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
+    include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
     
     // Runtime natives for Windows, Linux, macOS, and macOS ARM
-    runtimeOnly "org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives"
-    runtimeOnly "org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"
-    runtimeOnly "org.lwjgl:lwjgl-vma:$lwjglVersion:$macosNatives"
-    runtimeOnly "org.lwjgl:lwjgl-vma:$lwjglVersion:$macosArmNatives"
+    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosArmNatives"))
     
     // LWJGL Shaderc dependency
-    implementation "org.lwjgl:lwjgl-shaderc:$lwjglVersion"
+    include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
     
     // Runtime natives for Shaderc on Windows, Linux, macOS, and macOS ARM
-    runtimeOnly "org.lwjgl:lwjgl-shaderc:$lwjglVersion:$winNatives"
-    runtimeOnly "org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"
-    runtimeOnly "org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosNatives"
-    runtimeOnly "org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosArmNatives"
+    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$winNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosArmNatives"))
     
     // LWJGL Vulkan with specific natives for macOS and macOS ARM
-    runtimeOnly "org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosNatives"
-    runtimeOnly "org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosArmNatives"
-    
-    // Include ARM library for Linux explicitly
-    runtimeOnly "org.lwjgl:lwjgl-vulkan:$lwjglVersion:$linuxNatives"
+    include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosNatives"))
+    include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosArmNatives"))
 }
 
 repositories {
