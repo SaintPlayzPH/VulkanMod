@@ -7,6 +7,7 @@ import net.vulkanmod.vulkan.memory.StagingBuffer;
 import net.vulkanmod.vulkan.queue.CommandPool;
 import net.vulkanmod.vulkan.queue.Queue;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkMemoryBarrier;
 
 import java.nio.ByteBuffer;
@@ -37,7 +38,7 @@ public class UploadManager {
         if (this.commandBuffer == null)
             this.commandBuffer = TransferQueue.beginCommands();
 
-        CommandPool.CommandBuffer commandBuffer = this.commandBuffer.getHandle();
+        VkCommandBuffer commandBuffer = this.commandBuffer.getHandle();
 
         StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
         stagingBuffer.copyBuffer((int) bufferSize, src);
@@ -52,7 +53,7 @@ public class UploadManager {
             this.dstBuffers.clear();
         }
 
-        TransferQueue.uploadBufferCmds(commandBuffer, stagingBuffer.getId(), bufferId, dstBuffers);
+        TransferQueue.uploadBufferCmd(commandBuffer, stagingBuffer.getId(), stagingBuffer.getOffset(), bufferId, dstOffset, bufferSize);
     }
 
     public void copyBuffer(Buffer src, Buffer dst) {
@@ -63,7 +64,7 @@ public class UploadManager {
         if (this.commandBuffer == null)
             this.commandBuffer = TransferQueue.beginCommands();
 
-        CommandPool.CommandBuffer commandBuffer = this.commandBuffer.getHandle();
+        VkCommandBuffer commandBuffer = this.commandBuffer.getHandle();
 
         TransferQueue.MemoryBarrier(commandBuffer,
                 VK_ACCESS_TRANSFER_WRITE_BIT,
@@ -74,7 +75,7 @@ public class UploadManager {
         this.dstBuffers.clear();
         this.dstBuffers.add(dst.getId());
 
-        TransferQueue.uploadBufferCmds(commandBuffer, src.getId(), dstBuffers);
+        TransferQueue.uploadBufferCmd(commandBuffer, src.getId(), srcOffset, dst.getId(), dstOffset, size);
     }
 
     public void waitUploads() {
