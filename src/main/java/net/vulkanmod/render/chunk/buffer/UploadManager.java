@@ -7,7 +7,6 @@ import net.vulkanmod.vulkan.memory.StagingBuffer;
 import net.vulkanmod.vulkan.queue.CommandPool;
 import net.vulkanmod.vulkan.queue.Queue;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkMemoryBarrier;
 
 import java.nio.ByteBuffer;
@@ -38,7 +37,7 @@ public class UploadManager {
         if (this.commandBuffer == null)
             this.commandBuffer = TransferQueue.beginCommands();
 
-        VkCommandBuffer commandBuffer = this.commandBuffer.getHandle();
+        CommandPool.CommandBuffer commandBuffer = this.commandBuffer.getHandle();
 
         StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
         stagingBuffer.copyBuffer((int) bufferSize, src);
@@ -64,7 +63,7 @@ public class UploadManager {
         if (this.commandBuffer == null)
             this.commandBuffer = TransferQueue.beginCommands();
 
-        VkCommandBuffer commandBuffer = this.commandBuffer.getHandle();
+        CommandPool.CommandBuffer commandBuffer = this.commandBuffer.getHandle();
 
         TransferQueue.MemoryBarrier(commandBuffer,
                 VK_ACCESS_TRANSFER_WRITE_BIT,
