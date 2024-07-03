@@ -40,6 +40,9 @@ dependencies {
     // LWJGL Vulkan with specific natives for macOS and macOS ARM
     include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosNatives"))
     include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosArmNatives"))
+    
+    // Checker Framework dependency
+    include(implementation("org.checkerframework:checker:3.11.0"))
 }
 
 repositories {
