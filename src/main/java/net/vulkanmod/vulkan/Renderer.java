@@ -47,9 +47,14 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
+import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class Renderer {
+    public static final int VK_ERROR_INCOMPATIBLE_DISPLAY_KHR = 1000003001;
+    public static final int VK_ERROR_VALIDATION_FAILED_EXT = -1000011001;
+    public static final int VK_ERROR_INVALID_SHADER_NV = -1000012000;
+
     public static boolean recomp;
     private static Renderer INSTANCE;
 
@@ -189,7 +194,7 @@ public class Renderer {
                         || vkCreateSemaphore(device, semaphoreInfo, null, pRenderFinishedSemaphore) != VK_SUCCESS
                         || vkCreateFence(device, fenceInfo, null, pFence) != VK_SUCCESS) {
 
-                    throw new RuntimeException("Failed to create synchronization objects for the frame " + i);
+                    throw new RuntimeException("Failed to create synchronization objects for the frame " + translateVulkanResult(i));
                 }
 
                 imageAvailableSemaphores.add(pImageAvailableSemaphore.get(0));
@@ -261,7 +266,7 @@ public class Renderer {
                 swapChainUpdate = true;
                 return;
             } else if (vkResult != VK_SUCCESS) {
-                throw new RuntimeException("Cannot get image: " + vkResult);
+                throw new RuntimeException("Cannot get image: " + translateVulkanResult(vkResult));
             }
 
             imageIndex = pImageIndex.get(0);
@@ -274,7 +279,7 @@ public class Renderer {
 
             int err = vkBeginCommandBuffer(commandBuffer, beginInfo);
             if (err != VK_SUCCESS) {
-                throw new RuntimeException("Failed to begin recording command buffer:" + err);
+                throw new RuntimeException("Failed to begin recording command buffer:" + translateVulkanResult(err));
             }
 
             mainPass.begin(commandBuffer, stack);
@@ -285,6 +290,37 @@ public class Renderer {
         }
 
         p.pop();
+    }
+
+    private static String translateVulkanResult(int resultCode) {
+        return switch (resultCode) {
+            case VK_SUCCESS -> "Success";
+            case VK_NOT_READY -> "Not ready";
+            case VK_TIMEOUT -> "Timeout";
+            case VK_EVENT_SET -> "Event set";
+            case VK_EVENT_RESET -> "Event reset";
+            case VK_INCOMPLETE -> "Incomplete";
+            case VK_ERROR_OUT_OF_HOST_MEMORY -> "Out of host memory";
+            case VK_ERROR_OUT_OF_DEVICE_MEMORY -> "Out of device memory";
+            case VK_ERROR_INITIALIZATION_FAILED -> "Initialization failed";
+            case VK_ERROR_DEVICE_LOST -> "Device lost";
+            case VK_ERROR_MEMORY_MAP_FAILED -> "Memory map failed";
+            case VK_ERROR_LAYER_NOT_PRESENT -> "Layer not present";
+            case VK_ERROR_EXTENSION_NOT_PRESENT -> "Extension not present";
+            case VK_ERROR_FEATURE_NOT_PRESENT -> "Feature not present";
+            case VK_ERROR_INCOMPATIBLE_DRIVER -> "Incompatible driver";
+            case VK_ERROR_TOO_MANY_OBJECTS -> "Too many objects";
+            case VK_ERROR_FORMAT_NOT_SUPPORTED -> "Format not supported";
+            case VK_ERROR_FRAGMENTED_POOL -> "Fragmented pool";
+            case VK_ERROR_SURFACE_LOST_KHR -> "Surface lost";
+            case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR -> "Native window in use";
+            case VK_SUBOPTIMAL_KHR -> "Suboptimal";
+            case VK_ERROR_OUT_OF_DATE_KHR -> "Out of date";
+            case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR -> "Incompatible display";
+            case VK_ERROR_VALIDATION_FAILED_EXT -> "Validation failed";
+            case VK_ERROR_INVALID_SHADER_NV -> "Invalid shader";
+            default -> String.format("Unknown Vulkan error: 0x%X", resultCode);
+        };
     }
 
     public void endFrame() {
@@ -328,7 +364,7 @@ public class Renderer {
 
             if ((vkResult = vkQueueSubmit(DeviceManager.getGraphicsQueue().queue(), submitInfo, inFlightFences.get(currentFrame))) != VK_SUCCESS) {
                 vkResetFences(device, stack.longs(inFlightFences.get(currentFrame)));
-                throw new RuntimeException("Failed to submit draw command buffer: " + vkResult);
+                throw new RuntimeException("Failed to submit draw command buffer: " + translateVulkanResult(vkResult));
             }
 
             VkPresentInfoKHR presentInfo = VkPresentInfoKHR.calloc(stack);
@@ -590,7 +626,7 @@ public class Renderer {
             colorValue.color().float32(VRenderSystem.clearColor);
 
             VkClearValue depthValue = VkClearValue.calloc(stack);
-            depthValue.depthStencil().set(VRenderSystem.clearDepth, 0); //Use fast depth clears if possible
+            depthValue.depthStencil().set(VRenderSystem.clearDepthValue, 0); //Use fast depth clears if possible
 
             int attachmentsCount = v == (GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT) ? 2 : 1;
             final VkClearAttachment.Buffer pAttachments = VkClearAttachment.malloc(attachmentsCount, stack);
@@ -698,32 +734,26 @@ public class Renderer {
     
     private static VkOffset2D transformToOffset(VkOffset2D offset2D, int x, int y, int w, int h) {
         int pretransformFlags = Vulkan.getPretransformFlags();
-        if(pretransformFlags == 0) {
-            offset2D.set(x, y);
-            return offset2D;
+        if (pretransformFlags == 0) {
+            return offset2D.set(x, y);
         }
-        Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+
+        Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
         int framebufferWidth = boundFramebuffer.getWidth();
         int framebufferHeight = boundFramebuffer.getHeight();
-        switch (pretransformFlags) {
+
+        return switch (pretransformFlags) {
             case VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR -> {
-                offset2D.x(framebufferWidth - h - y);
-                offset2D.y(x);
+                yield offset2D.set(framebufferWidth - h - y, x);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR -> {
-                offset2D.x(framebufferWidth - w - x);
-                offset2D.y(framebufferHeight - h - y);
+                yield offset2D.set(framebufferWidth - w - x, framebufferHeight - h - y);
             }
             case VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR -> {
-                offset2D.x(y);
-                offset2D.y(framebufferHeight - w - x);
+                yield offset2D.set(y, framebufferHeight - w - x);
             }
-            default -> {
-                offset2D.x(x);
-                offset2D.y(y);
-            }
-        }
-        return offset2D;
+            default -> offset2D.set(x, y);
+        };
     }
 
     public static void setScissor(int x, int y, int width, int height) {
@@ -731,8 +761,8 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-        	VkExtent2D extent = VkExtent2D.malloc(stack);
-            Framebuffer boundFramebuffer = Renderer.getInstance().boundFramebuffer;
+            VkExtent2D extent = VkExtent2D.malloc(stack);
+            Framebuffer boundFramebuffer = INSTANCE.boundFramebuffer;
             transformToExtent(extent, boundFramebuffer.getWidth(), boundFramebuffer.getHeight());
             int framebufferHeight = extent.height();
             

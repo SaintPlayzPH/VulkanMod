@@ -57,8 +57,10 @@ dependencies {
 		include(module)
 	}
 
+	includeModule("fabric-api-base")
 	includeModule("fabric-resource-loader-v0")
 	includeModule("fabric-rendering-fluids-v1")
+	includeModule("fabric-rendering-v1")
 }
 
 processResources {
@@ -78,10 +80,6 @@ loom {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
 }
 
 jar {

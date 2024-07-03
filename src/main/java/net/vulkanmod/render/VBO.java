@@ -137,7 +137,7 @@ public class VBO {
         }
     }
 
-    public void drawChunkLayer() {
+    public void drawPostEffect() {
         if (this.indexCount != 0) {
 
             RenderSystem.assertOnRenderThread();

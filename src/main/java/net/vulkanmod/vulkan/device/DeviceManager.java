@@ -332,7 +332,6 @@ public abstract class DeviceManager {
     public static void destroy() {
         GraphicsQueue.cleanUp();
         TransferQueue.cleanUp();
-        FakeTransferQueue.cleanUp();
 
         vkDestroyDevice(vkDevice, null);
     }
@@ -348,9 +347,8 @@ public abstract class DeviceManager {
     public static Queue getTransferQueue() {
         return TransferQueue;
     }
-    
-    public static SurfaceProperties querySurfaceProperties(VkPhysicalDevice device, MemoryStack stack) {
 
+    public static SurfaceProperties querySurfaceProperties(VkPhysicalDevice device, MemoryStack stack) {
         long surface = Vulkan.getSurface();
         SurfaceProperties details = new SurfaceProperties();
 
@@ -381,6 +379,4 @@ public abstract class DeviceManager {
         public VkSurfaceFormatKHR.Buffer formats;
         public IntBuffer presentModes;
     }
-
 }
-            

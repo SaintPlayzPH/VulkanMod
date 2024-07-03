@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.client.renderer.PostPass;
-//import net.vulkanmod.Initializer;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
 import org.joml.Matrix4f;
@@ -40,12 +40,10 @@ public class PostPassM {
     @Shadow private Matrix4f shaderOrthoMatrix;
 
     /**
-     * @author
-     * @reason
+     * Overwrite the process method to correctly handle viewport and scissor settings.
      */
     @Overwrite
     public void process(float f) {
-      //  if (Initializer.CONFIG.postEffect) {
         this.inTarget.unbindWrite();
         float g = (float)this.outTarget.width;
         float h = (float)this.outTarget.height;
@@ -54,10 +52,11 @@ public class PostPassM {
         Objects.requireNonNull(this.inTarget);
         this.effect.setSampler("DiffuseSampler", this.inTarget::getColorTextureId);
 
-        if(this.inTarget instanceof MainTarget)
+        if (this.inTarget instanceof MainTarget) {
             this.inTarget.bindRead();
+        }
 
-        for(int i = 0; i < this.auxAssets.size(); ++i) {
+        for (int i = 0; i < this.auxAssets.size(); ++i) {
             this.effect.setSampler(this.auxNames.get(i), this.auxAssets.get(i));
             this.effect.safeGetUniform("AuxSize" + i).set((float) this.auxWidths.get(i), (float) this.auxHeights.get(i));
         }
@@ -102,4 +101,3 @@ public class PostPassM {
         VRenderSystem.enableCull();
     }
 }
-//}

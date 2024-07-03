@@ -2,7 +2,6 @@ package net.vulkanmod.mixin.compatibility;
 
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.PostPass;
-//import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Renderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +25,6 @@ public abstract class PostChainM {
      */
     @Overwrite
     public void process(float f) {
-        //if(Initializer.CONFIG.postEffect) {
         if (f < this.lastStamp) {
             this.time += 1.0F - this.lastStamp;
             this.time += f;
@@ -47,4 +45,3 @@ public abstract class PostChainM {
         Renderer.resetViewport();
     }
 }
-//}

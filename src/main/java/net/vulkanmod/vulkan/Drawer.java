@@ -13,8 +13,8 @@ import java.util.Arrays;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class Drawer {
-    private static final int INITIAL_VB_SIZE = 2000000;
-    private static final int INITIAL_UB_SIZE = 200000;
+    private static final int INITIAL_VB_SIZE = 1048576;
+    private static final int INITIAL_UB_SIZE = 65536;
 
     private static final int MAX_QUAD_VERTICES_UINT16 = 65536 * 2 / 3;
 

@@ -20,7 +20,6 @@ import java.util.stream.IntStream;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceCapabilitiesKHR;
 
 public abstract class Options {
-    static int pretransformFlags = Vulkan.getPretransformFlags();
     public static boolean fullscreenDirty = false;
     static Config config = Initializer.CONFIG;
     static Minecraft minecraft = Minecraft.getInstance();

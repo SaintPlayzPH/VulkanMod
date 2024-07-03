@@ -3,8 +3,6 @@ package net.vulkanmod.vulkan;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.VertexFormat;
-
 import net.minecraft.client.Minecraft;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.shader.PipelineState;
@@ -22,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 public abstract class VRenderSystem {
+    private static final float DEFAULT_DEPTH_VALUE = 1.0f;
     private static long window;
 
     public static boolean depthTest = true;
@@ -39,7 +38,7 @@ public abstract class VRenderSystem {
     public static boolean logicOp = false;
     public static int logicOpFun = 0;
 
-    public static final float clearDepth = 1.0f;
+    public static float clearDepthValue = DEFAULT_DEPTH_VALUE;
     private static final float[] checkedClearColor = new float[4];
 
     public static FloatBuffer clearColor = MemoryUtil.memCallocFloat(4);
@@ -163,7 +162,7 @@ public abstract class VRenderSystem {
         return shaderFogColor;
     }
 
-    public static void clearColor(float f0, float f1, float f2, float f3) {
+    public static void setClearColor(float f0, float f1, float f2, float f3) {
         if(!(canApplyClear = checkClearColor(f0, f1, f2, f3))) return;
         ColorUtil.setRGBA_Buffer(clearColor, f0, f1, f2, f3);
         checkedClearColor[0]=f0;
@@ -176,12 +175,14 @@ public abstract class VRenderSystem {
         return checkedClearColor[0] !=f0 | checkedClearColor[1] !=f1 | checkedClearColor[2] !=f2 | checkedClearColor[3] != f3;
     }
 
-    public static void clear(int v) {
-        Renderer.clearAttachments(canApplyClear ? v : GL_DEPTH_BUFFER_BIT); //Depth Only Clears needed to fix Chat + Command Elements
+    public static void clear(int mask) {
+        Renderer.clearAttachments(canApplyClear ? mask : GL_DEPTH_BUFFER_BIT); //Depth Only Clears needed to fix Chat + Command Elements
         canApplyClear=false;
     }
 
-    // Pipeline state
+    public static void clearDepth(double depth) {
+        clearDepthValue = (float) depth;
+    }
 
     public static void disableDepthTest() {
         depthTest = false;
@@ -199,7 +200,11 @@ public abstract class VRenderSystem {
         };
     }
 
-    public static void setPolygonModeGL(final int mode) {
+    public static void setPolygonModeGL(final int face, final int mode) {
+        if (face != GL11.GL_FRONT && face != GL11.GL_BACK && face != GL11.GL_FRONT_AND_BACK) {
+            throw new RuntimeException(String.format("Unknown GL polygon face: %s", face));
+        }
+
         VRenderSystem.polygonMode = switch (mode) {
             case GL11.GL_POINT -> VK_POLYGON_MODE_POINT;
             case GL11.GL_LINE -> VK_POLYGON_MODE_LINE;

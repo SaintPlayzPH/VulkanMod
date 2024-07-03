@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM_WIN32;
 import static org.lwjgl.glfw.GLFW.glfwGetPlatform;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.VK12.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
 
@@ -43,7 +44,9 @@ public class Device {
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkDriverVersion = decDefVersion(properties.apiVersion());
         this.vkInstanceLoaderVersion = decDefVersion(getVkVer());
-        
+
+        checkVulkanVersion(this.vkDriverVersion);
+
         this.availableFeatures = VkPhysicalDeviceFeatures2.calloc();
         this.availableFeatures.sType$Default();
 
@@ -55,7 +58,16 @@ public class Device {
 
         if (this.availableFeatures.features().multiDrawIndirect() && this.availableFeatures11.shaderDrawParameters())
             this.drawIndirectSupported = true;
+    }
 
+    private static void checkVulkanVersion(String vkDriverVersion) {
+        String[] versionParts = vkDriverVersion.split("\\.");
+        int major = Integer.parseInt(versionParts[0]);
+        int minor = Integer.parseInt(versionParts[1]);
+
+        if (major < 1 || (major == 1 && minor < 1)) {
+            throw new RuntimeException("Vulkan 1.1.0 or higher is required. Detected version: " + vkDriverVersion);
+        }
     }
 
     private static String decodeVendor(int i) {
@@ -94,9 +106,6 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            if (VK_VERSION_MINOR(vkVer1) < 1) {
-                throw new RuntimeException("Vulkan 1.1 not supported: Only Has: %s".formatted(decDefVersion(vkVer1)));
-            }
             return vkVer1;
         }
     }

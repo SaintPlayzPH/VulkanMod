@@ -5,8 +5,7 @@ layout(location = 1) in vec4 Color;
 layout(location = 2) in vec3 Normal;
 
 layout(binding = 0) uniform UniformBufferObject {
-   mat4 ModelViewMat;
-   mat4 ProjMat;
+   mat4 MVP;
    vec2 ScreenSize;
    float LineWidth;
 };
@@ -23,8 +22,8 @@ const mat4 VIEW_SCALE = mat4(
 );
 
 void main() {
-    vec4 linePosStart = ProjMat * VIEW_SCALE * ModelViewMat * vec4(Position, 1.0);
-    vec4 linePosEnd = ProjMat * VIEW_SCALE * ModelViewMat * vec4(Position + Normal, 1.0);
+    vec4 linePosStart = MVP * VIEW_SCALE * vec4(Position, 1.0);
+    vec4 linePosEnd = MVP * VIEW_SCALE * vec4(Position + Normal, 1.0);
 
     vec3 ndc1 = linePosStart.xyz / linePosStart.w;
     vec3 ndc2 = linePosEnd.xyz / linePosEnd.w;
@@ -42,7 +41,6 @@ void main() {
         gl_Position = vec4((ndc1 - vec3(lineOffset, 0.0)) * linePosStart.w, linePosStart.w);
     }
 
-    vertexDistance = length((ModelViewMat * vec4(Position, 1.0)).xyz);
+    vertexDistance = length((MVP * vec4(Position, 1.0)).xyz);
     vertexColor = Color;
 }
-
