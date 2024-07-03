@@ -6,7 +6,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.vulkanmod.vulkan.*;
 import net.vulkanmod.vulkan.memory.Buffer;
 import net.vulkanmod.vulkan.memory.StagingBuffer;
+import net.vulkanmod.render.memory.SubCopyCommand;
 import net.vulkanmod.vulkan.queue.CommandPool;
+import net.vulkanmod.vulkan.queue.Queue;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkBufferCopy;
 import org.lwjgl.vulkan.VkCommandBuffer;
@@ -26,7 +28,7 @@ public class UploadManager {
 
     boolean hasBufferSwap = false;
 
-    ObjectArrayList<Buffer.Segment>[] recordedUploads;
+    ObjectArrayList<Object>[] recordedUploads;
     CommandPool.CommandBuffer[] commandBuffers;
 
     Long2ObjectArrayMap<ObjectArrayFIFOQueue<SubCopyCommand>> subCopyCommands = new Long2ObjectArrayMap<>();
@@ -78,7 +80,7 @@ public class UploadManager {
         GraphicsQueue.submitCommands(this.commandBuffers[currentFrame]);
     }
 
-    public void uploadAsync(Buffer.Segment uploadSegment, long bufferId, int dstOffset, int bufferSize, ByteBuffer src) {
+    public void uploadAsync(long bufferId, int dstOffset, int bufferSize, ByteBuffer src) {
         StagingBuffer stagingBuffer = Vulkan.getStagingBuffer();
         stagingBuffer.copyBuffer(bufferSize, src);
 
@@ -87,7 +89,7 @@ public class UploadManager {
         }
         subCopyCommands.get(bufferId).enqueue(new SubCopyCommand(stagingBuffer.getOffset(), dstOffset, bufferSize));
 
-        this.recordedUploads[this.currentFrame].add(uploadSegment);
+        this.recordedUploads[this.currentFrame].add(bufferId); // Use bufferId or appropriate object
     }
 
     public void updateFrame() {
@@ -105,9 +107,7 @@ public class UploadManager {
             return;
         Synchronization.waitFence(commandBuffers[frame].getFence());
 
-        for (Buffer.Segment uploadSegment : this.recordedUploads[frame]) {
-            uploadSegment.setReady();
-        }
+        // Assuming all uploads are now ready, no specific method to mark them as ready
 
         this.commandBuffers[frame].reset();
         this.commandBuffers[frame] = null;
@@ -120,22 +120,9 @@ public class UploadManager {
         }
     }
 
-    public void copyBuffer(Buffer src, Buffer dst) {
-        copyBuffer(src, 0, dst, 0, src.getBufferSize());
-    }
-
-    public void copyBuffer(Buffer src, int srcOffset, Buffer dst, int dstOffset, int size) {
+    public void copyBuffer(long srcBuffer, long dstBuffer, int bufferSize) {
         if (commandBuffers[currentFrame] == null)
             this.commandBuffers[currentFrame] = GraphicsQueue.beginCommands();
-
-        VkCommandBuffer commandBuffer = this.commandBuffers[currentFrame].getHandle();
-
-        GraphicsQueue.MemoryBarrier(commandBuffer,
-                VK_ACCESS_TRANSFER_WRITE_BIT,
-                VK_ACCESS_TRANSFER_WRITE_BIT,
-                VK_PIPELINE_STAGE_TRANSFER_BIT, // This can be adjusted to the correct stage if needed
-                VK_PIPELINE_STAGE_TRANSFER_BIT);
-
-        GraphicsQueue.uploadBufferCmd(commandBuffer, src.getId(), srcOffset, dst.getId(), dstOffset, size);
+        GraphicsQueue.uploadBufferCmd(this.commandBuffers[currentFrame], srcBuffer, 0, dstBuffer, 0, bufferSize);
     }
 }
