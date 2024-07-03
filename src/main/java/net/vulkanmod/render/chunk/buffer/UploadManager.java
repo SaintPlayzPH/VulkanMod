@@ -75,7 +75,7 @@ public class UploadManager {
         this.dstBuffers.clear();
         this.dstBuffers.add(dst.getId());
 
-        TransferQueue.uploadBufferCmds(commandBuffer, stagingBuffer.getId(), bufferId, dstBuffers);
+        TransferQueue.uploadBufferCmds(commandBuffer, src.getId(), dstBuffers);
     }
 
     public void waitUploads() {
