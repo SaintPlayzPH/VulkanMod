@@ -1,10 +1,10 @@
 #version 460
 
 #include "light.glsl"
+#include "fog.glsl"
 
 layout (binding = 0) uniform UniformBufferObject {
     mat4 MVP;
-    mat4 ModelViewMat;
 };
 
 layout (push_constant) uniform pushConstant {
@@ -35,7 +35,7 @@ void main() {
     const vec4 pos = vec4(fma(Position.xyz, POSITION_INV, ChunkOffset + baseOffset), 1.0);
     gl_Position = MVP * pos;
 
-    vertexDistance = length((ModelViewMat * pos).xyz);
+    vertexDistance = fog_distance(pos.xyz, 0);
 //    vertexColor = Color * sample_lightmap(Sampler2, UV2);
     vertexColor = Color * sample_lightmap2(Sampler2, Position.a);
     texCoord0 = UV0 * UV_INV;

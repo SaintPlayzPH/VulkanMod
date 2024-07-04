@@ -75,7 +75,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
         strings.add("");
-        strings.add("\u0056\u0075\u006c\u006b\u0061\u006e\u004d\u006f\u0064\u0020\u004d\u006f\u0064\u0069\u0066\u0069\u0065\u0064\u0020\u0042\u0079\u003a\u0020\u00a7\u0065\u0053\u0061\u0069\u006e\u0074\u0050\u006c\u0061\u0079\u007a\u0050\u0048\u00a7\u0072");
+        strings.add("\u004d\u006f\u0064\u0069\u0066\u0069\u0065\u0064\u0020\u0062\u0079\u0020\u00A7\u0065\u0053\u0068\u0061\u0064\u006f\u0077\u004d\u0043\u0036\u0039\u00A7\u0072");
 
         if (Initializer.CONFIG.pojavInfo) {
             strings.add("");

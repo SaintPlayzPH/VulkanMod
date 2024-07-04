@@ -5,7 +5,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.vulkanmod.config.Config;
 import net.vulkanmod.config.Platform;
 import net.vulkanmod.config.video.VideoModeManager;
-import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import net.vulkanmod.vulkan.DeviceRAMInfo;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.SystemInfo;
@@ -18,7 +17,6 @@ public class Initializer implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("VulkanMod");
 
     private static String VERSION;
-    private static boolean isGraphicsAndPresentSuitable = QueueFamilyIndices.isSuitable();
     public static Config CONFIG;
     public static boolean loggedDevice = false;
 
@@ -42,14 +40,6 @@ public class Initializer implements ClientModInitializer {
                 .getVersion().getFriendlyString();
 
         LOGGER.info("==> VulkanMod <==");
-        if (isRunningOnMobile() && !loggedDevice) {
-            LOGGER.info("=• We're running on Mobile device! •=");
-            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroidNoLog());
-            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
-            LOGGER.info("• Is Suitable: " + isGraphicsAndPresentSuitable);
-            loggedDevice = true;
-        }
-        Renderer.recompile = true;
         LOGGER.info("==> Config Logger <===");
         LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
         LOGGER.info("Show Device RAM: " + CONFIG.showDeviceRAM);
@@ -79,6 +69,12 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
         Platform.init();
         VideoModeManager.init();
+        if (isRunningOnMobile() && !loggedDevice) {
+            LOGGER.info("=• We're running on Mobile device! •=");
+            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroidNoLog());
+            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
+            loggedDevice = true;
+        }
     }
 
     private static void initializeConfig() {
