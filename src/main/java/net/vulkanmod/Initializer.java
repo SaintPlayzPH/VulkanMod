@@ -70,6 +70,7 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Device: " + CONFIG.device);
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
         Platform.init();
+        VideoModeManager.init();
         if (isRunningOnMobile() && !loggedDevice) {
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroidNoLog());
@@ -77,7 +78,6 @@ public class Initializer implements ClientModInitializer {
             LOGGER.info("• Is Suitable: " + isGraphicsAndPresentSuitable);
             loggedDevice = true;
         }
-        VideoModeManager.init();
     }
 
     private static void initializeConfig() {
