@@ -45,7 +45,8 @@ public abstract class ImageUtil {
             LongBuffer pStagingBuffer = stack.mallocLong(1);
             PointerBuffer pStagingAllocation = stack.pointers(0L);
             boolean bufferCreated = false;
-            
+
+            // Try with HOST_VISIBLE, HOST_COHERENT, and HOST_CACHED bits
             try {
                 MemoryManager.getInstance().createBuffer(imageSize,
                         VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -54,7 +55,7 @@ public abstract class ImageUtil {
                         pStagingAllocation);
                 bufferCreated = true;
             } catch (RuntimeException e) {
-                // Try without VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+                // Try with HOST_VISIBLE and HOST_CACHED bits
                 try {
                     MemoryManager.getInstance().createBuffer(imageSize,
                             VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -63,7 +64,7 @@ public abstract class ImageUtil {
                             pStagingAllocation);
                     bufferCreated = true;
                 } catch (RuntimeException e2) {
-                    // Try with only VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT
+                    // Try with HOST_VISIBLE bit only
                     try {
                         MemoryManager.getInstance().createBuffer(imageSize,
                                 VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -72,7 +73,17 @@ public abstract class ImageUtil {
                                 pStagingAllocation);
                         bufferCreated = true;
                     } catch (RuntimeException e3) {
-                        throw new RuntimeException("Failed to create buffer with any property combination");
+                        // Try with HOST_CACHED bit only
+                        try {
+                            MemoryManager.getInstance().createBuffer(imageSize,
+                                    VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                                    VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                                    pStagingBuffer,
+                                    pStagingAllocation);
+                            bufferCreated = true;
+                        } catch (RuntimeException e4) {
+                            throw new RuntimeException("Failed to create buffer with any property combination");
+                        }
                     }
                 }
             }
