@@ -100,6 +100,7 @@ public abstract class ImageUtil {
                 );
 
                 MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));
+                bufferCreated = false;
             }
         }
     }
