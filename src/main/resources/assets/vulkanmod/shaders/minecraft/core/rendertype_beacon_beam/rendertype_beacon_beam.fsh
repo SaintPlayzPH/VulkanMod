@@ -4,7 +4,6 @@ layout (constant_id = 0) const bool USE_FOG = true;
 #include "fog.glsl"
 
 layout(binding = 0) uniform UniformBufferObject {
-   mat4 MVP;
    mat4 ProjMat;
 };
 
