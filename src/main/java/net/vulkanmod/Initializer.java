@@ -42,14 +42,6 @@ public class Initializer implements ClientModInitializer {
                 .getVersion().getFriendlyString();
 
         LOGGER.info("==> VulkanMod <==");
-        if (isRunningOnMobile() && !loggedDevice) {
-            LOGGER.info("=• We're running on Mobile device! •=");
-            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroidNoLog());
-            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
-            LOGGER.info("• Is Suitable: " + isGraphicsAndPresentSuitable);
-            loggedDevice = true;
-        }
-        Renderer.recompile = true;
         LOGGER.info("==> Config Logger <===");
         LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
         LOGGER.info("Show Device RAM: " + CONFIG.showDeviceRAM);
@@ -78,6 +70,13 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Device: " + CONFIG.device);
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
         Platform.init();
+        if (isRunningOnMobile() && !loggedDevice) {
+            LOGGER.info("=• We're running on Mobile device! •=");
+            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroidNoLog());
+            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
+            LOGGER.info("• Is Suitable: " + isGraphicsAndPresentSuitable);
+            loggedDevice = true;
+        }
         VideoModeManager.init();
     }
 
