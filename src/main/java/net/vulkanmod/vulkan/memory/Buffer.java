@@ -56,7 +56,7 @@ public class Buffer {
         return id;
     }
 
-    protected int getBufferSize() {
+    public int getBufferSize() {
         return bufferSize;
     }
 
@@ -68,7 +68,7 @@ public class Buffer {
         this.bufferSize = size;
     }
 
-    public void setId(long id) {
+    protected void setId(long id) {
         this.id = id;
     }
 
