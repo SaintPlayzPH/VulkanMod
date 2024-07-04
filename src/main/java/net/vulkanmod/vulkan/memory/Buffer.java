@@ -4,24 +4,24 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryUtil;
 
 public class Buffer {
-    public long id;
-    public long allocation;
+    protected long id;
+    protected long allocation;
 
-    public int bufferSize;
-    public int usedBytes;
-    public int offset;
+    protected int bufferSize;
+    protected int usedBytes;
+    protected int offset;
 
-    public final MemoryType type;
-    public final int usage;
-    public final PointerBuffer data;
+    protected MemoryType type;
+    protected int usage;
+    protected PointerBuffer data;
 
-    public Buffer(int usage, MemoryType type) {
+    protected Buffer(int usage, MemoryType type) {
         this.usage = usage;
         this.type = type;
         this.data = type.mappable() ? MemoryUtil.memAllocPointer(1) : null;
     }
 
-    public void createBuffer(int bufferSize) {
+    protected void createBuffer(int bufferSize) {
         this.type.createBuffer(this, bufferSize);
 
         if (this.type.mappable()) {
@@ -56,7 +56,7 @@ public class Buffer {
         return id;
     }
 
-    public int getBufferSize() {
+    protected int getBufferSize() {
         return bufferSize;
     }
 
@@ -64,7 +64,7 @@ public class Buffer {
         return type;
     }
 
-    public void setBufferSize(int size) {
+    protected void setBufferSize(int size) {
         this.bufferSize = size;
     }
 
@@ -72,7 +72,7 @@ public class Buffer {
         this.id = id;
     }
 
-    public void setAllocation(long allocation) {
+    protected void setAllocation(long allocation) {
         this.allocation = allocation;
     }
 
