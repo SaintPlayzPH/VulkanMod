@@ -44,11 +44,31 @@ public abstract class ImageUtil {
 
             LongBuffer pStagingBuffer = stack.mallocLong(1);
             PointerBuffer pStagingAllocation = stack.pointers(0L);
-            MemoryManager.getInstance().createBuffer(imageSize,
+            
+            // Try to create buffer with HOST_VISIBLE | HOST_COHERENT | HOST_CACHED properties
+            int result = MemoryManager.getInstance().createBuffer(imageSize,
                     VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                    VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
                     pStagingBuffer,
                     pStagingAllocation);
+
+            // If the creation fails, try with HOST_VISIBLE | HOST_CACHED properties
+            if (result != VK_SUCCESS) {
+                result = MemoryManager.getInstance().createBuffer(imageSize,
+                        VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                        pStagingBuffer,
+                        pStagingAllocation);
+
+                // If this also fails, fall back to HOST_VISIBLE properties
+                if (result != VK_SUCCESS) {
+                    result = MemoryManager.getInstance().createBuffer(imageSize,
+                            VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+                            pStagingBuffer,
+                            pStagingAllocation);
+                }
+            }
 
             copyImageToBuffer(commandBuffer.getHandle(), pStagingBuffer.get(0), image.getId(), 0, image.width, image.height, 0, 0, 0, 0, 0);
             image.transitionImageLayout(stack, commandBuffer.getHandle(), prevLayout);
