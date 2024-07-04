@@ -51,7 +51,7 @@ public class SystemInfo {
             logged = true;
         }
 
-        var centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
+        CentralProcessor centralProcessor = new oshi.SystemInfo().getHardware().getProcessor();
         return centralProcessor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
     }
 
