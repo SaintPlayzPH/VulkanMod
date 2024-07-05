@@ -18,7 +18,6 @@ public class Initializer implements ClientModInitializer {
 
     private static String VERSION;
     public static Config CONFIG;
-    public static boolean loggedDevice = false;
 
     // Static block to ensure CONFIG is initialized early
     static {
@@ -69,11 +68,11 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
         Platform.init();
         VideoModeManager.init();
-        if (isRunningOnMobile() && !loggedDevice) {
+        if (isRunningOnMobile()) {
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
             LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
-            loggedDevice = true;
+            LOGGER.info("=====================================");
         }
     }
 
