@@ -26,6 +26,7 @@ public class Initializer implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        LOGGER.info("=====================================");
         if (System.getenv("POJAV_ENVIRON") != null) {
             LOGGER.info("=> We're running on PojavLauncher! <=");
         }
@@ -33,6 +34,7 @@ public class Initializer implements ClientModInitializer {
             LOGGER.info("=> We're running on SolCraftLauncher! <=");
         }
         if (isRunningOnMobile()) {
+            LOGGER.info("=====================================");
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
             LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
