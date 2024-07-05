@@ -57,6 +57,8 @@ public abstract class ImageUtil {
                 try {
                     MemoryManager.getInstance().createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT, properties, pStagingBuffer, pStagingAllocation);
                     break;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
