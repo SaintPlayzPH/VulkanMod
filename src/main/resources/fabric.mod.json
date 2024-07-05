@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "VulkanMod",
-  "description": "Bring Vulkan to Minecraft. Originally by: §b§nCollateral§r, Modified by: §e§nSaintPlayzPH§r. Please note that this modified VulkanMod is not planned to be published publicly on platforms such as §c§nYouTube§r or through links like §6§nMediafire§r. If you downloaded this from other §c§nYouTubers§r or §e§nUploader§r with their own link and not mine, be careful as it may contain malware or viruses.\nPlease do not report bugs/crashes on §6§nVulkanMod§r Discord server related to §b§nPojavLauncher§r.",
+  "description": "Bring Vulkan to Minecraft. Originally by: §b§nCollateral§r, Modified by: §e§nShadowMC69§r. Please note that this modified VulkanMod is not planned to be published publicly on platforms such as §c§nYouTube§r or through links like §6§nMediafire§r. If you downloaded this from other §c§nYouTubers§r, §d§nTikTokers§r, or §e§nUploader§r with their own link and not mine, be careful as it may contain malware or viruses.\nPlease do not report bugs/crashes on §6§nVulkanMod§r Discord server related to §b§nPojavLauncher§r.",
   "authors": [
     "Collateral (VulkanMod creator)"
   ],
