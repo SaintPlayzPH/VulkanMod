@@ -53,7 +53,7 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Render Sky: " + CONFIG.renderSky);
         LOGGER.info("Render Sky Fog: " + CONFIG.renderSkyFog);
         LOGGER.info("Render Cloud Fog: " + CONFIG.renderCloudFog);
-        LOGGER.info("Fix Post-effect Bug: " + CONFIG.postEffectFix);
+        LOGGER.info("Use Vanilla Post-effect System: " + CONFIG.postEffectFix);
         LOGGER.info("Render Fog: " + CONFIG.renderFog);
         LOGGER.info("Entity Outline: " + CONFIG.entityOutline);
         LOGGER.info("Exclude Sampled Usage: " + CONFIG.dontUseImageSampled);
@@ -71,7 +71,7 @@ public class Initializer implements ClientModInitializer {
         VideoModeManager.init();
         if (isRunningOnMobile() && !loggedDevice) {
             LOGGER.info("=• We're running on Mobile device! •=");
-            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroidNoLog());
+            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
             LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
             loggedDevice = true;
         }
