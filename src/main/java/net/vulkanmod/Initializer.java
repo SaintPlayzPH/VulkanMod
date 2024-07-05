@@ -32,14 +32,19 @@ public class Initializer implements ClientModInitializer {
         if (System.getenv("SCL_ENVIRON") != null) {
             LOGGER.info("=> We're running on SolCraftLauncher! <=");
         }
+        if (isRunningOnMobile()) {
+            LOGGER.info("=• We're running on Mobile device! •=");
+            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
+            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
+            LOGGER.info("=====================================");
+        }
         VERSION = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .get()
                 .getMetadata()
                 .getVersion().getFriendlyString();
 
-        LOGGER.info("==> VulkanMod <==");
-        LOGGER.info("==> Config Logger <===");
+        LOGGER.info("==> VulkanMod Configuration <==");
         LOGGER.info("Frame Queue Size: " + CONFIG.frameQueueSize);
         LOGGER.info("Show Device RAM: " + CONFIG.showDeviceRAM);
         LOGGER.info("Show Pojav Info: " + CONFIG.pojavInfo);
@@ -66,14 +71,11 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Swapchain Images: " + CONFIG.imageCount);
         LOGGER.info("Device: " + CONFIG.device);
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
+        LOGGER.info("=====================================");
+        LOGGER.info("==> VulkanMod <==");
         Platform.init();
         VideoModeManager.init();
-        if (isRunningOnMobile()) {
-            LOGGER.info("=• We're running on Mobile device! •=");
-            LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
-            LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
-            LOGGER.info("=====================================");
-        }
+        LOGGER.info("=====================================");
     }
 
     private static void initializeConfig() {
