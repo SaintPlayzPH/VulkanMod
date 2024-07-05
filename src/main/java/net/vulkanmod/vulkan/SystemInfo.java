@@ -33,18 +33,6 @@ public class SystemInfo {
         }
     }
 
-    public static String getProcessorNameForAndroidNoLog() {
-        try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
-            return br.lines()
-                    .filter(line -> line.startsWith("Hardware"))
-                    .map(line -> line.split(":\\s+", 2)[1])
-                    .findFirst()
-                    .orElse("Unknown");
-        } catch (IOException e) {
-            return "Unknown";
-        }
-    }
-
     public static String getProcessorNameForDesktop() {
         if (!logged) {
            Initializer.LOGGER.info("Obtaining CPU Name on your Device!");
