@@ -46,62 +46,31 @@ public abstract class ImageUtil {
             PointerBuffer pStagingAllocation = stack.pointers(0L);
             boolean bufferCreated = false;
 
-            // Try with HOST_VISIBLE, HOST_COHERENT, and HOST_CACHED bits
-            try {
-                MemoryManager.getInstance().createBuffer(imageSize,
-                        VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
-                        pStagingBuffer,
-                        pStagingAllocation);
-                bufferCreated = true;
-            } catch (RuntimeException e) {
-                // Try with HOST_VISIBLE and HOST_CACHED bits
+            int[] memoryProperties = {
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
+                VK_MEMORY_PROPERTY_HOST_CACHED_BIT
+            };
+
+            for (int properties : memoryProperties) {
                 try {
-                    MemoryManager.getInstance().createBuffer(imageSize,
-                            VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
-                            pStagingBuffer,
-                            pStagingAllocation);
-                    bufferCreated = true;
-                } catch (RuntimeException e2) {
-                    // Try with HOST_VISIBLE bit only
-                    try {
-                        MemoryManager.getInstance().createBuffer(imageSize,
-                                VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-                                pStagingBuffer,
-                                pStagingAllocation);
-                        bufferCreated = true;
-                    } catch (RuntimeException e3) {
-                        // Try with HOST_CACHED bit only
-                        try {
-                            MemoryManager.getInstance().createBuffer(imageSize,
-                                    VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                                    VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
-                                    pStagingBuffer,
-                                    pStagingAllocation);
-                            bufferCreated = true;
-                        } catch (RuntimeException e4) {
-                            throw new RuntimeException("Failed to create buffer with any property combination");
-                        }
-                    }
+                    MemoryManager.getInstance().createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT, properties, pStagingBuffer, pStagingAllocation);
+                    break;
                 }
             }
 
-            if (bufferCreated) {
-                copyImageToBuffer(commandBuffer.getHandle(), pStagingBuffer.get(0), image.getId(), 0, image.width, image.height, 0, 0, 0, 0, 0);
-                image.transitionImageLayout(stack, commandBuffer.getHandle(), prevLayout);
+            copyImageToBuffer(commandBuffer.getHandle(), pStagingBuffer.get(0), image.getId(), 0, image.width, image.height, 0, 0, 0, 0, 0);
+            image.transitionImageLayout(stack, commandBuffer.getHandle(), prevLayout);
 
-                long fence = DeviceManager.getGraphicsQueue().submitCommands(commandBuffer);
-                vkWaitForFences(DeviceManager.vkDevice, fence, true, VUtil.UINT64_MAX);
+            long fence = DeviceManager.getGraphicsQueue().submitCommands(commandBuffer);
+            vkWaitForFences(DeviceManager.vkDevice, fence, true, VUtil.UINT64_MAX);
 
-                MemoryManager.MapAndCopy(pStagingAllocation.get(0),
-                        (data) -> VUtil.memcpy(data.getByteBuffer(0, (int) imageSize), ptr)
-                );
+            MemoryManager.MapAndCopy(pStagingAllocation.get(0),
+                    (data) -> VUtil.memcpy(data.getByteBuffer(0, (int) imageSize), ptr)
+            );
 
-                MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));
-                bufferCreated = false;
-            }
+            MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));
         }
     }
 
