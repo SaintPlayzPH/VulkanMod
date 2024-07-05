@@ -40,7 +40,7 @@ public class Config {
     public boolean depthWrite = false;
     public boolean forceFIFOVsync = false;
     public int presentMode = 1;
-    public int ramInfoUpdate = 1;
+    public int ramInfoUpdate = 10;
     public int imageCount = 3;
     public int device = -1;
 
