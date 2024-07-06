@@ -1,5 +1,6 @@
 package net.vulkanmod.vulkan.texture;
 
+import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.memory.MemoryManager;
 import net.vulkanmod.vulkan.queue.CommandPool;
@@ -34,10 +35,10 @@ public abstract class ImageUtil {
         }
     }
 
-    public static void downloadTexture(VulkanImage image, long ptr, int x, int y, int width, int height) {
+    public static void downloadTexture(VulkanImage image, long ptr) {
         try (MemoryStack stack = stackPush()) {
-            Renderer.setScreenshotViewport(x, y, width, height);
-            Renderer.setScreenshotScissor(x, y, width, height);
+            Renderer.setScreenshotViewport(0, 0, 720, 1600);
+            Renderer.setScreenshotScissor(0, 0, 720, 1600);
             int prevLayout = image.getCurrentLayout();
             CommandPool.CommandBuffer commandBuffer = DeviceManager.getGraphicsQueue().beginCommands();
             image.transitionImageLayout(stack, commandBuffer.getHandle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
@@ -82,8 +83,8 @@ public abstract class ImageUtil {
             );
 
             MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));
-            Renderer.setScissor(x, y, width, height);
-            Renderer.setViewport(x, y, width, height);
+            Renderer.setScissor(0, 0, 720, 1600);
+            Renderer.setViewport(0, 0, 720, 1600);
         }
     }
 
