@@ -125,7 +125,8 @@ public class SwapChain extends Framebuffer {
                 createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
             }
 
-            createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
+            //createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
+            createInfo.preTransform(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR);
             createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
             createInfo.presentMode(presentMode);
             createInfo.clipped(true);
