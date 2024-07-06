@@ -15,7 +15,7 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 
 public abstract class ImageUtil {
-    public boolean downloadingImg = false;
+    public static boolean downloadingImg = false;
 
     public static void copyBufferToImageCmd(VkCommandBuffer commandBuffer, long buffer, long image, int mipLevel, int width, int height, int xOffset, int yOffset, int bufferOffset, int bufferRowLength, int bufferImageHeight) {
 
