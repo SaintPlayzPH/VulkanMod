@@ -34,8 +34,10 @@ public abstract class ImageUtil {
         }
     }
 
-    public static void downloadTexture(VulkanImage image, long ptr) {
+    public static void downloadTexture(VulkanImage image, long ptr, int x, int y, int width, int height) {
         try (MemoryStack stack = stackPush()) {
+            Renderer.setScreenshotViewport(x, y, width, height);
+            Renderer.setScreenshotScissor(x, y, width, height);
             int prevLayout = image.getCurrentLayout();
             CommandPool.CommandBuffer commandBuffer = DeviceManager.getGraphicsQueue().beginCommands();
             image.transitionImageLayout(stack, commandBuffer.getHandle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
@@ -80,6 +82,8 @@ public abstract class ImageUtil {
             );
 
             MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));
+            Renderer.setScissor(x, y, width, height);
+            Renderer.setViewport(x, y, width, height);
         }
     }
 
