@@ -64,7 +64,7 @@ public abstract class ImageUtil {
             }
 
             if (!bufferCreated) {
-                throw new RuntimeException("Failed to create buffer for downloading image: " + memoryProperties)
+                throw new RuntimeException("Failed to create buffer for downloading image: " + memoryProperties);
             }
 
             copyImageToBuffer(commandBuffer.getHandle(), pStagingBuffer.get(0), image.getId(), 0, image.width, image.height, 0, 0, 0, 0, 0);
