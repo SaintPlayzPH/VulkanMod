@@ -108,8 +108,8 @@ public class MemoryManager {
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
-            downloadingImg = false;
-            Renderer.scheduleSwapChainUpdate();
+            //downloadingImg = false;
+            //Renderer.scheduleSwapChainUpdate();
             if(result != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
             }
