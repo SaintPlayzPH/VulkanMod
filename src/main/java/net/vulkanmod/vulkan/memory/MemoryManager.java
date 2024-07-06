@@ -25,6 +25,7 @@ import static org.lwjgl.vulkan.VK10.*;
 public class MemoryManager {
     private static final boolean DEBUG = false;
 
+    public static boolean downloadingImg = false;
     private static MemoryManager INSTANCE;
     private static final long ALLOCATOR = Vulkan.getAllocator();
 
@@ -93,7 +94,9 @@ public class MemoryManager {
     }
 
     public void createBuffer(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-        try(MemoryStack stack = stackPush()) {
+        try (MemoryStack stack = stackPush()) {
+            downloadingImg = true;
+            Renderer.scheduleSwapChainUpdate();
 
             VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.callocStack(stack);
             bufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
@@ -104,6 +107,8 @@ public class MemoryManager {
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
+            boolean downloadingImg = false;
+            Renderer.scheduleSwapChainUpdate();
             if(result != VK_SUCCESS) {
                 throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
             }
