@@ -9,6 +9,7 @@ import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
+import net.vulkanmod.vulkan.texture.ImageUtil;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
@@ -49,6 +50,10 @@ public class SwapChain extends Framebuffer {
     private boolean vsync = false;
     private int[] glIds;
 
+    private static boolean downloadingImage() {
+        return ImageUtil.downloadingImg;
+    }
+
     public SwapChain() {
         this.attachmentCount = 2;
         this.depthFormat = Vulkan.getDefaultDepthFormat();
@@ -81,8 +86,10 @@ public class SwapChain extends Framebuffer {
             VkSurfaceFormatKHR surfaceFormat = getFormat(surfaceProperties.formats);
             int presentMode = getPresentMode(surfaceProperties.presentModes);
             VkExtent2D extent = getExtent(surfaceProperties.capabilities);
-            // setupPreRotation(extent, surfaceProperties.capabilities);
-
+            if (!downloadingImage()) {
+                setupPreRotation(extent, surfaceProperties.capabilities);
+            }
+    
             if (extent.width() == 0 && extent.height() == 0) {
                 if (this.swapChainId != VK_NULL_HANDLE) {
                     this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
@@ -125,8 +132,12 @@ public class SwapChain extends Framebuffer {
                 createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
             }
 
-            //createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
-            createInfo.preTransform(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR);
+            if (!downloadingImage()) {
+                createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
+            } else {
+                createInfo.preTransform(VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR);
+            }
+
             createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
             createInfo.presentMode(presentMode);
             createInfo.clipped(true);
