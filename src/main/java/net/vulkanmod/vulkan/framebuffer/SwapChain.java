@@ -9,7 +9,7 @@ import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.queue.Queue;
 import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
-import net.vulkanmod.vulkan.texture.ImageUtil;
+import net.vulkanmod.vulkan.memory.MemoryManager;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
@@ -51,7 +51,7 @@ public class SwapChain extends Framebuffer {
     private int[] glIds;
 
     private static boolean downloadingImage() {
-        return ImageUtil.downloadingImg;
+        return MemoryManager.downloadingImg;
     }
 
     public SwapChain() {
