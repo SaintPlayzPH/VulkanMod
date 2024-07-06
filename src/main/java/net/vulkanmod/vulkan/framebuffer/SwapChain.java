@@ -81,7 +81,7 @@ public class SwapChain extends Framebuffer {
             VkSurfaceFormatKHR surfaceFormat = getFormat(surfaceProperties.formats);
             int presentMode = getPresentMode(surfaceProperties.presentModes);
             VkExtent2D extent = getExtent(surfaceProperties.capabilities);
-            setupPreRotation(extent, surfaceProperties.capabilities);
+            // setupPreRotation(extent, surfaceProperties.capabilities);
 
             if (extent.width() == 0 && extent.height() == 0) {
                 if (this.swapChainId != VK_NULL_HANDLE) {
