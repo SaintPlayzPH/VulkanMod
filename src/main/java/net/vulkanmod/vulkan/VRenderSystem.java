@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.shader.PipelineState;
+import net vulkanmod.vulkan.texture.ImageUtil;
 import net.vulkanmod.vulkan.util.ColorUtil;
 import net.vulkanmod.vulkan.util.MappedBuffer;
 import net.vulkanmod.vulkan.util.VUtil;
@@ -20,6 +21,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
 public abstract class VRenderSystem {
+    private static boolean downloadingImage() {
+        return ImageUtil.downloadingImg;
+    }
     private static final float DEFAULT_DEPTH_VALUE = 1.0f;
     private static long window;
 
@@ -102,14 +106,17 @@ public abstract class VRenderSystem {
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
-        mat.get(projectionMatrix.buffer.asFloatBuffer());
-       // Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
-       // FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
-       // if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
-       // 	mat.get(projMatrixBuffer);
-       // } else {
-       // 	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
-       // }
+        if (downloadingImage()) {
+            mat.get(projectionMatrix.buffer.asFloatBuffer());
+        } else {
+            Matrix4f pretransformMatrix = Vulkan.getPretransformMatrix();
+            FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
+            if((pretransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) {
+              	mat.get(projMatrixBuffer);
+            } else {
+            	mat.mulLocal(pretransformMatrix, new Matrix4f()).get(projMatrixBuffer);
+            }
+        }
     }
 
     public static void calculateMVP() {
