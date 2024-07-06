@@ -40,6 +40,7 @@ public abstract class ImageUtil {
         try (MemoryStack stack = stackPush()) {
             downloadingImg = true;
             int prevLayout = image.getCurrentLayout();
+            Renderer.scheduleSwapChainUpdate();
             CommandPool.CommandBuffer commandBuffer = DeviceManager.getGraphicsQueue().beginCommands();
             image.transitionImageLayout(stack, commandBuffer.getHandle(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
@@ -84,6 +85,7 @@ public abstract class ImageUtil {
 
             MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));
             downloadingImg = false;
+            Renderer.scheduleSwapChainUpdate();
         }
     }
 
