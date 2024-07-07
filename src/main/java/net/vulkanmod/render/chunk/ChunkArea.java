@@ -1,6 +1,7 @@
 package net.vulkanmod.render.chunk;
 
 import net.minecraft.core.BlockPos;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.buffer.DrawBuffers;
 import net.vulkanmod.render.chunk.util.StaticQueue;
 import org.joml.FrustumIntersection;
@@ -26,6 +27,14 @@ public class ChunkArea {
     }
 
     public void updateFrustum(VFrustum frustum) {
+        if (Initializer.CONFIG.frustumOopts) {
+            updateFrustumOptimized(frustum);
+        } else {
+            updateFrustumRegular(frustum);
+        }
+    }
+
+    public void updateFrustumRegular(VFrustum frustum) {
         //TODO: maybe move to an aux class
         int frustumResult = frustum.cubeInFrustum(this.position.x(), this.position.y(), this.position.z(),
                 this.position.x() + (8 << 4) , this.position.y() + (8 << 4), this.position.z() + (8 << 4));
@@ -89,7 +98,7 @@ public class ChunkArea {
 
     }
 
-    public void updateFrustum2(VFrustum frustum) {
+    public void updateFrustumOptimized(VFrustum frustum) {
        int frustumResult = frustum.cubeInFrustum(this.position.x(), this.position.y(), this.position.z(),
             this.position.x() + (8 << 4), this.position.y() + (8 << 4), this.position.z() + (8 << 4));
 
