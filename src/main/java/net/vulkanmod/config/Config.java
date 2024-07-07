@@ -39,6 +39,8 @@ public class Config {
     public boolean gaussianSkyBlending = false;
     public boolean depthWrite = false;
     public boolean forceFIFOVsync = false;
+    public boolean frustumOopts = false;
+    public boolean cameraOopts = false;
     public int presentMode = 1;
     public int ramInfoUpdate = 10;
     public int imageCount = 3;
