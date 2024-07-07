@@ -187,8 +187,12 @@ public class WorldRenderer {
         float d_yRot = Math.abs(camera.getYRot() - this.lastCamRotY);
         cameraMoved |= d_xRot > 2.0f || d_yRot > 2.0f;
 
-        cameraMoved |= cameraX != this.lastCameraX || cameraY != this.lastCameraY || cameraZ != this.lastCameraZ;
-        //cameraMoved |= Math.abs(cameraY - this.lastCameraY) > 2.0f;
+        if (Initializer.CONFIG.cameraOopts) {
+            cameraMoved |= Math.abs(cameraY - this.lastCameraY) > 2.0f;
+        } else {
+            cameraMoved |= cameraX != this.lastCameraX || cameraY != this.lastCameraY || cameraZ != this.lastCameraZ;
+        }
+
         this.graphNeedsUpdate |= cameraMoved;
 
         if (!isCapturedFrustum) {
