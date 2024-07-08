@@ -27,6 +27,10 @@ public class Initializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         LOGGER.info("=====================================");
+        LOGGER.info("==> Thank you for using this mod! <==");
+        LOGGER.info("        > By: ShadowMC69 <           ");
+        LOGGER.info("   > Originally By: xCollateral <    ");
+        LOGGER.info("=====================================");
         if (System.getenv("POJAV_ENVIRON") != null) {
             LOGGER.info("=> We're running on PojavLauncher! <=");
         }
@@ -38,8 +42,8 @@ public class Initializer implements ClientModInitializer {
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
             LOGGER.info("• Phone RAM: " + DeviceRAMInfo.getRAMInfo());
-            LOGGER.info("=====================================");
         }
+        LOGGER.info("=====================================");
         VERSION = FabricLoader.getInstance()
                 .getModContainer("vulkanmod")
                 .get()
@@ -74,7 +78,7 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Device: " + CONFIG.device);
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
         LOGGER.info("Frustum Optimizations: " + CONFIG.frustumOopts);
-        LOGGER.info("Camera Optimizations: " + CONFIG.cameraOopts);
+        LOGGER.info("Camera Optimization: " + CONFIG.cameraOopts);
         LOGGER.info("=====================================");
         LOGGER.info("==> VulkanMod <==");
         Platform.init();
