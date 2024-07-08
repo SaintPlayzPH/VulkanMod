@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "Désactiver l'Écriture de Profondeur si Translucide",
   "vulkanmod.options.depthWrite.tooltip": "EXPÉRIMENTAL : Désactive l'écriture de profondeur sur les objets translucides (ex. Bloc de glace). Peut provoquer un bug de rendu visuel sur les objets translucides",
   "vulkanmod.options.forceFIFOVsync": "Forcer FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "Force le FIFO à se verrouiller sur le taux de rafraîchissement de l'affichage et corrige également le délai avec les grandes images de la chaîne d'échange."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Force le FIFO à se verrouiller sur le taux de rafraîchissement de l'affichage et corrige également le délai avec les grandes images de la chaîne d'échange.",
+  "vulkanmod.options.frustumOopts": "Optimisations de Frustum",
+  "vulkanmod.options.frustumOopts.tooltip": "Optimise le Frustum en réduisant les appels.",
+  "vulkanmod.options.cameraOopts": "Optimisation de la caméra",
+  "vulkanmod.options.cameraOopts.tooltip": "Optimise grandement les performances de la caméra. Peut causer des retards étranges dans les morceaux."
 }

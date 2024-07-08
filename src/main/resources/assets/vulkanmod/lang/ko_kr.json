@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "반투명 시 깊이 쓰기 비활성화",
   "vulkanmod.options.depthWrite.tooltip": "실험적: 반투명 객체(예: 얼음 블록)에서 깊이 쓰기를 비활성화합니다. 반투명 객체에서 시각적 렌더링 버그가 발생할 수 있습니다.",
   "vulkanmod.options.forceFIFOVsync": "FIFO VSync 강제",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "FIFO가 디스플레이의 새로 고침 빈도에 고정되도록 강제하며 큰 스왑체인 이미지와의 지연 문제도 수정합니다."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "FIFO가 디스플레이의 새로 고침 빈도에 고정되도록 강제하며 큰 스왑체인 이미지와의 지연 문제도 수정합니다.",
+  "vulkanmod.options.frustumOopts": "원근 최적화",
+  "vulkanmod.options.frustumOopts.tooltip": "호출을 줄여 원근을 최적화합니다.",
+  "vulkanmod.options.cameraOopts": "카메라 최적화",
+  "vulkanmod.options.cameraOopts.tooltip": "카메라 성능을 크게 최적화합니다. 이로 인해 이상한 청크 지연이 발생할 수 있습니다."
 }

@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "Отключить Запись Глубины при Прозрачности",
   "vulkanmod.options.depthWrite.tooltip": "ЭКСПЕРИМЕНТАЛЬНО: Отключает запись глубины на полупрозрачных объектах (например, блок льда). Может вызывать визуальные ошибки рендеринга на полупрозрачных объектах",
   "vulkanmod.options.forceFIFOVsync": "Принудительный FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "Принудительно блокирует FIFO на частоте обновления дисплея и устраняет задержку с большими изображениями swapchain."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Принудительно блокирует FIFO на частоте обновления дисплея и устраняет задержку с большими изображениями swapchain.",
+  "vulkanmod.options.frustumOopts": "Оптимизация Frustum",
+  "vulkanmod.options.frustumOopts.tooltip": "Оптимизирует Frustum путем сокращения вызовов.",
+  "vulkanmod.options.cameraOopts": "Оптимизация камеры",
+  "vulkanmod.options.cameraOopts.tooltip": "Значительно оптимизирует производительность камеры. Может вызывать странные задержки чанков."
 }

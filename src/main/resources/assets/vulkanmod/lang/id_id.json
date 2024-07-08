@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "Nonaktifkan Tulisan Kedalaman jika Translucent",
   "vulkanmod.options.depthWrite.tooltip": "EKSPEIMENTAL: Menonaktifkan penulisan kedalaman pada objek translucent (mis. Blok Es). Dapat menyebabkan bug rendering visual pada objek translucent",
   "vulkanmod.options.forceFIFOVsync": "Paksa FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "Memaksa FIFO untuk mengunci pada kecepatan refresh layar dan juga memperbaiki keterlambatan dengan gambar swapchain yang besar."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Memaksa FIFO untuk mengunci pada kecepatan refresh layar dan juga memperbaiki keterlambatan dengan gambar swapchain yang besar.",
+  "vulkanmod.options.frustumOopts": "Optimasi Frustum",
+  "vulkanmod.options.frustumOopts.tooltip": "Mengoptimalkan Frustum dengan mengurangi panggilan.",
+  "vulkanmod.options.cameraOopts": "Optimisasi Kamera",
+  "vulkanmod.options.cameraOopts.tooltip": "Mengoptimalkan kinerja kamera secara besar-besaran. Dapat menyebabkan keterlambatan chunk yang aneh."
 }

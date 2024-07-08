@@ -70,5 +70,9 @@
   "vulkanmod.options.depthWrite": "I-disable ang Pagsusulat ng Lalim kung Translucent",
   "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Inaalis ang pagsusulat ng lalim sa mga translucent na bagay (hal. Ice Block). Maaaring magdulot ng visual rendering bug sa translucent na mga bagay",
   "vulkanmod.options.forceFIFOVsync": "Piliting FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "Pinipilit ang FIFO na mag-lock sa refresh rate ng display at inaayos din ang delay sa malalaking swapchain na imahe."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Pinipilit ang FIFO na mag-lock sa refresh rate ng display at inaayos din ang delay sa malalaking swapchain na imahe.",
+  "vulkanmod.options.frustumOopts": "Frustum Optimizations",
+  "vulkanmod.options.frustumOopts.tooltip": "Optimizes ang Frustum sa pamamagitan ng pagbawas ng mga tawag.",
+  "vulkanmod.options.cameraOopts": "Camera Optimization",
+  "vulkanmod.options.cameraOopts.tooltip": "Napakahusay na nagpapahusay sa pagganap ng camera. Maaaring magdulot ng kakaibang pagkaantala ng chunk."
 }

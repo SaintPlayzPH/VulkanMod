@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "تعطيل كتابة العمق إذا كانت شفافة",
   "vulkanmod.options.depthWrite.tooltip": "تجريبي: يعطل كتابة العمق على الكائنات الشفافة (على سبيل المثال، كتلة الجليد). قد يسبب خطأ في التقديم البصري على الكائنات الشفافة",
   "vulkanmod.options.forceFIFOVsync": "فرض FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "يجبر FIFO على القفل بمعدل تحديث العرض ويصلح التأخير مع صور السلسلة التبادلية الكبيرة."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "يجبر FIFO على القفل بمعدل تحديث العرض ويصلح التأخير مع صور السلسلة التبادلية الكبيرة.",
+  "vulkanmod.options.frustumOopts": "تحسينات Frustum",
+  "vulkanmod.options.frustumOopts.tooltip": "تحسين Frustum عن طريق تقليل الاستدعاءات.",
+  "vulkanmod.options.cameraOopts": "تحسينات الكاميرا",
+  "vulkanmod.options.cameraOopts.tooltip": "تحسين أداء الكاميرا بشكل كبير. قد يسبب تأخيرًا غريبًا في الأجزاء."
 }
