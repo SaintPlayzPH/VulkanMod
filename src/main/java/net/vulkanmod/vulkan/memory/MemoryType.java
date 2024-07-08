@@ -15,12 +15,15 @@ import static org.lwjgl.vulkan.VK10.*;
 public enum MemoryType {
     GPU_MEM(true, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
             VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT),
 
     BAR_MEM(true, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT),
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT),
 
-    RAM_MEM(false, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 0);
+    RAM_MEM(false, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT);
 
     private final long maxSize;
     private final AtomicLong usedBytes = new AtomicLong(0);
@@ -40,7 +43,7 @@ public enum MemoryType {
                 final boolean hasRequiredFlags = extractedFlags == optimalFlagMask;
 
                 if (availableFlags != 0) {
-                    Initializer.LOGGER.info("AvailableFlags: " + getMemoryTypeFlags(availableFlags) + " --> " + "SelectedFlags: " + getMemoryTypeFlags(extractedFlags));
+                    Initializer.LOGGER.info("Available Flags: " + getMemoryTypeFlags(availableFlags) + " --> " + "Selected Flags: " + getMemoryTypeFlags(extractedFlags));
                 }
 
                 final boolean hasMemType = useVRAM1 == ((availableFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) != 0);
@@ -50,10 +53,10 @@ public enum MemoryType {
 
                     Initializer.LOGGER.info("Found Requested Flags for: " + this.name() + "\n"
                             + "     Memory Heap Index/Bank: " + memoryType.heapIndex() + "\n"
-                            + "     IsVRAM: " + memoryHeap.flags() + "\n"
-                            + "     MaxSize: " + this.maxSize + " Bytes" + "\n"
-                            + "     AvailableFlags:" + getMemoryTypeFlags(availableFlags) + "\n"
-                            + "     EnabledFlags:" + requiredFlagString);
+                            + "     Is VRAM: " + memoryHeap.flags() + "\n"
+                            + "     Max Size: " + this.maxSize + " Bytes" + "\n"
+                            + "     Available Flags:" + getMemoryTypeFlags(availableFlags) + "\n"
+                            + "     Enabled Flags:" + requiredFlagString);
 
                     return;
                 }
