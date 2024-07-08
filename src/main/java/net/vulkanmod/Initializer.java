@@ -73,6 +73,8 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Swapchain Images: " + CONFIG.imageCount);
         LOGGER.info("Device: " + CONFIG.device);
         LOGGER.info("Ambient Occlusion: " + CONFIG.ambientOcclusion);
+        LOGGER.info("Frustum Optimizations: " + CONFIG.frustumOopts);
+        LOGGER.info("Camera Optimizations: " + CONFIG.cameraOopts);
         LOGGER.info("=====================================");
         LOGGER.info("==> VulkanMod <==");
         Platform.init();

@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "半透明の場合は深度書き込みを無効にする",
   "vulkanmod.options.depthWrite.tooltip": "実験的：半透明オブジェクト（例：氷のブロック）での深度書き込みを無効にします。半透明オブジェクトで視覚的なレンダリングバグが発生する可能性があります",
   "vulkanmod.options.forceFIFOVsync": "FIFO VSyncを強制",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "FIFOをディスプレイのリフレッシュレートにロックし、大きなスワップチェーン画像の遅延を修正します。"
+  "vulkanmod.options.forceFIFOVsync.tooltip": "FIFOをディスプレイのリフレッシュレートにロックし、大きなスワップチェーン画像の遅延を修正します。",
+  "vulkanmod.options.frustumOopts": "視錐台最適化",
+  "vulkanmod.options.frustumOopts.tooltip": "呼び出しを減らすことで視錐台を最適化します。",
+  "vulkanmod.options.cameraOopts": "カメラ最適化",
+  "vulkanmod.options.cameraOopts.tooltip": "カメラのパフォーマンスを大幅に最適化します。奇妙なチャンクの遅延を引き起こす可能性があります。"
 }

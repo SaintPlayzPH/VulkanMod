@@ -372,6 +372,18 @@ public abstract class Options {
                                 },
                                 () -> config.gaussianSkyBlending)
                                 .setTooltip(Component.translatable("vulkanmod.options.gaussianSkyBlending.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.frustumOopts"),
+                                value -> {
+                                    config.frustumOopts = value;
+                                },
+                                () -> config.frustumOopts)
+                                .setTooltip(Component.translatable("vulkanmod.options.frustumOopts.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.cameraOopts"),
+                                value -> {
+                                    config.cameraOopts = value;
+                                },
+                                () -> config.cameraOopts)
+                                .setTooltip(Component.translatable("vulkanmod.options.cameraOopts.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.excludeSampledUsage"),
                                 value -> {
                                     config.dontUseImageSampled = value;

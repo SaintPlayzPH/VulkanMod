@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "Disabl Dep Wriet if Translucen",
   "vulkanmod.options.depthWrite.tooltip": "EXPERIMENTAL: Disables dep writin on translucen objecs (e.g., Ice Blok). May cause visual renderin bug on translucen objecs",
   "vulkanmod.options.forceFIFOVsync": "force FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "forces da FIFO to lock on display's Refresh Rate an also fixes delay wif huge Swapchain images."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "forces da FIFO to lock on display's Refresh Rate an also fixes delay wif huge Swapchain images.",
+  "vulkanmod.options.frustumOopts": "Frustum Optimizashunz",
+  "vulkanmod.options.frustumOopts.tooltip": "Optimizes teh Frustum by reducin' calls.",
+  "vulkanmod.options.cameraOopts": "Camera Optimizashunz",
+  "vulkanmod.options.cameraOopts.tooltip": "Greatly optimizes teh camera performanz. May cause weird chunk delay."
 }

@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "如果半透明则禁用深度写入",
   "vulkanmod.options.depthWrite.tooltip": "实验性：禁用半透明对象的深度写入（例如，冰块）。可能会导致半透明对象的视觉渲染错误",
   "vulkanmod.options.forceFIFOVsync": "强制 FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "强制 FIFO 锁定在显示器的刷新率上，并修复大交换链图像的延迟问题。"
+  "vulkanmod.options.forceFIFOVsync.tooltip": "强制 FIFO 锁定在显示器的刷新率上，并修复大交换链图像的延迟问题。",
+  "vulkanmod.options.frustumOopts": "视锥体优化",
+  "vulkanmod.options.frustumOopts.tooltip": "通过减少调用来优化视锥体。",
+  "vulkanmod.options.cameraOopts": "相机优化",
+  "vulkanmod.options.cameraOopts.tooltip": "大幅优化相机性能。可能会导致奇怪的区块延迟。"
 }

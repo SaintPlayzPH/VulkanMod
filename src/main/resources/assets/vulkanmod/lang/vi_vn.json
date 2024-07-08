@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "Vô Hiệu Hóa Viết Độ Sâu Nếu Là Trong Suốt",
   "vulkanmod.options.depthWrite.tooltip": "THỬ NGHIỆM: Vô hiệu hóa viết độ sâu trên các đối tượng trong suốt (ví dụ, khối băng). Có thể gây lỗi hiển thị trực quan trên các đối tượng trong suốt",
   "vulkanmod.options.forceFIFOVsync": "Buộc FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "Buộc FIFO khóa vào tần số làm mới của màn hình và cũng khắc phục độ trễ với các hình ảnh swapchain lớn."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Buộc FIFO khóa vào tần số làm mới của màn hình và cũng khắc phục độ trễ với các hình ảnh swapchain lớn.",
+  "vulkanmod.options.frustumOopts": "Tối ưu hóa Frustum",
+  "vulkanmod.options.frustumOopts.tooltip": "Tối ưu hóa Frustum bằng cách giảm số lần gọi.",
+  "vulkanmod.options.cameraOopts": "Tối ưu hóa Camera",
+  "vulkanmod.options.cameraOopts.tooltip": "Tối ưu hóa đáng kể hiệu suất của camera. Có thể gây ra độ trễ kỳ lạ trong các phần."
 }

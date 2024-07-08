@@ -69,5 +69,9 @@
   "vulkanmod.options.depthWrite": "Wyłącz Zapis Głębokości, Jeśli Przezroczysty",
   "vulkanmod.options.depthWrite.tooltip": "EXPERYMENTALNE: Wyłącza zapisywanie głębokości na obiektach przezroczystych (np. Blok Lodowy). Może powodować błędy wizualne w renderowaniu obiektów przezroczystych",
   "vulkanmod.options.forceFIFOVsync": "Wymuś FIFO VSync",
-  "vulkanmod.options.forceFIFOVsync.tooltip": "Wymusza blokadę FIFO na częstotliwości odświeżania ekranu i naprawia opóźnienie przy dużych obrazach swapchain."
+  "vulkanmod.options.forceFIFOVsync.tooltip": "Wymusza blokadę FIFO na częstotliwości odświeżania ekranu i naprawia opóźnienie przy dużych obrazach swapchain.",
+  "vulkanmod.options.frustumOopts": "Optymalizacje Frustum",
+  "vulkanmod.options.frustumOopts.tooltip": "Optymalizuje Frustum poprzez redukcję wywołań.",
+  "vulkanmod.options.cameraOopts": "Optymalizacja kamery",
+  "vulkanmod.options.cameraOopts.tooltip": "Bardzo optymalizuje wydajność kamery. Może powodować dziwne opóźnienia w częściach."
 }
