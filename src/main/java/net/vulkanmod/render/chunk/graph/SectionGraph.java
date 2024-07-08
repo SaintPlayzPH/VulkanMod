@@ -197,6 +197,14 @@ public class SectionGraph {
     }
 
     private boolean notInFrustum(RenderSection renderSection) {
+        if (Initializer.CONFIG.frustumOopts) {
+            notInFrustumFixed(renderSection);
+        } else {
+            notInFrustumNormal(renderSection);
+        }
+    }
+
+    private boolean notInFrustumNormal(RenderSection renderSection) {
         byte frustumRes = renderSection.getChunkArea().inFrustum(renderSection.frustumIndex);
         if (frustumRes > FrustumIntersection.INTERSECT) {
             return true;
@@ -204,6 +212,17 @@ public class SectionGraph {
             if (!frustum.testFrustum(renderSection.xOffset, renderSection.yOffset, renderSection.zOffset,
                     renderSection.xOffset + 16, renderSection.yOffset + 16, renderSection.zOffset + 16))
                 return true;
+        }
+        return false;
+    }
+
+    private boolean notInFrustumFixed(RenderSection renderSection) {
+        byte frustumRes = renderSection.getChunkArea().inFrustum(renderSection.frustumIndex);
+        if (frustumRes > FrustumIntersection.INTERSECT) {
+            return true;
+        } if (frustumRes == FrustumIntersection.INTERSECT) {
+            return !frustum.testFrustum(renderSection.xOffset, renderSection.yOffset, renderSection.zOffset,
+                    renderSection.xOffset + 16, renderSection.yOffset + 16, renderSection.zOffset + 16);
         }
         return false;
     }
