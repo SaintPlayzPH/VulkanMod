@@ -98,7 +98,11 @@ public abstract class DebugScreenOverlayM {
                 strings.add(DeviceRAMInfo.getAvailableRAMWarn());
             }
         }
-        strings.add("Graphics Queue: " + QueueFamilyIndices.graphicsFamily);
+        strings.add("");
+        strings.add("§dQueues:§r");
+        strings.add("Present Queue: " + QueueFamilyIndices.presentFamily != 0 ? "Supported" : "Fallback");
+        strings.add("Graphics Queue: " + QueueFamilyIndices.graphicsFamily != 0 ? "Supported" : "Fallback");
+        strings.add("Transfer Queue: " + QueueFamilyIndices.transferFamily != QueueFamilyIndices.graphicsFamily ? "Supported" : "Fallback");
         
         return strings;
     }
