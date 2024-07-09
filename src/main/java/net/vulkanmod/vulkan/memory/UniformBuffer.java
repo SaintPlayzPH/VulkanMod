@@ -26,7 +26,7 @@ public class UniformBuffer extends Buffer {
     }
 
     public void updateOffset(int alignedSize) {
-        usedBytes += alignedSize;
+        this.usedBytes += alignedSize;
     }
 
     private void resizeBuffer(int newSize) {
@@ -35,6 +35,6 @@ public class UniformBuffer extends Buffer {
     }
 
     public long getPointer() {
-        return this.data.get(0) + usedBytes;
+        return this.data.get(0) + this.usedBytes;
     }
 }
