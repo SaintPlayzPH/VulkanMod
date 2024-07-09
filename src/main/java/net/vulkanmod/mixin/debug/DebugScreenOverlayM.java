@@ -10,7 +10,6 @@ import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.memory.MemoryType;
-import net.vulkanmod.vulkan.queue.QueueFamilyIndices;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -72,7 +71,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
         strings.add("Vulkan: " + device.vkDriverVersion);
-        strings.add("Instance Loader Version: " + device.vkInstanceLoaderVersion);
+        strings.add("Instance: " + device.vkInstanceLoaderVersion);
         strings.add("");
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
         strings.add("");
@@ -98,14 +97,9 @@ public abstract class DebugScreenOverlayM {
                 strings.add(DeviceRAMInfo.getAvailableRAMWarn());
             }
         }
-        strings.add("");
-        strings.add("§d(Vulkan Queue Families)§r");
-        strings.add("Present Queue: " + (QueueFamilyIndices.presentFamily != -1 ? "Supported" : "Fallback"));
-        strings.add("Graphics Queue: " + (QueueFamilyIndices.graphicsFamily != -1 ? "Supported" : "Fallback"));
-        strings.add("Transfer Queue: " + (QueueFamilyIndices.transferFamily != -1 ? "Supported" : "Fallback"));
         
         return strings;
-        }
+    }
 
     private static boolean isCPUInfoAvailable() {
         File cpuInfoFile = new File("/proc/cpuinfo");
