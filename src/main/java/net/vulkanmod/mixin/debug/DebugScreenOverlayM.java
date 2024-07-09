@@ -108,11 +108,13 @@ public abstract class DebugScreenOverlayM {
     }
 
     private static String getCurrentUsedFallbackQueue() {
-        return switch (QueueFamilyIndices.transferFamily) {
-            case QueueFamilyIndices.presentFamily -> "Present";
-            case QueueFamilyIndices.graphicsFamily -> "Graphics";
-            default -> "Unknown";
-        };
+        if (QueueFamilyIndices.transferFamily == QueueFamilyIndices.presentFamily) {
+            return "Present";
+        } else if (QueueFamilyIndices.transferFamily == QueueFamilyIndices.graphicsFamily) {
+            return "Graphics";
+        } else {
+            return "Unknown";
+        }
     }
 
     private static boolean isCPUInfoAvailable() {
