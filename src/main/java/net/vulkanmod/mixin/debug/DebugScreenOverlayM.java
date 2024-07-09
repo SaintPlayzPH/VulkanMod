@@ -102,16 +102,16 @@ public abstract class DebugScreenOverlayM {
         strings.add("§d(Vulkan Queue Families)§r");
         strings.add("Present Queue: " + (QueueFamilyIndices.presentFamily == 0 ? "Supported" : "Fallback"));
         strings.add("Graphics Queue: " + (QueueFamilyIndices.graphicsFamily == 0 ? "Supported" : "Fallback"));
-        strings.add("Transfer Queue: " + (QueueFamilyIndices.transferFamily != QueueFamilyIndices.graphicsFamily ? "Supported" : "Fallback (Using " + getCurrentUsedFallbackQueue() + "Queue"));
+        strings.add("Transfer Queue: " + (QueueFamilyIndices.transferFamily != QueueFamilyIndices.graphicsFamily ? "Supported" : "Fallback (Using " + getCurrentUsedFallbackQueue() + " Queue)"));
         
         return strings;
     }
 
     private static String getCurrentUsedFallbackQueue() {
-        if (QueueFamilyIndices.transferFamily == QueueFamilyIndices.presentFamily) {
-            return "Present";
-        } else if (QueueFamilyIndices.transferFamily == QueueFamilyIndices.graphicsFamily) {
+        if (QueueFamilyIndices.transferFamily == (QueueFamilyIndices.graphicsFamily)) {
             return "Graphics";
+        } else if (QueueFamilyIndices.transferFamily == (QueueFamilyIndices.presentFamily)) {
+            return "Present";
         } else {
             return "Unknown";
         }
