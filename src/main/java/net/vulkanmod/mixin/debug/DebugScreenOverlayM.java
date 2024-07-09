@@ -99,7 +99,7 @@ public abstract class DebugScreenOverlayM {
             }
         }
         strings.add("");
-        strings.add("§dQueues:§r");
+        strings.add("§d(Vulkan Queue Families)§r");
         strings.add("Present Queue: " + QueueFamilyIndices.presentFamily != 0 ? "Supported" : "Fallback");
         strings.add("Graphics Queue: " + QueueFamilyIndices.graphicsFamily != 0 ? "Supported" : "Fallback");
         strings.add("Transfer Queue: " + QueueFamilyIndices.transferFamily != QueueFamilyIndices.graphicsFamily ? "Supported" : "Fallback");
