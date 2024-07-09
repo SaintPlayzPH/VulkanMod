@@ -102,9 +102,17 @@ public abstract class DebugScreenOverlayM {
         strings.add("§d(Vulkan Queue Families)§r");
         strings.add("Present Queue: " + (QueueFamilyIndices.presentFamily == 0 ? "Supported" : "Fallback"));
         strings.add("Graphics Queue: " + (QueueFamilyIndices.graphicsFamily == 0 ? "Supported" : "Fallback"));
-        strings.add("Transfer Queue: " + (QueueFamilyIndices.transferFamily != QueueFamilyIndices.graphicsFamily ? "Supported" : "Fallback"));
+        strings.add("Transfer Queue: " + (QueueFamilyIndices.transferFamily != QueueFamilyIndices.graphicsFamily ? "Supported" : "Fallback (Using " + getCurrentUsedFallbackQueue() + "Queue"));
         
         return strings;
+    }
+
+    private static String getCurrentUsedFallbackQueue() {
+        return switch (QueueFamilyIndices.transferFamily) {
+            case QueueFamilyIndices.presentFamily -> "Present";
+            case QueueFamilyIndices.graphicsFamily -> "Graphics";
+            default -> "Unknown";
+        };
     }
 
     private static boolean isCPUInfoAvailable() {
@@ -125,4 +133,3 @@ public abstract class DebugScreenOverlayM {
         return bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed());
     }
 }
-            
