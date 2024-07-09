@@ -51,10 +51,6 @@ import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class Renderer {
-    public static final int VK_ERROR_INCOMPATIBLE_DISPLAY_KHR = 1000003001;
-    public static final int VK_ERROR_VALIDATION_FAILED_EXT = -1000011001;
-    public static final int VK_ERROR_INVALID_SHADER_NV = -1000012000;
-
     public static boolean recomp;
     private static Renderer INSTANCE;
 
@@ -316,9 +312,6 @@ public class Renderer {
             case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR -> "Native window in use";
             case VK_SUBOPTIMAL_KHR -> "Suboptimal";
             case VK_ERROR_OUT_OF_DATE_KHR -> "Out of date";
-            case VK_ERROR_INCOMPATIBLE_DISPLAY_KHR -> "Incompatible display";
-            case VK_ERROR_VALIDATION_FAILED_EXT -> "Validation failed";
-            case VK_ERROR_INVALID_SHADER_NV -> "Invalid shader";
             default -> String.format("Unknown Vulkan error: 0x%X", resultCode);
         };
     }
