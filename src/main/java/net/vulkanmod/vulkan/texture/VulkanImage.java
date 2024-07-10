@@ -1,7 +1,7 @@
 package net.vulkanmod.vulkan.texture;
 
 import com.mojang.blaze3d.platform.NativeImage;
-//import net.vulkanmod.Initializer;
+import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.Synchronization;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.DeviceManager;
@@ -115,7 +115,7 @@ public class VulkanImage {
 
             VulkanImage image = VulkanImage.builder(1, 1)
                     .setFormat(DefaultFormat)
-                    .setUsage(VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
+                    .setUsage(Initializer.CONFIG.dontUseImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT)
                     .setLinearFiltering(false)
                     .setClamp(false)
                     .createVulkanImage();
@@ -427,7 +427,7 @@ public class VulkanImage {
         int format = VulkanImage.DefaultFormat;
         int formatSize;
         byte mipLevels = 1;
-        int usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        int usage = Initializer.CONFIG.dontUseImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 
         byte samplerFlags = 0;
 
