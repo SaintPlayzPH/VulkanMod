@@ -10,7 +10,7 @@ import net.vulkanmod.Initializer;
 import net.vulkanmod.render.PipelineManager;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.render.chunk.buffer.UploadManager;
-import net.vulkanmod.render.profiling.Profiler2;
+import net.vulkanmod.render.profiling.Profiler;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.framebuffer.Framebuffer;
 import net.vulkanmod.vulkan.framebuffer.RenderPass;
@@ -203,7 +203,7 @@ public class Renderer {
     }
 
     public void beginFrame() {
-        Profiler2 p = Profiler2.getMainProfiler();
+        Profiler p = Profiler.getMainProfiler();
         p.pop();
         p.push("Frame_fence");
 	
@@ -320,7 +320,7 @@ public class Renderer {
         if (skipRendering || !recordingCmds)
             return;
 
-        Profiler2 p = Profiler2.getMainProfiler();
+        Profiler p = Profiler.getMainProfiler();
         p.push("End_rendering");
 
         mainPass.end(currentCmdBuffer);
@@ -419,7 +419,7 @@ public class Renderer {
     } 
 
     public void preInitFrame() {
-        Profiler2 p = Profiler2.getMainProfiler();
+        Profiler p = Profiler.getMainProfiler();
         p.pop();
         p.round();
         p.push("Frame_ops");
