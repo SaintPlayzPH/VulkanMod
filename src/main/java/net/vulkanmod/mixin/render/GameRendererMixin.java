@@ -280,19 +280,19 @@ public abstract class GameRendererMixin {
                 rendertypeCrumblingShader = shaderInstance;
             }));
 
-            shaders.add(Pair.of(positionColor, (shaderInstance) -> {
+            shaders.add(Pair.of(new ShaderInstance(provider, "rendertype_gui", DefaultVertexFormat.POSITION_COLOR), (shaderInstance) -> {
                 rendertypeGuiShader = shaderInstance;
             }));
-            shaders.add(Pair.of(positionColor, (shaderInstance) -> {
+            shaders.add(Pair.of(new ShaderInstance(provider, "rendertype_gui_overlay", DefaultVertexFormat.POSITION_COLOR), (shaderInstance) -> {
                 rendertypeGuiOverlayShader = shaderInstance;
             }));
-            shaders.add(Pair.of(positionColor, (shaderInstance) -> {
+            shaders.add(Pair.of(new ShaderInstance(provider, "rendertype_gui_text_highlight", DefaultVertexFormat.POSITION_COLOR), (shaderInstance) -> {
                 rendertypeGuiTextHighlightShader = shaderInstance;
             }));
-            shaders.add(Pair.of(positionColor, (shaderInstance) -> {
+            shaders.add(Pair.of(new ShaderInstance(provider, "rendertype_gui_ghost_recipe_overlay", DefaultVertexFormat.POSITION_COLOR), (shaderInstance) -> {
                 rendertypeGuiGhostRecipeOverlayShader = shaderInstance;
             }));
-            shaders.add(Pair.of(new ShaderInstance(provider, "rendertype_energy_swirl", DefaultVertexFormat.NEW_ENTITY), (shaderInstance) -> {
+            shaders.add(Pair.of(new ShaderInstance(provider, "rendertype_breeze_wind", DefaultVertexFormat.NEW_ENTITY), (shaderInstance) -> {
                 rendertypeBreezeWindShader = shaderInstance;
             }));
         } catch (IOException ioexception) {
@@ -353,8 +353,8 @@ public abstract class GameRendererMixin {
             positionTexColorShader = this.preloadShader(resourceProvider, "position_tex_color", DefaultVertexFormat.POSITION_TEX_COLOR);
             rendertypeTextShader = this.preloadShader(resourceProvider, "rendertype_text", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP);
 
-            rendertypeGuiShader = positionColorShader;
-            rendertypeGuiOverlayShader = positionColorShader;
+            rendertypeGuiShader = this.preloadShader(resourceProvider, "rendertype_gui", DefaultVertexFormat.POSITION_COLOR);
+            rendertypeGuiOverlayShader = this.preloadShader(resourceProvider, "rendertype_gui_overlay", DefaultVertexFormat.POSITION_COLOR);
         }
     }
 
