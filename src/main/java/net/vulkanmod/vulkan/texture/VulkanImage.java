@@ -427,7 +427,7 @@ public class VulkanImage {
         int format = VulkanImage.DefaultFormat;
         int formatSize;
         byte mipLevels = 1;
-        int usage = Initializer.CONFIG.dontUseImageSampled ? VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT : VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        int usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
 
         byte samplerFlags = 0;
 
