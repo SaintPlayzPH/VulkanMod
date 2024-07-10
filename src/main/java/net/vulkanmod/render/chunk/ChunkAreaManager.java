@@ -2,6 +2,8 @@ package net.vulkanmod.render.chunk;
 
 import net.minecraft.util.Mth;
 import net.vulkanmod.render.chunk.buffer.DrawBuffers;
+import net.vulkanmod.render.chunk.frustum.FrustumOctree;
+import net.vulkanmod.render.chunk.frustum.VFrustum;
 import net.vulkanmod.render.chunk.util.CircularIntList;
 import net.vulkanmod.render.chunk.util.Util;
 import org.joml.Vector3i;
