@@ -33,7 +33,6 @@ import net.vulkanmod.render.chunk.build.task.ChunkTask;
 import net.vulkanmod.render.chunk.graph.SectionGraph;
 import net.vulkanmod.render.profiling.BuildTimeProfiler;
 import net.vulkanmod.render.profiling.Profiler;
-import net.vulkanmod.render.profiling.Profiler2;
 import net.vulkanmod.render.vertex.TerrainRenderType;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
@@ -141,7 +140,7 @@ public class WorldRenderer {
     }
 
     public void setupRenderer(Camera camera, Frustum frustum, boolean isCapturedFrustum, boolean spectator) {
-        Profiler2 profiler = Profiler2.getMainProfiler();
+        Profiler profiler = Profiler.getMainProfiler();
         profiler.push("Setup_Renderer");
 
         benchCallback();
@@ -158,19 +157,14 @@ public class WorldRenderer {
         int sectionX = SectionPos.posToSectionCoord(cameraX);
         int sectionY = SectionPos.posToSectionCoord(cameraY);
         int sectionZ = SectionPos.posToSectionCoord(cameraZ);
-
-        Profiler p2 = Profiler.getProfiler("camera");
+  
         profiler.push("reposition");
-
         if (this.lastCameraSectionX != sectionX || this.lastCameraSectionY != sectionY || this.lastCameraSectionZ != sectionZ) {
 
-            p2.start();
             this.lastCameraSectionX = sectionX;
             this.lastCameraSectionY = sectionY;
             this.lastCameraSectionZ = sectionZ;
             this.sectionGrid.repositionCamera(cameraX, cameraZ);
-            p2.pushMilestone("end-reposition");
-            p2.round();
         }
         profiler.pop();
 
@@ -221,7 +215,7 @@ public class WorldRenderer {
     public void uploadSections() {
         this.minecraft.getProfiler().push("upload");
 
-        Profiler2 profiler = Profiler2.getMainProfiler();
+        Profiler profiler = Profiler.getMainProfiler();
         profiler.push("Uploads");
 
         if (this.taskDispatcher.updateSections())
@@ -388,13 +382,13 @@ public class WorldRenderer {
 
     public void renderBlockEntities(PoseStack poseStack, double camX, double camY, double camZ,
                                     Long2ObjectMap<SortedSet<BlockDestructionProgress>> destructionProgress, float gameTime) {
-        Profiler2 profiler = Profiler2.getMainProfiler();
+        Profiler profiler = Profiler.getMainProfiler();
         profiler.pop();
-        profiler.push("block-entities");
+        profiler.push("Block-entities");
 
         MultiBufferSource bufferSource = this.renderBuffers.bufferSource();
 
-        for (RenderSection renderSection : this.sectionGraph.getSectionQueue()) {
+        for (RenderSection renderSection : this.sectionGraph.getBlockEntitiesSections()) {
             List<BlockEntity> list = renderSection.getCompiledSection().getBlockEntities();
             if (!list.isEmpty()) {
                 for (BlockEntity blockEntity : list) {
