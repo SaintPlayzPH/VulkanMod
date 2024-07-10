@@ -80,7 +80,7 @@ public class WorldRenderer {
     private double yTransparentOld;
     private double zTransparentOld;
 
-    IndirectBuffer[] indirectBuffers;
+    IndirectBuffer[] indirectBuffers = null;
 
     public RenderRegionBuilder renderRegionCache;
 
