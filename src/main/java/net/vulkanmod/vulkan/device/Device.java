@@ -16,8 +16,8 @@ import static org.lwjgl.util.shaderc.Shaderc.shaderc_env_version_vulkan_1_1;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
-import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_1;
-import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_2;
+//import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_1;
+//import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_2;
 
 public class Device {
     final VkPhysicalDevice physicalDevice;
@@ -35,8 +35,8 @@ public class Device {
 
     private boolean drawIndirectSupported;
 
-    public static int instanceVersion = 0;
-    public static int spirvVersion = 0;
+    //public static int instanceVersion = 0;
+    //public static int spirvVersion = 0;
     
     public Device(VkPhysicalDevice device) {
         this.physicalDevice = device;
@@ -112,22 +112,22 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            int minorVersion = VK_VERSION_MINOR(vkVer1);
+         //   int minorVersion = VK_VERSION_MINOR(vkVer1);
 
-            switch (minorVersion) {
-                case 3 -> {
-                    instanceVersion = VK_API_VERSION_1_2;
-                    spirvVersion = shaderc_env_version_vulkan_1_2;
-                }
-                case 2 -> {
-                    instanceVersion = VK_API_VERSION_1_2;
-                    spirvVersion = shaderc_env_version_vulkan_1_2;
-                }
-                default -> {
-                    instanceVersion = VK_API_VERSION_1_1;
-                    spirvVersion = shaderc_env_version_vulkan_1_1;
-                }
-            }
+          //  switch (minorVersion) {
+         //       case 3 -> {
+          //          instanceVersion = VK_API_VERSION_1_2;
+            //        spirvVersion = shaderc_env_version_vulkan_1_2;
+           //     }
+            //      case 2 -> {
+            //       instanceVersion = VK_API_VERSION_1_2;
+            //         spirvVersion = shaderc_env_version_vulkan_1_2;
+            //     }
+            //    default -> {
+            //       instanceVersion = VK_API_VERSION_1_1;
+            //       spirvVersion = shaderc_env_version_vulkan_1_1;
+            //   }
+            //}
         
             return vkVer1;
         }
