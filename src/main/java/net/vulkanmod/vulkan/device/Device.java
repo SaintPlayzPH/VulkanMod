@@ -110,7 +110,7 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            this.instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
+            instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
                 case 3 -> VK_API_VERSION_1_3;
                 case 2 -> VK_API_VERSION_1_2;
                 default -> VK_API_VERSION_1_1;
