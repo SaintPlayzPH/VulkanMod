@@ -12,7 +12,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM_WIN32;
 import static org.lwjgl.glfw.GLFW.glfwGetPlatform;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VK12.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
 
@@ -106,6 +105,13 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
+            int instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
+                case 3 -> 3;
+                case 2 -> 2;
+                case 1 -> 1;
+                default -> 0;
+            };
+        
             return vkVer1;
         }
     }
