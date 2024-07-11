@@ -45,14 +45,6 @@ public class SPIRVUtils {
     static {
         initCompiler();
     }
-
-    private static int getInstanceVersion() {
-        return Device.instanceVersion;
-    }
-
-    private static int getSpirvVersion() {
-        return Device.spirvVersion;
-    }
     
     private static void initCompiler() {
         compiler = shaderc_compiler_initialize();
