@@ -149,11 +149,13 @@ public abstract class Queue {
                         }
                     }
 
-                    if (fallback == -1)
-                        throw new RuntimeException("Failed to find queue family with transfer support");
-
                     indices.transferFamily = fallback;
                 }
+            }
+
+            if (indices.transferFamily == -1) {
+                indices.transferFamily = indices.graphicsFamily;
+                Initializer.LOGGER.warn("Using graphics queue as transfer fallback");
             }
 
             if (indices.computeFamily == -1) {
@@ -167,6 +169,8 @@ public abstract class Queue {
                 }
             }
 
+            if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED)
+                throw new RuntimeException("Unable to find queue family with transfer support.");
             if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED)
