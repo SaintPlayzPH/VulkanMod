@@ -3,13 +3,13 @@ package net.vulkanmod.vulkan.shader;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.VRenderSystem;
+import net.vulkanmod.vulkan.device.Device;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.NativeResource;
 import org.lwjgl.util.shaderc.ShadercIncludeResolveI;
 import org.lwjgl.util.shaderc.ShadercIncludeResult;
 import org.lwjgl.util.shaderc.ShadercIncludeResultReleaseI;
-import org.lwjgl.vulkan.VK12;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +45,10 @@ public class SPIRVUtils {
         initCompiler();
     }
 
+    private static int getInstanceVersion() {
+        return Device.instanceVersion;
+    }
+
     private static void initCompiler() {
         compiler = shaderc_compiler_initialize();
 
@@ -63,7 +67,7 @@ public class SPIRVUtils {
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
 
-        shaderc_compile_options_set_target_env(options, VK12.VK_API_VERSION_1_1, VK12.VK_API_VERSION_1_1);
+        shaderc_compile_options_set_target_env(options, shaderc_env_version_vulkan_1_1, getInstanceVersion());
         shaderc_compile_options_set_include_callbacks(options, SHADER_INCLUDER, SHADER_RELEASER, pUserData);
 
         includePaths = new ObjectArrayList<>();
