@@ -37,6 +37,7 @@ public class Device {
 
     public static int instanceVersion = 0;
     public static int spirvVersion = 0;
+    public static int instanceVer = 0;
     
     public Device(VkPhysicalDevice device) {
         this.physicalDevice = device;
