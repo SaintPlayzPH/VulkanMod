@@ -10,6 +10,7 @@ import org.lwjgl.system.NativeResource;
 import org.lwjgl.util.shaderc.ShadercIncludeResolveI;
 import org.lwjgl.util.shaderc.ShadercIncludeResult;
 import org.lwjgl.util.shaderc.ShadercIncludeResultReleaseI;
+import org.lwjgl.vulkan.VK12;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +72,7 @@ public class SPIRVUtils {
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
 
-        shaderc_compile_options_set_target_env(options, getSpirvVersion(), getInstanceVersion());
+        shaderc_compile_options_set_target_env(options, shaderc_env_version_vulkan_1_1, VK12.VK_API_VERSION_1_1);
         shaderc_compile_options_set_include_callbacks(options, SHADER_INCLUDER, SHADER_RELEASER, pUserData);
 
         includePaths = new ObjectArrayList<>();
