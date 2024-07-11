@@ -127,7 +127,7 @@ public class Device {
                     instanceVersion = VK_API_VERSION_1_1;
                     spirvVersion = shaderc_env_version_vulkan_1_1;
                 }
-            };
+            }
         
             return vkVer1;
         }
