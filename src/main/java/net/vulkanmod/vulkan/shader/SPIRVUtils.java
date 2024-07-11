@@ -49,6 +49,10 @@ public class SPIRVUtils {
         return Device.instanceVersion;
     }
 
+    private static int getSpirvVersion() {
+        return Device.spirvVersion;
+    }
+    
     private static void initCompiler() {
         compiler = shaderc_compiler_initialize();
 
@@ -67,7 +71,7 @@ public class SPIRVUtils {
         if(DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
 
-        shaderc_compile_options_set_target_env(options, shaderc_env_version_vulkan_1_1, getInstanceVersion());
+        shaderc_compile_options_set_target_env(options, getSpirvVersion(), getInstanceVersion());
         shaderc_compile_options_set_include_callbacks(options, SHADER_INCLUDER, SHADER_RELEASER, pUserData);
 
         includePaths = new ObjectArrayList<>();
