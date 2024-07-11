@@ -34,7 +34,7 @@ public class Device {
 
     private boolean drawIndirectSupported;
 
-    public int instanceVersion = 0;
+    public static int instanceVersion = 0;
 
     public Device(VkPhysicalDevice device) {
         this.physicalDevice = device;
