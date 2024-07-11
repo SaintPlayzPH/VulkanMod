@@ -112,20 +112,22 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
+            int minorVersion = VK_VERSION_MINOR(vkVer1);
+
+            switch (minorVersion) {
                 case 3 -> {
-                    instanceVersion = VK_API_VERSION_1_2;
-                    spirvVersion = shaderc_env_version_vulkan_1_2;
+                    instanceVersion = VK10.VK_API_VERSION_1_2;
+                    spirvVersion = Shaderc.shaderc_env_version_vulkan_1_2;
                 }
                 case 2 -> {
-                    instanceVersion = VK_API_VERSION_1_2;
-                    spirvVersion = shaderc_env_version_vulkan_1_2;
+                    instanceVersion = VK10.VK_API_VERSION_1_2;
+                    spirvVersion = Shaderc.shaderc_env_version_vulkan_1_2;
                 }
                 default -> {
-                    instanceVersion = VK_API_VERSION_1_1;
-                    spirvVersion = shaderc_env_version_vulkan_1_1;
+                    instanceVersion = VK10.VK_API_VERSION_1_1;
+                    spirvVersion = Shaderc.shaderc_env_version_vulkan_1_1;
                 }
-            };
+            }
         
             return vkVer1;
         }
