@@ -14,6 +14,9 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
+import static org.lwjgl.vulkan.VK11.VK_API_VERSION_1_1;
+import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_2;
+import static org.lwjgl.vulkan.VK13.VK_API_VERSION_1_3;
 
 public class Device {
     final VkPhysicalDevice physicalDevice;
@@ -30,7 +33,8 @@ public class Device {
     public final VkPhysicalDeviceVulkan11Features availableFeatures11;
 
     private boolean drawIndirectSupported;
-    public static int instanceVer = 0;
+
+    public int instanceVersion = 0;
 
     public Device(VkPhysicalDevice device) {
         this.physicalDevice = device;
@@ -106,11 +110,12 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            int instanceVer = switch (VK_VERSION_MINOR(vkVersion)) {
-                case 3 -> 3;
-                case 2 -> 2;
-                default -> 1;
+            this.instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
+                case 3 -> VK_API_VERSION_1_3;
+                case 2 -> VK_API_VERSION_1_2;
+                default -> VK_API_VERSION_1_1;
             };
+        
             return vkVer1;
         }
     }
