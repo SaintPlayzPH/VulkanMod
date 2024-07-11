@@ -117,14 +117,17 @@ public class Device {
                 case 3 -> {
                     instanceVersion = VK_API_VERSION_1_2;
                     spirvVersion = shaderc_env_version_vulkan_1_2;
+                    3;
                 }
                 case 2 -> {
                     instanceVersion = VK_API_VERSION_1_2;
                     spirvVersion = shaderc_env_version_vulkan_1_2;
+                    2;
                 }
                 default -> {
                     instanceVersion = VK_API_VERSION_1_1;
                     spirvVersion = shaderc_env_version_vulkan_1_1;
+                    1;
                 }
             };
         
