@@ -14,6 +14,9 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.*;
 import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
+import static org.lwjgl.vulkan.VK11.VK_API_VERSION_1_1;
+import static org.lwjgl.vulkan.VK12.VK_API_VERSION_1_2;
+import static org.lwjgl.vulkan.VK13.VK_API_VERSION_1_3;
 
 public class Device {
     final VkPhysicalDevice physicalDevice;
@@ -106,10 +109,10 @@ public class Device {
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
             int instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
-                case 3 -> 3;
-                case 2 -> 2;
-                case 1 -> 1;
-                default -> 0;
+                case 3 -> VK_API_VERSION_1_3;
+                case 2 -> VK_API_VERSION_1_2;
+                case 1 -> VK_API_VERSION_1_1;
+                default -> VK_API_VERSION_1_1;
             };
         
             return vkVer1;
