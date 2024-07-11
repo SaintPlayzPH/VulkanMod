@@ -37,7 +37,6 @@ public class Device {
 
     public static int instanceVersion = 0;
     public static int spirvVersion = 0;
-    public static int instanceVer = 0;
     
     public Device(VkPhysicalDevice device) {
         this.physicalDevice = device;
@@ -113,21 +112,18 @@ public class Device {
             var a = stack.mallocInt(1);
             vkEnumerateInstanceVersion(a);
             int vkVer1 = a.get(0);
-            instanceVer = switch (VK_VERSION_MINOR(vkVer1)) {
+            instanceVersion = switch (VK_VERSION_MINOR(vkVer1)) {
                 case 3 -> {
                     instanceVersion = VK_API_VERSION_1_2;
                     spirvVersion = shaderc_env_version_vulkan_1_2;
-                    3;
                 }
                 case 2 -> {
                     instanceVersion = VK_API_VERSION_1_2;
                     spirvVersion = shaderc_env_version_vulkan_1_2;
-                    2;
                 }
                 default -> {
                     instanceVersion = VK_API_VERSION_1_1;
                     spirvVersion = shaderc_env_version_vulkan_1_1;
-                    1;
                 }
             };
         
