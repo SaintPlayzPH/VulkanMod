@@ -1,6 +1,11 @@
 package net.vulkanmod.vulkan.device;
 
 public class AndroidDeviceChecker {
+    public static boolean isRunningOnCompatDevice() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("linux") || osName.contains("android");
+    }
+
     public static boolean isRunningOnAndroid() {
         String osName = System.getProperty("os.name").toLowerCase();
         return (osName.contains("linux") || osName.contains("android")) && (System.getenv("POJAV_ENVIRON") != null ||
