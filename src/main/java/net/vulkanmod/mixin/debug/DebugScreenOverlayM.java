@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.Collections;
 import java.util.ArrayList;
