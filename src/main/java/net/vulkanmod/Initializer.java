@@ -7,6 +7,7 @@ import net.vulkanmod.config.Platform;
 import net.vulkanmod.config.video.VideoModeManager;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.SystemInfo;
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +38,7 @@ public class Initializer implements ClientModInitializer {
         if (System.getenv("SCL_ENVIRON") != null) {
             LOGGER.info("=> We're running on SolCraftLauncher! <=");
         }
-        if (isRunningOnMobile()) {
+        if (AndroidDeviceChecker.isRunningOnAndroid()) {
             LOGGER.info("=====================================");
             LOGGER.info("=• We're running on Mobile device! •=");
             LOGGER.info("• Phone Processor: " + SystemInfo.getProcessorNameForAndroid());
@@ -103,10 +104,6 @@ public class Initializer implements ClientModInitializer {
         }
 
         return config;
-    }
-
-    private static boolean isRunningOnMobile() {
-        return System.getenv("SCL_RENDERER") != null || System.getenv("POJAV_RENDERER") != null || System.getenv("POJAV_ENVIRON") != null || System.getenv("POJAV_ENVIRON") != null;
     }
 
     public static String getVersion() {
