@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.vulkanmod.gl.GlTexture;
 import net.vulkanmod.interfaces.VAbstractTextureI;
 import net.vulkanmod.vulkan.Renderer;
-import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.VRenderSystem;
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.texture.VTextureSelector;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import org.jetbrains.annotations.Nullable;
@@ -184,14 +184,14 @@ public abstract class RenderSystemMixin {
      */
     @Overwrite(remap = false)
     public static void flipFrame(long window) {
-        if (!SystemInfo.isRunningOnAndroid()) {
+        if (!AndroidDeviceChecker.isRunningOnAndroid()) {
             org.lwjgl.glfw.GLFW.glfwPollEvents();
-            RenderSystem.replayQueue();
-            Tesselator.getInstance().getBuilder().clear();
         } else {
             pollEvents();
-            RenderSystem.replayQueue();
-            Tesselator.getInstance().getBuilder().clear();
+        }
+        RenderSystem.replayQueue();
+        Tesselator.getInstance().getBuilder().clear();
+        if (AndroidDeviceChecker.isRunningOnAndroid()) {
             pollEvents();
         }
     }
