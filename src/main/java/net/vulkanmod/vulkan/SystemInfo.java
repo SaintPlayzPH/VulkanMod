@@ -32,7 +32,7 @@ public class SystemInfo {
         return centralProcessor.getProcessorIdentifier().getName().replaceAll("\\s+", " ");
     }
 
-    private static boolean isRunningOnAndroid() {
+    public static boolean isRunningOnAndroid() {
         String osName = System.getProperty("os.name").toLowerCase();
         return (osName.contains("linux") || osName.contains("android")) && (System.getenv("POJAV_ENVIRON") != null ||
                System.getenv("SCL_ENVIRON") != null ||
