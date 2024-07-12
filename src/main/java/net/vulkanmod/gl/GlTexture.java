@@ -127,10 +127,7 @@ public class GlTexture {
     }
 
     public static int getTexLevelParameter(int target, int level, int pName) {
-        if (target != GL11.GL_TEXTURE_2D)
-            throw new UnsupportedOperationException("target != GL_TEXTURE_2D not supported");
-
-        if (boundTexture == null)
+        if (boundTexture == null || target != GL11.GL_TEXTURE_2D)
             return -1;
 
         return switch (pName) {
