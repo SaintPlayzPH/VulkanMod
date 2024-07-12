@@ -7,6 +7,7 @@ import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
 import net.vulkanmod.vulkan.memory.MemoryType;
@@ -55,8 +56,9 @@ public abstract class DebugScreenOverlayM {
         long freeMemory = Runtime.getRuntime().freeMemory();
         long usedMemory = totalMemory - freeMemory;
         int pretransformFlags = Vulkan.getPretransformFlags();
-        boolean isPojav = isRunningOnPojav();
-        boolean isCompat = isRunningOnCompatDevice();
+        boolean isPojav = AndroidDeviceChecker.isRunningOnAndroid();
+        boolean isCompat = AndroidDeviceChecker.isRunningOnCompatDevice();
+        boolean isCPUInfoAvailable = AndroidDeviceChecker.isCPUInfoAvailable();
         Device device = Vulkan.getDevice();
 
         strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
@@ -67,7 +69,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes() + "/" + MemoryType.GPU_MEM.maxSize() + "MB");
         strings.add("");
         strings.add("VulkanMod " + getVersion());
-        strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable() ? " (SoC)" : ""));
+        strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable ? " (SoC)" : ""));
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
         strings.add("Vulkan: " + device.vkDriverVersion);
@@ -99,20 +101,6 @@ public abstract class DebugScreenOverlayM {
         }
         
         return strings;
-    }
-
-    private static boolean isCPUInfoAvailable() {
-        File cpuInfoFile = new File("/proc/cpuinfo");
-        return cpuInfoFile.exists() && cpuInfoFile.canRead();
-    }
-
-    private static boolean isRunningOnCompatDevice() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        return osName.contains("linux") || osName.contains("android");
-    }
-
-    private static boolean isRunningOnPojav() {
-        return System.getenv("POJAV_ENVIRON") != null || System.getenv("SCL_ENVIRON") != null || System.getenv("POJAV_RENDERER") != null;
     }
 
     private long getOffHeapMemory() {
