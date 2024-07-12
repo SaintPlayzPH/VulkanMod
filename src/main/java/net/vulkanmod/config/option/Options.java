@@ -419,7 +419,7 @@ public abstract class Options {
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
                     value -> config.showDeviceRAM = AndroidDeviceChecker.isRunningOnCompatDevice() ? value : false,
-                    () -> isRunningOnCompatDevice() && config.showDeviceRAM)
+                    () -> AndroidDeviceChecker.isRunningOnCompatDevice() && config.showDeviceRAM)
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnAndroidLinux")
                             .append(Component.literal(AndroidDeviceChecker.isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
