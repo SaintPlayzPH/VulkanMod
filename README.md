@@ -71,8 +71,8 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 >- [ ] Removed Herobrine
 
 ## Known Issue with VKMod on PojavLauncher:
-- Few bugs with **ASR** enabled.
-- Some devices doesn't support.
+- Few rendering bugs with **ASR** enabled.
+- Few devices doesn't support and mostly doesn't support with PowerVR GPU.
 
 ## Notes
 - This mod is still in development, please report issues in the [issue tab](https://github.com/xCollateral/VulkanMod/issues) with logs attached!
