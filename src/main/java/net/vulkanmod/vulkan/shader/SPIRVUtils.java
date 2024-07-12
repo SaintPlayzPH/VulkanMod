@@ -3,7 +3,6 @@ package net.vulkanmod.vulkan.shader;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.vulkan.VRenderSystem;
-import net.vulkanmod.vulkan.device.Device;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.NativeResource;
