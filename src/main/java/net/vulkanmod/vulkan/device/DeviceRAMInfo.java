@@ -1,4 +1,4 @@
-package net.vulkanmod.vulkan;
+package net.vulkanmod.vulkan.device;
 
 import net.vulkanmod.Initializer;
 
