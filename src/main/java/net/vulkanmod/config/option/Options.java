@@ -11,6 +11,7 @@ import net.vulkanmod.config.gui.OptionBlock;
 import net.vulkanmod.render.chunk.build.light.LightMode;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.DeviceManager;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
@@ -25,11 +26,6 @@ public abstract class Options {
     static Minecraft minecraft = Minecraft.getInstance();
     static Window window = minecraft.getWindow();
     static net.minecraft.client.Options minecraftOptions = minecraft.options;
-
-    private static boolean isRunningOnCompatDevice() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        return osName.contains("linux") || osName.contains("android");
-    }
 
     private static final int minImageCount;
     private static final int maxImageCount;
@@ -422,11 +418,11 @@ public abstract class Options {
                     }, () -> config.imageCount)
                     .setTooltip(Component.translatable("vulkanmod.options.swapchainImages.tooltip")),
             new SwitchOption(Component.translatable("vulkanmod.options.showDeviceRAMInfo"),
-                    value -> config.showDeviceRAM = isRunningOnCompatDevice() ? value : false,
+                    value -> config.showDeviceRAM = AndroidDeviceChecker.isRunningOnCompatDevice() ? value : false,
                     () -> isRunningOnCompatDevice() && config.showDeviceRAM)
                     .setTooltip(
                     Component.translatable("vulkanmod.options.runningOnAndroidLinux")
-                            .append(Component.literal(isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
+                            .append(Component.literal(AndroidDeviceChecker.isRunningOnCompatDevice() ? "§aYes§r" : "§cNo§r"))
                             .append("\n\n")
                             .append(Component.translatable("vulkanmod.options.showDeviceRAMInfo.tooltip"))),
             new RangeOption(Component.translatable("vulkanmod.options.deviceRAMInfoUpdateDelay"), 0, 10, 1,
