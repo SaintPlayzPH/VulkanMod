@@ -35,6 +35,9 @@ public class QueueFamilyIndices {
             VkQueueFamilyProperties.Buffer queueFamilies = VkQueueFamilyProperties.mallocStack(queueFamilyCount.get(0), stack);
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, queueFamilies);
 
+            int fallbackTransfer = VK_QUEUE_FAMILY_IGNORED;
+            int fallbackCompute = VK_QUEUE_FAMILY_IGNORED;
+
             for (int i = 0; i < queueFamilies.capacity(); i++) {
                 int queueFlags = queueFamilies.get(i).queueFlags();
 
@@ -44,42 +47,51 @@ public class QueueFamilyIndices {
                         presentFamily = i;
                     }
                 }
-                if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0
-                        && (queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
+
+                if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0
+                        && (queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0) {
                     transferFamily = i;
                 }
 
-                if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
-                        presentFamily = i;
+                if (presentFamily == VK_QUEUE_FAMILY_IGNORED && (queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
+                    presentFamily = i;
+                }
+
+                if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
+                    if (fallbackTransfer == VK_QUEUE_FAMILY_IGNORED) {
+                        fallbackTransfer = i;
+                    }
+                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) == 0) {
+                        transferFamily = i;
                     }
                 }
+
+                if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
+                    if (fallbackCompute == VK_QUEUE_FAMILY_IGNORED) {
+                        fallbackCompute = i;
+                    }
+                    if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) {
+                        transferFamily = i;
+                    }
+                }
+
                 if (isComplete()) break;
             }
 
             if (transferFamily == VK_QUEUE_FAMILY_IGNORED) {
-                int fallback = VK_QUEUE_FAMILY_IGNORED;
-                for (int i = 0; i < queueFamilies.capacity(); i++) {
-                    int queueFlags = queueFamilies.get(i).queueFlags();
-                    if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
-                        if (fallback == VK_QUEUE_FAMILY_IGNORED)
-                            fallback = i;
-                        if ((queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0) {
-                            transferFamily = i;
-                            fallback = i;
-                            break;
-                        }
-                    }
-
-                    if (fallback == VK_QUEUE_FAMILY_IGNORED)
-                        throw new RuntimeException("Failed to find queue family with transfer support");
-
-                    transferFamily = fallback;
+                if (fallbackTransfer != VK_QUEUE_FAMILY_IGNORED) {
+                    transferFamily = fallbackTransfer;
+                } else if (fallbackCompute != VK_QUEUE_FAMILY_IGNORED) {
+                    transferFamily = fallbackCompute;
+                } else {
+                    transferFamily = graphicsFamily;
                 }
             }
 
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
 
+            if (transferFamily == VK_QUEUE_FAMILY_IGNORED)
+                throw new RuntimeException("Failed to find queue family with transfer support");
             if (graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
                 throw new RuntimeException("Unable to find queue family with graphics support.");
             if (presentFamily == VK_QUEUE_FAMILY_IGNORED)
