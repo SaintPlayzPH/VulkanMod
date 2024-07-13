@@ -4,7 +4,7 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 
 ### Why?
 - Highly experimental project that overhauls and modernizes the internal renderer for Minecraft. <br>
-- Updates the renderer from OpenGL 3.2 to Vulkan 1.2 with partial 1.1 (Vulkan 1.1 compatibility with other devices is not guaranteed). <br>
+- Updates the renderer from OpenGL 3.2 to Vulkan 1.1. <br>
 - Provides a potential reference for a future-proof Vulkan codebase for Minecraft Java. <br>
 - Utilizes the VulkanAPI to allow for capabilities not always possible with OpenGL. <br>
 - Including reduced CPU Overhead and use of newer, modern hardware capabilities. <br>
@@ -82,7 +82,7 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
 - This modification of **VulkanMod** is **UNOFFICIAL**.
 - Use main branch **"1.20.4"** and don't worry about **Malware**, or **any viruses** because this **modified** version doesn't **APPLY** any **malicious files or codes** and trust me, I have **5 YEARS** of coding experience and I know to trace **any malicious files** at all.
 - Please **DON'T report any crashes/bugs or upload** on **VulkanMod Discord** related to **PojavLauncher**.
-- This is for my personal use, but you can try it for yourself **(device compatibility is not guaranteed)**.
+- This is likely for my personal use, but you can try it for yourself.
 
 ## Others
-- Probably not only mobile devices supports this modified version, also for PC/Laptop that has arm64 architecture or only supports Vulkan 1.1
+- Probably not only mobile devices supports this modified version, also for PC/Laptop that has arm64 architecture or only supports Vulkan 1.1.
