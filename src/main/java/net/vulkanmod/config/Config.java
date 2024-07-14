@@ -24,7 +24,7 @@ public class Config {
     public boolean indirectDraw = false;
 
     public boolean perRenderTypeAreaBuffers = true;
-    public boolean fastLeavesFix = false;
+    public boolean uniqueOpaqueLayer = true;
     public boolean entityCulling = true;
     public boolean animations = true;
     public boolean renderSky = true;
