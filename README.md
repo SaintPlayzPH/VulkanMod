@@ -39,7 +39,7 @@ This is a fabric mod that introduces a brand new **Vulkan** based voxel renderin
     </tr>
   <tr>
     <td style="text-align:center"> 
-        <a href="https://discord.com/invite/CHX4dUSTqs"> 
+        <a href="https://discord.com/invite/BdD7PAp5rH"> 
             <img alt="Discord" align="top" src="https://img.shields.io/discord/963180553547419670?style=flat-square&logo=discord&logoColor=%23FFFFFF&label=SaintPlayz/Shadow%20%20discord%20server&labelColor=%235865F2&color=%235865F2">
         </a>
      </td>
