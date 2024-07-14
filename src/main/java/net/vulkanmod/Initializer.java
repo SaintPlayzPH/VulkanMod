@@ -58,7 +58,7 @@ public class Initializer implements ClientModInitializer {
         LOGGER.info("Advanced Culling: " + CONFIG.advCulling);
         LOGGER.info("Indirect Draw: " + CONFIG.indirectDraw);
         LOGGER.info("Low VRAM Mode: " + CONFIG.perRenderTypeAreaBuffers);
-        LOGGER.info("Fast Leaves Fix: " + CONFIG.fastLeavesFix);
+        LOGGER.info("Unique Opaque Layer: " + CONFIG.uniqueOpaqueLayer);
         LOGGER.info("Entity Culling: " + CONFIG.entityCulling);
         LOGGER.info("Animations: " + CONFIG.animations);
         LOGGER.info("Render Sky: " + CONFIG.renderSky);
