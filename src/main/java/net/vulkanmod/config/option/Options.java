@@ -245,13 +245,6 @@ public abstract class Options {
                                     default -> Component.translatable("vulkanmod.options.unknown");
                                 })
                                 .setTooltip(Component.translatable("vulkanmod.options.ao.subBlock.tooltip")),
-                        new SwitchOption(Component.translatable("vulkanmod.options.fastLeavesFix"),
-                                value -> {
-                                    config.fastLeavesFix = value;
-                                    minecraft.levelRenderer.allChanged();
-                                },
-                                () -> config.fastLeavesFix)
-                                .setTooltip(Component.translatable("vulkanmod.options.fastLeavesFix.tooltip")),
                         new RangeOption(Component.translatable("options.biomeBlendRadius"),
                                 0, 7, 1,
                                 value -> {
@@ -392,6 +385,13 @@ public abstract class Options {
                                 value -> config.entityCulling = value,
                                 () -> config.entityCulling)
                                 .setTooltip(Component.translatable("vulkanmod.options.entityCulling.tooltip")),
+                        new SwitchOption(Component.translatable("vulkanmod.options.uniqueOpaqueLayer"),
+                                value -> {
+                                    config.uniqueOpaqueLayer = value;
+                                    minecraft.levelRenderer.allChanged();
+                                },
+                                () -> config.uniqueOpaqueLayer)
+                                .setTooltip(Component.translatable("vulkanmod.options.uniqueOpaqueLayer.tooltip")),
                         new SwitchOption(Component.translatable("vulkanmod.options.indirectDraw"),
                                 value -> config.indirectDraw = value,
                                 () -> config.indirectDraw)
