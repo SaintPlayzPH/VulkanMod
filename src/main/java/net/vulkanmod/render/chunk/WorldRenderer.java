@@ -312,7 +312,7 @@ public class WorldRenderer {
         VRenderSystem.setPrimitiveTopologyGL(GL11.GL_TRIANGLES);
 
         int currentFrame = Renderer.getCurrentFrame();
-        Set<TerrainRenderType> allowedRenderTypes = !Initializer.CONFIG.fastLeavesFix ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
+        Set<TerrainRenderType> allowedRenderTypes = Initializer.CONFIG.uniqueOpaqueLayer ? TerrainRenderType.COMPACT_RENDER_TYPES : TerrainRenderType.SEMI_COMPACT_RENDER_TYPES;
         if (allowedRenderTypes.contains(terrainRenderType)) {
             if (depthWrite) {
                 VRenderSystem.depthMask(!isTranslucent);
