@@ -2,7 +2,6 @@ package net.vulkanmod.render;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderType;
-import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.build.thread.ThreadBuilderPack;
 import net.vulkanmod.render.vertex.CustomVertexFormat;
 import net.vulkanmod.render.vertex.TerrainRenderType;
@@ -34,14 +33,7 @@ public abstract class PipelineManager {
     }
 
     public static void setDefaultShader() {
-        setShaderGetter(renderType ->
-            switch (renderType) {
-                case SOLID, TRANSLUCENT, TRIPWIRE -> terrainShaderEarlyZ;
-                case CUTOUT_MIPPED -> Initializer.CONFIG.fastLeavesFix ? terrainShaderEarlyZ : terrainShader;
-                case CUTOUT -> terrainShader;
-                default -> throw new IllegalArgumentException("Invalid render type: " + renderType);
-            }
-        );
+        setShaderGetter(renderType -> renderType == TerrainRenderType.TRANSLUCENT ? terrainShaderEarlyZ : terrainShader);
     }
 
     private static void createBasicPipelines() {
@@ -81,9 +73,7 @@ public abstract class PipelineManager {
         return terrainShaderEarlyZ;
     }
 
-    public static GraphicsPipeline getFastBlitPipeline() {
-        return fastBlitPipeline;
-    }
+    public static GraphicsPipeline getFastBlitPipeline() { return fastBlitPipeline; }
 
     public static void destroyPipelines() {
         terrainShaderEarlyZ.cleanUp();
