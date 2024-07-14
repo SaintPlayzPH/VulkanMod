@@ -5,8 +5,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.GrassBlock;
-import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -79,7 +77,6 @@ public class BuildTask extends ChunkTask {
 
         BlockPos startBlockPos = new BlockPos(section.xOffset(), section.yOffset(), section.zOffset()).immutable();
         VisGraph visGraph = new VisGraph();
-        final boolean a = Minecraft.useFancyGraphics();
 
         if (this.region == null) {
             compileResult.visibilitySet = visGraph.resolve();
@@ -133,13 +130,6 @@ public class BuildTask extends ChunkTask {
                     if (blockState.getRenderShape() == RenderShape.MODEL) {
                         renderType = TerrainRenderType.get(ItemBlockRenderTypes.getChunkRenderType(blockState));
 
-                        if(Initializer.CONFIG.fastLeavesFix) {
-                            if (blockState.getBlock() instanceof LeavesBlock)
-                                renderType = a ? TerrainRenderType.CUTOUT : TerrainRenderType.CUTOUT_MIPPED;
-                            else if(blockState.getBlock() instanceof GrassBlock)
-                                renderType = TerrainRenderType.CUTOUT;
-                        }
-
                         bufferBuilder = getBufferBuilder(bufferBuilders, renderType);
                         bufferBuilder.setBlockAttributes(blockState);
 
@@ -183,18 +173,20 @@ public class BuildTask extends ChunkTask {
     }
 
     private TerrainRenderType compactRenderTypes(TerrainRenderType renderType) {
-        if (!Initializer.CONFIG.fastLeavesFix) {
-            return switch (renderType) {
-                case SOLID, CUTOUT_MIPPED, CUTOUT -> TerrainRenderType.CUTOUT_MIPPED;
+        if (Initializer.CONFIG.uniqueOpaqueLayer) {
+            renderType = switch (renderType) {
+                case SOLID, CUTOUT, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
                 case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
             };
         } else {
-            return switch (renderType) {
+            renderType = switch (renderType) {
                 case SOLID, CUTOUT_MIPPED -> TerrainRenderType.CUTOUT_MIPPED;
                 case CUTOUT -> TerrainRenderType.CUTOUT;
                 case TRANSLUCENT, TRIPWIRE -> TerrainRenderType.TRANSLUCENT;
             };
         }
+
+        return renderType;
     }
 
     private <E extends BlockEntity> void handleBlockEntity(CompileResult compileResult, E blockEntity) {
