@@ -1,6 +1,7 @@
 package net.vulkanmod.vulkan.queue;
 
 import net.vulkanmod.Initializer;
+import net.vulkanmod.vulkan.Vulkan;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
@@ -9,6 +10,7 @@ import java.nio.IntBuffer;
 import java.util.stream.IntStream;
 
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class QueueFamilyIndices {
@@ -43,18 +45,17 @@ public class QueueFamilyIndices {
 
                 if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0) {
                     graphicsFamily = i;
-                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
-                        presentFamily = i;
-                    }
                 }
 
-                if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0
-                        && (queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0) {
-                    transferFamily = i;
-                }
-
-                if (presentFamily == VK_QUEUE_FAMILY_IGNORED && (queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
+                IntBuffer presentSupport = stack.ints(VK_FALSE);
+                vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
+ 
+                if (presentSupport.get(0) == VK_TRUE) {
                     presentFamily = i;
+                }
+
+                if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0 && (queueFlags & (VK_QUEUE_COMPUTE_BIT | VK_QUEUE_GRAPHICS_BIT)) == 0) {
+                    transferFamily = i;
                 }
 
                 if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
@@ -85,6 +86,14 @@ public class QueueFamilyIndices {
                     transferFamily = fallbackCompute;
                 } else {
                     transferFamily = graphicsFamily;
+                }
+            }
+
+            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                if (fallbackCompute != VK_QUEUE_FAMILY_IGNORED) {
+                    presentFamily = fallbackCompute;
+                } else {
+                    presentFamily = graphicsFamily;
                 }
             }
 
