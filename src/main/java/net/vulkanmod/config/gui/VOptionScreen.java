@@ -34,6 +34,7 @@ public class VOptionScreen extends Screen {
     private int tooltipY;
     private int tooltipWidth;
 
+    private VButtonWidget testButton;
     private VButtonWidget supportButton;
 
     private VButtonWidget doneButton;
