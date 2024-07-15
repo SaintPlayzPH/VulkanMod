@@ -95,13 +95,13 @@ public class QueueFamilyIndices {
                 }
             }
 
-            //if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-            //    if (fallbackCompute != VK_QUEUE_FAMILY_IGNORED) {
-            //        presentFamily = fallbackCompute;
-            //    } else {
-            //        presentFamily = graphicsFamily;
-            //    }
-            //}
+            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                if (fallbackCompute != VK_QUEUE_FAMILY_IGNORED) {
+                    presentFamily = fallbackCompute;
+                } else {
+                    presentFamily = graphicsFamily;
+                }
+            }
 
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
 
