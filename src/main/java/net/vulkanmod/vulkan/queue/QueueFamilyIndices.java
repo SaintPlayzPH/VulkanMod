@@ -30,7 +30,6 @@ public class QueueFamilyIndices {
 
             if (queueFamilyCount.get(0) == 1) {
                 transferFamily = presentFamily = graphicsFamily = 0;
-                Initializer.LOGGER.info("Found single queue family. All queues supported.");
                 return true;
             }
 
@@ -51,7 +50,6 @@ public class QueueFamilyIndices {
                 vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
  
                 if (presentSupport.get(0) == VK_TRUE) {
-                    Initializer.LOGGER.info("Supports presentation, using it.");
                     presentFamily = i;
                 }
 
@@ -81,7 +79,6 @@ public class QueueFamilyIndices {
                     vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
 
                     if (presentSupport.get(0) == VK_TRUE) {
-                        Initializer.LOGGER.info("Supports presentation, using it.");
                         presentFamily = i;
                     }
                 }
@@ -98,13 +95,13 @@ public class QueueFamilyIndices {
                 }
             }
 
-            if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-                if (fallbackCompute != VK_QUEUE_FAMILY_IGNORED) {
-                    presentFamily = fallbackCompute;
-                } else {
-                    presentFamily = graphicsFamily;
-                }
-            }
+            //if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+            //    if (fallbackCompute != VK_QUEUE_FAMILY_IGNORED) {
+            //        presentFamily = fallbackCompute;
+            //    } else {
+            //        presentFamily = graphicsFamily;
+            //    }
+            //}
 
             hasDedicatedTransferQueue = graphicsFamily != transferFamily;
 
