@@ -18,7 +18,7 @@ import static org.lwjgl.vulkan.VK10.*;
 public enum Queue {
     GraphicsQueue(QueueFamilyIndices.graphicsFamily, true, 0),
     TransferQueue(QueueFamilyIndices.transferFamily, true, 0),
-    PresentQueue(QueueFamilyIndices.presentFamily, false, 0);
+    PresentQueue(QueueFamilyIndices.presentFamily, true, 0);
 
     private CommandPool.CommandBuffer currentCmdBuffer;
     private final CommandPool commandPool;
