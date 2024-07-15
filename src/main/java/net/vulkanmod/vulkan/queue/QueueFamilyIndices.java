@@ -51,6 +51,7 @@ public class QueueFamilyIndices {
                 vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
  
                 if (presentSupport.get(0) == VK_TRUE) {
+                    Initializer.LOGGER.info("Supports presentation, using it.");
                     presentFamily = i;
                 }
 
