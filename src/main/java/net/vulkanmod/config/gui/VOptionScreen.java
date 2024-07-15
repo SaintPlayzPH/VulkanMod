@@ -178,16 +178,16 @@ public class VOptionScreen extends Screen {
                 button -> this.applyOptions()
         );
 
-        buttonWidth = minecraft.font.width(Component.translatable("Test")) + 10;
-        x0 = (x0 - buttonWidth - 6);
+        buttonWidth = minecraft.font.width(Component.translatable("Modified by §eShadowMC69§r")) + 10;
+        x0 = (this.width - buttonWidth - rightMargin);
         this.testButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
-                Component.translatable("Test"),
-                button -> Util.getPlatform().openUri("https://ko-fi.com/xcollateral")
+                Component.translatable("Modified by §eShadowMC69§r"),
+                button -> Util.getPlatform().openUri("https://youtube.com/channel/UCdoN1krgnydcyzqgREjfDzQ")
         );
         buttonWidth = minecraft.font.width(Component.translatable("vulkanmod.options.buttons.kofi")) + 10;
-        x0 = (this.width - buttonWidth - rightMargin);
+        x0 = (x0 - buttonWidth - 6);
         this.supportButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
