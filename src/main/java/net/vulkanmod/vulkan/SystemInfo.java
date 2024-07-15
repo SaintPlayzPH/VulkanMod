@@ -18,10 +18,10 @@ public class SystemInfo {
 
     public static String getProcessorNameForAndroid() {
         try (BufferedReader br = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
-            // Attempt to find processor name from "Hardware" field
-            String processorName = br.lines()
+            // Attempt to find processor name from "Hardware", "model name", or "Processor" fields
+                String processorName = br.lines()
                     .map(String::trim)
-                    .filter(line -> line.startsWith("Hardware"))
+                    .filter(line -> line.startsWith("Hardware") || line.startsWith("model name") || line.startsWith("Processor"))
                     .map(line -> {
                         String[] parts = line.split(":\\s+", 2);
                         if (parts.length == 2) {
@@ -31,35 +31,15 @@ public class SystemInfo {
                     })
                     .filter(Objects::nonNull)
                     .findFirst()
-                    .orElseGet(() -> {
-                        // If "Hardware" field doesn't work, try "model name" field
-                        try (BufferedReader innerBr = new BufferedReader(new FileReader("/proc/cpuinfo"))) {
-                            return innerBr.lines()
-                                    .map(String::trim)
-                                    .filter(line -> line.startsWith("model name"))
-                                    .map(line -> {
-                                        String[] parts = line.split(":\\s+", 2);
-                                        if (parts.length == 2) {
-                                            return parts[1].trim();
-                                        }
-                                        return null;
-                                    })
-                                    .filter(Objects::nonNull)
-                                    .findFirst()
-                                    .orElse("Unknown");
-                        } catch (IOException e) {
-                            Initializer.LOGGER.error("Error reading /proc/cpuinfo for model name", e);
-                            return "Unknown";
-                        }
-                    });
+                    .orElse("Unknown");
 
             if ("Unknown".equals(processorName)) {
-                Initializer.LOGGER.warn("Unable to determine SoC name.");
+                Initializer.LOGGER.warn("Unable to determine processor name");
             }
 
             return processorName;
         } catch (IOException e) {
-            Initializer.LOGGER.error("Error reading /proc/cpuinfo.", e);
+            Initializer.LOGGER.error("Error reading /proc/cpuinfo", e);
             return "Unknown";
         }
     }
