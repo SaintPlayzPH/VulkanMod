@@ -179,7 +179,7 @@ public class VOptionScreen extends Screen {
 
         buttonWidth = minecraft.font.width(Component.translatable("Test")) + 10;
         x0 = (x0 - buttonWidth - 6);
-        this.supportButton = new VButtonWidget(
+        this.testButton = new VButtonWidget(
                 x0, 6,
                 buttonWidth, buttonHeight,
                 Component.translatable("Test"),
@@ -197,10 +197,12 @@ public class VOptionScreen extends Screen {
         this.buttons.add(this.applyButton);
         this.buttons.add(this.doneButton);
         this.buttons.add(this.supportButton);
+        this.buttons.add(this.testButton);
 
         this.addWidget(this.applyButton);
         this.addWidget(this.doneButton);
         this.addWidget(this.supportButton);
+        this.addWidget(this.testButton);
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
