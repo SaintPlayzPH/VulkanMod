@@ -1,6 +1,7 @@
 package net.vulkanmod.vulkan.device;
 
 import net.vulkanmod.Initializer;
+import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -76,7 +77,7 @@ public class DeviceRAMInfo {
     }
 
     public static void getAllMemoryInfo() {
-        if (isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
+        if (AndroidDeviceChecker.isRunningOnCompatDevice() && Initializer.CONFIG.showDeviceRAM) {
             try (BufferedReader br = new BufferedReader(new FileReader("/proc/meminfo"))) {
                 String line;
                 lock.lock();
@@ -219,11 +220,6 @@ public class DeviceRAMInfo {
 
     private static long extractMemoryValue(String memoryLine) {
         return Long.parseLong(memoryLine.split("\\s+")[1]);
-    }
-
-    private static boolean isRunningOnCompatDevice() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        return osName.contains("linux") || osName.contains("android");
     }
 
     public static String getAvailableRAMWarn() {
