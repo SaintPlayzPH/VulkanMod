@@ -8,9 +8,14 @@ public class IndexBuffer extends Buffer {
 
     public IndexType indexType;
     
+    public IndexBuffer(int size, MemoryType type) {
+        this(size, type, IndexType.SHORT);
+    }
+
     public IndexBuffer(int size, MemoryType type, IndexType indexType) {
         super(VK_BUFFER_USAGE_INDEX_BUFFER_BIT, type);
         this.indexType = indexType;
+
         this.createBuffer(size);
     }
 
