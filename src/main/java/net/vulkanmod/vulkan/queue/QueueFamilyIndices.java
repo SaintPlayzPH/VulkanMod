@@ -77,6 +77,14 @@ public class QueueFamilyIndices {
                     }
                 }
 
+                if (presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                    vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
+
+                    if (presentSupport.get(0) == VK_TRUE) {
+                        Initializer.LOGGER.info("Supports presentation, using it.");
+                        presentFamily = i;
+                    }
+                }
                 if (isComplete()) break;
             }
 
