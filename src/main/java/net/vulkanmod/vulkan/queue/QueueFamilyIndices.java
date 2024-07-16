@@ -61,17 +61,11 @@ public class QueueFamilyIndices {
                     if (fallbackTransfer == VK_QUEUE_FAMILY_IGNORED) {
                         fallbackTransfer = i;
                     }
-                    if ((queueFlags & VK_QUEUE_COMPUTE_BIT) == 0) {
-                        transferFamily = i;
-                    }
                 }
 
                 if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0) {
                     if (fallbackCompute == VK_QUEUE_FAMILY_IGNORED) {
                         fallbackCompute = i;
-                    }
-                    if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0) {
-                        transferFamily = i;
                     }
                 }
 
