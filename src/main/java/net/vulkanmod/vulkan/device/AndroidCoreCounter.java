@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import static net.vulkanmod.Initializer.LOGGER;
+
 public class AndroidCoreCounter {
 
     public static final String cpuCoreCount;
@@ -19,7 +21,7 @@ public class AndroidCoreCounter {
                     .filter(line -> line.startsWith("processor"))
                     .count());
         } catch (IOException e) {
-            Initializer.LOGGER.error("Can't obtain CPU core count from /proc/cpuinfo!", e);
+            LOGGER.error("Can't obtain CPU core count from /proc/cpuinfo!", e);
             return "";
         }
     }
