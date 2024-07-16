@@ -7,6 +7,7 @@ import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.AndroidCoreCounter;
 import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
@@ -68,7 +69,7 @@ public abstract class DebugScreenOverlayM {
         strings.add("DeviceMemory: " + MemoryType.GPU_MEM.usedBytes() + "/" + MemoryType.GPU_MEM.maxSize() + "MB");
         strings.add("");
         strings.add("VulkanMod " + getVersion());
-        strings.add("CPU: " + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable ? " (SoC)" : ""));
+        strings.add("CPU: " + (isCompat && isPojav && isCPUInfoAvailable) ? AndroidCoreCounter.cpuCoreCount : "" + SystemInfo.cpuInfo + (isCompat && isPojav && isCPUInfoAvailable ? " (SoC)" : ""));
         strings.add("GPU: " + device.deviceName);
         strings.add("Driver: " + device.driverVersion);
         strings.add("Vulkan: " + device.vkDriverVersion);
