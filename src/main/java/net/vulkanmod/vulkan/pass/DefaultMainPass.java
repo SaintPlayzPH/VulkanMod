@@ -4,7 +4,9 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.framebuffer.*;
+import net.vulkanmod.vulkan.framebuffer.Framebuffer;
+import net.vulkanmod.vulkan.framebuffer.RenderPass;
+import net.vulkanmod.vulkan.framebuffer.SwapChain;
 import net.vulkanmod.vulkan.texture.VTextureSelector;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import org.lwjgl.system.MemoryStack;
@@ -21,12 +23,14 @@ public class DefaultMainPass implements MainPass {
         return new DefaultMainPass();
     }
 
+    private RenderTarget mainTarget;
     private final Framebuffer mainFramebuffer;
 
     private RenderPass mainRenderPass;
     private RenderPass auxRenderPass;
 
     DefaultMainPass() {
+        this.mainTarget = Minecraft.getInstance().getMainRenderTarget();
         this.mainFramebuffer = Vulkan.getSwapChain();
 
         createRenderPasses();
@@ -34,15 +38,17 @@ public class DefaultMainPass implements MainPass {
 
     private void createRenderPasses() {
         RenderPass.Builder builder = RenderPass.builder(this.mainFramebuffer);
-        builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
-        builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_DONT_CARE, VK_ATTACHMENT_STORE_OP_STORE);
+        builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+        builder.getColorAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
+        builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_CLEAR, VK_ATTACHMENT_STORE_OP_STORE);
+
         this.mainRenderPass = builder.build();
 
         // Create an auxiliary RenderPass needed in case of main target rebinding
         builder = RenderPass.builder(this.mainFramebuffer);
         builder.getColorAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_STORE_OP_STORE);
         builder.getDepthAttachmentInfo().setOps(VK_ATTACHMENT_LOAD_OP_LOAD, VK_ATTACHMENT_STORE_OP_STORE);
-        builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+        builder.getColorAttachmentInfo().setFinalLayout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
         this.auxRenderPass = builder.build();
     }
@@ -50,6 +56,9 @@ public class DefaultMainPass implements MainPass {
     @Override
     public void begin(VkCommandBuffer commandBuffer, MemoryStack stack) {
         SwapChain framebuffer = Vulkan.getSwapChain();
+
+        VulkanImage colorAttachment = framebuffer.getColorAttachment();
+        colorAttachment.transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
         framebuffer.beginRenderPass(commandBuffer, this.mainRenderPass, stack);
 
@@ -63,6 +72,11 @@ public class DefaultMainPass implements MainPass {
     @Override
     public void end(VkCommandBuffer commandBuffer) {
         Renderer.getInstance().endRenderPass(commandBuffer);
+
+        try(MemoryStack stack = MemoryStack.stackPush()) {
+            SwapChain framebuffer = Vulkan.getSwapChain();
+            framebuffer.getColorAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+        }
 
         int result = vkEndCommandBuffer(commandBuffer);
         if(result != VK_SUCCESS) {
