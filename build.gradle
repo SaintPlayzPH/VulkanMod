@@ -1,6 +1,6 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
-	id 'maven-publish'
+    id 'fabric-loom' version '1.5-SNAPSHOT'
+    id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -10,7 +10,8 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-project.ext.lwjglVersion = "3.3.3"
+project.ext.lwjglVersion = "3.3.2"
+project.ext.lwjglVersionAlt = "3.3.3"
 project.ext.jomlVersion = "1.10.4"
 project.ext.winNatives = "natives-windows"
 project.ext.linuxNatives = "natives-linux"
@@ -18,27 +19,41 @@ project.ext.macosNatives = "natives-macos"
 project.ext.macosArmNatives = "natives-macos-arm64"
 
 dependencies {
-    include(implementation("org.lwjgl:lwjgl-vulkan:$lwjglVersion"))
-    include(implementation("org.lwjgl:lwjgl-vma:$lwjglVersion"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$winNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$macosArmNatives"))
-    include(implementation("org.lwjgl:lwjgl-shaderc:$lwjglVersion"))
-    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$winNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$macosArmNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosNatives"))
-    include(runtimeOnly("org.lwjgl:lwjgl-vulkan:$lwjglVersion:$macosArmNatives"))
-}
+    // LWJGL 3.3.2
+    configurations.create('lwjgl322')
+    configurations.create('lwjglRuntime322')
+    
+    include(lwjgl322("org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}"))
+    include(lwjgl322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.winNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.linuxNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.macosNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.macosArmNatives}"))
+    include(lwjgl322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.winNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.linuxNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.macosNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.macosArmNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}:${project.macosNatives}"))
+    include(lwjglRuntime322("org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}:${project.macosArmNatives}"))
 
-repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+    // LWJGL 3.3.3
+    configurations.create('lwjgl333')
+    configurations.create('lwjglRuntime333')
+    
+    include(lwjgl333("org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}"))
+    include(lwjgl333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.winNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.linuxNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.macosNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.macosArmNatives}"))
+    include(lwjgl333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.winNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.linuxNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.macosNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.macosArmNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}:${project.macosNatives}"))
+    include(lwjglRuntime333("org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}:${project.macosArmNatives}"))
 }
 
 dependencies {
@@ -64,43 +79,55 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+    inputs.property "version", project.version
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+    it.options.release = 17
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
+    accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
 }
 
 java {
 }
 
-jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
+task buildLwjgl32(type: Jar) {
+    from sourceSets.main.output
+    configurations.lwjgl322.forEach { file -> from(zipTree(file)) }
+    configurations.lwjglRuntime322.forEach { file -> from(zipTree(file)) }
+    archiveBaseName = "${archivesBaseName}-lwjgl-3.3.2"
+    archiveVersion = version
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
+task buildLwjgl33(type: Jar) {
+    from sourceSets.main.output
+    configurations.lwjgl333.forEach { file -> from(zipTree(file)) }
+    configurations.lwjglRuntime333.forEach { file -> from(zipTree(file)) }
+    archiveBaseName = "${archivesBaseName}-lwjgl-3.3.3"
+    archiveVersion = version
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+publishing {
+    publications {
+        lwjgl32(MavenPublication) {
+            artifact tasks.buildLwjgl32
+        }
+        lwjgl33(MavenPublication) {
+            artifact tasks.buildLwjgl33
+        }
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
 }
