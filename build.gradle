@@ -110,6 +110,9 @@ task buildLwjgl322(type: Jar) {
     archiveBaseName = "${archivesBaseName}-lwjgl-3.3.2"
     archiveVersion = version
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    doLast {
+        println "Built LWJGL 3.3.2 JAR at: ${archiveFile.get().asFile}"
+    }
 }
 
 task buildLwjgl333(type: Jar) {
@@ -119,6 +122,9 @@ task buildLwjgl333(type: Jar) {
     archiveBaseName = "${archivesBaseName}-lwjgl-3.3.3"
     archiveVersion = version
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    doLast {
+        println "Built LWJGL 3.3.3 JAR at: ${archiveFile.get().asFile}"
+    }
 }
 
 publishing {
@@ -136,4 +142,8 @@ jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
     }
+}
+
+tasks.build {
+    dependsOn buildLwjgl322, buildLwjgl333
 }
