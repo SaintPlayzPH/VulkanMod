@@ -35,10 +35,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lwjgl-3.3.2-artifacts
-          path: build/libs/*-lwjgl-3.3.2.jar
+          path: build/libs/
 
       - name: Capture build artifacts for LWJGL 3.3.3
         uses: actions/upload-artifact@v4
         with:
           name: lwjgl-3.3.3-artifacts
-          path: build/libs/*-lwjgl-3.3.3.jar
+          path: build/libs/
