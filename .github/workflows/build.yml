@@ -29,10 +29,10 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with LWJGL 3.3.2
-        run: ./gradlew buildLwjgl32
+        run: ./gradlew buildLwjgl322
 
       - name: Build with LWJGL 3.3.3
-        run: ./gradlew buildLwjgl33
+        run: ./gradlew buildLwjgl333
 
       - name: Capture build artifacts for LWJGL 3.3.2
         uses: actions/upload-artifact@v4
