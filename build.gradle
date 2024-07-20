@@ -18,64 +18,70 @@ project.ext.linuxNatives = "natives-linux"
 project.ext.macosNatives = "natives-macos"
 project.ext.macosArmNatives = "natives-macos-arm64"
 
-dependencies {
-    // LWJGL 3.3.2
-    configurations.create('lwjgl322')
-    configurations.create('lwjglRuntime322')
-    
-    include(lwjgl322("org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}"))
-    include(lwjgl322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.winNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.linuxNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.macosNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.macosArmNatives}"))
-    include(lwjgl322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.winNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.linuxNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.macosNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.macosArmNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}:${project.macosNatives}"))
-    include(lwjglRuntime322("org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}:${project.macosArmNatives}"))
-
-    // LWJGL 3.3.3
-    configurations.create('lwjgl333')
-    configurations.create('lwjglRuntime333')
-    
-    include(lwjgl333("org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}"))
-    include(lwjgl333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.winNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.linuxNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.macosNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.macosArmNatives}"))
-    include(lwjgl333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.winNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.linuxNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.macosNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.macosArmNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}:${project.macosNatives}"))
-    include(lwjglRuntime333("org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}:${project.macosArmNatives}"))
+// Separate configurations for LWJGL versions
+configurations {
+    lwjgl322
+    lwjglRuntime322
+    lwjgl333
+    lwjglRuntime333
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // LWJGL 3.3.2
+    implementation "org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}"
+    implementation "org.lwjgl:lwjgl-vma:${project.lwjglVersion}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.winNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.linuxNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.macosNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersion}:${project.macosArmNatives}"
+    implementation "org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.winNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.linuxNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.macosNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersion}:${project.macosArmNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}:${project.macosNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vulkan:${project.lwjglVersion}:${project.macosArmNatives}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // LWJGL 3.3.3
+    implementation "org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}"
+    implementation "org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.winNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.linuxNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.macosNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vma:${project.lwjglVersionAlt}:${project.macosArmNatives}"
+    implementation "org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.winNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.linuxNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.macosNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-shaderc:${project.lwjglVersionAlt}:${project.macosArmNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}:${project.macosNatives}"
+    runtimeOnly "org.lwjgl:lwjgl-vulkan:${project.lwjglVersionAlt}:${project.macosArmNatives}"
+}
 
-	// Needed in order to load mod namespace
-	ext.includeModule = { name ->
-		var module = fabricApi.module(name, project.fabric_version)
-		modImplementation(module)
-		include(module)
-	}
+repositories {
+    // Add repositories to retrieve artifacts from in here.
+}
 
-	includeModule("fabric-api-base")
-	includeModule("fabric-resource-loader-v0")
-	includeModule("fabric-rendering-fluids-v1")
-	includeModule("fabric-rendering-v1")
+dependencies {
+    // To change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Fabric API. This is technically optional, but you probably want it anyway.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    // Needed in order to load mod namespace
+    ext.includeModule = { name ->
+        def module = fabricApi.module(name, project.fabric_version)
+        modImplementation(module)
+        include(module)
+    }
+
+    includeModule("fabric-api-base")
+    includeModule("fabric-resource-loader-v0")
+    includeModule("fabric-rendering-fluids-v1")
+    includeModule("fabric-rendering-v1")
 }
 
 processResources {
@@ -97,7 +103,7 @@ loom {
 java {
 }
 
-task buildLwjgl32(type: Jar) {
+task buildLwjgl322(type: Jar) {
     from sourceSets.main.output
     configurations.lwjgl322.forEach { file -> from(zipTree(file)) }
     configurations.lwjglRuntime322.forEach { file -> from(zipTree(file)) }
@@ -106,7 +112,7 @@ task buildLwjgl32(type: Jar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-task buildLwjgl33(type: Jar) {
+task buildLwjgl333(type: Jar) {
     from sourceSets.main.output
     configurations.lwjgl333.forEach { file -> from(zipTree(file)) }
     configurations.lwjglRuntime333.forEach { file -> from(zipTree(file)) }
@@ -117,17 +123,17 @@ task buildLwjgl33(type: Jar) {
 
 publishing {
     publications {
-        lwjgl32(MavenPublication) {
-            artifact tasks.buildLwjgl32
+        lwjgl322(MavenPublication) {
+            artifact tasks.buildLwjgl322
         }
-        lwjgl33(MavenPublication) {
-            artifact tasks.buildLwjgl33
+        lwjgl333(MavenPublication) {
+            artifact tasks.buildLwjgl333
         }
     }
 }
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
+        rename { "${it}_${project.archivesBaseName}" }
     }
 }
