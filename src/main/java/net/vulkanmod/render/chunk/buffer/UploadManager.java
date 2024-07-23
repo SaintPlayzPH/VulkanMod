@@ -1,6 +1,5 @@
 package net.vulkanmod.render.chunk.buffer;
 
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.vulkanmod.vulkan.*;
 import net.vulkanmod.vulkan.memory.Buffer;
 import net.vulkanmod.vulkan.memory.StagingBuffer;
@@ -25,18 +24,19 @@ public class UploadManager {
 
     CommandPool.CommandBuffer commandBuffer;
 
-    LongOpenHashSet dstBuffers = new LongOpenHashSet();
-
     public void submitUploads() {
         if (this.commandBuffer == null)
             return;
 
         TransferQueue.submitCommands(this.commandBuffer);
+
+        Synchronization.INSTANCE.addCommandBuffer(this.commandBuffer);
+
+        this.commandBuffer = null;
     }
 
-    public void recordUpload(long bufferId, long dstOffset, long bufferSize, ByteBuffer src) {
-        if (this.commandBuffer == null)
-            this.commandBuffer = TransferQueue.beginCommands();
+    public void recordUpload(Buffer buffer, long dstOffset, long bufferSize, ByteBuffer src) {
+        beginCommands();
 
         VkCommandBuffer commandBuffer = this.commandBuffer.getHandle();
 
@@ -53,7 +53,7 @@ public class UploadManager {
             this.dstBuffers.clear();
         }
 
-        TransferQueue.uploadBufferCmd(commandBuffer, stagingBuffer.getId(), stagingBuffer.getOffset(), bufferId, dstOffset, bufferSize);
+        TransferQueue.uploadBufferCmd(commandBuffer, stagingBuffer.getId(), stagingBuffer.getOffset(), buffer.getId(), dstOffset, bufferSize);
     }
 
     public void copyBuffer(Buffer src, Buffer dst) {
@@ -72,20 +72,17 @@ public class UploadManager {
                 VK_PIPELINE_STAGE_TRANSFER_BIT,
                 VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-        this.dstBuffers.clear();
-        this.dstBuffers.add(dst.getId());
-
         TransferQueue.uploadBufferCmd(commandBuffer, src.getId(), srcOffset, dst.getId(), dstOffset, size);
     }
 
-    public void waitUploads() {
-        if (this.commandBuffer == null)
-            return;
+    public void syncUploads() {
+        submitUploads();
 
-        Synchronization.INSTANCE.addCommandBuffer(this.commandBuffer);
-
-        this.commandBuffer = null;
-        this.dstBuffers.clear();
+        Synchronization.INSTANCE.waitFences();
     }
 
+    private void beginCommands() {
+        if (this.commandBuffer == null)
+            this.commandBuffer = queue.beginCommands();
+    }
 }
