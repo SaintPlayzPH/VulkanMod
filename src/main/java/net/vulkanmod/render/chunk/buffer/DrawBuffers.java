@@ -60,7 +60,7 @@ public class DrawBuffers {
 
         if (!buffer.autoIndices) {
             if (this.indexBuffer == null)
-                this.indexBuffer = new AreaBuffer(AreaBuffer.Usage.INDEX, 786432, INDEX_SIZE);
+                this.indexBuffer = new AreaBuffer(AreaBuffer.Usage.INDEX, 60000, INDEX_SIZE);
 
             AreaBuffer.Segment segment = this.indexBuffer.upload(buffer.getIndexBuffer(), drawParameters.firstIndex, drawParameters);
             firstIndex = segment.offset / INDEX_SIZE;
@@ -75,8 +75,15 @@ public class DrawBuffers {
     }
 
     private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
+        int initialSize = switch (r) {
+            case SOLID -> 30000;
+            case CUTOUT -> 100000;
+            case CUTOUT_MIPPED -> 300000;
+            case TRANSLUCENT, TRIPWIRE -> 60000;
+        };
+
         return this.vertexBuffers.computeIfAbsent(
-            r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, r.initialSize, VERTEX_SIZE) : this.vertexBuffer);
+            r, t -> Initializer.CONFIG.perRenderTypeAreaBuffers ? new AreaBuffer(AreaBuffer.Usage.VERTEX, initialSize, VERTEX_SIZE) : this.vertexBuffer);
     }
 
     public AreaBuffer getAreaBuffer(TerrainRenderType r) {
@@ -204,8 +211,8 @@ public class DrawBuffers {
         int indexCount = 0, instanceCount = 1, firstIndex = -1, vertexOffset = -1, baseInstance;
 
         public void reset(ChunkArea chunkArea, TerrainRenderType r) {
-            int segmentOffset = vertexOffset * VERTEX_SIZE;
             if (chunkArea != null && chunkArea.getDrawBuffers().hasRenderType(r) && segmentOffset != -1) {
+                int segmentOffset = this.vertexOffset * VERTEX_SIZE;
                 chunkArea.getDrawBuffers().getAreaBuffer(r).setSegmentFree(segmentOffset);
             }
 
