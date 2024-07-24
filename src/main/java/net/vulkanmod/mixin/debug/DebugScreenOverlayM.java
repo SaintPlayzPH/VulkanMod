@@ -11,7 +11,7 @@ import net.vulkanmod.vulkan.device.AndroidCoreCounter;
 import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.device.DeviceRAMInfo;
-// import net.vulkanmod.vulkan.memory.MemoryType;
+import net.vulkanmod.vulkan.memory.MemoryManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
