@@ -7,7 +7,7 @@ import static org.lwjgl.vulkan.VK10.*;
 public class IndexBuffer extends Buffer {
 
     public IndexType indexType;
-    
+
     public IndexBuffer(int size, MemoryType type) {
         this(size, type, IndexType.SHORT);
     }
@@ -22,12 +22,13 @@ public class IndexBuffer extends Buffer {
     public void copyBuffer(ByteBuffer buffer) {
         int size = buffer.remaining();
 
-        if (size > this.getBufferSize() - this.getUsedBytes()) {
+        if(size > this.bufferSize - this.usedBytes) {
             throw new RuntimeException("Trying to write buffer beyond max size.");
-        } else {
-            this.getType().copyToBuffer(this, size, buffer);
-            setOffset(getUsedBytes());
-            setUsedBytes(getUsedBytes() + size);
+        }
+        else {
+            this.type.copyToBuffer(this, size, buffer);
+            offset = usedBytes;
+            usedBytes += size;
         }
     }
 
