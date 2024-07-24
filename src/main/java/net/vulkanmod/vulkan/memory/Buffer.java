@@ -1,9 +1,8 @@
 package net.vulkanmod.vulkan.memory;
 
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.system.MemoryUtil;
 
-public class Buffer {
+public abstract class Buffer {
     protected long id;
     protected long allocation;
 
@@ -16,77 +15,45 @@ public class Buffer {
     protected PointerBuffer data;
 
     protected Buffer(int usage, MemoryType type) {
+        //TODO: check usage
         this.usage = usage;
         this.type = type;
-        this.data = type.mappable() ? MemoryUtil.memAllocPointer(1) : null;
+
     }
 
     protected void createBuffer(int bufferSize) {
         this.type.createBuffer(this, bufferSize);
 
-        if (this.type.mappable()) {
-            MemoryManager.getInstance().Map(this.allocation, this.data);
+        if(this.type.mappable()) {
+            this.data = MemoryManager.getInstance().Map(this.allocation);
         }
     }
 
     public void freeBuffer() {
-        this.type.freeBuffer(this);
-        if (this.type.mappable() && this.data != null) {
-            MemoryUtil.memFree(this.data);
-        }
+        MemoryManager.getInstance().addToFreeable(this);
     }
 
-    public void reset() {
-        usedBytes = 0;
-    }
+    public void reset() { usedBytes = 0; }
 
-    public long getAllocation() {
-        return allocation;
-    }
+    public long getAllocation() { return allocation; }
 
-    public int getUsedBytes() {
-        return usedBytes;
-    }
+    public long getUsedBytes() { return usedBytes; }
 
-    public int getOffset() {
-        return offset;
-    }
+    public long getOffset() { return offset; }
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
-    public int getBufferSize() {
-        return bufferSize;
-    }
+    public int getBufferSize() { return bufferSize; }
 
-    public MemoryType getType() {
-        return type;
-    }
+    protected void setBufferSize(int size) { this.bufferSize = size; }
 
-    protected void setBufferSize(int size) {
-        this.bufferSize = size;
-    }
+    protected void setId(long id) { this.id = id; }
 
-    protected void setId(long id) {
-        this.id = id;
-    }
+    protected void setAllocation(long allocation) {this.allocation = allocation; }
 
-    protected void setAllocation(long allocation) {
-        this.allocation = allocation;
-    }
+    public BufferInfo getBufferInfo() { return new BufferInfo(this.id, this.allocation, this.bufferSize, this.type.getType()); }
 
-    public void setUsedBytes(int usedBytes) {
-        this.usedBytes = usedBytes;
-    }
+    public record BufferInfo(long id, long allocation, long bufferSize, MemoryType.Type type) {
 
-    public void setOffset(int offset) {
-        this.offset = offset;
     }
-
-    public BufferInfo getBufferInfo() {
-        return new BufferInfo(this.id, this.allocation, this.bufferSize);
-    }
-
-    public record BufferInfo(long id, long allocation, int bufferSize) {}
 }
