@@ -6,41 +6,35 @@ import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 
 public class VertexBuffer extends Buffer {
 
+    public VertexBuffer(int size) {
+        this(size, MemoryTypes.HOST_MEM);
+    }
+
     public VertexBuffer(int size, MemoryType type) {
         super(VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, type);
-        createBuffer(size);
+        this.createBuffer(size);
+
     }
 
     public void copyToVertexBuffer(long vertexSize, long vertexCount, ByteBuffer byteBuffer) {
-        int bufferSize = calculateBufferSize(vertexSize, vertexCount);
+        int bufferSize = (int) (vertexSize * vertexCount);
+//        long bufferSize = byteBuffer.limit();
 
-        if (needsResize(bufferSize)) {
-            resizeBuffer(calculateNewSize(bufferSize));
+        if(bufferSize > this.bufferSize - this.usedBytes) {
+            resizeBuffer((this.bufferSize + bufferSize) * 2);
         }
 
-        type.copyToBuffer(this, bufferSize, byteBuffer);
-        updateBufferUsage(bufferSize);
-    }
+        this.type.copyToBuffer(this, bufferSize, byteBuffer);
+        offset = usedBytes;
+        usedBytes += bufferSize;
 
-    private int calculateBufferSize(long vertexSize, long vertexCount) {
-        return (int) (vertexSize * vertexCount);
-    }
-
-    private boolean needsResize(int bufferSize) {
-        return bufferSize > getBufferSize() - getUsedBytes();
-    }
-
-    private int calculateNewSize(int bufferSize) {
-        return (getBufferSize() + bufferSize) * 2;
     }
 
     private void resizeBuffer(int newSize) {
-        type.freeBuffer(this);
-        createBuffer(newSize);
+        MemoryManager.getInstance().addToFreeable(this);
+        this.createBuffer(newSize);
+
+//        System.out.println("resized vertexBuffer to: " + newSize);
     }
 
-    private void updateBufferUsage(int bufferSize) {
-        setOffset(getUsedBytes());
-        setUsedBytes(getUsedBytes() + bufferSize);
-    }
 }
