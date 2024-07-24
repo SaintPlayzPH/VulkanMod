@@ -5,14 +5,18 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.buffer.AreaBuffer;
 import net.vulkanmod.vulkan.Vulkan;
+import net.vulkanmod.vulkan.device.DeviceManager;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import net.vulkanmod.vulkan.util.Pair;
+import net.vulkanmod.vulkan.util.VkResult;
 import org.apache.commons.lang3.Validate;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.vma.VmaAllocationCreateInfo;
-import org.lwjgl.vulkan.*;
+import org.lwjgl.util.vma.VmaBudget;
+import org.lwjgl.vulkan.VkBufferCreateInfo;
+import org.lwjgl.vulkan.VkImageCreateInfo;
 
 import java.nio.LongBuffer;
 import java.util.List;
@@ -24,6 +28,7 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class MemoryManager {
     private static final boolean DEBUG = false;
+    public static final long BYTES_IN_MB = 1024 * 1024;
 
     private static MemoryManager INSTANCE;
     private static final long ALLOCATOR = Vulkan.getAllocator();
@@ -32,6 +37,10 @@ public class MemoryManager {
     private static final Long2ReferenceOpenHashMap<VulkanImage> images = new Long2ReferenceOpenHashMap<>();
 
     static int Frames;
+
+    private static long deviceMemory = 0;
+    private static long nativeMemory = 0;
+
     private int currentFrame = 0;
 
     private ObjectArrayList<Buffer.BufferInfo>[] freeableBuffers = new ObjectArrayList[Frames];
@@ -54,7 +63,7 @@ public class MemoryManager {
     }
 
     MemoryManager() {
-        for(int i = 0; i < Frames; ++i) {
+        for (int i = 0; i < Frames; ++i) {
             this.freeableBuffers[i] = new ObjectArrayList<>();
             this.freeableImages[i] = new ObjectArrayList<>();
 
@@ -62,9 +71,9 @@ public class MemoryManager {
             this.segmentsToFree[i] = new ObjectArrayList<>();
         }
 
-        if(DEBUG) {
+        if (DEBUG) {
             this.stackTraces = new ObjectArrayList[Frames];
-            for(int i = 0; i < Frames; ++i) {
+            for (int i = 0; i < Frames; ++i) {
                 this.stackTraces[i] = new ObjectArrayList<>();
             }
         }
@@ -83,7 +92,7 @@ public class MemoryManager {
     }
 
     public void freeAllBuffers() {
-        for(int frame = 0; frame < Frames ; ++frame) {
+        for (int frame = 0; frame < Frames; ++frame) {
             this.freeBuffers(frame);
             this.doFrameOps(frame);
         }
@@ -93,45 +102,26 @@ public class MemoryManager {
     }
 
     public void createBuffer(long size, int usage, int properties, LongBuffer pBuffer, PointerBuffer pBufferMemory) {
-        try(MemoryStack stack = stackPush()) {
+        try (MemoryStack stack = stackPush()) {
 
-            VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.callocStack(stack);
+            VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.calloc(stack);
             bufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
             bufferInfo.size(size);
             bufferInfo.usage(usage);
 
-            VmaAllocationCreateInfo allocationInfo  = VmaAllocationCreateInfo.callocStack(stack);
+            VmaAllocationCreateInfo allocationInfo = VmaAllocationCreateInfo.calloc(stack);
             allocationInfo.requiredFlags(properties);
 
             int result = vmaCreateBuffer(ALLOCATOR, bufferInfo, allocationInfo, pBuffer, pBufferMemory, null);
-            if(result != VK_SUCCESS) {
-                throw new RuntimeException("Failed to create buffer: " + translateVulkanResult(result));
-            }
-        }
-    }
+            if (result != VK_SUCCESS) {
+                Initializer.LOGGER.info(String.format("Failed to create buffer with size: %.3f MB", ((float) size / BYTES_IN_MB)));
+                Initializer.LOGGER.info(String.format("Tracked Device Memory used: %d/%d MB", getAllocatedDeviceMemoryMB(), getDeviceMemoryMB()));
+                Initializer.LOGGER.info(getHeapStats());
 
-    private String translateVulkanResult(int result) {
-        return switch (result) {
-            case VK_SUCCESS -> "Command successfully completed";
-            case VK_NOT_READY -> "A fence or query has not yet completed";
-            case VK_TIMEOUT -> "A wait operation has not completed in the specified time";
-            case VK_EVENT_SET -> "An event is signaled";
-            case VK_EVENT_RESET -> "An event is unsignaled";
-            case VK_INCOMPLETE -> "A return array was too small for the result";
-            case VK_ERROR_OUT_OF_HOST_MEMORY -> "A host memory allocation has failed";
-            case VK_ERROR_OUT_OF_DEVICE_MEMORY -> "A device memory allocation has failed";
-            case VK_ERROR_INITIALIZATION_FAILED -> "Initialization of an object could not be completed for implementation-specific reasons";
-            case VK_ERROR_DEVICE_LOST -> "The logical or physical device has been lost";
-            case VK_ERROR_MEMORY_MAP_FAILED -> "Mapping of a memory object has failed";
-            case VK_ERROR_LAYER_NOT_PRESENT -> "A requested layer is not present or could not be loaded";
-            case VK_ERROR_TOO_MANY_OBJECTS -> "Too many objects of the type have already been created";
-            case VK_ERROR_INCOMPATIBLE_DRIVER -> "The requested version of Vulkan is not supported by the driver or is otherwise incompatible";
-            case VK_ERROR_FORMAT_NOT_SUPPORTED -> "A requested format is not supported on this device";
-            case VK_ERROR_FRAGMENTED_POOL -> "A pool allocation has failed due to fragmentation of the pool's memory";
-            case VK_ERROR_EXTENSION_NOT_PRESENT -> "A requested extension is not supported";
-            case VK_ERROR_FEATURE_NOT_PRESENT -> "A requested feature is not supported";
-            default -> "Unknown error";
-        };
+                throw new RuntimeException("Failed to create buffer: %s".formatted(VkResult.decode(result)));
+            }
+
+        }
     }
 
     public synchronized void createBuffer(Buffer buffer, int size, int usage, int properties) {
@@ -147,16 +137,22 @@ public class MemoryManager {
             buffer.setId(pBuffer.get(0));
             buffer.setAllocation(pAllocation.get(0));
 
+            if ((properties & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT) > 0) {
+                deviceMemory += size;
+            } else {
+                nativeMemory += size;
+            }
+
             buffers.putIfAbsent(buffer.getId(), buffer);
         }
     }
 
     public static synchronized void createImage(int width, int height, int mipLevels, int format, int tiling, int usage, int memProperties,
-                                   LongBuffer pTextureImage, PointerBuffer pTextureImageMemory) {
+                                                LongBuffer pTextureImage, PointerBuffer pTextureImageMemory) {
 
-        try(MemoryStack stack = stackPush()) {
+        try (MemoryStack stack = stackPush()) {
 
-            VkImageCreateInfo imageInfo = VkImageCreateInfo.callocStack(stack);
+            VkImageCreateInfo imageInfo = VkImageCreateInfo.calloc(stack);
             imageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
             imageInfo.imageType(VK_IMAGE_TYPE_2D);
             imageInfo.extent().width(width);
@@ -170,10 +166,10 @@ public class MemoryManager {
             imageInfo.usage(usage);
             imageInfo.samples(VK_SAMPLE_COUNT_1_BIT);
 //            imageInfo.sharingMode(VK_SHARING_MODE_CONCURRENT);
-            imageInfo.pQueueFamilyIndices(stack.ints(0,1));
-            imageInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
-            VmaAllocationCreateInfo allocationInfo  = VmaAllocationCreateInfo.callocStack(stack);
-            //allocationInfo.usage(VMA_MEMORY_USAGE_CPU_ONLY);
+            // TODO hardcoded queue family indices
+            imageInfo.pQueueFamilyIndices(stack.ints(0, 1));
+
+            VmaAllocationCreateInfo allocationInfo = VmaAllocationCreateInfo.calloc(stack);
             allocationInfo.requiredFlags(memProperties);
 
             vmaCreateImage(ALLOCATOR, imageInfo, allocationInfo, pTextureImage, pTextureImageMemory, null);
@@ -185,8 +181,8 @@ public class MemoryManager {
         images.putIfAbsent(image.getId(), image);
     }
 
-    public static void MapAndCopy(long allocation, Consumer<PointerBuffer> consumer){
-        try(MemoryStack stack = stackPush()) {
+    public static void MapAndCopy(long allocation, Consumer<PointerBuffer> consumer) {
+        try (MemoryStack stack = stackPush()) {
             PointerBuffer data = stack.mallocPointer(1);
 
             vmaMapMemory(ALLOCATOR, allocation, data);
@@ -195,9 +191,12 @@ public class MemoryManager {
         }
     }
 
-    public void Map(long allocation, PointerBuffer data) {
+    public PointerBuffer Map(long allocation) {
+        PointerBuffer data = MemoryUtil.memAllocPointer(1);
 
         vmaMapMemory(ALLOCATOR, allocation, data);
+
+        return data;
     }
 
     public static void freeBuffer(long buffer, long allocation) {
@@ -208,6 +207,12 @@ public class MemoryManager {
 
     private static void freeBuffer(Buffer.BufferInfo bufferInfo) {
         vmaDestroyBuffer(ALLOCATOR, bufferInfo.id(), bufferInfo.allocation());
+
+        if (bufferInfo.type() == MemoryType.Type.DEVICE_LOCAL) {
+            deviceMemory -= bufferInfo.bufferSize();
+        } else {
+            nativeMemory -= bufferInfo.bufferSize();
+        }
 
         buffers.remove(bufferInfo.id());
     }
@@ -225,7 +230,7 @@ public class MemoryManager {
 
         freeableBuffers[currentFrame].add(bufferInfo);
 
-        if(DEBUG)
+        if (DEBUG)
             stackTraces[currentFrame].add(new Throwable().getStackTrace());
     }
 
@@ -238,7 +243,7 @@ public class MemoryManager {
     }
 
     public void doFrameOps(int frame) {
-        for(Runnable runnable : this.frameOps[frame]) {
+        for (Runnable runnable : this.frameOps[frame]) {
             runnable.run();
         }
 
@@ -247,14 +252,14 @@ public class MemoryManager {
 
     private void freeBuffers(int frame) {
         List<Buffer.BufferInfo> bufferList = freeableBuffers[frame];
-        for(Buffer.BufferInfo bufferInfo : bufferList) {
+        for (Buffer.BufferInfo bufferInfo : bufferList) {
 
             freeBuffer(bufferInfo);
         }
 
         bufferList.clear();
 
-        if(DEBUG)
+        if (DEBUG)
             stackTraces[frame].clear();
 
         this.freeImages();
@@ -262,7 +267,7 @@ public class MemoryManager {
 
     private void freeImages() {
         List<VulkanImage> bufferList = freeableImages[currentFrame];
-        for(VulkanImage image : bufferList) {
+        for (VulkanImage image : bufferList) {
 
             image.doFree();
         }
@@ -271,14 +276,14 @@ public class MemoryManager {
     }
 
     private void checkBuffer(Buffer.BufferInfo bufferInfo) {
-        if(buffers.get(bufferInfo.id()) == null){
+        if (buffers.get(bufferInfo.id()) == null) {
             throw new RuntimeException("trying to free not present buffer");
         }
     }
 
     private void freeSegments(int frame) {
         var list = this.segmentsToFree[frame];
-        for(var pair : list) {
+        for (var pair : list) {
             pair.first.setSegmentFree(pair.second);
         }
 
@@ -287,5 +292,35 @@ public class MemoryManager {
 
     public void addToFreeSegment(AreaBuffer areaBuffer, int offset) {
         this.segmentsToFree[this.currentFrame].add(new Pair<>(areaBuffer, offset));
+    }
+
+    public int getNativeMemoryMB() {
+        return bytesInMb(nativeMemory);
+    }
+
+    public int getAllocatedDeviceMemoryMB() {
+        return bytesInMb(deviceMemory);
+    }
+
+    public int getDeviceMemoryMB() {
+        return bytesInMb(MemoryTypes.GPU_MEM.vkMemoryHeap.size());
+    }
+
+    int bytesInMb(long bytes) {
+        return (int) (bytes / BYTES_IN_MB);
+    }
+
+    public String getHeapStats() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            VmaBudget.Buffer vmaBudgets = VmaBudget.calloc(DeviceManager.memoryProperties.memoryHeapCount(), stack);
+
+            vmaGetHeapBudgets(ALLOCATOR, vmaBudgets);
+
+            VmaBudget vmaBudget = vmaBudgets.get(MemoryTypes.GPU_MEM.vkMemoryType.heapIndex());
+            long usage = vmaBudget.usage();
+            long budget = vmaBudget.budget();
+
+            return String.format("Device Memory Heap Usage: %d/%dMB", bytesInMb(usage), bytesInMb(budget));
+        }
     }
 }
