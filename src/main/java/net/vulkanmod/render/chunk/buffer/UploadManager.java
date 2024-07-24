@@ -88,6 +88,6 @@ public class UploadManager {
 
     private void beginCommands() {
         if (this.commandBuffer == null)
-            this.commandBuffer = queue.beginCommands();
+            this.commandBuffer = TransferQueue.beginCommands();
     }
 }
