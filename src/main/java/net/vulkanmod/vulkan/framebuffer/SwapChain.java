@@ -70,99 +70,104 @@ public class SwapChain extends Framebuffer {
     }
 
     private void createSwapChain() {
-        try (MemoryStack stack = stackPush()) {
-            VkDevice device = Vulkan.getVkDevice();
-            DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(device.getPhysicalDevice(), stack);
+    try (MemoryStack stack = stackPush()) {
+        VkDevice device = Vulkan.getVkDevice();
+        DeviceManager.SurfaceProperties surfaceProperties = DeviceManager.querySurfaceProperties(device.getPhysicalDevice(), stack);
 
-            VkSurfaceFormatKHR surfaceFormat = getFormat(surfaceProperties.formats);
-            int presentMode = getPresentMode(surfaceProperties.presentModes);
-            VkExtent2D extent = getExtent(surfaceProperties.capabilities);
+        VkSurfaceFormatKHR surfaceFormat = getFormat(surfaceProperties.formats);
+        int presentMode = getPresentMode(surfaceProperties.presentModes);
+        VkExtent2D extent = getExtent(surfaceProperties.capabilities);
 
-            if (extent.width() == 0 && extent.height() == 0) {
-                if (this.swapChainId != VK_NULL_HANDLE) {
-                    this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
-                    vkDestroySwapchainKHR(device, this.swapChainId, null);
-                    this.swapChainId = VK_NULL_HANDLE;
-                }
+        // Detect rotation and adjust the extent
+        if ((surfaceProperties.capabilities.currentTransform() & VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR) != 0) {
+            extent = VkExtent2D.create().set(extent.height(), extent.width());
+        }
 
-                this.width = 0;
-                this.height = 0;
-                return;
-            }
-
-            // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
-            // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
-            int requestedImages = Math.max(DEFAULT_IMAGE_COUNT, surfaceProperties.capabilities.minImageCount());
-
-            IntBuffer imageCount = stack.ints(requestedImages);
-
-            VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.calloc(stack);
-
-            createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
-            createInfo.surface(Vulkan.getSurface());
-
-            // Image settings
-            this.format = surfaceFormat.format();
-            this.extent2D = VkExtent2D.create().set(extent);
-
-            createInfo.minImageCount(requestedImages);
-            createInfo.imageFormat(this.format);
-            createInfo.imageColorSpace(surfaceFormat.colorSpace());
-            createInfo.imageExtent(extent);
-            createInfo.imageArrayLayers(1);
-            createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
-
-            Queue.QueueFamilyIndices indices = Queue.getQueueFamilies();
-
-            if (indices.graphicsFamily != indices.presentFamily) {
-                createInfo.imageSharingMode(VK_SHARING_MODE_CONCURRENT);
-                createInfo.pQueueFamilyIndices(stack.ints(indices.graphicsFamily, indices.presentFamily));
-            } else {
-                createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
-            }
-
-            createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
-            createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
-            createInfo.presentMode(presentMode);
-            createInfo.clipped(true);
-
-            createInfo.oldSwapchain(this.swapChainId);
-
-            LongBuffer pSwapChain = stack.longs(VK_NULL_HANDLE);
-
-            int result = vkCreateSwapchainKHR(device, createInfo, null, pSwapChain);
-            Vulkan.checkResult(result, "Failed to create swap chain");
-
+        if (extent.width() == 0 && extent.height() == 0) {
             if (this.swapChainId != VK_NULL_HANDLE) {
                 this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
                 vkDestroySwapchainKHR(device, this.swapChainId, null);
+                this.swapChainId = VK_NULL_HANDLE;
             }
 
-            this.swapChainId = pSwapChain.get(0);
-
-            vkGetSwapchainImagesKHR(device, this.swapChainId, imageCount, null);
-
-            LongBuffer pSwapchainImages = stack.mallocLong(imageCount.get(0));
-
-            vkGetSwapchainImagesKHR(device, this.swapChainId, imageCount, pSwapchainImages);
-
-            this.swapChainImages = new ArrayList<>(imageCount.get(0));
-
-            this.width = extent2D.width();
-            this.height = extent2D.height();
-
-            for (int i = 0; i < pSwapchainImages.capacity(); i++) {
-                long imageId = pSwapchainImages.get(i);
-                long imageView = VulkanImage.createImageView(imageId, this.format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
-
-                VulkanImage image = new VulkanImage(imageId, this.format, 1, this.width, this.height, 4, 0, imageView);
-                image.updateTextureSampler(true, true, false);
-                this.swapChainImages.add(image);
-            }
+            this.width = 0;
+            this.height = 0;
+            return;
         }
 
-        createGlIds();
-        createDepthResources();
+        // minImageCount depends on driver: Mesa/RADV needs a min of 4, but most other drivers are at least 2 or 3
+        // TODO using FIFO present mode with image num > 2 introduces (unnecessary) input lag
+        int requestedImages = Math.max(DEFAULT_IMAGE_COUNT, surfaceProperties.capabilities.minImageCount());
+
+        IntBuffer imageCount = stack.ints(requestedImages);
+
+        VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.calloc(stack);
+
+        createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
+        createInfo.surface(Vulkan.getSurface());
+
+        // Image settings
+        this.format = surfaceFormat.format();
+        this.extent2D = VkExtent2D.create().set(extent);
+
+        createInfo.minImageCount(requestedImages);
+        createInfo.imageFormat(this.format);
+        createInfo.imageColorSpace(surfaceFormat.colorSpace());
+        createInfo.imageExtent(extent);
+        createInfo.imageArrayLayers(1);
+        createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+
+        Queue.QueueFamilyIndices indices = Queue.getQueueFamilies();
+
+        if (indices.graphicsFamily != indices.presentFamily) {
+            createInfo.imageSharingMode(VK_SHARING_MODE_CONCURRENT);
+            createInfo.pQueueFamilyIndices(stack.ints(indices.graphicsFamily, indices.presentFamily));
+        } else {
+            createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
+        }
+
+        createInfo.preTransform(surfaceProperties.capabilities.currentTransform());
+        createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
+        createInfo.presentMode(presentMode);
+        createInfo.clipped(true);
+
+        createInfo.oldSwapchain(this.swapChainId);
+
+        LongBuffer pSwapChain = stack.longs(VK_NULL_HANDLE);
+
+        int result = vkCreateSwapchainKHR(device, createInfo, null, pSwapChain);
+        Vulkan.checkResult(result, "Failed to create swap chain");
+
+        if (this.swapChainId != VK_NULL_HANDLE) {
+            this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
+            vkDestroySwapchainKHR(device, this.swapChainId, null);
+        }
+
+        this.swapChainId = pSwapChain.get(0);
+
+        vkGetSwapchainImagesKHR(device, this.swapChainId, imageCount, null);
+
+        LongBuffer pSwapchainImages = stack.mallocLong(imageCount.get(0));
+
+        vkGetSwapchainImagesKHR(device, this.swapChainId, imageCount, pSwapchainImages);
+
+        this.swapChainImages = new ArrayList<>(imageCount.get(0));
+
+        this.width = extent2D.width();
+        this.height = extent2D.height();
+
+        for (int i = 0; i < pSwapchainImages.capacity(); i++) {
+            long imageId = pSwapchainImages.get(i);
+            long imageView = VulkanImage.createImageView(imageId, this.format, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+
+            VulkanImage image = new VulkanImage(imageId, this.format, 1, this.width, this.height, 4, 0, imageView);
+            image.updateTextureSampler(true, true, false);
+            this.swapChainImages.add(image);
+        }
+    }
+
+    createGlIds();
+    createDepthResources();
     }
 
     private void createGlIds() {
