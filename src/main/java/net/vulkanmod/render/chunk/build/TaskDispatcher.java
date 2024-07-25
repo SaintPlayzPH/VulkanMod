@@ -3,8 +3,9 @@ package net.vulkanmod.render.chunk.build;
 import com.google.common.collect.Queues;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.render.chunk.ChunkArea;
+import net.vulkanmod.render.chunk.ChunkAreaManager;
 import net.vulkanmod.render.chunk.RenderSection;
-import net.vulkanmod.render.chunk.buffer.UploadManager;
+import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.render.chunk.buffer.DrawBuffers;
 import net.vulkanmod.render.chunk.build.task.ChunkTask;
 import net.vulkanmod.render.chunk.build.task.CompileResult;
@@ -159,6 +160,11 @@ public class TaskDispatcher {
         ChunkArea renderArea = section.getChunkArea();
         DrawBuffers drawBuffers = renderArea.getDrawBuffers();
 
+        // Check if area has been dismissed before uploading
+        ChunkAreaManager chunkAreaManager = WorldRenderer.getInstance().getChunkAreaManager();
+        if (chunkAreaManager.getChunkArea(renderArea.index) != renderArea)
+            return;
+ 
         if(compileResult.fullUpdate) {
             var renderLayers = compileResult.renderedLayers;
             for(TerrainRenderType renderType : TerrainRenderType.VALUES) {
@@ -182,6 +188,11 @@ public class TaskDispatcher {
     private void doSectionUpdateDisable(CompileResult compileResult) {
         RenderSection section = compileResult.renderSection;
         DrawBuffers drawBuffers = section.getChunkArea().getDrawBuffers();
+
+        // Check if area has been dismissed before uploading
+        ChunkAreaManager chunkAreaManager = WorldRenderer.getInstance().getChunkAreaManager();
+        if (chunkAreaManager.getChunkArea(renderArea.index) != renderArea)
+            return;
 
         if(compileResult.fullUpdate) {
             compileResult.renderedLayers.forEach((key, uploadBuffer) -> drawBuffers.upload(section, uploadBuffer, key));
