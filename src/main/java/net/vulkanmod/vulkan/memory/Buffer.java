@@ -18,14 +18,17 @@ public abstract class Buffer {
         //TODO: check usage
         this.usage = usage;
         this.type = type;
-
     }
 
     protected void createBuffer(int bufferSize) {
-        this.type.createBuffer(this, bufferSize);
+        if (this.type != null) {
+            this.type.createBuffer(this, bufferSize);
 
-        if(this.type.mappable()) {
-            this.data = MemoryManager.getInstance().Map(this.allocation);
+            if (this.type.mappable()) {
+                this.data = MemoryManager.getInstance().Map(this.allocation);
+            }
+        } else {
+            throw new IllegalStateException("MemoryType is null, cannot create buffer.");
         }
     }
 
@@ -33,27 +36,46 @@ public abstract class Buffer {
         MemoryManager.getInstance().addToFreeable(this);
     }
 
-    public void reset() { usedBytes = 0; }
+    public void reset() {
+        usedBytes = 0;
+    }
 
-    public long getAllocation() { return allocation; }
+    public long getAllocation() {
+        return allocation;
+    }
 
-    public long getUsedBytes() { return usedBytes; }
+    public long getUsedBytes() {
+        return usedBytes;
+    }
 
-    public long getOffset() { return offset; }
+    public long getOffset() {
+        return offset;
+    }
 
-    public long getId() { return id; }
+    public long getId() {
+        return id;
+    }
 
-    public int getBufferSize() { return bufferSize; }
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
-    protected void setBufferSize(int size) { this.bufferSize = size; }
+    protected void setBufferSize(int size) {
+        this.bufferSize = size;
+    }
 
-    protected void setId(long id) { this.id = id; }
+    protected void setId(long id) {
+        this.id = id;
+    }
 
-    protected void setAllocation(long allocation) {this.allocation = allocation; }
+    protected void setAllocation(long allocation) {
+        this.allocation = allocation;
+    }
 
-    public BufferInfo getBufferInfo() { return new BufferInfo(this.id, this.allocation, this.bufferSize, this.type.getType()); }
+    public BufferInfo getBufferInfo() {
+        return new BufferInfo(this.id, this.allocation, this.bufferSize, this.type.getType());
+    }
 
     public record BufferInfo(long id, long allocation, long bufferSize, MemoryType.Type type) {
-
     }
 }
