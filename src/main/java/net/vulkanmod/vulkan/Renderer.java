@@ -190,7 +190,7 @@ public class Renderer {
                         || vkCreateSemaphore(device, semaphoreInfo, null, pRenderFinishedSemaphore) != VK_SUCCESS
                         || vkCreateFence(device, fenceInfo, null, pFence) != VK_SUCCESS) {
 
-                    throw new RuntimeException("Failed to create synchronization objects for the frame: %s".formatted(VkResult.decode(vkResult)));
+                    throw new RuntimeException("Failed to create synchronization objects for the frame");
                 }
 
                 imageAvailableSemaphores.add(pImageAvailableSemaphore.get(0));
