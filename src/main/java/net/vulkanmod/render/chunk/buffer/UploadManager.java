@@ -24,13 +24,14 @@ public class UploadManager {
         INSTANCE = new UploadManager();
     }
 
+    Queue queue = DeviceManager.getTransferQueue();
     CommandPool.CommandBuffer commandBuffer;
 
     public void submitUploads() {
         if (this.commandBuffer == null)
             return;
 
-        TransferQueue.submitCommands(this.commandBuffer);
+        this.queue.submitCommands(this.commandBuffer);
 
         Synchronization.INSTANCE.addCommandBuffer(this.commandBuffer);
 
@@ -88,6 +89,7 @@ public class UploadManager {
 
     private void beginCommands() {
         if (this.commandBuffer == null)
-            this.commandBuffer = TransferQueue.beginCommands();
+            this.commandBuffer = queue.beginCommands();
     }
+
 }
