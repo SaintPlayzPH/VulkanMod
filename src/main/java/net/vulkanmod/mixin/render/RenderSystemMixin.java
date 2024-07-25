@@ -14,7 +14,6 @@ import net.vulkanmod.gl.GlTexture;
 import net.vulkanmod.interfaces.VAbstractTextureI;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
-import net.vulkanmod.vulkan.device.AndroidDeviceChecker;
 import net.vulkanmod.vulkan.texture.VTextureSelector;
 import net.vulkanmod.vulkan.texture.VulkanImage;
 import org.jetbrains.annotations.Nullable;
@@ -182,18 +181,8 @@ public abstract class RenderSystemMixin {
     /**
      * @author
      */
-    @Overwrite(remap = false)
-    public static void flipFrame(long window) {
-        if (!AndroidDeviceChecker.isRunningOnAndroid()) {
-            org.lwjgl.glfw.GLFW.glfwPollEvents();
-        } else {
-            pollEvents();
-        }
-        RenderSystem.replayQueue();
-        Tesselator.getInstance().getBuilder().clear();
-        if (AndroidDeviceChecker.isRunningOnAndroid()) {
-            pollEvents();
-        }
+    @Redirect(method = "flipFrame", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwSwapBuffers(J)V"), remap = false)
+    private static void removeSwapBuffers(long window) {
     }
 
     /**
