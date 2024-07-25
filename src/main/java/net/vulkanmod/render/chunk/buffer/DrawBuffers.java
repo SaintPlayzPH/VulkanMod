@@ -76,9 +76,8 @@ public class DrawBuffers {
 
     private AreaBuffer getAreaBufferOrAlloc(TerrainRenderType r) {
         int initialSize = switch (r) {
-            case SOLID -> 30000;
-            case CUTOUT -> 100000;
-            case CUTOUT_MIPPED -> 300000;
+            case SOLID, CUTOUT -> 100000;
+            case CUTOUT_MIPPED -> 250000;
             case TRANSLUCENT, TRIPWIRE -> 60000;
         };
 
