@@ -26,6 +26,7 @@ import net.vulkanmod.vulkan.shader.Uniforms;
 import net.vulkanmod.vulkan.shader.layout.PushConstants;
 import net.vulkanmod.vulkan.texture.VTextureSelector;
 import net.vulkanmod.vulkan.util.VUtil;
+import net.vulkanmod.vulkan.util.VkResult;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -47,7 +48,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.EXTDebugUtils.*;
 import static org.lwjgl.vulkan.KHRSurface.*;
 import static org.lwjgl.vulkan.KHRSwapchain.*;
-import static org.lwjgl.vulkan.NVShaderSubgroupPartitioned.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class Renderer {
@@ -190,7 +190,7 @@ public class Renderer {
                         || vkCreateSemaphore(device, semaphoreInfo, null, pRenderFinishedSemaphore) != VK_SUCCESS
                         || vkCreateFence(device, fenceInfo, null, pFence) != VK_SUCCESS) {
 
-                    throw new RuntimeException("Failed to create synchronization objects for the frame " + translateVulkanResult(i));
+                    throw new RuntimeException("Failed to create synchronization objects for the frame: %s".formatted(VkResult.decode(vkResult)));
                 }
 
                 imageAvailableSemaphores.add(pImageAvailableSemaphore.get(0));
@@ -262,7 +262,7 @@ public class Renderer {
                 swapChainUpdate = true;
                 return;
             } else if (vkResult != VK_SUCCESS) {
-                throw new RuntimeException("Cannot get image: " + translateVulkanResult(vkResult));
+                throw new RuntimeException("Cannot get image: %s".formatted(VkResult.decode(vkResult)));
             }
 
             imageIndex = pImageIndex.get(0);
@@ -275,7 +275,7 @@ public class Renderer {
 
             int err = vkBeginCommandBuffer(commandBuffer, beginInfo);
             if (err != VK_SUCCESS) {
-                throw new RuntimeException("Failed to begin recording command buffer:" + translateVulkanResult(err));
+                throw new RuntimeException("Failed to begin recording command buffer: %s".formatted(VkResult.decode(vkResult)));
             }
 
             mainPass.begin(commandBuffer, stack);
@@ -286,34 +286,6 @@ public class Renderer {
         }
 
         p.pop();
-    }
-
-    private static String translateVulkanResult(int resultCode) {
-        return switch (resultCode) {
-            case VK_SUCCESS -> "Success";
-            case VK_NOT_READY -> "Not ready";
-            case VK_TIMEOUT -> "Timeout";
-            case VK_EVENT_SET -> "Event set";
-            case VK_EVENT_RESET -> "Event reset";
-            case VK_INCOMPLETE -> "Incomplete";
-            case VK_ERROR_OUT_OF_HOST_MEMORY -> "Out of host memory";
-            case VK_ERROR_OUT_OF_DEVICE_MEMORY -> "Out of device memory";
-            case VK_ERROR_INITIALIZATION_FAILED -> "Initialization failed";
-            case VK_ERROR_DEVICE_LOST -> "Device lost";
-            case VK_ERROR_MEMORY_MAP_FAILED -> "Memory map failed";
-            case VK_ERROR_LAYER_NOT_PRESENT -> "Layer not present";
-            case VK_ERROR_EXTENSION_NOT_PRESENT -> "Extension not present";
-            case VK_ERROR_FEATURE_NOT_PRESENT -> "Feature not present";
-            case VK_ERROR_INCOMPATIBLE_DRIVER -> "Incompatible driver";
-            case VK_ERROR_TOO_MANY_OBJECTS -> "Too many objects";
-            case VK_ERROR_FORMAT_NOT_SUPPORTED -> "Format not supported";
-            case VK_ERROR_FRAGMENTED_POOL -> "Fragmented pool";
-            case VK_ERROR_SURFACE_LOST_KHR -> "Surface lost";
-            case VK_ERROR_NATIVE_WINDOW_IN_USE_KHR -> "Native window in use";
-            case VK_SUBOPTIMAL_KHR -> "Suboptimal";
-            case VK_ERROR_OUT_OF_DATE_KHR -> "Out of date";
-            default -> String.format("Unknown Vulkan error: 0x%X", resultCode);
-        };
     }
 
     public void endFrame() {
@@ -337,7 +309,6 @@ public class Renderer {
             return;
 
         try (MemoryStack stack = stackPush()) {
-
             int vkResult;
 
             VkSubmitInfo submitInfo = VkSubmitInfo.calloc(stack);
@@ -357,7 +328,7 @@ public class Renderer {
 
             if ((vkResult = vkQueueSubmit(DeviceManager.getGraphicsQueue().queue(), submitInfo, inFlightFences.get(currentFrame))) != VK_SUCCESS) {
                 vkResetFences(device, stack.longs(inFlightFences.get(currentFrame)));
-                throw new RuntimeException("Failed to submit draw command buffer: " + translateVulkanResult(vkResult));
+                throw new RuntimeException("Failed to submit draw command buffer: %s".formatted(VkResult.decode(vkResult)));
             }
 
             VkPresentInfoKHR presentInfo = VkPresentInfoKHR.calloc(stack);
@@ -437,7 +408,6 @@ public class Renderer {
 
         WorldRenderer.getInstance().uploadSections();
         UploadManager.INSTANCE.submitUploads();
-        UploadManager.INSTANCE.syncUploads();
     }
 
     public void addUsedPipeline(GraphicsPipeline pipeline) {
@@ -489,7 +459,6 @@ public class Renderer {
 
         if (framesNum != newFramesNum) {
             UploadManager.INSTANCE.submitUploads();
-            UploadManager.INSTANCE.syncUploads();
 
             framesNum = newFramesNum;
             MemoryManager.createInstance(newFramesNum);
