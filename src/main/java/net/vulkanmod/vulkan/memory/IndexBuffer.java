@@ -44,4 +44,6 @@ public class IndexBuffer extends Buffer {
             this.type = type;
         }
     }
+
+
 }
