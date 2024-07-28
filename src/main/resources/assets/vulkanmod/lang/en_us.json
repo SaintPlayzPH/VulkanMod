@@ -42,5 +42,5 @@
   "vulkanmod.options.swapchainImages.tooltip": "Swapchain image count. Setting too high probably make the game crash on background.",
 
   "vulkanmod.options.animations": "Animations",
-  "vulkanmod.options.animations.tooltip": "Makes the animated textures to animate. Disabling this prevents them from animating and may improve performance a bit.",
+  "vulkanmod.options.animations.tooltip": "Makes the animated textures to animate. Disabling this prevents them from animating and may improve performance a bit."
 }
