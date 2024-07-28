@@ -18,14 +18,14 @@
   "vulkanmod.options.ao.subBlock": "ON (Sub-block)",
   "vulkanmod.options.ao.subBlock.tooltip": "ON (Sub-block): Enables smooth lighting for non full block (experimental).",
 
-  "vulkanmod.options.deviceSelector": "Device selector",
+  "vulkanmod.options.deviceSelector": "Device Selector",
   "vulkanmod.options.deviceSelector.auto": "Auto",
   "vulkanmod.options.deviceSelector.tooltip": "Current device",
 
   "vulkanmod.options.entityCulling": "Entity Culling",
   "vulkanmod.options.entityCulling.tooltip": "Enables culling for entities on not visible sections.",
 
-  "vulkanmod.options.frameQueue": "Render queue size",
+  "vulkanmod.options.frameQueue": "Render Queue Size",
   "vulkanmod.options.frameQueue.tooltip": "Higher values might help stabilize frametime but will increase input lag.",
 
   "vulkanmod.options.indirectDraw": "Indirect Draw",
@@ -33,8 +33,14 @@
 
   "vulkanmod.options.refreshRate": "Refresh Rate",
 
-  "vulkanmod.options.uniqueOpaqueLayer": "Unique opaque layer",
+  "vulkanmod.options.uniqueOpaqueLayer": "Unique Opaque Layer",
   "vulkanmod.options.uniqueOpaqueLayer.tooltip": "Use a unique render layer for opaque terrain to improve performance.",
 
-  "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen"
+  "vulkanmod.options.windowedFullscreen": "Windowed Fullscreen",
+
+  "vulkanmod.options.swapchainImages": "Swapchain Images",
+  "vulkanmod.options.swapchainImages.tooltip": "Swapchain image count. Setting too high probably make the game crash on background.",
+
+  "vulkanmod.options.animations": "Animations",
+  "vulkanmod.options.animations.tooltip": "Makes the animated textures to animate. Disabling this prevents them from animating and may improve performance a bit.",
 }
