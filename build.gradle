@@ -67,10 +67,6 @@ loom {
 	accessWidenerPath = file("src/main/resources/vulkanmod.accesswidener")
 }
 
-java {
-	withSourcesJar()
-}
-
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
