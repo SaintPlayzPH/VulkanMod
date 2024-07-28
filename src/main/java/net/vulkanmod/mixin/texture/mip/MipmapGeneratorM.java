@@ -1,10 +1,8 @@
 package net.vulkanmod.mixin.texture.mip;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.texture.MipmapGenerator;
 import net.vulkanmod.mixin.texture.image.NativeImageAccessor;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -74,10 +72,10 @@ public abstract class MipmapGeneratorM {
 
                     for (int m = 0; m < width; ++m) {
                         for (int n = 0; n < height; ++n) {
-                            int p0 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 0) + ((n * 2 + 0) * width2)) * 4L);
-                            int p1 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 1) + ((n * 2 + 0) * width2)) * 4L);
-                            int p2 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 0) + ((n * 2 + 1) * width2)) * 4L);
-                            int p3 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 1) + ((n * 2 + 1) * width2)) * 4L);
+                            int p0 = MemoryUtil.memGetInt(srcPtr + ((m * 2L) + ((n * 2L) * width2)) * 4L);
+                            int p1 = MemoryUtil.memGetInt(srcPtr + ((m * 2L + 1) + ((n * 2L) * width2)) * 4L);
+                            int p2 = MemoryUtil.memGetInt(srcPtr + ((m * 2L) + ((n * 2L + 1) * width2)) * 4L);
+                            int p3 = MemoryUtil.memGetInt(srcPtr + ((m * 2L + 1) + ((n * 2L + 1) * width2)) * 4L);
 
                             int outColor = blend(p0, p1, p2, p3);
                             MemoryUtil.memPutInt(dstPtr + (m + (long) n * width) * 4L, outColor);
@@ -95,7 +93,7 @@ public abstract class MipmapGeneratorM {
     private static boolean hasTransparentPixel(long ptr, int width, int height) {
         for (int i = 0; i < width; ++i) {
             for (int j = 0; j < height; ++j) {
-                if (getPixelA(MemoryUtil.memGetInt(ptr + (i + j * width) * 4L)) == 0) {
+                if (getPixelA(MemoryUtil.memGetInt(ptr + (i + (long) j * width) * 4L)) == 0) {
                     return true;
                 }
             }

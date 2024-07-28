@@ -12,8 +12,8 @@ import net.vulkanmod.vulkan.util.ColorUtil;
 import org.joml.Matrix4f;
 
 public class CyclingOptionWidget extends OptionWidget<CyclingOption<?>> {
-    private Button leftButton;
-    private Button rightButton;
+    private final Button leftButton;
+    private final Button rightButton;
 
     private boolean focused;
 

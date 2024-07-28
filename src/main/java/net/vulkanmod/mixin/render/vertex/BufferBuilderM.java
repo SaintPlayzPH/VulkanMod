@@ -37,7 +37,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     private VertexFormat format;
     private long bufferPtr;
 
-//    @Shadow @Nullable private Vector3f[] sortingPoints;
+    //    @Shadow @Nullable private Vector3f[] sortingPoints;
 //    @Shadow private float sortX;
 //    @Shadow private float sortY;
 //    @Shadow private float sortZ;
@@ -65,7 +65,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
         this.ptr = this.nextElementPtr();
 
         if (this.format == DefaultVertexFormat.NEW_ENTITY) {
-            MemoryUtil.memPutFloat(ptr + 0, x);
+            MemoryUtil.memPutFloat(ptr, x);
             MemoryUtil.memPutFloat(ptr + 4, y);
             MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -98,7 +98,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     public void vertex(float x, float y, float z, float u, float v, int packedColor, int light) {
         this.ptr = this.nextElementPtr();
 
-        MemoryUtil.memPutFloat(ptr + 0, x);
+        MemoryUtil.memPutFloat(ptr, x);
         MemoryUtil.memPutFloat(ptr + 4, y);
         MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -115,7 +115,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     }
 
     public void position(float x, float y, float z) {
-        MemoryUtil.memPutFloat(ptr + 0, x);
+        MemoryUtil.memPutFloat(ptr, x);
         MemoryUtil.memPutFloat(ptr + 4, y);
         MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -175,7 +175,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ) {
         if (this.fastFormat) {
             long ptr = this.nextElementPtr();
-            MemoryUtil.memPutFloat(ptr + 0, x);
+            MemoryUtil.memPutFloat(ptr, x);
             MemoryUtil.memPutFloat(ptr + 4, y);
             MemoryUtil.memPutFloat(ptr + 8, z);
 

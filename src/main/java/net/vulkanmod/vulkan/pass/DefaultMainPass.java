@@ -20,9 +20,10 @@ import static org.lwjgl.vulkan.VK10.*;
 public class DefaultMainPass implements MainPass {
 
     private final Framebuffer mainFramebuffer;
-    private RenderTarget mainTarget;
+    private final RenderTarget mainTarget;
     private RenderPass mainRenderPass;
     private RenderPass auxRenderPass;
+
     DefaultMainPass() {
         this.mainTarget = Minecraft.getInstance().getMainRenderTarget();
         this.mainFramebuffer = Vulkan.getSwapChain();

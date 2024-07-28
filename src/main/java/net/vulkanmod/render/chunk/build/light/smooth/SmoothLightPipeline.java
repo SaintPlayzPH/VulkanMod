@@ -3,12 +3,12 @@ package net.vulkanmod.render.chunk.build.light.smooth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.vulkanmod.render.chunk.util.SimpleDirection;
-import net.vulkanmod.render.model.quad.QuadView;
-import net.vulkanmod.render.chunk.build.light.data.LightDataAccess;
 import net.vulkanmod.render.chunk.build.light.LightPipeline;
+import net.vulkanmod.render.chunk.build.light.data.LightDataAccess;
 import net.vulkanmod.render.chunk.build.light.data.QuadLightData;
+import net.vulkanmod.render.chunk.util.SimpleDirection;
 import net.vulkanmod.render.model.quad.ModelQuadFlags;
+import net.vulkanmod.render.model.quad.QuadView;
 
 /**
  * Re-adapted Sodium's smooth light pipeline

@@ -11,7 +11,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.interfaces.FrustumMixed;
-import net.vulkanmod.render.chunk.*;
+import net.vulkanmod.render.chunk.ChunkAreaManager;
+import net.vulkanmod.render.chunk.RenderSection;
+import net.vulkanmod.render.chunk.SectionGrid;
+import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.render.chunk.build.RenderRegionBuilder;
 import net.vulkanmod.render.chunk.build.TaskDispatcher;
 import net.vulkanmod.render.chunk.frustum.VFrustum;
@@ -30,10 +33,10 @@ public class SectionGraph {
     private final ResettableQueue<RenderSection> sectionQueue = new ResettableQueue<>();
     private final ResettableQueue<RenderSection> blockEntitiesSections = new ResettableQueue<>();
     private final ResettableQueue<RenderSection> rebuildQueue = new ResettableQueue<>();
+    private final AreaSetQueue chunkAreaQueue;
     public RenderRegionBuilder renderRegionCache;
     Minecraft minecraft;
     int nonEmptyChunks;
-    private AreaSetQueue chunkAreaQueue;
     private short lastFrame = 0;
     private VFrustum frustum;
 

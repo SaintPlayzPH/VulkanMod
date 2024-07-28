@@ -7,7 +7,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 public abstract class VideoModeManager {
     public static VideoModeSet.VideoMode selectedVideoMode;

@@ -72,6 +72,7 @@ public class Renderer {
     private RenderPass boundRenderPass;
     private VkCommandBuffer currentCmdBuffer;
     private boolean recordingCmds = false;
+
     public Renderer() {
         device = Vulkan.getVkDevice();
         framesNum = Initializer.CONFIG.frameQueueSize;

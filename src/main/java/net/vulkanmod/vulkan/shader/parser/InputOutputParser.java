@@ -15,7 +15,7 @@ public class InputOutputParser {
     private VertexFormat vertexFormat;
     private GlslConverter.ShaderStage shaderStage;
 
-    private int currentLocation = 0;
+    private final int currentLocation = 0;
     private String ioType;
     private String type;
     private String name;
@@ -88,7 +88,7 @@ public class InputOutputParser {
             builder.append("\n");
 
             //TODO multi attachments?
-            builder.append(String.format("layout(location = 0) out vec4 fragColor;\n\n"));
+            builder.append("layout(location = 0) out vec4 fragColor;\n\n");
         }
 
         return builder.toString();

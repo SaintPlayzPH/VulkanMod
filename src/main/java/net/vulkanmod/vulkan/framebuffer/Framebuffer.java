@@ -19,7 +19,7 @@ import static org.lwjgl.vulkan.VK10.*;
 public class Framebuffer {
     public static final int DEFAULT_FORMAT = VK_FORMAT_R8G8B8A8_UNORM;
 
-//    private long id;
+    //    private long id;
     private final ObjectArrayList<RenderPass> renderPasses = new ObjectArrayList<>();
     private final Reference2LongArrayMap<RenderPass> framebufferIds = new Reference2LongArrayMap<>();
     protected int format;

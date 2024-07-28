@@ -39,11 +39,11 @@ public class MemoryManager {
 
     private int currentFrame = 0;
 
-    private ObjectArrayList<Buffer.BufferInfo>[] freeableBuffers = new ObjectArrayList[Frames];
-    private ObjectArrayList<VulkanImage>[] freeableImages = new ObjectArrayList[Frames];
+    private final ObjectArrayList<Buffer.BufferInfo>[] freeableBuffers = new ObjectArrayList[Frames];
+    private final ObjectArrayList<VulkanImage>[] freeableImages = new ObjectArrayList[Frames];
 
-    private ObjectArrayList<Runnable>[] frameOps = new ObjectArrayList[Frames];
-    private ObjectArrayList<Pair<AreaBuffer, Integer>>[] segmentsToFree = new ObjectArrayList[Frames];
+    private final ObjectArrayList<Runnable>[] frameOps = new ObjectArrayList[Frames];
+    private final ObjectArrayList<Pair<AreaBuffer, Integer>>[] segmentsToFree = new ObjectArrayList[Frames];
 
     //debug
     private ObjectArrayList<StackTraceElement[]>[] stackTraces;

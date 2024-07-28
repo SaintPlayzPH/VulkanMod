@@ -30,7 +30,7 @@ public class AutoIndexBuffer {
 
         int j = 0;
         for (int i = 0; i < vertexCount; i += 4) {
-            idxs.put(j + 0, (short) (i));
+            idxs.put(j, (short) (i));
             idxs.put(j + 1, (short) (i + 1));
             idxs.put(j + 2, (short) (i + 2));
             idxs.put(j + 3, (short) (i));
@@ -52,7 +52,7 @@ public class AutoIndexBuffer {
 
         int j = 0;
         for (int i = 0; i < vertexCount; i += 4) {
-            idxs.put(j + 0, (i));
+            idxs.put(j, (i));
             idxs.put(j + 1, (i + 1));
             idxs.put(j + 2, (i + 2));
             idxs.put(j + 3, (i));
@@ -74,7 +74,7 @@ public class AutoIndexBuffer {
 
         int j = 0;
         for (int i = 0; i < vertexCount; i += 4) {
-            idxs.put(j + 0, (short) (i));
+            idxs.put(j, (short) (i));
             idxs.put(j + 1, (short) (i + 1));
             idxs.put(j + 2, (short) (i + 2));
             idxs.put(j + 3, (short) (i + 3));
@@ -94,7 +94,7 @@ public class AutoIndexBuffer {
 
         int j = 0;
         for (int i = 0; i < vertexCount - 2; ++i) {
-            idxs.put(j + 0, (short) 0);
+            idxs.put(j, (short) 0);
             idxs.put(j + 1, (short) (i + 1));
             idxs.put(j + 2, (short) (i + 2));
 
@@ -112,7 +112,7 @@ public class AutoIndexBuffer {
 
         int j = 0;
         for (int i = 0; i < vertexCount - 2; ++i) {
-            idxs.put(j + 0, (short) i);
+            idxs.put(j, (short) i);
             idxs.put(j + 1, (short) (i + 1));
             idxs.put(j + 2, (short) (i + 2));
 
@@ -130,7 +130,7 @@ public class AutoIndexBuffer {
 
         int j = 0;
         for (int i = 0; i < vertexCount - 1; ++i) {
-            idxs.put(j + 0, (short) i);
+            idxs.put(j, (short) i);
             idxs.put(j + 1, (short) (i + 1));
 
             j += 2;

@@ -59,7 +59,7 @@ public abstract class LevelRendererMixin {
     private EntityRenderDispatcher entityRenderDispatcher;
     private WorldRenderer worldRenderer;
     @Unique
-    private Object2ReferenceOpenHashMap<Class<? extends Entity>, ObjectArrayList<Pair<Entity, MultiBufferSource>>> entitiesMap = new Object2ReferenceOpenHashMap<>();
+    private final Object2ReferenceOpenHashMap<Class<? extends Entity>, ObjectArrayList<Pair<Entity, MultiBufferSource>>> entitiesMap = new Object2ReferenceOpenHashMap<>();
 
     @Shadow
     public abstract void graphicsChanged();

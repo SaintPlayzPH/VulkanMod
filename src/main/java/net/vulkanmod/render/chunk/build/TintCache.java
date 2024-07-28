@@ -3,7 +3,6 @@ package net.vulkanmod.render.chunk.build;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -11,7 +10,6 @@ import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.render.chunk.build.biome.BoxBlur;
 
 import java.util.Arrays;
-import java.util.function.BiFunction;
 
 public class TintCache {
     private static final int SECTION_WIDTH = 16;

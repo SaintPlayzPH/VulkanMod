@@ -1,6 +1,8 @@
 package net.vulkanmod.mixin.voxel;
 
-import net.minecraft.world.phys.shapes.*;
+import net.minecraft.world.phys.shapes.CubeVoxelShape;
+import net.minecraft.world.phys.shapes.DiscreteVoxelShape;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.vulkanmod.interfaces.VoxelShapeExtended;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

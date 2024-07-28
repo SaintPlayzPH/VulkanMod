@@ -2,7 +2,6 @@ package net.vulkanmod.vulkan;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.vulkanmod.vulkan.device.DeviceManager;
@@ -14,10 +13,10 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
-import static org.lwjgl.vulkan.VK10.*;
-
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+
+import static org.lwjgl.vulkan.VK10.*;
 
 public abstract class VRenderSystem {
     private static final float DEFAULT_DEPTH_VALUE = 1.0f;

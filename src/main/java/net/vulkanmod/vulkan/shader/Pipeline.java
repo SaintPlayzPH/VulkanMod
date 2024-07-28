@@ -54,6 +54,7 @@ public abstract class Pipeline {
     protected ManualUBO manualUBO;
     protected List<ImageDescriptor> imageDescriptors;
     protected PushConstants pushConstants;
+
     public Pipeline(String name) {
         this.name = name;
     }

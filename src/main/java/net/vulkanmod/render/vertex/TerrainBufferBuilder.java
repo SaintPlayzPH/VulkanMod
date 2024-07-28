@@ -115,10 +115,10 @@ public class TerrainBufferBuilder {
             for (int m = 0; m < pointsNum; ++m) {
                 long ptr = this.bufferPtr + this.renderedBufferPointer + (long) m * stride;
 
-                short x0 = MemoryUtil.memGetShort(ptr + 0);
+                short x0 = MemoryUtil.memGetShort(ptr);
                 short y0 = MemoryUtil.memGetShort(ptr + 2);
                 short z0 = MemoryUtil.memGetShort(ptr + 4);
-                short x2 = MemoryUtil.memGetShort(ptr + offset + 0);
+                short x2 = MemoryUtil.memGetShort(ptr + offset);
                 short y2 = MemoryUtil.memGetShort(ptr + offset + 2);
                 short z2 = MemoryUtil.memGetShort(ptr + offset + 4);
 
@@ -131,10 +131,10 @@ public class TerrainBufferBuilder {
             for (int m = 0; m < pointsNum; ++m) {
                 long ptr = this.bufferPtr + this.renderedBufferPointer + (long) m * stride;
 
-                float x0 = MemoryUtil.memGetFloat(ptr + 0);
+                float x0 = MemoryUtil.memGetFloat(ptr);
                 float y0 = MemoryUtil.memGetFloat(ptr + 4);
                 float z0 = MemoryUtil.memGetFloat(ptr + 8);
-                float x2 = MemoryUtil.memGetFloat(ptr + offset + 0);
+                float x2 = MemoryUtil.memGetFloat(ptr + offset);
                 float y2 = MemoryUtil.memGetFloat(ptr + offset + 4);
                 float z2 = MemoryUtil.memGetFloat(ptr + offset + 8);
 
@@ -168,12 +168,12 @@ public class TerrainBufferBuilder {
         for (int i = 0; i < sortingPoints.length; ++i) {
             int quadIndex = sortingPoints[i];
 
-            MemoryUtil.memPutInt(ptr + (size * 0L), quadIndex * stride + 0);
-            MemoryUtil.memPutInt(ptr + (size * 1L), quadIndex * stride + 1);
+            MemoryUtil.memPutInt(ptr + (0L), quadIndex * stride);
+            MemoryUtil.memPutInt(ptr + ((long) size), quadIndex * stride + 1);
             MemoryUtil.memPutInt(ptr + (size * 2L), quadIndex * stride + 2);
             MemoryUtil.memPutInt(ptr + (size * 3L), quadIndex * stride + 2);
             MemoryUtil.memPutInt(ptr + (size * 4L), quadIndex * stride + 3);
-            MemoryUtil.memPutInt(ptr + (size * 5L), quadIndex * stride + 0);
+            MemoryUtil.memPutInt(ptr + (size * 5L), quadIndex * stride);
 
             ptr += size * 6L;
         }
@@ -364,7 +364,7 @@ public class TerrainBufferBuilder {
         private static final int VERTEX_SIZE = 32;
 
         public void vertex(long ptr, float x, float y, float z, int color, float u, float v, int light, int packedNormal) {
-            MemoryUtil.memPutFloat(ptr + 0, x);
+            MemoryUtil.memPutFloat(ptr, x);
             MemoryUtil.memPutFloat(ptr + 4, y);
             MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -397,7 +397,7 @@ public class TerrainBufferBuilder {
             final short sY = (short) (y * POS_CONV_MUL + POS_OFFSET_CONV);
             final short sZ = (short) (z * POS_CONV_MUL + POS_OFFSET_CONV);
 
-            MemoryUtil.memPutShort(ptr + 0, sX);
+            MemoryUtil.memPutShort(ptr, sX);
             MemoryUtil.memPutShort(ptr + 2, sY);
             MemoryUtil.memPutShort(ptr + 4, sZ);
 

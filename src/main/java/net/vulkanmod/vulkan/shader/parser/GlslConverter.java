@@ -1,6 +1,5 @@
 package net.vulkanmod.vulkan.shader.parser;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.vulkanmod.vulkan.shader.descriptor.ImageDescriptor;
 import net.vulkanmod.vulkan.shader.descriptor.UBO;
 

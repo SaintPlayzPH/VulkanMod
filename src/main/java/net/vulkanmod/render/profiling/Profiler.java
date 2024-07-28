@@ -27,6 +27,7 @@ public class Profiler {
     Node selectedNode;
     Node currentNode;
     ProfilerResults profilerResults = new ProfilerResults();
+
     public Profiler(String s) {
         this.name = s;
         this.currentNode = this.selectedNode = this.mainNode = new Node(s);

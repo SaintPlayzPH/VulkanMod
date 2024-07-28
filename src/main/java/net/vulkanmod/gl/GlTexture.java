@@ -294,11 +294,7 @@ public class GlTexture {
     }
 
     void setClamp(int v) {
-        if (v == GL30.GL_CLAMP_TO_EDGE) {
-            this.clamp = true;
-        } else {
-            this.clamp = false;
-        }
+        this.clamp = v == GL30.GL_CLAMP_TO_EDGE;
 
         updateSampler();
     }

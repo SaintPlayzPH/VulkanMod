@@ -252,7 +252,7 @@ enum AoNeighborInfo {
         cornersBits[10] = idxs[1];
         cornersBits[11] = idxs[0];
 
-        cornersBits[12 + 0] = idxs[4 + 0];
+        cornersBits[12] = idxs[4];
         cornersBits[12 + 1] = idxs[4 + 3];
         cornersBits[12 + 2] = idxs[4 + 1];
 
@@ -261,12 +261,12 @@ enum AoNeighborInfo {
         cornersBits[12 + 5] = idxs[4 + 3];
 
         cornersBits[12 + 6] = idxs[4 + 3];
-        cornersBits[12 + 7] = idxs[4 + 0];
+        cornersBits[12 + 7] = idxs[4];
         cornersBits[12 + 8] = idxs[4 + 2];
 
         cornersBits[12 + 9] = idxs[4 + 2];
         cornersBits[12 + 10] = idxs[4 + 1];
-        cornersBits[12 + 11] = idxs[4 + 0];
+        cornersBits[12 + 11] = idxs[4];
     }
 
     /**

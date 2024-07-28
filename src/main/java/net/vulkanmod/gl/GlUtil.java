@@ -1,7 +1,6 @@
 package net.vulkanmod.gl;
 
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.framebuffer.SwapChain;
 import net.vulkanmod.vulkan.shader.SPIRVUtils;
 import org.apache.commons.lang3.Validate;
 import org.lwjgl.opengl.GL11;

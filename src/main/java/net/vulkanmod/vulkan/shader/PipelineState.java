@@ -1,13 +1,12 @@
 package net.vulkanmod.vulkan.shader;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.vulkanmod.vulkan.framebuffer.RenderPass;
 import net.vulkanmod.vulkan.VRenderSystem;
+import net.vulkanmod.vulkan.framebuffer.RenderPass;
 
 import java.util.Objects;
 
 import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_EQUAL;
 
 public class PipelineState {
     private static final int DEFAULT_DEPTH_OP = 515;

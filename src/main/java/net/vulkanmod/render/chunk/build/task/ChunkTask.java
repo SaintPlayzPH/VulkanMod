@@ -14,6 +14,7 @@ public abstract class ChunkTask {
     protected final RenderSection section;
     public boolean highPriority = false;
     protected AtomicBoolean cancelled = new AtomicBoolean(false);
+
     ChunkTask(RenderSection renderSection) {
         this.section = renderSection;
     }

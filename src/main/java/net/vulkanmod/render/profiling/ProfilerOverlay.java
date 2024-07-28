@@ -32,7 +32,7 @@ public class ProfilerOverlay {
 
     private static String buildStats;
 
-    private static int node = -1;
+    private static final int node = -1;
     Minecraft minecraft;
     Font font;
 
