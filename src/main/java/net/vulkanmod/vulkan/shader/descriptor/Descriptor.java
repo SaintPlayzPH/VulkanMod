@@ -2,9 +2,9 @@ package net.vulkanmod.vulkan.shader.descriptor;
 
 public interface Descriptor {
 
-     int getBinding();
+    int getBinding();
 
-     int getType();
+    int getType();
 
-     int getStages();
+    int getStages();
 }

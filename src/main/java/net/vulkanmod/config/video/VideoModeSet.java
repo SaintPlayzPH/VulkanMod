@@ -10,16 +10,16 @@ public class VideoModeSet {
     public final int bitDepth;
     List<Integer> refreshRates = new ObjectArrayList<>();
 
-    public static VideoModeSet getDummy() {
-        var set = new VideoModeSet(-1, -1, -1);
-        set.addRefreshRate(-1);
-        return set;
-    }
-
     public VideoModeSet(int width, int height, int bitDepth) {
         this.width = width;
         this.height = height;
         this.bitDepth = bitDepth;
+    }
+
+    public static VideoModeSet getDummy() {
+        var set = new VideoModeSet(-1, -1, -1);
+        set.addRefreshRate(-1);
+        return set;
     }
 
     public int getRefreshRate() {
@@ -90,6 +90,6 @@ public class VideoModeSet {
                     "refreshRate=" + refreshRate + ']';
         }
 
-        }
+    }
 
 }

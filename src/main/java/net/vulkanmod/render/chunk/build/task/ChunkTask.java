@@ -11,17 +11,20 @@ public abstract class ChunkTask {
     public static final boolean BENCH = true;
 
     protected static TaskDispatcher taskDispatcher;
+    protected final RenderSection section;
+    public boolean highPriority = false;
+    protected AtomicBoolean cancelled = new AtomicBoolean(false);
+
+    ChunkTask(RenderSection renderSection) {
+        this.section = renderSection;
+    }
 
     public static BuildTask createBuildTask(RenderSection renderSection, RenderRegion renderRegion, boolean highPriority) {
         return new BuildTask(renderSection, renderRegion, highPriority);
     }
 
-    protected AtomicBoolean cancelled = new AtomicBoolean(false);
-    protected final RenderSection section;
-    public boolean highPriority = false;
-
-    ChunkTask(RenderSection renderSection) {
-        this.section = renderSection;
+    public static void setTaskDispatcher(TaskDispatcher dispatcher) {
+        taskDispatcher = dispatcher;
     }
 
     public abstract String name();
@@ -32,10 +35,6 @@ public abstract class ChunkTask {
         this.cancelled.set(true);
     }
 
-    public static void setTaskDispatcher(TaskDispatcher dispatcher) {
-        taskDispatcher = dispatcher;
-    }
-    
     public enum Result {
         CANCELLED,
         SUCCESSFUL

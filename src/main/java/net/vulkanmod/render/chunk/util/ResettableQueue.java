@@ -73,8 +73,8 @@ public class ResettableQueue<T> implements Iterable<T> {
 
     public Iterator<T> iterator(boolean reverseOrder) {
         return reverseOrder ? new Iterator<>() {
-            int pos = ResettableQueue.this.limit - 1;
             final int limit = -1;
+            int pos = ResettableQueue.this.limit - 1;
 
             @Override
             public boolean hasNext() {
@@ -87,8 +87,8 @@ public class ResettableQueue<T> implements Iterable<T> {
             }
         }
                 : new Iterator<>() {
-            int pos = 0;
             final int limit = ResettableQueue.this.limit;
+            int pos = 0;
 
             @Override
             public boolean hasNext() {

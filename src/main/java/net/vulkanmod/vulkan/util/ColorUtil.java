@@ -13,11 +13,59 @@ public class ColorUtil {
     }
 
     public static int floatToInt(float f) {
-        return (int)(f * 255.0f) & 0xFF;
+        return (int) (f * 255.0f) & 0xFF;
     }
 
     public static float unpackColor(int c, int s) {
         return ((c >> s) & 0xFF) * COLOR_INV;
+    }
+
+    public static int BGRAtoRGBA(int v) {
+        byte r = (byte) (v >> 16);
+        byte b = (byte) (v);
+        return r & 0xFF | (b << 16) & 0xFF0000 | v & 0xFF00FF00;
+    }
+
+    public static float gamma(float f) {
+        return (float) Math.pow(f, 2.2);
+    }
+
+    public static void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a) {
+        colorConsumer.setRGBA_Buffer(buffer, r, g, b, a);
+    }
+
+    public static void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a) {
+        colorConsumer.setRGBA_Buffer(buffer, r, g, b, a);
+    }
+
+    interface ColorConsumer {
+
+        void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a);
+
+        void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a);
+
+        void setRGBA_Buffer(ByteBuffer buffer, float r, float g, float b, float a);
+
+        default void putColor(MappedBuffer buffer, float r, float g, float b, float a) {
+            buffer.putFloat(0, r);
+            buffer.putFloat(4, g);
+            buffer.putFloat(8, b);
+            buffer.putFloat(12, a);
+        }
+
+        default void putColor(FloatBuffer buffer, float r, float g, float b, float a) {
+            buffer.put(0, r);
+            buffer.put(1, g);
+            buffer.put(2, b);
+            buffer.put(3, a);
+        }
+
+        default void putColor(ByteBuffer buffer, float r, float g, float b, float a) {
+            buffer.putFloat(0, r);
+            buffer.putFloat(4, g);
+            buffer.putFloat(8, b);
+            buffer.putFloat(12, a);
+        }
     }
 
     public static class ARGB {
@@ -67,52 +115,6 @@ public class ColorUtil {
 
         public static float unpackB(int color) {
             return unpackColor(color, 8);
-        }
-    }
-
-    public static int BGRAtoRGBA(int v) {
-        byte r = (byte) (v >> 16);
-        byte b = (byte) (v);
-        return r & 0xFF | (b << 16) & 0xFF0000 | v & 0xFF00FF00;
-    }
-
-    public static float gamma(float f) {
-        return (float) Math.pow(f, 2.2);
-    }
-
-    public static void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a) {
-        colorConsumer.setRGBA_Buffer(buffer, r, g, b, a);
-    }
-
-    public static void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a) {
-        colorConsumer.setRGBA_Buffer(buffer, r, g, b, a);
-    }
-
-    interface ColorConsumer {
-
-        void setRGBA_Buffer(MappedBuffer buffer, float r, float g, float b, float a);
-        void setRGBA_Buffer(FloatBuffer buffer, float r, float g, float b, float a);
-        void setRGBA_Buffer(ByteBuffer buffer, float r, float g, float b, float a);
-
-        default void putColor(MappedBuffer buffer, float r, float g, float b, float a) {
-            buffer.putFloat(0, r);
-            buffer.putFloat(4, g);
-            buffer.putFloat(8, b);
-            buffer.putFloat(12, a);
-        }
-
-        default void putColor(FloatBuffer buffer, float r, float g, float b, float a) {
-            buffer.put(0, r);
-            buffer.put(1, g);
-            buffer.put(2, b);
-            buffer.put(3, a);
-        }
-
-        default void putColor(ByteBuffer buffer, float r, float g, float b, float a) {
-            buffer.putFloat(0, r);
-            buffer.putFloat(4, g);
-            buffer.putFloat(8, b);
-            buffer.putFloat(12, a);
         }
     }
 

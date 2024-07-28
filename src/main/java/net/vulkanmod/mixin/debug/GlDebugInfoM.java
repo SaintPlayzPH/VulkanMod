@@ -3,7 +3,6 @@ package net.vulkanmod.mixin.debug;
 import com.mojang.blaze3d.platform.GlUtil;
 import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.device.Device;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 

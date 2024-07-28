@@ -6,9 +6,9 @@ import org.lwjgl.vulkan.VkMemoryType;
 import java.nio.ByteBuffer;
 
 public abstract class MemoryType {
-    final Type type;
     public final VkMemoryType vkMemoryType;
     public final VkMemoryHeap vkMemoryHeap;
+    final Type type;
 
     MemoryType(Type type, VkMemoryType vkMemoryType, VkMemoryHeap vkMemoryHeap) {
         this.type = type;
@@ -25,7 +25,7 @@ public abstract class MemoryType {
     abstract boolean mappable();
 
     public Type getType() {
-       return this.type;
+        return this.type;
     }
 
     public enum Type {

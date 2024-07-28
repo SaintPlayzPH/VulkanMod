@@ -7,9 +7,9 @@ import java.util.function.Consumer;
 
 public class StaticQueue<T> implements Iterable<T> {
     final T[] queue;
+    final int capacity;
     int position = 0;
     int limit = 0;
-    final int capacity;
 
     public StaticQueue() {
         this(1024);
@@ -48,8 +48,8 @@ public class StaticQueue<T> implements Iterable<T> {
 
     public Iterator<T> iterator(boolean reverseOrder) {
         return reverseOrder ? new Iterator<>() {
-            int pos = StaticQueue.this.limit - 1;
             final int limit = -1;
+            int pos = StaticQueue.this.limit - 1;
 
             @Override
             public boolean hasNext() {
@@ -62,8 +62,8 @@ public class StaticQueue<T> implements Iterable<T> {
             }
         }
                 : new Iterator<>() {
-            int pos = 0;
             final int limit = StaticQueue.this.limit;
+            int pos = 0;
 
             @Override
             public boolean hasNext() {

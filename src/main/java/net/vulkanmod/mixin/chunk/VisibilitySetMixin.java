@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 @Mixin(VisibilitySet.class)
 public class VisibilitySetMixin implements VisibilitySetExtended {
 
-//    private int vis2 = 0;
+    //    private int vis2 = 0;
     private long vis = 0;
 
     /**
@@ -29,7 +29,7 @@ public class VisibilitySetMixin implements VisibilitySetExtended {
      */
     @Overwrite
     public void setAll(boolean bl) {
-        if(bl) this.vis = 0xFFFFFFFFFFFFFFFFL;
+        if (bl) this.vis = 0xFFFFFFFFFFFFFFFFL;
     }
 
     /**

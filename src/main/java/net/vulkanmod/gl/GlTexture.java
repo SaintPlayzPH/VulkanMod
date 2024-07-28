@@ -16,11 +16,23 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class GlTexture {
-    private static int ID_COUNTER = 1;
     private static final Int2ReferenceOpenHashMap<GlTexture> map = new Int2ReferenceOpenHashMap<>();
+    private static int ID_COUNTER = 1;
     private static int boundTextureId = 0;
     private static GlTexture boundTexture;
     private static int activeTexture = 0;
+    final int id;
+    VulkanImage vulkanImage;
+    int internalFormat;
+    boolean needsUpdate = false;
+    int maxLevel = 0;
+    int maxLod = 0;
+    int minFilter, magFilter = GL11.GL_LINEAR;
+    boolean clamp = true;
+
+    public GlTexture(int id) {
+        this.id = id;
+    }
 
     public static void bindIdToImage(int id, VulkanImage vulkanImage) {
         GlTexture texture = map.get(id);
@@ -112,15 +124,18 @@ public class GlTexture {
         switch (pName) {
             case GL30.GL_TEXTURE_MAX_LEVEL -> boundTexture.setMaxLevel(param);
             case GL30.GL_TEXTURE_MAX_LOD -> boundTexture.setMaxLod(param);
-            case GL30.GL_TEXTURE_MIN_LOD -> {}
-            case GL30.GL_TEXTURE_LOD_BIAS -> {}
+            case GL30.GL_TEXTURE_MIN_LOD -> {
+            }
+            case GL30.GL_TEXTURE_LOD_BIAS -> {
+            }
 
             case GL11.GL_TEXTURE_MAG_FILTER -> boundTexture.setMagFilter(param);
             case GL11.GL_TEXTURE_MIN_FILTER -> boundTexture.setMinFilter(param);
 
             case GL11.GL_TEXTURE_WRAP_S, GL11.GL_TEXTURE_WRAP_T -> boundTexture.setClamp(param);
 
-            default -> {}
+            default -> {
+            }
         }
 
         //TODO
@@ -164,21 +179,6 @@ public class GlTexture {
         return boundTexture;
     }
 
-    final int id;
-    VulkanImage vulkanImage;
-    int internalFormat;
-
-    boolean needsUpdate = false;
-    int maxLevel = 0;
-    int maxLod = 0;
-    int minFilter, magFilter = GL11.GL_LINEAR;
-
-    boolean clamp = true;
-
-    public GlTexture(int id) {
-        this.id = id;
-    }
-
     void allocateIfNeeded(int width, int height, int format, int type) {
         int vkFormat = GlUtil.vulkanFormat(format, type);
 
@@ -220,7 +220,8 @@ public class GlTexture {
         samplerFlags |= magFilter == GL11.GL_LINEAR ? SamplerManager.LINEAR_FILTERING_BIT : 0;
 
         samplerFlags |= switch (minFilter) {
-            case GL11.GL_LINEAR_MIPMAP_LINEAR -> SamplerManager.USE_MIPMAPS_BIT | SamplerManager.MIPMAP_LINEAR_FILTERING_BIT;
+            case GL11.GL_LINEAR_MIPMAP_LINEAR ->
+                    SamplerManager.USE_MIPMAPS_BIT | SamplerManager.MIPMAP_LINEAR_FILTERING_BIT;
             case GL11.GL_NEAREST_MIPMAP_NEAREST -> SamplerManager.USE_MIPMAPS_BIT;
             default -> 0;
         };
@@ -293,11 +294,7 @@ public class GlTexture {
     }
 
     void setClamp(int v) {
-        if (v == GL30.GL_CLAMP_TO_EDGE) {
-            this.clamp = true;
-        } else {
-            this.clamp = false;
-        }
+        this.clamp = v == GL30.GL_CLAMP_TO_EDGE;
 
         updateSampler();
     }

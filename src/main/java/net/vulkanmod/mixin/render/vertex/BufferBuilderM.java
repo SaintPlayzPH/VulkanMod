@@ -21,28 +21,35 @@ import java.util.List;
 public abstract class BufferBuilderM extends DefaultedVertexConsumer
         implements BufferVertexConsumer, ExtendedVertexBuilder {
 
-    @Shadow public abstract void endVertex();
+    @Shadow
+    private ByteBuffer buffer;
+    @Shadow
+    private int nextElementByte;
+    @Shadow
+    private boolean fastFormat;
+    @Shadow
+    private boolean fullFormat;
+    @Shadow
+    private int elementIndex;
+    @Shadow
+    private @Nullable VertexFormatElement currentElement;
+    @Shadow
+    private VertexFormat format;
+    private long bufferPtr;
 
-    @Shadow private ByteBuffer buffer;
-
-    @Shadow private int nextElementByte;
-    @Shadow private boolean fastFormat;
-    @Shadow private boolean fullFormat;
-    @Shadow private int elementIndex;
-    @Shadow private @Nullable VertexFormatElement currentElement;
-    @Shadow private VertexFormat format;
-
-//    @Shadow @Nullable private Vector3f[] sortingPoints;
+    //    @Shadow @Nullable private Vector3f[] sortingPoints;
 //    @Shadow private float sortX;
 //    @Shadow private float sortY;
 //    @Shadow private float sortZ;
 //    @Shadow private VertexFormat.Mode mode;
-
-    @Shadow protected abstract it.unimi.dsi.fastutil.ints.IntConsumer intConsumer(int i, VertexFormat.IndexType indexType);
-
-    private long bufferPtr;
     private long ptr;
     private int offset;
+
+    @Shadow
+    public abstract void endVertex();
+
+    @Shadow
+    protected abstract it.unimi.dsi.fastutil.ints.IntConsumer intConsumer(int i, VertexFormat.IndexType indexType);
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void setPtrC(int initialCapacity, CallbackInfo ci) {
@@ -57,8 +64,8 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     public void vertex(float x, float y, float z, int packedColor, float u, float v, int overlay, int light, int packedNormal) {
         this.ptr = this.nextElementPtr();
 
-        if(this.format == DefaultVertexFormat.NEW_ENTITY) {
-            MemoryUtil.memPutFloat(ptr + 0, x);
+        if (this.format == DefaultVertexFormat.NEW_ENTITY) {
+            MemoryUtil.memPutFloat(ptr, x);
             MemoryUtil.memPutFloat(ptr + 4, y);
             MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -75,8 +82,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
             this.nextElementByte += 36;
             this.endVertex();
 
-        }
-        else {
+        } else {
             this.position(x, y, z);
             this.fastColor(packedColor);
             this.fastUv(u, v);
@@ -92,7 +98,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     public void vertex(float x, float y, float z, float u, float v, int packedColor, int light) {
         this.ptr = this.nextElementPtr();
 
-        MemoryUtil.memPutFloat(ptr + 0, x);
+        MemoryUtil.memPutFloat(ptr, x);
         MemoryUtil.memPutFloat(ptr + 4, y);
         MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -109,7 +115,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     }
 
     public void position(float x, float y, float z) {
-        MemoryUtil.memPutFloat(ptr + 0, x);
+        MemoryUtil.memPutFloat(ptr, x);
         MemoryUtil.memPutFloat(ptr + 4, y);
         MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -169,7 +175,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     public void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ) {
         if (this.fastFormat) {
             long ptr = this.nextElementPtr();
-            MemoryUtil.memPutFloat(ptr + 0, x);
+            MemoryUtil.memPutFloat(ptr, x);
             MemoryUtil.memPutFloat(ptr + 4, y);
             MemoryUtil.memPutFloat(ptr + 8, z);
 
@@ -205,7 +211,7 @@ public abstract class BufferBuilderM extends DefaultedVertexConsumer
     @Overwrite
     public void nextElement() {
         VertexFormatElement vertexFormatElement;
-        List<VertexFormatElement> list = ((VertexFormatMixed)(this.format)).getFastList();
+        List<VertexFormatElement> list = ((VertexFormatMixed) (this.format)).getFastList();
 
         this.elementIndex = (this.elementIndex + 1) % list.size();
         this.nextElementByte += this.currentElement.getByteSize();

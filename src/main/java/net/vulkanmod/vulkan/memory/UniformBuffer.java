@@ -9,13 +9,13 @@ public class UniformBuffer extends Buffer {
 
     private final static int minOffset = (int) DeviceManager.deviceProperties.limits().minUniformBufferOffsetAlignment();
 
-    public static int getAlignedSize(int uploadSize) {
-        return align(uploadSize, minOffset);
-    }
-
     public UniformBuffer(int size, MemoryType memoryType) {
         super(VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, memoryType);
         this.createBuffer(size);
+    }
+
+    public static int getAlignedSize(int uploadSize) {
+        return align(uploadSize, minOffset);
     }
 
     public void checkCapacity(int size) {

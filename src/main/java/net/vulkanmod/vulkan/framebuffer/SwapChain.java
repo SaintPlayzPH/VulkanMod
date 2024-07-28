@@ -35,13 +35,12 @@ public class SwapChain extends Framebuffer {
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
 
     private final Long2ReferenceOpenHashMap<long[]> FBO_map = new Long2ReferenceOpenHashMap<>();
-
+    public boolean isBGRAformat;
     private long swapChainId = VK_NULL_HANDLE;
     private List<VulkanImage> swapChainImages;
     private VkExtent2D extent2D;
     private Matrix4f pretransformMatrix = new Matrix4f();
     private int pretransformFlags;
-    public boolean isBGRAformat;
     private boolean vsync = false;
 
     private int[] glIds;
@@ -54,6 +53,43 @@ public class SwapChain extends Framebuffer {
         this.hasDepthAttachment = true;
 
         recreate();
+    }
+
+    private static VkExtent2D getExtent(VkSurfaceCapabilitiesKHR capabilities) {
+
+        if (capabilities.currentExtent().width() != UINT32_MAX) {
+            return capabilities.currentExtent();
+        }
+
+        //Fallback
+        IntBuffer width = stackGet().ints(0);
+        IntBuffer height = stackGet().ints(0);
+
+        glfwGetFramebufferSize(window, width, height);
+
+        VkExtent2D actualExtent = VkExtent2D.mallocStack().set(width.get(0), height.get(0));
+
+        VkExtent2D minExtent = capabilities.minImageExtent();
+        VkExtent2D maxExtent = capabilities.maxImageExtent();
+
+        actualExtent.width(MathUtil.clamp(minExtent.width(), maxExtent.width(), actualExtent.width()));
+        actualExtent.height(MathUtil.clamp(minExtent.height(), maxExtent.height(), actualExtent.height()));
+
+        return actualExtent;
+    }
+
+    private static int checkPresentMode(int... requestedModes) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var a = DeviceManager.querySurfaceProperties(vkDevice.getPhysicalDevice(), stack).presentModes;
+            for (int dMode : requestedModes) {
+                for (int i = 0; i < a.capacity(); i++) {
+                    if (a.get(i) == dMode) {
+                        return dMode;
+                    }
+                }
+            }
+            return VK_PRESENT_MODE_FIFO_KHR; //If None of the request modes exist/are supported by Driver
+        }
     }
 
     public void recreate() {
@@ -231,7 +267,7 @@ public class SwapChain extends Framebuffer {
 
     public void setupPreRotation(VkExtent2D extent, VkSurfaceCapabilitiesKHR surfaceCapabilities) {
         pretransformFlags = surfaceCapabilities.currentTransform() & (VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR |
-             VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR | VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR);
+                VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR | VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR);
 
         int rotateDegrees = 0;
         boolean swapXY = false;
@@ -249,7 +285,7 @@ public class SwapChain extends Framebuffer {
         }
 
         pretransformMatrix = pretransformMatrix.identity();
-        
+
         if (rotateDegrees != 0) {
             pretransformMatrix.rotate((float) Math.toRadians(rotateDegrees), 0, 0, 1);
             pretransformMatrix.invert();
@@ -346,43 +382,6 @@ public class SwapChain extends Framebuffer {
         };
     }
 
-    private static VkExtent2D getExtent(VkSurfaceCapabilitiesKHR capabilities) {
-
-        if (capabilities.currentExtent().width() != UINT32_MAX) {
-            return capabilities.currentExtent();
-        }
-
-        //Fallback
-        IntBuffer width = stackGet().ints(0);
-        IntBuffer height = stackGet().ints(0);
-
-        glfwGetFramebufferSize(window, width, height);
-
-        VkExtent2D actualExtent = VkExtent2D.mallocStack().set(width.get(0), height.get(0));
-
-        VkExtent2D minExtent = capabilities.minImageExtent();
-        VkExtent2D maxExtent = capabilities.maxImageExtent();
-
-        actualExtent.width(MathUtil.clamp(minExtent.width(), maxExtent.width(), actualExtent.width()));
-        actualExtent.height(MathUtil.clamp(minExtent.height(), maxExtent.height(), actualExtent.height()));
-
-        return actualExtent;
-    }
-
-    private static int checkPresentMode(int... requestedModes) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            var a = DeviceManager.querySurfaceProperties(vkDevice.getPhysicalDevice(), stack).presentModes;
-            for (int dMode : requestedModes) {
-                for (int i = 0; i < a.capacity(); i++) {
-                    if (a.get(i) == dMode) {
-                        return dMode;
-                    }
-                }
-            }
-            return VK_PRESENT_MODE_FIFO_KHR; //If None of the request modes exist/are supported by Driver
-        }
-    }
-
     public boolean isVsync() {
         return this.vsync;
     }
@@ -395,7 +394,7 @@ public class SwapChain extends Framebuffer {
         return this.swapChainImages.size();
     }
 
-    public Matrix4f getPretransformMatrix(){
+    public Matrix4f getPretransformMatrix() {
         return pretransformMatrix;
     }
 

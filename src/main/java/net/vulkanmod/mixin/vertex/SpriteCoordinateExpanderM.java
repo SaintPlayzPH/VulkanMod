@@ -15,9 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SpriteCoordinateExpander.class)
 public class SpriteCoordinateExpanderM implements ExtendedVertexBuilder {
 
-    @Shadow @Final private VertexConsumer delegate;
+    @Shadow
+    @Final
+    private VertexConsumer delegate;
 
-    @Shadow @Final private TextureAtlasSprite sprite;
+    @Shadow
+    @Final
+    private TextureAtlasSprite sprite;
     private ExtendedVertexBuilder extDelegate;
 
     @Inject(method = "<init>", at = @At("RETURN"))

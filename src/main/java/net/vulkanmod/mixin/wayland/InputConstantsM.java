@@ -2,7 +2,7 @@ package net.vulkanmod.mixin.wayland;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.vulkanmod.config.Platform;
-import org.lwjgl.glfw.*;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;

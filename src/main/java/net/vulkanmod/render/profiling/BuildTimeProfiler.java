@@ -9,12 +9,12 @@ public abstract class BuildTimeProfiler {
     private static float deltaTime;
 
     public static void runBench(boolean building) {
-        if(bench) {
+        if (bench) {
             if (startTime == 0) {
                 startTime = System.nanoTime();
             }
 
-            if(!building) {
+            if (!building) {
                 deltaTime = (System.nanoTime() - startTime) * 0.000001f;
                 bench = false;
                 startTime = 0;

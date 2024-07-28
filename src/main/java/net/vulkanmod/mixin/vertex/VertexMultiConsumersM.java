@@ -18,8 +18,12 @@ public class VertexMultiConsumersM {
     @Mixin(targets = "com/mojang/blaze3d/vertex/VertexMultiConsumer$Double")
     public static class DoubleM implements ExtendedVertexBuilder {
 
-        @Shadow @Final private VertexConsumer first;
-        @Shadow @Final private VertexConsumer second;
+        @Shadow
+        @Final
+        private VertexConsumer first;
+        @Shadow
+        @Final
+        private VertexConsumer second;
 
         @Override
         public void vertex(float x, float y, float z, int packedColor, float u, float v, int overlay, int light, int packedNormal) {
@@ -33,7 +37,9 @@ public class VertexMultiConsumersM {
 
     @Mixin(targets = "com/mojang/blaze3d/vertex/VertexMultiConsumer$Multiple")
     public static class MultipleM implements ExtendedVertexBuilder {
-        @Shadow @Final private VertexConsumer[] delegates;
+        @Shadow
+        @Final
+        private VertexConsumer[] delegates;
 
         @Override
         public void vertex(float x, float y, float z, int packedColor, float u, float v, int overlay, int light, int packedNormal) {
@@ -48,10 +54,18 @@ public class VertexMultiConsumersM {
     @Mixin(SheetedDecalTextureGenerator.class)
     public static abstract class SheetDecalM implements ExtendedVertexBuilder {
 
-        @Shadow @Final private VertexConsumer delegate;
-        @Shadow @Final private Matrix3f normalInversePose;
-        @Shadow @Final private Matrix4f cameraInversePose;
-        @Shadow @Final private float textureScale;
+        @Shadow
+        @Final
+        private VertexConsumer delegate;
+        @Shadow
+        @Final
+        private Matrix3f normalInversePose;
+        @Shadow
+        @Final
+        private Matrix4f cameraInversePose;
+        @Shadow
+        @Final
+        private float textureScale;
 
         @Override
         public void vertex(float x, float y, float z, int packedColor, float u, float v, int overlay, int light, int packedNormal) {

@@ -1,18 +1,12 @@
 package net.vulkanmod.render.chunk.util;
 
 import org.apache.commons.lang3.Validate;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 public class CircularIntList {
-    private int[] list;
     private final int startIndex;
-
+    private int[] list;
     private int[] previous;
     private int[] next;
 
@@ -31,12 +25,12 @@ public class CircularIntList {
         this.next = new int[size];
 
         int k = 0;
-        for(int i = startIndex; i < size; ++i) {
+        for (int i = startIndex; i < size; ++i) {
             list[k] = i;
 
             ++k;
         }
-        for(int i = 0; i < startIndex; ++i) {
+        for (int i = 0; i < startIndex; ++i) {
             list[k] = i;
             ++k;
         }
@@ -71,8 +65,8 @@ public class CircularIntList {
     }
 
     public class OwnIterator implements Iterator<Integer> {
-        private int currentIndex = -1;
         private final int maxIndex = list.length - 1;
+        private int currentIndex = -1;
 
         @Override
         public boolean hasNext() {
@@ -95,9 +89,9 @@ public class CircularIntList {
     }
 
     public class RangeIterator implements Iterator<Integer> {
-        private int currentIndex;
         private final int startIndex;
         private final int maxIndex;
+        private int currentIndex;
 
         public RangeIterator(int startIndex, int endIndex) {
             this.startIndex = startIndex;

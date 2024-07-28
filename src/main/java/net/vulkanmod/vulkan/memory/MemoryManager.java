@@ -27,40 +27,26 @@ import static org.lwjgl.util.vma.Vma.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class MemoryManager {
-    private static final boolean DEBUG = false;
     public static final long BYTES_IN_MB = 1024 * 1024;
-
-    private static MemoryManager INSTANCE;
+    private static final boolean DEBUG = false;
     private static final long ALLOCATOR = Vulkan.getAllocator();
-
     private static final Long2ReferenceOpenHashMap<Buffer> buffers = new Long2ReferenceOpenHashMap<>();
     private static final Long2ReferenceOpenHashMap<VulkanImage> images = new Long2ReferenceOpenHashMap<>();
-
     static int Frames;
-
+    private static MemoryManager INSTANCE;
     private static long deviceMemory = 0;
     private static long nativeMemory = 0;
 
     private int currentFrame = 0;
 
-    private ObjectArrayList<Buffer.BufferInfo>[] freeableBuffers = new ObjectArrayList[Frames];
-    private ObjectArrayList<VulkanImage>[] freeableImages = new ObjectArrayList[Frames];
+    private final ObjectArrayList<Buffer.BufferInfo>[] freeableBuffers = new ObjectArrayList[Frames];
+    private final ObjectArrayList<VulkanImage>[] freeableImages = new ObjectArrayList[Frames];
 
-    private ObjectArrayList<Runnable>[] frameOps = new ObjectArrayList[Frames];
-    private ObjectArrayList<Pair<AreaBuffer, Integer>>[] segmentsToFree = new ObjectArrayList[Frames];
+    private final ObjectArrayList<Runnable>[] frameOps = new ObjectArrayList[Frames];
+    private final ObjectArrayList<Pair<AreaBuffer, Integer>>[] segmentsToFree = new ObjectArrayList[Frames];
 
     //debug
     private ObjectArrayList<StackTraceElement[]>[] stackTraces;
-
-    public static MemoryManager getInstance() {
-        return INSTANCE;
-    }
-
-    public static void createInstance(int frames) {
-        Frames = frames;
-
-        INSTANCE = new MemoryManager();
-    }
 
     MemoryManager() {
         for (int i = 0; i < Frames; ++i) {
@@ -77,6 +63,84 @@ public class MemoryManager {
                 this.stackTraces[i] = new ObjectArrayList<>();
             }
         }
+    }
+
+    public static MemoryManager getInstance() {
+        return INSTANCE;
+    }
+
+    public static void createInstance(int frames) {
+        Frames = frames;
+
+        INSTANCE = new MemoryManager();
+    }
+
+    public static synchronized void createImage(int width, int height, int mipLevels, int format, int tiling, int usage, int memProperties,
+                                                LongBuffer pTextureImage, PointerBuffer pTextureImageMemory) {
+
+        try (MemoryStack stack = stackPush()) {
+
+            VkImageCreateInfo imageInfo = VkImageCreateInfo.calloc(stack);
+            imageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
+            imageInfo.imageType(VK_IMAGE_TYPE_2D);
+            imageInfo.extent().width(width);
+            imageInfo.extent().height(height);
+            imageInfo.extent().depth(1);
+            imageInfo.mipLevels(mipLevels);
+            imageInfo.arrayLayers(1);
+            imageInfo.format(format);
+            imageInfo.tiling(tiling);
+            imageInfo.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
+            imageInfo.usage(usage);
+            imageInfo.samples(VK_SAMPLE_COUNT_1_BIT);
+//            imageInfo.sharingMode(VK_SHARING_MODE_CONCURRENT);
+            // TODO hardcoded queue family indices
+            imageInfo.pQueueFamilyIndices(stack.ints(0, 1));
+
+            VmaAllocationCreateInfo allocationInfo = VmaAllocationCreateInfo.calloc(stack);
+            allocationInfo.requiredFlags(memProperties);
+
+            vmaCreateImage(ALLOCATOR, imageInfo, allocationInfo, pTextureImage, pTextureImageMemory, null);
+
+        }
+    }
+
+    public static void addImage(VulkanImage image) {
+        images.putIfAbsent(image.getId(), image);
+    }
+
+    public static void MapAndCopy(long allocation, Consumer<PointerBuffer> consumer) {
+        try (MemoryStack stack = stackPush()) {
+            PointerBuffer data = stack.mallocPointer(1);
+
+            vmaMapMemory(ALLOCATOR, allocation, data);
+            consumer.accept(data);
+            vmaUnmapMemory(ALLOCATOR, allocation);
+        }
+    }
+
+    public static void freeBuffer(long buffer, long allocation) {
+        vmaDestroyBuffer(ALLOCATOR, buffer, allocation);
+
+        buffers.remove(buffer);
+    }
+
+    private static void freeBuffer(Buffer.BufferInfo bufferInfo) {
+        vmaDestroyBuffer(ALLOCATOR, bufferInfo.id(), bufferInfo.allocation());
+
+        if (bufferInfo.type() == MemoryType.Type.DEVICE_LOCAL) {
+            deviceMemory -= bufferInfo.bufferSize();
+        } else {
+            nativeMemory -= bufferInfo.bufferSize();
+        }
+
+        buffers.remove(bufferInfo.id());
+    }
+
+    public static void freeImage(long image, long allocation) {
+        vmaDestroyImage(ALLOCATOR, image, allocation);
+
+        images.remove(image);
     }
 
     public synchronized void initFrame(int frame) {
@@ -147,80 +211,12 @@ public class MemoryManager {
         }
     }
 
-    public static synchronized void createImage(int width, int height, int mipLevels, int format, int tiling, int usage, int memProperties,
-                                                LongBuffer pTextureImage, PointerBuffer pTextureImageMemory) {
-
-        try (MemoryStack stack = stackPush()) {
-
-            VkImageCreateInfo imageInfo = VkImageCreateInfo.calloc(stack);
-            imageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
-            imageInfo.imageType(VK_IMAGE_TYPE_2D);
-            imageInfo.extent().width(width);
-            imageInfo.extent().height(height);
-            imageInfo.extent().depth(1);
-            imageInfo.mipLevels(mipLevels);
-            imageInfo.arrayLayers(1);
-            imageInfo.format(format);
-            imageInfo.tiling(tiling);
-            imageInfo.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
-            imageInfo.usage(usage);
-            imageInfo.samples(VK_SAMPLE_COUNT_1_BIT);
-//            imageInfo.sharingMode(VK_SHARING_MODE_CONCURRENT);
-            // TODO hardcoded queue family indices
-            imageInfo.pQueueFamilyIndices(stack.ints(0, 1));
-
-            VmaAllocationCreateInfo allocationInfo = VmaAllocationCreateInfo.calloc(stack);
-            allocationInfo.requiredFlags(memProperties);
-
-            vmaCreateImage(ALLOCATOR, imageInfo, allocationInfo, pTextureImage, pTextureImageMemory, null);
-
-        }
-    }
-
-    public static void addImage(VulkanImage image) {
-        images.putIfAbsent(image.getId(), image);
-    }
-
-    public static void MapAndCopy(long allocation, Consumer<PointerBuffer> consumer) {
-        try (MemoryStack stack = stackPush()) {
-            PointerBuffer data = stack.mallocPointer(1);
-
-            vmaMapMemory(ALLOCATOR, allocation, data);
-            consumer.accept(data);
-            vmaUnmapMemory(ALLOCATOR, allocation);
-        }
-    }
-
     public PointerBuffer Map(long allocation) {
         PointerBuffer data = MemoryUtil.memAllocPointer(1);
 
         vmaMapMemory(ALLOCATOR, allocation, data);
 
         return data;
-    }
-
-    public static void freeBuffer(long buffer, long allocation) {
-        vmaDestroyBuffer(ALLOCATOR, buffer, allocation);
-
-        buffers.remove(buffer);
-    }
-
-    private static void freeBuffer(Buffer.BufferInfo bufferInfo) {
-        vmaDestroyBuffer(ALLOCATOR, bufferInfo.id(), bufferInfo.allocation());
-
-        if (bufferInfo.type() == MemoryType.Type.DEVICE_LOCAL) {
-            deviceMemory -= bufferInfo.bufferSize();
-        } else {
-            nativeMemory -= bufferInfo.bufferSize();
-        }
-
-        buffers.remove(bufferInfo.id());
-    }
-
-    public static void freeImage(long image, long allocation) {
-        vmaDestroyImage(ALLOCATOR, image, allocation);
-
-        images.remove(image);
     }
 
     public synchronized void addToFreeable(Buffer buffer) {

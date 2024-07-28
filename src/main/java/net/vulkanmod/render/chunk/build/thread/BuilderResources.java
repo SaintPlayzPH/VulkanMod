@@ -20,21 +20,17 @@ public class BuilderResources {
     public final LiquidRenderer liquidRenderer = new LiquidRenderer();
 
     public final TintCache tintCache = new TintCache();
-
-    public RenderRegion region;
-
     public final ArrayLightDataCache lightDataCache = new ArrayLightDataCache();
     public final QuadLightData quadLightData = new QuadLightData();
-
     public final LightPipeline smoothLightPipeline;
     public final LightPipeline flatLightPipeline;
-
+    public RenderRegion region;
     private int totalBuildTime = 0, buildCount = 0;
 
     public BuilderResources() {
         this.flatLightPipeline = new FlatLightPipeline(lightDataCache);
 
-        if(Initializer.CONFIG.ambientOcclusion == LightMode.SUB_BLOCK)
+        if (Initializer.CONFIG.ambientOcclusion == LightMode.SUB_BLOCK)
             this.smoothLightPipeline = new NewSmoothLightPipeline(lightDataCache);
         else
             this.smoothLightPipeline = new SmoothLightPipeline(lightDataCache);

@@ -32,25 +32,16 @@ public class BlockRenderer {
 
     static final Direction[] DIRECTIONS = Direction.values();
     private static BlockColors blockColors;
-
-    RandomSource randomSource = RandomSource.createNewThreadLocalInstance();
-
-    Vector3f pos;
-    BlockPos blockPos;
-    BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
-
-    BuilderResources resources;
-
-    BlockState blockState;
-
-    public void setResources(BuilderResources resources) {
-        this.resources = resources;
-    }
-
     final Object2ByteLinkedOpenHashMap<Block.BlockStatePairKey> occlusionCache = new Object2ByteLinkedOpenHashMap<>(2048, 0.25F) {
         protected void rehash(int i) {
         }
     };
+    RandomSource randomSource = RandomSource.createNewThreadLocalInstance();
+    Vector3f pos;
+    BlockPos blockPos;
+    BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos();
+    BuilderResources resources;
+    BlockState blockState;
 
     public BlockRenderer() {
         occlusionCache.defaultReturnValue((byte) 127);
@@ -58,6 +49,52 @@ public class BlockRenderer {
 
     public static void setBlockColors(BlockColors blockColors) {
         BlockRenderer.blockColors = blockColors;
+    }
+
+    public static void putQuadData(TerrainBufferBuilder bufferBuilder, Vector3f pos, QuadView quad, QuadLightData quadLightData, float red, float green, float blue) {
+        Vec3i normal = quad.getFacingDirection().getNormal();
+        int packedNormal = VertexUtil.packNormal(normal.getX(), normal.getY(), normal.getZ());
+
+        float[] brightnessArr = quadLightData.br;
+        int[] lights = quadLightData.lm;
+
+        // Rotate triangles if needed to fix AO anisotropy
+        int idx = QuadUtils.getIterationStartIdx(brightnessArr, lights);
+
+        bufferBuilder.ensureCapacity();
+
+        for (byte i = 0; i < 4; ++i) {
+            final float x = pos.x() + quad.getX(idx);
+            final float y = pos.y() + quad.getY(idx);
+            final float z = pos.z() + quad.getZ(idx);
+
+            final float r, g, b;
+            final float quadR, quadG, quadB;
+
+            final int quadColor = quad.getColor(idx);
+            quadR = ColorUtil.RGBA.unpackR(quadColor);
+            quadG = ColorUtil.RGBA.unpackG(quadColor);
+            quadB = ColorUtil.RGBA.unpackB(quadColor);
+
+            final float brightness = brightnessArr[idx];
+            r = quadR * brightness * red;
+            g = quadG * brightness * green;
+            b = quadB * brightness * blue;
+
+            final int color = ColorUtil.RGBA.pack(r, g, b, 1.0f);
+            final int light = lights[idx];
+            final float u = quad.getU(idx);
+            final float v = quad.getV(idx);
+
+            bufferBuilder.vertex(x, y, z, color, u, v, light, packedNormal);
+
+            idx = (idx + 1) & 0b11;
+        }
+
+    }
+
+    public void setResources(BuilderResources resources) {
+        this.resources = resources;
     }
 
     public void renderBatched(BlockState blockState, BlockPos blockPos, Vector3f pos, TerrainBufferBuilder bufferBuilder) {
@@ -126,48 +163,6 @@ public class BlockRenderer {
         }
 
         putQuadData(bufferBuilder, pos, quadView, quadLightData, r, g, b);
-    }
-
-    public static void putQuadData(TerrainBufferBuilder bufferBuilder, Vector3f pos, QuadView quad, QuadLightData quadLightData, float red, float green, float blue) {
-        Vec3i normal = quad.getFacingDirection().getNormal();
-        int packedNormal = VertexUtil.packNormal(normal.getX(), normal.getY(), normal.getZ());
-
-        float[] brightnessArr = quadLightData.br;
-        int[] lights = quadLightData.lm;
-
-        // Rotate triangles if needed to fix AO anisotropy
-        int idx = QuadUtils.getIterationStartIdx(brightnessArr, lights);
-
-        bufferBuilder.ensureCapacity();
-
-        for (byte i = 0; i < 4; ++i) {
-            final float x = pos.x() + quad.getX(idx);
-            final float y = pos.y() + quad.getY(idx);
-            final float z = pos.z() + quad.getZ(idx);
-
-            final float r, g, b;
-            final float quadR, quadG, quadB;
-
-            final int quadColor = quad.getColor(idx);
-            quadR = ColorUtil.RGBA.unpackR(quadColor);
-            quadG = ColorUtil.RGBA.unpackG(quadColor);
-            quadB = ColorUtil.RGBA.unpackB(quadColor);
-
-            final float brightness = brightnessArr[idx];
-            r = quadR * brightness * red;
-            g = quadG * brightness * green;
-            b = quadB * brightness * blue;
-
-            final int color = ColorUtil.RGBA.pack(r, g, b, 1.0f);
-            final int light = lights[idx];
-            final float u = quad.getU(idx);
-            final float v = quad.getV(idx);
-
-            bufferBuilder.vertex(x, y, z, color, u, v, light, packedNormal);
-
-            idx = (idx + 1) & 0b11;
-        }
-
     }
 
     public boolean shouldRenderFace(BlockState blockState, Direction direction, BlockPos adjPos) {

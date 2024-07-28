@@ -41,7 +41,7 @@ public class SwitchOptionWidget extends OptionWidget<SwitchOption> {
         }
 
         color = ColorUtil.ARGB.pack(0.6f, 0.6f, 0.6f, 1.0f);
-        GuiRenderer.renderBoxBorder(x0, y0, halfWidth * 2, height, 1,  color);
+        GuiRenderer.renderBoxBorder(x0, y0, halfWidth * 2, height, 1, color);
 
         color = this.active ? 0xFFFFFF : 0xA0A0A0;
         Font textRenderer = Minecraft.getInstance().font;
@@ -77,13 +77,13 @@ public class SwitchOptionWidget extends OptionWidget<SwitchOption> {
     }
 
     @Override
-    public void setFocused(boolean bl) {
-        this.focused = bl;
+    public boolean isFocused() {
+        return this.focused;
     }
 
     @Override
-    public boolean isFocused() {
-        return this.focused;
+    public void setFocused(boolean bl) {
+        this.focused = bl;
     }
 
 }

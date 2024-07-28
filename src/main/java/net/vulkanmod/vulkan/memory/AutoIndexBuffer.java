@@ -21,6 +21,128 @@ public class AutoIndexBuffer {
         createIndexBuffer(vertexCount);
     }
 
+    public static ByteBuffer genQuadIndices(int vertexCount) {
+        int indexCount = vertexCount * 3 / 2;
+        indexCount = roundUpToDivisible(indexCount, 6);
+
+        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
+        ShortBuffer idxs = buffer.asShortBuffer();
+
+        int j = 0;
+        for (int i = 0; i < vertexCount; i += 4) {
+            idxs.put(j, (short) (i));
+            idxs.put(j + 1, (short) (i + 1));
+            idxs.put(j + 2, (short) (i + 2));
+            idxs.put(j + 3, (short) (i));
+            idxs.put(j + 4, (short) (i + 2));
+            idxs.put(j + 5, (short) (i + 3));
+
+            j += 6;
+        }
+
+        return buffer;
+    }
+
+    public static ByteBuffer genIntQuadIndices(int vertexCount) {
+        int indexCount = vertexCount * 3 / 2;
+        indexCount = roundUpToDivisible(indexCount, 6);
+
+        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Integer.BYTES);
+        IntBuffer idxs = buffer.asIntBuffer();
+
+        int j = 0;
+        for (int i = 0; i < vertexCount; i += 4) {
+            idxs.put(j, (i));
+            idxs.put(j + 1, (i + 1));
+            idxs.put(j + 2, (i + 2));
+            idxs.put(j + 3, (i));
+            idxs.put(j + 4, (i + 2));
+            idxs.put(j + 5, (i + 3));
+
+            j += 6;
+        }
+
+        return buffer;
+    }
+
+    public static ByteBuffer genLinesIndices(int vertexCount) {
+        int indexCount = vertexCount * 3 / 2;
+        indexCount = roundUpToDivisible(indexCount, 6);
+
+        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
+        ShortBuffer idxs = buffer.asShortBuffer();
+
+        int j = 0;
+        for (int i = 0; i < vertexCount; i += 4) {
+            idxs.put(j, (short) (i));
+            idxs.put(j + 1, (short) (i + 1));
+            idxs.put(j + 2, (short) (i + 2));
+            idxs.put(j + 3, (short) (i + 3));
+            idxs.put(j + 4, (short) (i + 2));
+            idxs.put(j + 5, (short) (i + 1));
+
+            j += 6;
+        }
+
+        return buffer;
+    }
+
+    public static ByteBuffer genTriangleFanIndices(int vertexCount) {
+        int indexCount = (vertexCount - 2) * 3;
+        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
+        ShortBuffer idxs = buffer.asShortBuffer();
+
+        int j = 0;
+        for (int i = 0; i < vertexCount - 2; ++i) {
+            idxs.put(j, (short) 0);
+            idxs.put(j + 1, (short) (i + 1));
+            idxs.put(j + 2, (short) (i + 2));
+
+            j += 3;
+        }
+
+        return buffer;
+    }
+
+    public static ByteBuffer genTriangleStripIndices(int vertexCount) {
+        int indexCount = (vertexCount - 2) * 3;
+
+        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
+        ShortBuffer idxs = buffer.asShortBuffer();
+
+        int j = 0;
+        for (int i = 0; i < vertexCount - 2; ++i) {
+            idxs.put(j, (short) i);
+            idxs.put(j + 1, (short) (i + 1));
+            idxs.put(j + 2, (short) (i + 2));
+
+            j += 3;
+        }
+
+        return buffer;
+    }
+
+    public static ByteBuffer genDebugLineStripIndices(int vertexCount) {
+        int indexCount = (vertexCount - 1) * 2;
+
+        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
+        ShortBuffer idxs = buffer.asShortBuffer();
+
+        int j = 0;
+        for (int i = 0; i < vertexCount - 1; ++i) {
+            idxs.put(j, (short) i);
+            idxs.put(j + 1, (short) (i + 1));
+
+            j += 2;
+        }
+
+        return buffer;
+    }
+
+    public static int roundUpToDivisible(int n, int d) {
+        return ((n + d - 1) / d) * d;
+    }
+
     private void createIndexBuffer(int vertexCount) {
         this.vertexCount = vertexCount;
         ByteBuffer buffer;
@@ -51,7 +173,7 @@ public class AutoIndexBuffer {
     }
 
     public void checkCapacity(int vertexCount) {
-        if(vertexCount > this.vertexCount) {
+        if (vertexCount > this.vertexCount) {
             int newVertexCount = this.vertexCount * 2;
             Initializer.LOGGER.info("Reallocating AutoIndexBuffer from {} to {}", this.vertexCount, newVertexCount);
 
@@ -60,129 +182,9 @@ public class AutoIndexBuffer {
         }
     }
 
-    public static ByteBuffer genQuadIndices(int vertexCount) {
-        int indexCount = vertexCount * 3 / 2;
-        indexCount = roundUpToDivisible(indexCount, 6);
-
-        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
-        ShortBuffer idxs = buffer.asShortBuffer();
-
-        int j = 0;
-        for(int i = 0; i < vertexCount; i += 4) {
-            idxs.put(j + 0, (short) (i));
-            idxs.put(j + 1, (short) (i + 1));
-            idxs.put(j + 2, (short) (i + 2));
-            idxs.put(j + 3, (short) (i));
-            idxs.put(j + 4, (short) (i + 2));
-            idxs.put(j + 5, (short) (i + 3));
-
-            j += 6;
-        }
-
-        return buffer;
+    public IndexBuffer getIndexBuffer() {
+        return this.indexBuffer;
     }
-
-    public static ByteBuffer genIntQuadIndices(int vertexCount) {
-        int indexCount = vertexCount * 3 / 2;
-        indexCount = roundUpToDivisible(indexCount, 6);
-
-        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Integer.BYTES);
-        IntBuffer idxs = buffer.asIntBuffer();
-
-        int j = 0;
-        for(int i = 0; i < vertexCount; i += 4) {
-            idxs.put(j + 0, (i));
-            idxs.put(j + 1, (i + 1));
-            idxs.put(j + 2, (i + 2));
-            idxs.put(j + 3, (i));
-            idxs.put(j + 4, (i + 2));
-            idxs.put(j + 5, (i + 3));
-
-            j += 6;
-        }
-
-        return buffer;
-    }
-
-    public static ByteBuffer genLinesIndices(int vertexCount) {
-        int indexCount = vertexCount * 3 / 2;
-        indexCount = roundUpToDivisible(indexCount, 6);
-
-        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
-        ShortBuffer idxs = buffer.asShortBuffer();
-
-        int j = 0;
-        for(int i = 0; i < vertexCount; i += 4) {
-            idxs.put(j + 0, (short) (i));
-            idxs.put(j + 1, (short) (i + 1));
-            idxs.put(j + 2, (short) (i + 2));
-            idxs.put(j + 3, (short) (i + 3));
-            idxs.put(j + 4, (short) (i + 2));
-            idxs.put(j + 5, (short) (i + 1));
-
-            j += 6;
-        }
-
-        return buffer;
-    }
-
-    public static ByteBuffer genTriangleFanIndices(int vertexCount) {
-        int indexCount = (vertexCount - 2) * 3;
-        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
-        ShortBuffer idxs = buffer.asShortBuffer();
-
-        int j = 0;
-        for (int i = 0; i < vertexCount - 2; ++i) {
-            idxs.put(j + 0, (short) 0);
-            idxs.put(j + 1, (short) (i + 1));
-            idxs.put(j + 2, (short) (i + 2));
-
-            j += 3;
-        }
-
-        return buffer;
-    }
-
-    public static ByteBuffer genTriangleStripIndices(int vertexCount) {
-        int indexCount = (vertexCount - 2) * 3;
-
-        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
-        ShortBuffer idxs = buffer.asShortBuffer();
-
-        int j = 0;
-        for (int i = 0; i < vertexCount - 2; ++i) {
-            idxs.put(j + 0, (short) i);
-            idxs.put(j + 1, (short) (i + 1));
-            idxs.put(j + 2, (short) (i + 2));
-
-            j += 3;
-        }
-
-        return buffer;
-    }
-
-    public static ByteBuffer genDebugLineStripIndices(int vertexCount) {
-        int indexCount = (vertexCount - 1) * 2;
-
-        ByteBuffer buffer = MemoryUtil.memAlloc(indexCount * Short.BYTES);
-        ShortBuffer idxs = buffer.asShortBuffer();
-
-        int j = 0;
-        for (int i = 0; i < vertexCount - 1; ++i) {
-            idxs.put(j + 0, (short) i);
-            idxs.put(j + 1, (short) (i + 1));
-
-            j += 2;
-        }
-
-        return buffer;
-    }
-
-    public static int roundUpToDivisible(int n, int d) {
-        return ((n + d - 1) / d) * d;
-    }
-
-    public IndexBuffer getIndexBuffer() { return this.indexBuffer; }
 
     public void freeBuffer() {
         this.indexBuffer.freeBuffer();

@@ -29,7 +29,8 @@ public class VBO {
 
     private boolean autoIndexed = false;
 
-    public VBO() {}
+    public VBO() {
+    }
 
     public void upload(BufferBuilder.RenderedBuffer buffer) {
         BufferBuilder.DrawState parameters = buffer.drawState();

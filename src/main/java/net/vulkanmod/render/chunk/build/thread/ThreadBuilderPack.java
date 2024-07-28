@@ -10,15 +10,6 @@ import java.util.function.Function;
 
 public class ThreadBuilderPack {
     private static Function<TerrainRenderType, TerrainBufferBuilder> terrainBuilderConstructor;
-
-    public static void defaultTerrainBuilderConstructor() {
-        terrainBuilderConstructor = renderType -> new TerrainBufferBuilder(TerrainRenderType.getRenderType(renderType).bufferSize());
-    }
-
-    public static void setTerrainBuilderConstructor(Function<TerrainRenderType, TerrainBufferBuilder> constructor) {
-        terrainBuilderConstructor = constructor;
-    }
-
     private final Map<TerrainRenderType, TerrainBufferBuilder> builders;
 
     public ThreadBuilderPack() {
@@ -28,6 +19,14 @@ public class ThreadBuilderPack {
                         terrainBuilderConstructor.apply(terrainRenderType))
         );
         builders = map;
+    }
+
+    public static void defaultTerrainBuilderConstructor() {
+        terrainBuilderConstructor = renderType -> new TerrainBufferBuilder(TerrainRenderType.getRenderType(renderType).bufferSize());
+    }
+
+    public static void setTerrainBuilderConstructor(Function<TerrainRenderType, TerrainBufferBuilder> constructor) {
+        terrainBuilderConstructor = constructor;
     }
 
     public TerrainBufferBuilder builder(TerrainRenderType renderType) {

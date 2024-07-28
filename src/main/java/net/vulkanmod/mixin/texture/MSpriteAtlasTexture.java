@@ -15,8 +15,8 @@ public class MSpriteAtlasTexture {
     @Redirect(method = "upload", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/TextureUtil;prepareImage(IIII)V"))
     private void redirect(int id, int maxLevel, int width, int height) {
         VulkanImage image = new VulkanImage.Builder(width, height).setMipLevels(maxLevel + 1).createVulkanImage();
-        ((VAbstractTextureI)(this)).setVulkanImage(image);
-        ((VAbstractTextureI)(this)).bindTexture();
+        ((VAbstractTextureI) (this)).setVulkanImage(image);
+        ((VAbstractTextureI) (this)).bindTexture();
     }
 
     /**

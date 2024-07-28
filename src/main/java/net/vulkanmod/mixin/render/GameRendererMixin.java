@@ -29,75 +29,187 @@ import java.util.function.Consumer;
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
 
-    @Shadow @Final private Map<String, ShaderInstance> shaders;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionColorShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionColorTexShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionTexShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionTexColorShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance particleShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionTexColorNormalShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeSolidShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeCutoutMippedShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeCutoutShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTranslucentShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTranslucentMovingBlockShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeArmorCutoutNoCullShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntitySolidShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityCutoutShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityCutoutNoCullShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityCutoutNoCullZOffsetShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeItemEntityTranslucentCullShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityTranslucentCullShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityTranslucentShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityTranslucentEmissiveShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntitySmoothCutoutShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeBeaconBeamShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityDecalShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityNoOutlineShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityShadowShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityAlphaShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEyesShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEnergySwirlShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeLeashShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeWaterMaskShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeOutlineShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeArmorGlintShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeArmorEntityGlintShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeGlintTranslucentShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeGlintShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeGlintDirectShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityGlintShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEntityGlintDirectShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTextShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTextIntensityShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTextSeeThroughShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTextIntensitySeeThroughShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeLightningShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeTripwireShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEndPortalShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeEndGatewayShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeLinesShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance rendertypeCrumblingShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeBreezeWindShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeTextBackgroundShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeTextBackgroundSeeThroughShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeGuiShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeGuiOverlayShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeGuiTextHighlightShader;
+    @Shadow
+    private static @Nullable ShaderInstance rendertypeGuiGhostRecipeOverlayShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionColorLightmapShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionColorTexLightmapShader;
+    @Shadow
+    private @Nullable
+    static ShaderInstance positionTexLightmapColorShader;
+    @Shadow
+    public ShaderInstance blitShader;
+    @Shadow
+    @Final
+    private Map<String, ShaderInstance> shaders;
 
-    @Shadow private @Nullable static ShaderInstance positionShader;
-    @Shadow private @Nullable static ShaderInstance positionColorShader;
-    @Shadow private @Nullable static ShaderInstance positionColorTexShader;
-    @Shadow private @Nullable static ShaderInstance positionTexShader;
-    @Shadow private @Nullable static ShaderInstance positionTexColorShader;
-    @Shadow private @Nullable static ShaderInstance particleShader;
-    @Shadow private @Nullable static ShaderInstance positionTexColorNormalShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeSolidShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeCutoutMippedShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeCutoutShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTranslucentShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTranslucentMovingBlockShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeArmorCutoutNoCullShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntitySolidShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityCutoutShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityCutoutNoCullShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityCutoutNoCullZOffsetShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeItemEntityTranslucentCullShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityTranslucentCullShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityTranslucentShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityTranslucentEmissiveShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntitySmoothCutoutShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeBeaconBeamShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityDecalShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityNoOutlineShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityShadowShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityAlphaShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEyesShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEnergySwirlShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeLeashShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeWaterMaskShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeOutlineShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeArmorGlintShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeArmorEntityGlintShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeGlintTranslucentShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeGlintShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeGlintDirectShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityGlintShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEntityGlintDirectShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTextShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTextIntensityShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTextSeeThroughShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTextIntensitySeeThroughShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeLightningShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeTripwireShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEndPortalShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeEndGatewayShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeLinesShader;
-    @Shadow private @Nullable static ShaderInstance rendertypeCrumblingShader;
-    @Shadow private static @Nullable ShaderInstance rendertypeBreezeWindShader;
+    @Shadow
+    protected abstract ShaderInstance preloadShader(ResourceProvider resourceProvider, String string, VertexFormat vertexFormat);
 
-    @Shadow private static @Nullable ShaderInstance rendertypeTextBackgroundShader;
-    @Shadow private static @Nullable ShaderInstance rendertypeTextBackgroundSeeThroughShader;
-    @Shadow private static @Nullable ShaderInstance rendertypeGuiShader;
-    @Shadow private static @Nullable ShaderInstance rendertypeGuiOverlayShader;
-    @Shadow private static @Nullable ShaderInstance rendertypeGuiTextHighlightShader;
-    @Shadow private static @Nullable ShaderInstance rendertypeGuiGhostRecipeOverlayShader;
-
-    @Shadow private @Nullable static ShaderInstance positionColorLightmapShader;
-    @Shadow private @Nullable static ShaderInstance positionColorTexLightmapShader;
-    @Shadow private @Nullable static ShaderInstance positionTexLightmapColorShader;
-
-    @Shadow public ShaderInstance blitShader;
-
-    @Shadow protected abstract ShaderInstance preloadShader(ResourceProvider resourceProvider, String string, VertexFormat vertexFormat);
-
-    @Shadow public abstract float getRenderDistance();
+    @Shadow
+    public abstract float getRenderDistance();
 
     @Inject(method = "reloadShaders", at = @At("HEAD"), cancellable = true)
     public void reloadShaders(ResourceProvider provider, CallbackInfo ci) throws IOException {
@@ -122,7 +234,7 @@ public abstract class GameRendererMixin {
                 positionColorTexShader = shaderInstance;
             }));
             shaders.add(Pair.of(new ShaderInstance(provider, "position_color_tex_lightmap", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP), (shaderInstance) -> {
-               positionColorTexLightmapShader = shaderInstance;
+                positionColorTexLightmapShader = shaderInstance;
             }));
             shaders.add(Pair.of(new ShaderInstance(provider, "position_tex", DefaultVertexFormat.POSITION_TEX), (shaderInstance) -> {
                 positionTexShader = shaderInstance;

@@ -22,10 +22,9 @@ public class IndexBuffer extends Buffer {
     public void copyBuffer(ByteBuffer buffer) {
         int size = buffer.remaining();
 
-        if(size > this.bufferSize - this.usedBytes) {
+        if (size > this.bufferSize - this.usedBytes) {
             throw new RuntimeException("Trying to write buffer beyond max size.");
-        }
-        else {
+        } else {
             this.type.copyToBuffer(this, size, buffer);
             offset = usedBytes;
             usedBytes += size;

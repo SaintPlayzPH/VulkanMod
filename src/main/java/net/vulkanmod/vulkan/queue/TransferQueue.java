@@ -19,6 +19,19 @@ public class TransferQueue extends Queue {
         super(stack, familyIndex);
     }
 
+    public static void uploadBufferCmd(VkCommandBuffer commandBuffer, long srcBuffer, long srcOffset, long dstBuffer, long dstOffset, long size) {
+
+        try (MemoryStack stack = stackPush()) {
+
+            VkBufferCopy.Buffer copyRegion = VkBufferCopy.calloc(1, stack);
+            copyRegion.size(size);
+            copyRegion.srcOffset(srcOffset);
+            copyRegion.dstOffset(dstOffset);
+
+            vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, copyRegion);
+        }
+    }
+
     public long copyBufferCmd(long srcBuffer, long srcOffset, long dstBuffer, long dstOffset, long size) {
 
         try (MemoryStack stack = stackPush()) {
@@ -54,19 +67,6 @@ public class TransferQueue extends Queue {
             this.submitCommands(commandBuffer);
             vkWaitForFences(DEVICE, commandBuffer.fence, true, VUtil.UINT64_MAX);
             commandBuffer.reset();
-        }
-    }
-
-    public static void uploadBufferCmd(VkCommandBuffer commandBuffer, long srcBuffer, long srcOffset, long dstBuffer, long dstOffset, long size) {
-
-        try (MemoryStack stack = stackPush()) {
-
-            VkBufferCopy.Buffer copyRegion = VkBufferCopy.calloc(1, stack);
-            copyRegion.size(size);
-            copyRegion.srcOffset(srcOffset);
-            copyRegion.dstOffset(dstOffset);
-
-            vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, copyRegion);
         }
     }
 

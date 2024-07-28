@@ -11,19 +11,19 @@ import net.vulkanmod.vulkan.util.ColorUtil;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.util.Iterator;
 import java.util.List;
 
 @Mixin(ModelPart.class)
 public class ModelPartM {
 
-    @Shadow @Final private List<ModelPart.Cube> cubes;
+    @Shadow
+    @Final
+    private List<ModelPart.Cube> cubes;
 
     /**
      * @author
@@ -33,12 +33,12 @@ public class ModelPartM {
     protected void compile(PoseStack.Pose pose, VertexConsumer vertexConsumer, int i, int j, float r, float g, float b, float a) {
         Matrix4f matrix4f = pose.pose();
         Matrix3f matrix3f = pose.normal();
-        ExtendedVertexBuilder vertexBuilder = (ExtendedVertexBuilder)vertexConsumer;
+        ExtendedVertexBuilder vertexBuilder = (ExtendedVertexBuilder) vertexConsumer;
 
         int packedColor = ColorUtil.RGBA.pack(r, g, b, a);
 
         for (ModelPart.Cube cube : this.cubes) {
-            ModelPartCubeMixed cubeMixed = (ModelPartCubeMixed)(cube);
+            ModelPartCubeMixed cubeMixed = (ModelPartCubeMixed) (cube);
             CubeModel cubeModel = cubeMixed.getCubeModel();
 
             ModelPart.Polygon[] polygons = cubeModel.getPolygons();

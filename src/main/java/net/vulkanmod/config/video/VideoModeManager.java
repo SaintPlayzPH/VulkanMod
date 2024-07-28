@@ -7,13 +7,12 @@ import org.lwjgl.glfw.GLFWVidMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 
 public abstract class VideoModeManager {
+    public static VideoModeSet.VideoMode selectedVideoMode;
     private static VideoModeSet.VideoMode osVideoMode;
     private static VideoModeSet[] videoModeSets;
-
-    public static VideoModeSet.VideoMode selectedVideoMode;
 
     public static void init() {
         long monitor = glfwGetPrimaryMonitor();
@@ -30,7 +29,7 @@ public abstract class VideoModeManager {
     }
 
     public static VideoModeSet getFirstAvailable() {
-        if(videoModeSets != null)
+        if (videoModeSets != null)
             return videoModeSets[videoModeSets.length - 1];
         else
             return VideoModeSet.getDummy();
@@ -40,7 +39,7 @@ public abstract class VideoModeManager {
         return osVideoMode;
     }
 
-    public static VideoModeSet.VideoMode getCurrentVideoMode(long monitor){
+    public static VideoModeSet.VideoMode getCurrentVideoMode(long monitor) {
         GLFWVidMode vidMode = GLFW.glfwGetVideoMode(monitor);
 
         if (vidMode == null)

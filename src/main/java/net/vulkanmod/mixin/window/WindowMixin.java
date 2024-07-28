@@ -1,12 +1,15 @@
 package net.vulkanmod.mixin.window;
 
-import com.mojang.blaze3d.platform.*;
+import com.mojang.blaze3d.platform.DisplayData;
+import com.mojang.blaze3d.platform.ScreenManager;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.platform.WindowEventHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.config.Config;
 import net.vulkanmod.config.Platform;
-import net.vulkanmod.config.video.VideoModeManager;
 import net.vulkanmod.config.option.Options;
+import net.vulkanmod.config.video.VideoModeManager;
 import net.vulkanmod.config.video.VideoModeSet;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.VRenderSystem;
@@ -27,37 +30,54 @@ import static org.lwjgl.glfw.GLFW.*;
 
 @Mixin(Window.class)
 public abstract class WindowMixin {
-    @Final @Shadow private long window;
+    @Shadow
+    @Final
+    private static Logger LOGGER;
+    @Final
+    @Shadow
+    private long window;
+    @Shadow
+    private boolean vsync;
+    @Shadow
+    private boolean fullscreen;
+    @Shadow
+    private int windowedX;
+    @Shadow
+    private int windowedY;
+    @Shadow
+    private int windowedWidth;
+    @Shadow
+    private int windowedHeight;
+    @Shadow
+    private int x;
+    @Shadow
+    private int y;
+    @Shadow
+    private int width;
+    @Shadow
+    private int height;
+    @Shadow
+    private int framebufferWidth;
+    @Shadow
+    private int framebufferHeight;
+    private boolean wasOnFullscreen = false;
 
-    @Shadow private boolean vsync;
+    @Shadow
+    protected abstract void updateFullscreen(boolean bl);
 
-    @Shadow protected abstract void updateFullscreen(boolean bl);
+    @Shadow
+    public abstract int getWidth();
 
-    @Shadow private boolean fullscreen;
-
-    @Shadow @Final private static Logger LOGGER;
-
-    @Shadow private int windowedX;
-    @Shadow private int windowedY;
-    @Shadow private int windowedWidth;
-    @Shadow private int windowedHeight;
-    @Shadow private int x;
-    @Shadow private int y;
-    @Shadow private int width;
-    @Shadow private int height;
-
-    @Shadow private int framebufferWidth;
-    @Shadow private int framebufferHeight;
-
-    @Shadow public abstract int getWidth();
-
-    @Shadow public abstract int getHeight();
+    @Shadow
+    public abstract int getHeight();
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwWindowHint(II)V"))
-    private void redirect(int hint, int value) { }
+    private void redirect(int hint, int value) {
+    }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwMakeContextCurrent(J)V"))
-    private void redirect2(long window) { }
+    private void redirect2(long window) {
+    }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL;createCapabilities()Lorg/lwjgl/opengl/GLCapabilities;"))
     private GLCapabilities redirect2() {
@@ -109,8 +129,6 @@ public abstract class WindowMixin {
         }
     }
 
-    private boolean wasOnFullscreen = false;
-
     /**
      * @author
      */
@@ -128,12 +146,11 @@ public abstract class WindowMixin {
 
                 if (set != null) {
                     supported = set.hasRefreshRate(videoMode.refreshRate);
-                }
-                else {
+                } else {
                     supported = false;
                 }
 
-                if(!supported) {
+                if (!supported) {
                     LOGGER.error("Resolution not supported, using first available as fallback");
                     videoMode = VideoModeManager.getFirstAvailable().getVideoMode();
                 }
@@ -153,8 +170,7 @@ public abstract class WindowMixin {
 
                 this.wasOnFullscreen = true;
             }
-        }
-        else if (config.windowedFullscreen) {
+        } else if (config.windowedFullscreen) {
             VideoModeSet.VideoMode videoMode = VideoModeManager.getOsVideoMode();
 
             if (!this.wasOnFullscreen) {
@@ -196,7 +212,7 @@ public abstract class WindowMixin {
             int prevWidth = this.getWidth();
             int prevHeight = this.getHeight();
 
-            if(width > 0 && height > 0) {
+            if (width > 0 && height > 0) {
                 this.framebufferWidth = width;
                 this.framebufferHeight = height;
 //                if (this.framebufferWidth != prevWidth || this.framebufferHeight != prevHeight) {
@@ -218,7 +234,7 @@ public abstract class WindowMixin {
         this.width = width;
         this.height = height;
 
-        if(width > 0 && height > 0)
+        if (width > 0 && height > 0)
             Renderer.scheduleSwapChainUpdate();
     }
 

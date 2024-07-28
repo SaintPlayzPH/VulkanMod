@@ -19,13 +19,12 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class UploadManager {
     public static UploadManager INSTANCE;
+    Queue queue = DeviceManager.getTransferQueue();
+    CommandPool.CommandBuffer commandBuffer;
 
     public static void createInstance() {
         INSTANCE = new UploadManager();
     }
-
-    Queue queue = DeviceManager.getTransferQueue();
-    CommandPool.CommandBuffer commandBuffer;
 
     public void submitUploads() {
         if (this.commandBuffer == null)

@@ -2,7 +2,6 @@ package net.vulkanmod.mixin.render.target;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.vulkanmod.gl.GlFramebuffer;
 import net.vulkanmod.gl.GlTexture;
@@ -22,24 +21,31 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(RenderTarget.class)
 public abstract class RenderTargetMixin implements ExtendedRenderTarget {
 
-    @Shadow public int viewWidth;
-    @Shadow public int viewHeight;
-    @Shadow public int width;
-    @Shadow public int height;
-
-    @Shadow protected int depthBufferId;
-    @Shadow protected int colorTextureId;
-    @Shadow public int frameBufferId;
-
-    @Shadow @Final private float[] clearChannels;
-    @Shadow @Final public boolean useDepth;
-
+    private static int boundTarget = 0;
+    @Shadow
+    public int viewWidth;
+    @Shadow
+    public int viewHeight;
+    @Shadow
+    public int width;
+    @Shadow
+    public int height;
+    @Shadow
+    public int frameBufferId;
+    @Shadow
+    @Final
+    public boolean useDepth;
+    @Shadow
+    protected int depthBufferId;
+    @Shadow
+    protected int colorTextureId;
     Framebuffer framebuffer;
 
     boolean needClear = false;
     boolean bound = false;
-
-    private static int boundTarget = 0;
+    @Shadow
+    @Final
+    private float[] clearChannels;
 
     /**
      * @author
@@ -48,10 +54,10 @@ public abstract class RenderTargetMixin implements ExtendedRenderTarget {
     public void clear(boolean getError) {
         RenderSystem.assertOnRenderThreadOrInit();
 
-        if(!Renderer.isRecording())
+        if (!Renderer.isRecording())
             return;
 
-        if(!bound) {
+        if (!bound) {
             needClear = true;
             return;
         }
@@ -152,7 +158,7 @@ public abstract class RenderTargetMixin implements ExtendedRenderTarget {
 
         this.bound = true;
         boundTarget = this.frameBufferId;
-        if(needClear)
+        if (needClear)
             clear(false);
     }
 
@@ -179,7 +185,7 @@ public abstract class RenderTargetMixin implements ExtendedRenderTarget {
      */
     @Overwrite
     private void _blitToScreen(int width, int height, boolean disableBlend) {
-        if(needClear) {
+        if (needClear) {
             //If true it means target has not been used
             return;
         }

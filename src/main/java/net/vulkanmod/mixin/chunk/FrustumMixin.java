@@ -13,10 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Frustum.class)
 public class FrustumMixin implements FrustumMixed {
 
-    @Shadow private double camX;
-    @Shadow private double camY;
-    @Shadow private double camZ;
     private final VFrustum vFrustum = new VFrustum();
+    @Shadow
+    private double camX;
+    @Shadow
+    private double camY;
+    @Shadow
+    private double camZ;
 
     @Inject(method = "calculateFrustum", at = @At("HEAD"), cancellable = true)
     private void calculateFrustum(Matrix4f modelView, Matrix4f projection, CallbackInfo ci) {

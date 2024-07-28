@@ -1,6 +1,5 @@
 package net.vulkanmod.vulkan.shader.parser;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.vulkanmod.vulkan.shader.descriptor.ImageDescriptor;
 import net.vulkanmod.vulkan.shader.descriptor.UBO;
 
@@ -10,9 +9,9 @@ import java.util.StringTokenizer;
 
 public class GlslConverter {
 
+    ShaderStage shaderStage;
     //    private Queue<Integer> stack = new ArrayDeque<>();
     private int count;
-    ShaderStage shaderStage;
     private State state;
 
     private UniformParser uniformParser;
@@ -38,7 +37,7 @@ public class GlslConverter {
             String line = iterator.next();
 
             String parsedLine = this.parseLine(line);
-            if(parsedLine != null) {
+            if (parsedLine != null) {
                 vshOut.append(parsedLine);
                 vshOut.append("\n");
             }
@@ -57,7 +56,7 @@ public class GlslConverter {
             String line = iterator.next();
 
             String parsedLine = this.parseLine(line);
-            if(parsedLine != null) {
+            if (parsedLine != null) {
                 fshOut.append(parsedLine);
                 fshOut.append("\n");
             }
@@ -88,7 +87,7 @@ public class GlslConverter {
         StringTokenizer tokenizer = new StringTokenizer(line);
 
         //empty line
-        if(!tokenizer.hasMoreTokens()) return null;
+        if (!tokenizer.hasMoreTokens()) return null;
 
         String token = tokenizer.nextToken();
 
@@ -96,10 +95,10 @@ public class GlslConverter {
             case "uniform" -> this.state = State.MATCHING_UNIFORM;
             case "in", "out" -> this.state = State.MATCHING_IN_OUT;
             case "#version" -> {
-                return  null;
+                return null;
             }
             case "#moj_import" -> {
-                if(tokenizer.countTokens() != 1) {
+                if (tokenizer.countTokens() != 1) {
                     throw new IllegalArgumentException("Token count != 1");
                 }
 
@@ -111,7 +110,7 @@ public class GlslConverter {
             }
         }
 
-        if(tokenizer.countTokens() < 2) {
+        if (tokenizer.countTokens() < 2) {
             throw new IllegalArgumentException("Less than 3 tokens present");
         }
 

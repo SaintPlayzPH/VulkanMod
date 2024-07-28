@@ -28,14 +28,17 @@ import java.util.Optional;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-    @Shadow public boolean noRender;
-    @Shadow @Final public Options options;
+    @Shadow
+    public boolean noRender;
+    @Shadow
+    @Final
+    public Options options;
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void forceGraphicsMode(GameConfig gameConfig, CallbackInfo ci) {
         var graphicsModeOption = this.options.graphicsMode();
 
-        if(graphicsModeOption.get() == GraphicsStatus.FABULOUS) {
+        if (graphicsModeOption.get() == GraphicsStatus.FABULOUS) {
             Initializer.LOGGER.error("Fabulous graphics mode not supported, forcing Fancy");
             graphicsModeOption.set(GraphicsStatus.FANCY);
         }
@@ -79,7 +82,7 @@ public class MinecraftMixin {
 
     @Inject(method = "getFramerateLimit", at = @At("HEAD"), cancellable = true)
     private void limitWhenMinimized(CallbackInfoReturnable<Integer> cir) {
-        if(this.noRender) cir.setReturnValue(10);
+        if (this.noRender) cir.setReturnValue(10);
     }
 
     @Redirect(method = "runTick", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/TimerQuery;getInstance()Ljava/util/Optional;"))
@@ -88,7 +91,7 @@ public class MinecraftMixin {
     }
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;tick()V"),
-    locals = LocalCapture.CAPTURE_FAILHARD)
+            locals = LocalCapture.CAPTURE_FAILHARD)
     private void redirectResourceTick(boolean bl, CallbackInfo ci, long l, Runnable runnable, int i, int j) {
         int n = Math.min(10, i) - 1;
         SpriteUtil.setDoUpload(j == n);
@@ -118,6 +121,7 @@ public class MinecraftMixin {
 
     //Fixes crash when minimizing window before setScreen is called
     @Redirect(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;noRender:Z", opcode = Opcodes.PUTFIELD))
-    private void keepVar(Minecraft instance, boolean value) { }
+    private void keepVar(Minecraft instance, boolean value) {
+    }
 
 }

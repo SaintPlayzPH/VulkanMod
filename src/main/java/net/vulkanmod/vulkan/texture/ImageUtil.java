@@ -57,7 +57,7 @@ public abstract class ImageUtil {
             vkWaitForFences(DeviceManager.vkDevice, fence, true, VUtil.UINT64_MAX);
 
             MemoryManager.MapAndCopy(pStagingAllocation.get(0),
-                (data) -> VUtil.memcpy(data.getByteBuffer(0, (int) imageSize), ptr)
+                    (data) -> VUtil.memcpy(data.getByteBuffer(0, (int) imageSize), ptr)
             );
 
             MemoryManager.freeBuffer(pStagingBuffer.get(0), pStagingAllocation.get(0));

@@ -27,15 +27,14 @@ public abstract class DebugScreenOverlayM {
     @Shadow
     @Final
     private Minecraft minecraft;
+    @Shadow
+    @Final
+    private Font font;
 
     @Shadow
     private static long bytesToMegabytes(long bytes) {
         return 0;
     }
-
-    @Shadow
-    @Final
-    private Font font;
 
     @Shadow
     protected abstract List<String> getGameInformation();

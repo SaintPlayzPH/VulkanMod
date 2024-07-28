@@ -13,10 +13,14 @@ import java.util.List;
 @Mixin(PostChain.class)
 public abstract class PostChainM {
 
-    @Shadow @Final private List<PostPass> passes;
+    @Shadow
+    @Final
+    private List<PostPass> passes;
 
-    @Shadow private float lastStamp;
-    @Shadow private float time;
+    @Shadow
+    private float lastStamp;
+    @Shadow
+    private float time;
 
     /**
      * @author

@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
@@ -35,10 +34,32 @@ public class LiquidRenderer {
     private final BlockPos.MutableBlockPos mBlockPos = new BlockPos.MutableBlockPos();
 
     private final ModelQuad modelQuad = new ModelQuad();
-
+    private final int[] quadColors = new int[4];
     BuilderResources resources;
 
-    private final int[] quadColors = new int[4];
+    public static boolean shouldRenderFace(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, FluidState fluidState, BlockState blockState, Direction direction, BlockState adjBlockState) {
+
+        if (adjBlockState.getFluidState().getType().isSame(fluidState.getType()))
+            return false;
+
+        // self-occlusion by waterlogging
+        if (blockState.canOcclude()) {
+            return !blockState.isFaceSturdy(blockAndTintGetter, blockPos, direction);
+        }
+
+        return true;
+    }
+
+    private static FluidRenderHandler getFluidRenderHandler(FluidState fluidState) {
+        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getType());
+
+        // Fallback to water in case no handler was found
+        if (handler == null) {
+            handler = FluidRenderHandlerRegistry.INSTANCE.get(Fluids.WATER);
+        }
+
+        return handler;
+    }
 
     public void setResources(BuilderResources resources) {
         this.resources = resources;
@@ -65,19 +86,6 @@ public class LiquidRenderer {
         } else {
             return false;
         }
-    }
-
-    public static boolean shouldRenderFace(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, FluidState fluidState, BlockState blockState, Direction direction, BlockState adjBlockState) {
-
-        if (adjBlockState.getFluidState().getType().isSame(fluidState.getType()))
-            return false;
-
-        // self-occlusion by waterlogging
-        if (blockState.canOcclude()) {
-            return !blockState.isFaceSturdy(blockAndTintGetter, blockPos, direction);
-        }
-
-        return true;
     }
 
     public BlockState getAdjBlockState(BlockAndTintGetter blockAndTintGetter, int x, int y, int z, Direction dir) {
@@ -354,17 +362,6 @@ public class LiquidRenderer {
             }
 
         }
-    }
-
-    private static FluidRenderHandler getFluidRenderHandler(FluidState fluidState) {
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidState.getType());
-
-        // Fallback to water in case no handler was found
-        if (handler == null) {
-            handler = FluidRenderHandlerRegistry.INSTANCE.get(Fluids.WATER);
-        }
-
-        return handler;
     }
 
     private float calculateAverageHeight(BlockAndTintGetter blockAndTintGetter, Fluid fluid, float f, float g, float h, BlockPos blockPos) {

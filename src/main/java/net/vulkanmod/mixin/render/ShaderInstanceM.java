@@ -13,8 +13,8 @@ import net.vulkanmod.Initializer;
 import net.vulkanmod.interfaces.ShaderMixed;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import net.vulkanmod.vulkan.shader.Pipeline;
-import net.vulkanmod.vulkan.shader.layout.Uniform;
 import net.vulkanmod.vulkan.shader.descriptor.UBO;
+import net.vulkanmod.vulkan.shader.layout.Uniform;
 import net.vulkanmod.vulkan.shader.parser.GlslConverter;
 import net.vulkanmod.vulkan.util.MappedBuffer;
 import org.apache.commons.io.IOUtils;
@@ -39,29 +39,64 @@ import java.util.function.Supplier;
 @Mixin(ShaderInstance.class)
 public class ShaderInstanceM implements ShaderMixed {
 
-    @Shadow @Final private Map<String, com.mojang.blaze3d.shaders.Uniform> uniformMap;
-    @Shadow @Final private String name;
-
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform MODEL_VIEW_MATRIX;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform PROJECTION_MATRIX;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform COLOR_MODULATOR;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform LINE_WIDTH;
-
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform GLINT_ALPHA;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform FOG_START;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform FOG_END;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform FOG_COLOR;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform FOG_SHAPE;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform TEXTURE_MATRIX;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform GAME_TIME;
-    @Shadow @Final @Nullable public com.mojang.blaze3d.shaders.Uniform SCREEN_SIZE;
-
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform MODEL_VIEW_MATRIX;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform PROJECTION_MATRIX;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform COLOR_MODULATOR;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform LINE_WIDTH;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform GLINT_ALPHA;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform FOG_START;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform FOG_END;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform FOG_COLOR;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform FOG_SHAPE;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform TEXTURE_MATRIX;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform GAME_TIME;
+    @Shadow
+    @Final
+    @Nullable
+    public com.mojang.blaze3d.shaders.Uniform SCREEN_SIZE;
+    boolean isLegacy = false;
+    @Shadow
+    @Final
+    private Map<String, com.mojang.blaze3d.shaders.Uniform> uniformMap;
+    @Shadow
+    @Final
+    private String name;
     private String vsPath;
     private String fsName;
-
     private GraphicsPipeline pipeline;
-    boolean isLegacy = false;
-
 
     public GraphicsPipeline getPipeline() {
         return pipeline;
@@ -104,7 +139,8 @@ public class ShaderInstanceM implements ShaderMixed {
     }
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/shaders/Uniform;glBindAttribLocation(IILjava/lang/CharSequence;)V"))
-    private void bindAttr(int program, int index, CharSequence name) {}
+    private void bindAttr(int program, int index, CharSequence name) {
+    }
 
     /**
      * @author
@@ -165,7 +201,7 @@ public class ShaderInstanceM implements ShaderMixed {
 
         if (this.SCREEN_SIZE != null) {
             Window window = Minecraft.getInstance().getWindow();
-            this.SCREEN_SIZE.set((float)window.getWidth(), (float)window.getHeight());
+            this.SCREEN_SIZE.set((float) window.getWidth(), (float) window.getHeight());
         }
 
         if (this.LINE_WIDTH != null) {
@@ -177,14 +213,15 @@ public class ShaderInstanceM implements ShaderMixed {
      * @author
      */
     @Overwrite
-    public void clear() {}
+    public void clear() {
+    }
 
     private void setUniformSuppliers(UBO ubo) {
 
-        for(Uniform vUniform : ubo.getUniforms()) {
+        for (Uniform vUniform : ubo.getUniforms()) {
             com.mojang.blaze3d.shaders.Uniform uniform = this.uniformMap.get(vUniform.getName());
 
-            if(uniform == null) {
+            if (uniform == null) {
                 Initializer.LOGGER.error(String.format("Error: field %s not present in uniform map", vUniform.getName()));
                 continue;
             }

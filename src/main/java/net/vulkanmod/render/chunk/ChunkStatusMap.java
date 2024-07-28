@@ -11,17 +11,16 @@ public class ChunkStatusMap {
     public static final byte ALL_FLAGS = CHUNK_READY | NEIGHBOURS_READY;
 
     public static ChunkStatusMap INSTANCE;
-
-    public static void createInstance(int renderDistance) {
-        INSTANCE = new ChunkStatusMap(renderDistance);
-    }
-
     private final Long2ByteOpenHashMap map;
 
     public ChunkStatusMap(int renderDistance) {
         int diameter = renderDistance * 2 + 1;
         map = new Long2ByteOpenHashMap(diameter * diameter);
         map.defaultReturnValue((byte) 0);
+    }
+
+    public static void createInstance(int renderDistance) {
+        INSTANCE = new ChunkStatusMap(renderDistance);
     }
 
     public void updateDistance(int renderDistance) {
@@ -55,8 +54,7 @@ public class ChunkStatusMap {
             for (int z1 = z - 1; z1 <= z + 1; ++z1) {
                 if (checkNeighbours(x1, z1)) {
                     map.put(ChunkPos.asLong(x1, z1), ALL_FLAGS);
-                }
-                else {
+                } else {
                     long l = ChunkPos.asLong(x1, z1);
 
                     byte current = map.get(l);

@@ -47,6 +47,19 @@ public class Vulkan {
     public static final boolean DYNAMIC_RENDERING = false;
 
     public static final Set<String> VALIDATION_LAYERS;
+    public static final Set<String> REQUIRED_EXTENSION = getRequiredExtensionSet();
+    public static long window;
+    public static boolean use24BitsDepthFormat = true;
+    private static VkInstance instance;
+    private static long debugMessenger;
+    private static long surface;
+    private static SwapChain swapChain;
+    private static long commandPool;
+    private static VkCommandBuffer immediateCmdBuffer;
+    private static long immediateFence;
+    private static long allocator;
+    private static StagingBuffer[] stagingBuffers;
+    private static int DEFAULT_DEPTH_FORMAT = 0;
 
     static {
         if (ENABLE_VALIDATION_LAYERS) {
@@ -59,8 +72,6 @@ public class Vulkan {
             VALIDATION_LAYERS = null;
         }
     }
-
-    public static final Set<String> REQUIRED_EXTENSION = getRequiredExtensionSet();
 
     private static Set<String> getRequiredExtensionSet() {
         ArrayList<String> extensions = new ArrayList<>(List.of(VK_KHR_SWAPCHAIN_EXTENSION_NAME));
@@ -119,25 +130,6 @@ public class Vulkan {
     public static long getAllocator() {
         return allocator;
     }
-
-    public static long window;
-
-    private static VkInstance instance;
-    private static long debugMessenger;
-    private static long surface;
-
-    private static SwapChain swapChain;
-
-    private static long commandPool;
-    private static VkCommandBuffer immediateCmdBuffer;
-    private static long immediateFence;
-
-    private static long allocator;
-
-    private static StagingBuffer[] stagingBuffers;
-
-    public static boolean use24BitsDepthFormat = true;
-    private static int DEFAULT_DEPTH_FORMAT = 0;
 
     public static void initVulkan(long window) {
         createInstance();

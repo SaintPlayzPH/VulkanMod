@@ -16,7 +16,8 @@ import java.util.List;
 
 @Mixin(VertexFormat.class)
 public class VertexFormatMixin implements VertexFormatMixed {
-    @Shadow private IntList offsets;
+    @Shadow
+    private IntList offsets;
 
     private ObjectArrayList<VertexFormatElement> fastList;
 

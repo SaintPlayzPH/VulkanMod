@@ -11,7 +11,7 @@ public abstract class SpriteUtil {
 
     private static boolean doUpload = false;
 
-    private static Set<VulkanImage> transitionedLayouts = new HashSet<>();
+    private static final Set<VulkanImage> transitionedLayouts = new HashSet<>();
 
     public static void setDoUpload(boolean b) {
         doUpload = b;
@@ -26,7 +26,7 @@ public abstract class SpriteUtil {
     }
 
     public static void transitionLayouts(VkCommandBuffer commandBuffer) {
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             transitionedLayouts.forEach(image -> image.readOnlyLayout(stack, commandBuffer));
 
             transitionedLayouts.clear();

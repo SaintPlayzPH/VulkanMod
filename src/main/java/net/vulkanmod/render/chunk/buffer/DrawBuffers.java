@@ -21,15 +21,16 @@ import java.util.EnumMap;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class DrawBuffers {
+    // TODO: refactor
+    public static final float POS_OFFSET = PipelineManager.TERRAIN_VERTEX_FORMAT == CustomVertexFormat.COMPRESSED_TERRAIN ? 4.0f : 0.0f;
     private static final int VERTEX_SIZE = PipelineManager.TERRAIN_VERTEX_FORMAT.getVertexSize();
     private static final int INDEX_SIZE = Short.BYTES;
     private final int index;
     private final Vector3i origin;
     private final int minHeight;
-
-    private boolean allocated = false;
-    AreaBuffer indexBuffer;
     private final EnumMap<TerrainRenderType, AreaBuffer> vertexBuffers = new EnumMap<>(TerrainRenderType.class);
+    AreaBuffer indexBuffer;
+    private boolean allocated = false;
 
     //Need ugly minHeight Parameter to fix custom world heights (exceeding 384 Blocks in total)
     public DrawBuffers(int index, Vector3i origin, int minHeight) {
@@ -92,9 +93,6 @@ public class DrawBuffers {
         final int yOffset1 = (yOffset - this.minHeight & 127);
         return yOffset1 << 16 | zOffset1 << 8 | xOffset1;
     }
-
-    // TODO: refactor
-    public static final float POS_OFFSET = PipelineManager.TERRAIN_VERTEX_FORMAT == CustomVertexFormat.COMPRESSED_TERRAIN ? 4.0f : 0.0f;
 
     private void updateChunkAreaOrigin(VkCommandBuffer commandBuffer, Pipeline pipeline, double camX, double camY, double camZ, MemoryStack stack) {
         float xOffset = (float) ((this.origin.x) + POS_OFFSET - camX);
@@ -211,7 +209,8 @@ public class DrawBuffers {
         int vertexOffset = -1;
         int baseInstance;
 
-        public DrawParameters() {}
+        public DrawParameters() {
+        }
 
         public void reset(ChunkArea chunkArea, TerrainRenderType r) {
             AreaBuffer areaBuffer = chunkArea.getDrawBuffers().getAreaBuffer(r);

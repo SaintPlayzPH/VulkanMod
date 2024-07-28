@@ -24,37 +24,29 @@ import java.util.Set;
 
 public class RenderSection {
     static final Map<RenderSection, Set<BlockEntity>> globalBlockEntitiesMap = new Reference2ReferenceOpenHashMap<>();
-
-    private ChunkArea chunkArea;
+    private final CompileStatus compileStatus = new CompileStatus();
+    private final DrawBuffers.DrawParameters[] drawParametersArray;
     public byte frustumIndex;
     public short lastFrame = -1;
-    private short lastFrame2 = -1;
-
     public byte adjDirs;
     public RenderSection
             adjDown, adjUp,
             adjNorth, adjSouth,
             adjWest, adjEast;
-
-    private final CompileStatus compileStatus = new CompileStatus();
-
-    private boolean dirty = true;
-    private boolean playerChanged;
-    private boolean completelyEmpty = true;
-    private boolean containsBlockEntities = false;
-
     public long visibility;
-
     public int xOffset, yOffset, zOffset;
-
-    private final DrawBuffers.DrawParameters[] drawParametersArray;
-
     // Graph-info
     public byte mainDir;
     public byte directions;
     public byte sourceDirs;
     public byte steps;
     public byte directionChanges;
+    private ChunkArea chunkArea;
+    private short lastFrame2 = -1;
+    private boolean dirty = true;
+    private boolean playerChanged;
+    private boolean completelyEmpty = true;
+    private boolean containsBlockEntities = false;
 
     public RenderSection(int index, int x, int y, int z) {
         this.xOffset = x;
@@ -281,6 +273,12 @@ public class RenderSection {
         return this.dirty;
     }
 
+    public void setDirty(boolean playerChanged) {
+        this.playerChanged = playerChanged || this.dirty && this.playerChanged;
+        this.dirty = true;
+        WorldRenderer.getInstance().scheduleGraphUpdate();
+    }
+
     public boolean isDirtyFromPlayer() {
         return this.dirty && this.playerChanged;
     }
@@ -301,18 +299,22 @@ public class RenderSection {
         return drawParametersArray[renderType.ordinal()];
     }
 
+    public ChunkArea getChunkArea() {
+        return this.chunkArea;
+    }
+
     public void setChunkArea(ChunkArea chunkArea) {
         this.chunkArea = chunkArea;
 
         this.frustumIndex = chunkArea.getFrustumIndex(xOffset, yOffset, zOffset);
     }
 
-    public ChunkArea getChunkArea() {
-        return this.chunkArea;
-    }
-
     public CompiledSection getCompiledSection() {
         return compileStatus.compiledSection;
+    }
+
+    public void setCompiledSection(CompiledSection compiledSection) {
+        this.compileStatus.compiledSection = compiledSection;
     }
 
     public boolean isCompiled() {
@@ -321,10 +323,6 @@ public class RenderSection {
 
     public void setVisibility(long visibility) {
         this.visibility = visibility;
-    }
-
-    public void setCompletelyEmpty(boolean b) {
-        this.completelyEmpty = b;
     }
 
     public void setContainsBlockEntities(boolean b) {
@@ -341,6 +339,10 @@ public class RenderSection {
 
     public boolean isCompletelyEmpty() {
         return this.completelyEmpty;
+    }
+
+    public void setCompletelyEmpty(boolean b) {
+        this.completelyEmpty = b;
     }
 
     public boolean containsBlockEntities() {
@@ -388,16 +390,6 @@ public class RenderSection {
         for (TerrainRenderType r : TerrainRenderType.VALUES) {
             this.getDrawParameters(r).reset(this.chunkArea, r);
         }
-    }
-
-    public void setDirty(boolean playerChanged) {
-        this.playerChanged = playerChanged || this.dirty && this.playerChanged;
-        this.dirty = true;
-        WorldRenderer.getInstance().scheduleGraphUpdate();
-    }
-
-    public void setCompiledSection(CompiledSection compiledSection) {
-        this.compileStatus.compiledSection = compiledSection;
     }
 
     public boolean setLastFrame(short i) {

@@ -77,7 +77,8 @@ public class GlStateManagerM {
      * @author
      */
     @Overwrite(remap = false)
-    public static void _enableScissorTest() {}
+    public static void _enableScissorTest() {
+    }
 
     /**
      * @author
@@ -112,6 +113,7 @@ public class GlStateManagerM {
     }
 
     //TODO
+
     /**
      * @author
      */
@@ -225,7 +227,8 @@ public class GlStateManagerM {
      * @author
      */
     @Overwrite(remap = false)
-    public static void _clearDepth(double d) {}
+    public static void _clearDepth(double d) {
+    }
 
     /**
      * @author
@@ -240,7 +243,8 @@ public class GlStateManagerM {
      * @author
      */
     @Overwrite(remap = false)
-    public static void _glUseProgram(int i) {}
+    public static void _glUseProgram(int i) {
+    }
 
     /**
      * @author

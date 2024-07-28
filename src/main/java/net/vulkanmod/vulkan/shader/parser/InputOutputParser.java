@@ -10,14 +10,12 @@ import static net.vulkanmod.vulkan.shader.parser.UniformParser.removeSemicolon;
 
 public class InputOutputParser {
     private final GlslConverter converterInstance;
-    private VertexFormat vertexFormat;
-
     private final AttributeSet vertInAttributes = new AttributeSet();
     private final AttributeSet vertOutAttributes = new AttributeSet();
-
+    private VertexFormat vertexFormat;
     private GlslConverter.ShaderStage shaderStage;
 
-    private int currentLocation = 0;
+    private final int currentLocation = 0;
     private String ioType;
     private String type;
     private String name;
@@ -37,16 +35,15 @@ public class InputOutputParser {
 
             this.name = token;
 
-            if(this.shaderStage == GlslConverter.ShaderStage.Vertex) {
+            if (this.shaderStage == GlslConverter.ShaderStage.Vertex) {
                 switch (this.ioType) {
                     case "in" -> this.vertInAttributes.add(this.type, this.name);
                     case "out" -> this.vertOutAttributes.add(this.type, this.name);
                 }
-            }
-            else {
+            } else {
                 switch (this.ioType) {
                     case "in" -> {
-                        if(!this.vertOutAttributes.contains(this.type, this.name))
+                        if (!this.vertOutAttributes.contains(this.type, this.name))
                             throw new RuntimeException("fragment in attribute does not match vertex output");
                     }
                     case "out" -> {
@@ -71,28 +68,27 @@ public class InputOutputParser {
         //TODO
         StringBuilder builder = new StringBuilder();
 
-        if(this.shaderStage == GlslConverter.ShaderStage.Vertex) {
+        if (this.shaderStage == GlslConverter.ShaderStage.Vertex) {
             //In
-            for(Attribute attribute : this.vertInAttributes.attributes) {
+            for (Attribute attribute : this.vertInAttributes.attributes) {
                 builder.append(String.format("layout(location = %d) in %s %s;\n", attribute.location, attribute.type, attribute.name));
             }
             builder.append("\n");
 
             //Out
-            for(Attribute attribute : this.vertOutAttributes.attributes) {
+            for (Attribute attribute : this.vertOutAttributes.attributes) {
                 builder.append(String.format("layout(location = %d) out %s %s;\n", attribute.location, attribute.type, attribute.name));
             }
             builder.append("\n");
-        }
-        else {
+        } else {
             //In
-            for(Attribute attribute : this.vertOutAttributes.attributes) {
+            for (Attribute attribute : this.vertOutAttributes.attributes) {
                 builder.append(String.format("layout(location = %d) in %s %s;\n", attribute.location, attribute.type, attribute.name));
             }
             builder.append("\n");
 
             //TODO multi attachments?
-            builder.append(String.format("layout(location = 0) out vec4 fragColor;\n\n"));
+            builder.append("layout(location = 0) out vec4 fragColor;\n\n");
         }
 
         return builder.toString();
@@ -102,7 +98,8 @@ public class InputOutputParser {
         this.shaderStage = shaderStage;
     }
 
-    public record Attribute(int location, String type, String name) {}
+    public record Attribute(int location, String type, String name) {
+    }
 
     static class AttributeSet {
         List<Attribute> attributes = new ObjectArrayList<>();

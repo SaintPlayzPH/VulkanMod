@@ -11,7 +11,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.vulkanmod.Initializer;
 import net.vulkanmod.interfaces.FrustumMixed;
-import net.vulkanmod.render.chunk.*;
+import net.vulkanmod.render.chunk.ChunkAreaManager;
+import net.vulkanmod.render.chunk.RenderSection;
+import net.vulkanmod.render.chunk.SectionGrid;
+import net.vulkanmod.render.chunk.WorldRenderer;
 import net.vulkanmod.render.chunk.build.RenderRegionBuilder;
 import net.vulkanmod.render.chunk.build.TaskDispatcher;
 import net.vulkanmod.render.chunk.frustum.VFrustum;
@@ -23,23 +26,19 @@ import org.joml.FrustumIntersection;
 import java.util.List;
 
 public class SectionGraph {
-    Minecraft minecraft;
     private final Level level;
-
     private final SectionGrid sectionGrid;
     private final ChunkAreaManager chunkAreaManager;
     private final TaskDispatcher taskDispatcher;
     private final ResettableQueue<RenderSection> sectionQueue = new ResettableQueue<>();
-    private AreaSetQueue chunkAreaQueue;
-    private short lastFrame = 0;
-
     private final ResettableQueue<RenderSection> blockEntitiesSections = new ResettableQueue<>();
     private final ResettableQueue<RenderSection> rebuildQueue = new ResettableQueue<>();
-
-    private VFrustum frustum;
-
+    private final AreaSetQueue chunkAreaQueue;
     public RenderRegionBuilder renderRegionCache;
+    Minecraft minecraft;
     int nonEmptyChunks;
+    private short lastFrame = 0;
+    private VFrustum frustum;
 
 
     public SectionGraph(Level level, SectionGrid sectionGrid, TaskDispatcher taskDispatcher) {
@@ -51,6 +50,27 @@ public class SectionGraph {
         this.chunkAreaQueue = new AreaSetQueue(sectionGrid.getChunkAreaManager().size);
         this.minecraft = Minecraft.getInstance();
         this.renderRegionCache = WorldRenderer.getInstance().renderRegionCache;
+    }
+
+    private static void initFirstNode(RenderSection renderSection, short frame) {
+        renderSection.mainDir = 7;
+        renderSection.sourceDirs = (byte) (1 << 7);
+        renderSection.directions = (byte) 0xFF;
+        renderSection.setLastFrame(frame);
+        renderSection.visibility |= initVisibility();
+        renderSection.directionChanges = 0;
+        renderSection.steps = 0;
+    }
+
+    // Init special value used by first graph node
+    private static long initVisibility() {
+        long vis = 0;
+        for (int dir = 0; dir < 6; dir++) {
+            vis |= 1L << ((6 << 3) + dir);
+            vis |= 1L << ((7 << 3) + dir);
+        }
+
+        return vis;
     }
 
     public void update(Camera camera, Frustum frustum, boolean spectator) {
@@ -121,27 +141,6 @@ public class SectionGraph {
             this.sectionQueue.add(renderSection);
         }
 
-    }
-
-    private static void initFirstNode(RenderSection renderSection, short frame) {
-        renderSection.mainDir = 7;
-        renderSection.sourceDirs = (byte) (1 << 7);
-        renderSection.directions = (byte) 0xFF;
-        renderSection.setLastFrame(frame);
-        renderSection.visibility |= initVisibility();
-        renderSection.directionChanges = 0;
-        renderSection.steps = 0;
-    }
-
-    // Init special value used by first graph node
-    private static long initVisibility() {
-        long vis = 0;
-        for (int dir = 0; dir < 6; dir++) {
-            vis |= 1L << ((6 << 3) + dir);
-            vis |= 1L << ((7 << 3) + dir);
-        }
-
-        return vis;
     }
 
     private void initUpdate() {

@@ -1,7 +1,6 @@
 package net.vulkanmod.gl;
 
 import net.vulkanmod.vulkan.Vulkan;
-import net.vulkanmod.vulkan.framebuffer.SwapChain;
 import net.vulkanmod.vulkan.shader.SPIRVUtils;
 import org.apache.commons.lang3.Validate;
 import org.lwjgl.opengl.GL11;
@@ -30,7 +29,7 @@ public abstract class GlUtil {
         ByteBuffer out = MemoryUtil.memAlloc(outSize);
 
         int j = 0;
-        for(int i = 0; i < outSize; i+=4, j+=3) {
+        for (int i = 0; i < outSize; i += 4, j += 3) {
             out.put(i, in.get(j));
             out.put(i + 1, in.get(j + 1));
             out.put(i + 2, in.get(j + 2));
@@ -42,30 +41,26 @@ public abstract class GlUtil {
 
     public static int vulkanFormat(int glFormat, int type) {
         return switch (glFormat) {
-            case GL11.GL_RGBA ->
-                    switch (type) {
-                        case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8G8B8A8_UNORM;
-                        case GL11.GL_BYTE -> VK_FORMAT_R8G8B8A8_UNORM;
-                        default -> throw new IllegalStateException("Unexpected type: " + type);
-                    };
-            case GL30.GL_BGRA ->
-                    switch (type) {
-                        case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_B8G8R8A8_UNORM;
-                        case GL11.GL_BYTE -> VK_FORMAT_B8G8R8A8_UNORM;
-                        case GL30.GL_UNSIGNED_INT_8_8_8_8, GL30.GL_UNSIGNED_INT_8_8_8_8_REV -> VK_FORMAT_R8G8B8A8_UNORM;
-                        default -> throw new IllegalStateException("Unexpected type: " + type);
-                    };
-            case GL30.GL_UNSIGNED_INT_8_8_8_8_REV ->
-                    switch (type) {
-                        case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8G8B8A8_UINT;
-                        case GL11.GL_BYTE -> VK_FORMAT_R8G8B8A8_UNORM;
-                        default -> throw new IllegalStateException("Unexpected type: " + type);
-                    };
-            case GL11.GL_RED ->
-                    switch (type) {
-                        case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8_UNORM;
-                        default -> throw new IllegalStateException("Unexpected type: " + type);
-                    };
+            case GL11.GL_RGBA -> switch (type) {
+                case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8G8B8A8_UNORM;
+                case GL11.GL_BYTE -> VK_FORMAT_R8G8B8A8_UNORM;
+                default -> throw new IllegalStateException("Unexpected type: " + type);
+            };
+            case GL30.GL_BGRA -> switch (type) {
+                case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_B8G8R8A8_UNORM;
+                case GL11.GL_BYTE -> VK_FORMAT_B8G8R8A8_UNORM;
+                case GL30.GL_UNSIGNED_INT_8_8_8_8, GL30.GL_UNSIGNED_INT_8_8_8_8_REV -> VK_FORMAT_R8G8B8A8_UNORM;
+                default -> throw new IllegalStateException("Unexpected type: " + type);
+            };
+            case GL30.GL_UNSIGNED_INT_8_8_8_8_REV -> switch (type) {
+                case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8G8B8A8_UINT;
+                case GL11.GL_BYTE -> VK_FORMAT_R8G8B8A8_UNORM;
+                default -> throw new IllegalStateException("Unexpected type: " + type);
+            };
+            case GL11.GL_RED -> switch (type) {
+                case GL11.GL_UNSIGNED_BYTE -> VK_FORMAT_R8_UNORM;
+                default -> throw new IllegalStateException("Unexpected type: " + type);
+            };
             case GL11.GL_DEPTH_COMPONENT ->
 //                    switch (type) {
 //                        case GL11.GL_FLOAT -> VK_FORMAT_D32_SFLOAT;

@@ -15,8 +15,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.vulkanmod.vulkan.Renderer;
 import net.vulkanmod.vulkan.shader.GraphicsPipeline;
 import net.vulkanmod.vulkan.shader.Pipeline;
-import net.vulkanmod.vulkan.shader.layout.Uniform;
 import net.vulkanmod.vulkan.shader.descriptor.UBO;
+import net.vulkanmod.vulkan.shader.layout.Uniform;
 import net.vulkanmod.vulkan.shader.parser.GlslConverter;
 import net.vulkanmod.vulkan.util.MappedBuffer;
 import org.apache.commons.io.IOUtils;
@@ -38,7 +38,6 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntSupplier;
@@ -47,21 +46,37 @@ import java.util.function.Supplier;
 @Mixin(EffectInstance.class)
 public class EffectInstanceM {
 
-    @Shadow @Final private Map<String, com.mojang.blaze3d.shaders.Uniform> uniformMap;
-    @Shadow @Final private List<com.mojang.blaze3d.shaders.Uniform> uniforms;
-
-    @Shadow private boolean dirty;
-    @Shadow private static EffectInstance lastAppliedEffect;
-    @Shadow @Final private BlendMode blend;
-    @Shadow private static int lastProgramId;
-    @Shadow @Final private int programId;
-    @Shadow @Final private List<Integer> samplerLocations;
-    @Shadow @Final private List<String> samplerNames;
-    @Shadow @Final private Map<String, IntSupplier> samplerMap;
-
-    @Shadow @Final private String name;
+    @Shadow
+    private static EffectInstance lastAppliedEffect;
+    @Shadow
+    private static int lastProgramId;
     private static GraphicsPipeline lastPipeline;
-
+    @Shadow
+    @Final
+    private Map<String, com.mojang.blaze3d.shaders.Uniform> uniformMap;
+    @Shadow
+    @Final
+    private List<com.mojang.blaze3d.shaders.Uniform> uniforms;
+    @Shadow
+    private boolean dirty;
+    @Shadow
+    @Final
+    private BlendMode blend;
+    @Shadow
+    @Final
+    private int programId;
+    @Shadow
+    @Final
+    private List<Integer> samplerLocations;
+    @Shadow
+    @Final
+    private List<String> samplerNames;
+    @Shadow
+    @Final
+    private Map<String, IntSupplier> samplerMap;
+    @Shadow
+    @Final
+    private String name;
     private GraphicsPipeline pipeline;
 
     @Inject(method = "<init>",
@@ -132,7 +147,7 @@ public class EffectInstanceM {
 
     private void setUniformSuppliers(UBO ubo) {
 
-        for(Uniform v_uniform : ubo.getUniforms()) {
+        for (Uniform v_uniform : ubo.getUniforms()) {
             com.mojang.blaze3d.shaders.Uniform uniform = this.uniformMap.get(v_uniform.getName());
 
             Supplier<MappedBuffer> supplier;
@@ -140,11 +155,9 @@ public class EffectInstanceM {
 
             if (uniform.getType() <= 3) {
                 byteBuffer = MemoryUtil.memByteBuffer(uniform.getIntBuffer());
-            }
-            else if (uniform.getType() <= 10) {
+            } else if (uniform.getType() <= 10) {
                 byteBuffer = MemoryUtil.memByteBuffer(uniform.getFloatBuffer());
-            }
-            else {
+            } else {
                 throw new RuntimeException("out of bounds value for uniform " + uniform);
             }
 
@@ -186,7 +199,7 @@ public class EffectInstanceM {
             lastPipeline = this.pipeline;
         }
 
-        for(int i = 0; i < this.samplerLocations.size(); ++i) {
+        for (int i = 0; i < this.samplerLocations.size(); ++i) {
             String string = this.samplerNames.get(i);
             IntSupplier intSupplier = this.samplerMap.get(string);
             if (intSupplier != null) {
@@ -219,7 +232,7 @@ public class EffectInstanceM {
         lastAppliedEffect = null;
         lastPipeline = null;
 
-        for(int i = 0; i < this.samplerLocations.size(); ++i) {
+        for (int i = 0; i < this.samplerLocations.size(); ++i) {
             if (this.samplerMap.get(this.samplerNames.get(i)) != null) {
                 GlStateManager._activeTexture(GL30.GL_TEXTURE0 + i);
                 GlStateManager._bindTexture(0);

@@ -33,12 +33,8 @@ public enum TerrainRenderType {
         this.alphaCutout = alphaCutout;
     }
 
-    public void setCutoutUniform() {
-        VRenderSystem.alphaCutout = this.alphaCutout;
-    }
-
     public static TerrainRenderType get(RenderType renderType) {
-        return ((ExtendedRenderType)renderType).getTerrainRenderType();
+        return ((ExtendedRenderType) renderType).getTerrainRenderType();
     }
 
     public static TerrainRenderType get(String name) {
@@ -60,5 +56,9 @@ public enum TerrainRenderType {
             case TRANSLUCENT -> RenderType.translucent();
             case TRIPWIRE -> RenderType.tripwire();
         };
+    }
+
+    public void setCutoutUniform() {
+        VRenderSystem.alphaCutout = this.alphaCutout;
     }
 }

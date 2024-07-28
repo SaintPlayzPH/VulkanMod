@@ -1,7 +1,6 @@
 package net.vulkanmod.mixin.compatibility;
 
 import com.mojang.blaze3d.shaders.Uniform;
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,13 +29,13 @@ public class UniformM {
         return 0;
     }
 
-    @Inject(method = "upload", at = @At("HEAD"), cancellable = true)
-    public void cancelUpload(CallbackInfo ci) {
+    @Inject(method = "uploadInteger", at = @At("HEAD"), cancellable = true)
+    private static void cancelUploadInteger(int i, int j, CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "uploadInteger", at = @At("HEAD"), cancellable = true)
-    private static void cancelUploadInteger(int i, int j, CallbackInfo ci) {
+    @Inject(method = "upload", at = @At("HEAD"), cancellable = true)
+    public void cancelUpload(CallbackInfo ci) {
         ci.cancel();
     }
 }

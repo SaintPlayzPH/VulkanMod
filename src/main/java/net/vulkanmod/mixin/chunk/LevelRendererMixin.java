@@ -44,10 +44,6 @@ public abstract class LevelRendererMixin {
     private Long2ObjectMap<SortedSet<BlockDestructionProgress>> destructionProgress;
     @Shadow
     private @Nullable ClientLevel level;
-
-    @Shadow
-    public abstract void graphicsChanged();
-
     @Shadow
     private int lastViewDistance;
     @Shadow
@@ -61,6 +57,12 @@ public abstract class LevelRendererMixin {
     @Shadow
     @Final
     private EntityRenderDispatcher entityRenderDispatcher;
+    private WorldRenderer worldRenderer;
+    @Unique
+    private final Object2ReferenceOpenHashMap<Class<? extends Entity>, ObjectArrayList<Pair<Entity, MultiBufferSource>>> entitiesMap = new Object2ReferenceOpenHashMap<>();
+
+    @Shadow
+    public abstract void graphicsChanged();
 
     @Shadow
     protected abstract boolean shouldShowEntityOutlines();
@@ -70,11 +72,6 @@ public abstract class LevelRendererMixin {
 
     @Shadow
     public abstract void renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f);
-
-    private WorldRenderer worldRenderer;
-
-    @Unique
-    private Object2ReferenceOpenHashMap<Class<? extends Entity>, ObjectArrayList<Pair<Entity, MultiBufferSource>>> entitiesMap = new Object2ReferenceOpenHashMap<>();
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(Minecraft minecraft, EntityRenderDispatcher entityRenderDispatcher, BlockEntityRenderDispatcher blockEntityRenderDispatcher, RenderBuffers renderBuffers, CallbackInfo ci) {

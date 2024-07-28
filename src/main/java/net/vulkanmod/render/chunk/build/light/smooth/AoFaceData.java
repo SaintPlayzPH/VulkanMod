@@ -2,8 +2,8 @@ package net.vulkanmod.render.chunk.build.light.smooth;
 
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
-import net.vulkanmod.render.chunk.util.SimpleDirection;
 import net.vulkanmod.render.chunk.build.light.data.LightDataAccess;
+import net.vulkanmod.render.chunk.util.SimpleDirection;
 
 import static net.vulkanmod.render.chunk.build.light.data.LightDataAccess.*;
 
@@ -15,6 +15,65 @@ class AoFaceData {
     public final float[] sl = new float[4];
 
     protected int flags;
+
+    static float weightedSum(float[] v, float[] w) {
+        float t0 = v[0] * w[0];
+        float t1 = v[1] * w[1];
+        float t2 = v[2] * w[2];
+        float t3 = v[3] * w[3];
+
+        return t0 + t1 + t2 + t3;
+    }
+
+    static float unpackSkyLight(int i) {
+        return (i >> 16) & 0xFF;
+    }
+
+    static float unpackBlockLight(int i) {
+        return i & 0xFF;
+    }
+
+    static int calculateCornerBrightness(int a, int b, int c, int d, boolean aem, boolean bem, boolean cem, boolean dem) {
+        // FIX: Normalize corner vectors correctly to the minimum non-zero value between each one to prevent
+        // strange issues
+        if ((a == 0) || (b == 0) || (c == 0) || (d == 0)) {
+            // Find the minimum value between all corners
+            final int min = minNonZero(minNonZero(a, b), minNonZero(c, d));
+
+            // Normalize the corner values
+            a = Math.max(a, min);
+            b = Math.max(b, min);
+            c = Math.max(c, min);
+            d = Math.max(d, min);
+        }
+
+        // FIX: Apply the fullbright lightmap from emissive blocks at the very end so it cannot influence
+        // the minimum lightmap and produce incorrect results (for example, sculk sensors in a dark room)
+        if (aem) {
+            a = LightTexture.FULL_BRIGHT;
+        }
+        if (bem) {
+            b = LightTexture.FULL_BRIGHT;
+        }
+        if (cem) {
+            c = LightTexture.FULL_BRIGHT;
+        }
+        if (dem) {
+            d = LightTexture.FULL_BRIGHT;
+        }
+
+        return ((a + b + c + d) >> 2) & 0xFF00FF;
+    }
+
+    static int minNonZero(int a, int b) {
+        if (a == 0) {
+            return b;
+        } else if (b == 0) {
+            return a;
+        }
+
+        return Math.min(a, b);
+    }
 
     public void initLightData(LightDataAccess cache, BlockPos pos, SimpleDirection direction, boolean offset) {
         final int oX = pos.getX();
@@ -189,65 +248,6 @@ class AoFaceData {
 
     public float getBlendedShade(float[] w) {
         return weightedSum(this.ao, w);
-    }
-
-    static float weightedSum(float[] v, float[] w) {
-        float t0 = v[0] * w[0];
-        float t1 = v[1] * w[1];
-        float t2 = v[2] * w[2];
-        float t3 = v[3] * w[3];
-
-        return t0 + t1 + t2 + t3;
-    }
-
-    static float unpackSkyLight(int i) {
-        return (i >> 16) & 0xFF;
-    }
-
-    static float unpackBlockLight(int i) {
-        return i & 0xFF;
-    }
-
-    static int calculateCornerBrightness(int a, int b, int c, int d, boolean aem, boolean bem, boolean cem, boolean dem) {
-        // FIX: Normalize corner vectors correctly to the minimum non-zero value between each one to prevent
-        // strange issues
-        if ((a == 0) || (b == 0) || (c == 0) || (d == 0)) {
-            // Find the minimum value between all corners
-            final int min = minNonZero(minNonZero(a, b), minNonZero(c, d));
-
-            // Normalize the corner values
-            a = Math.max(a, min);
-            b = Math.max(b, min);
-            c = Math.max(c, min);
-            d = Math.max(d, min);
-        }
-
-        // FIX: Apply the fullbright lightmap from emissive blocks at the very end so it cannot influence
-        // the minimum lightmap and produce incorrect results (for example, sculk sensors in a dark room)
-        if (aem) {
-            a = LightTexture.FULL_BRIGHT;
-        }
-        if (bem) {
-            b = LightTexture.FULL_BRIGHT;
-        }
-        if (cem) {
-            c = LightTexture.FULL_BRIGHT;
-        }
-        if (dem) {
-            d = LightTexture.FULL_BRIGHT;
-        }
-
-        return ((a + b + c + d) >> 2) & 0xFF00FF;
-    }
-
-    static int minNonZero(int a, int b) {
-        if (a == 0) {
-            return b;
-        } else if (b == 0) {
-            return a;
-        }
-
-        return Math.min(a, b);
     }
 
     public boolean hasLightData() {

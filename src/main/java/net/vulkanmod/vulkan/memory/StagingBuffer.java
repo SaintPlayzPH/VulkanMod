@@ -1,13 +1,12 @@
 package net.vulkanmod.vulkan.memory;
 
 import net.vulkanmod.render.chunk.util.Util;
-import net.vulkanmod.vulkan.util.VUtil;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.system.libc.LibCString.nmemcpy;
-import static org.lwjgl.vulkan.VK10.*;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 
 public class StagingBuffer extends Buffer {
 
@@ -21,7 +20,7 @@ public class StagingBuffer extends Buffer {
 
     public void copyBuffer(int size, ByteBuffer byteBuffer) {
 
-        if(size > this.bufferSize - this.usedBytes) {
+        if (size > this.bufferSize - this.usedBytes) {
             resizeBuffer((this.bufferSize + size) * 2);
         }
 
@@ -37,7 +36,7 @@ public class StagingBuffer extends Buffer {
     public void align(int alignment) {
         int alignedValue = Util.align(usedBytes, alignment);
 
-        if(alignedValue > this.bufferSize) {
+        if (alignedValue > this.bufferSize) {
             resizeBuffer((this.bufferSize) * 2);
         }
 
