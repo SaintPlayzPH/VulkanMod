@@ -6,13 +6,12 @@ import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
 public class VFrustum {
+    private final FrustumIntersection frustum = new FrustumIntersection();
+    private final Matrix4f matrix = new Matrix4f();
     private Vector4f viewVector = new Vector4f();
     private double camX;
     private double camY;
     private double camZ;
-
-    private final FrustumIntersection frustum = new FrustumIntersection();
-    private final Matrix4f matrix = new Matrix4f();
 
     public VFrustum offsetToFullyIncludeCameraCube(int offset) {
         double d0 = Math.floor(this.camX / (double) offset) * (double) offset;

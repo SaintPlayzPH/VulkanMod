@@ -13,12 +13,10 @@ public class ChunkAreaManager {
     public static final int HEIGHT = 8;
 
     public static final int AREA_SH_XZ = Util.flooredLog(WIDTH);
-    public static final int AREA_SH_Y = Util.flooredLog(HEIGHT);
-
-    public static final int SEC_SH = 4;
     public static final int BLOCK_TO_AREA_SH_XZ = AREA_SH_XZ + SEC_SH;
+    public static final int AREA_SH_Y = Util.flooredLog(HEIGHT);
     public static final int BLOCK_TO_AREA_SH_Y = AREA_SH_Y + SEC_SH;
-
+    public static final int SEC_SH = 4;
     public final int size;
     final int sectionGridWidth;
     final int xzSize;

@@ -30,13 +30,13 @@ public class UniformM {
         return 0;
     }
 
-    @Inject(method = "upload", at = @At("HEAD"), cancellable = true)
-    public void cancelUpload(CallbackInfo ci) {
+    @Inject(method = "uploadInteger", at = @At("HEAD"), cancellable = true)
+    private static void cancelUploadInteger(int i, int j, CallbackInfo ci) {
         ci.cancel();
     }
 
-    @Inject(method = "uploadInteger", at = @At("HEAD"), cancellable = true)
-    private static void cancelUploadInteger(int i, int j, CallbackInfo ci) {
+    @Inject(method = "upload", at = @At("HEAD"), cancellable = true)
+    public void cancelUpload(CallbackInfo ci) {
         ci.cancel();
     }
 }

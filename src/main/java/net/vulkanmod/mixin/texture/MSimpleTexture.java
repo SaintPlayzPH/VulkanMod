@@ -19,8 +19,8 @@ public class MSimpleTexture {
                 .setLinearFiltering(blur)
                 .setClamp(clamp)
                 .createVulkanImage();
-        ((VAbstractTextureI)this).setVulkanImage(image);
-        ((VAbstractTextureI)this).bindTexture();
+        ((VAbstractTextureI) this).setVulkanImage(image);
+        ((VAbstractTextureI) this).bindTexture();
         nativeImage.upload(0, 0, 0, 0, 0, nativeImage.getWidth(), nativeImage.getHeight(), blur, clamp, false, true);
     }
 

@@ -64,13 +64,6 @@ public abstract class Option<T> {
 
     public abstract OptionWidget<?> createOptionWidget(int x, int y, int width, int height);
 
-    public void setNewValue(T t) {
-        this.newValue = t;
-
-        if (onChange != null)
-            onChange.run();
-    }
-
     public Component getName() {
         return this.name;
     }
@@ -84,7 +77,7 @@ public abstract class Option<T> {
     }
 
     public void apply() {
-        if(!isChanged())
+        if (!isChanged())
             return;
 
         onApply.accept(this.newValue);
@@ -95,16 +88,23 @@ public abstract class Option<T> {
         return this.newValue;
     }
 
+    public void setNewValue(T t) {
+        this.newValue = t;
+
+        if (onChange != null)
+            onChange.run();
+    }
+
     public Component getDisplayedValue() {
         return this.translator.apply(this.newValue);
+    }
+
+    public Component getTooltip() {
+        return this.tooltip;
     }
 
     public Option<T> setTooltip(Component text) {
         this.tooltip = text;
         return this;
-    }
-
-    public Component getTooltip() {
-        return this.tooltip;
     }
 }

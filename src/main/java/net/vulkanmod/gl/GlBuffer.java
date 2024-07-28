@@ -10,12 +10,19 @@ import java.nio.ByteBuffer;
 // TODO: This class is only used to emulate a CPU buffer for texture copying purposes
 //  any other use is not supported
 public class GlBuffer {
-    private static int ID_COUNTER = 1;
     private static final Int2ReferenceOpenHashMap<GlBuffer> map = new Int2ReferenceOpenHashMap<>();
+    private static int ID_COUNTER = 1;
     private static int boundId = 0;
     private static GlBuffer boundBuffer;
 
     private static GlBuffer pixelUnpackBufferBound;
+    int id;
+    int target;
+    ByteBuffer data;
+
+    public GlBuffer(int id) {
+        this.id = id;
+    }
 
     public static int glGenBuffers() {
         int id = ID_COUNTER;
@@ -78,15 +85,6 @@ public class GlBuffer {
     private static void checkTarget(int target) {
         if (target != GL32.GL_PIXEL_UNPACK_BUFFER)
             throw new IllegalArgumentException("target %d not supported".formatted(target));
-    }
-
-    int id;
-    int target;
-
-    ByteBuffer data;
-
-    public GlBuffer(int id) {
-        this.id = id;
     }
 
     private void allocate(int size) {

@@ -14,10 +14,21 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class GlRenderbuffer {
-    private static int ID_COUNTER = 1;
     private static final Int2ReferenceOpenHashMap<GlRenderbuffer> map = new Int2ReferenceOpenHashMap<>();
+    private static int ID_COUNTER = 1;
     private static int boundId = 0;
     private static GlRenderbuffer bound;
+    final int id;
+    VulkanImage vulkanImage;
+    int internalFormat;
+    boolean needsUpdate = false;
+    int maxLevel = 0;
+    int maxLod = 0;
+    int minFilter, magFilter = GL11.GL_LINEAR;
+
+    public GlRenderbuffer(int id) {
+        this.id = id;
+    }
 
     public static int genId() {
         int id = ID_COUNTER;
@@ -65,8 +76,10 @@ public class GlRenderbuffer {
         switch (pName) {
             case GL30.GL_TEXTURE_MAX_LEVEL -> bound.setMaxLevel(param);
             case GL30.GL_TEXTURE_MAX_LOD -> bound.setMaxLod(param);
-            case GL30.GL_TEXTURE_MIN_LOD -> {}
-            case GL30.GL_TEXTURE_LOD_BIAS -> {}
+            case GL30.GL_TEXTURE_MIN_LOD -> {
+            }
+            case GL30.GL_TEXTURE_LOD_BIAS -> {
+            }
 
             case GL11.GL_TEXTURE_MAG_FILTER -> bound.setMagFilter(param);
             case GL11.GL_TEXTURE_MIN_FILTER -> bound.setMinFilter(param);
@@ -106,19 +119,6 @@ public class GlRenderbuffer {
 
     public static GlRenderbuffer getBound() {
         return bound;
-    }
-
-    final int id;
-    VulkanImage vulkanImage;
-    int internalFormat;
-
-    boolean needsUpdate = false;
-    int maxLevel = 0;
-    int maxLod = 0;
-    int minFilter, magFilter = GL11.GL_LINEAR;
-
-    public GlRenderbuffer(int id) {
-        this.id = id;
     }
 
     void allocateIfNeeded(int width, int height, int format) {

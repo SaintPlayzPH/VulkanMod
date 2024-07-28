@@ -17,6 +17,13 @@ public class VertexBufferM {
 
     private VBO vbo;
 
+    /**
+     * @author
+     */
+    @Overwrite
+    public static void unbind() {
+    }
+
     @Inject(method = "<init>", at = @At("RETURN"))
     private void constructor(CallbackInfo ci) {
         vbo = new VBO();
@@ -36,13 +43,8 @@ public class VertexBufferM {
      * @author
      */
     @Overwrite
-    public void bind() {}
-
-    /**
-     * @author
-     */
-    @Overwrite
-    public static void unbind() {}
+    public void bind() {
+    }
 
     /**
      * @author

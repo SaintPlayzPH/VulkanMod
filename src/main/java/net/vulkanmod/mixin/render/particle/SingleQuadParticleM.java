@@ -23,19 +23,28 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(SingleQuadParticle.class)
 public abstract class SingleQuadParticleM extends Particle {
 
-    @Shadow protected float quadSize;
-
-    @Shadow protected abstract float getU0();
-    @Shadow protected abstract float getU1();
-    @Shadow protected abstract float getV0();
-    @Shadow protected abstract float getV1();
-
-    @Shadow public abstract float getQuadSize(float f);
+    @Shadow
+    protected float quadSize;
 
     protected SingleQuadParticleM(ClientLevel clientLevel, double d, double e, double f, double g, double h, double i) {
         super(clientLevel, d, e, f, g, h, i);
         this.quadSize = 0.1F * (this.random.nextFloat() * 0.5F + 0.5F) * 2.0F;
     }
+
+    @Shadow
+    protected abstract float getU0();
+
+    @Shadow
+    protected abstract float getU1();
+
+    @Shadow
+    protected abstract float getV0();
+
+    @Shadow
+    protected abstract float getV1();
+
+    @Shadow
+    public abstract float getQuadSize(float f);
 
     /**
      * @author
@@ -47,7 +56,7 @@ public abstract class SingleQuadParticleM extends Particle {
         double ly = (Mth.lerp(f, this.yo, this.y));
         double lz = (Mth.lerp(f, this.zo, this.z));
 
-        if(cull(WorldRenderer.getInstance(), (float) lx, (float) ly, (float) lz))
+        if (cull(WorldRenderer.getInstance(), (float) lx, (float) ly, (float) lz))
             return;
 
         Vec3 vec3 = camera.getPosition();
@@ -66,7 +75,7 @@ public abstract class SingleQuadParticleM extends Particle {
         Vector3f[] vector3fs = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float j = this.getQuadSize(f);
 
-        for(int k = 0; k < 4; ++k) {
+        for (int k = 0; k < 4; ++k) {
             Vector3f vector3f = vector3fs[k];
             vector3f.rotate(quaternionf);
             vector3f.mul(j);
@@ -79,7 +88,7 @@ public abstract class SingleQuadParticleM extends Particle {
         float v1 = this.getV1();
         int light = this.getLightColor(f);
 
-        ExtendedVertexBuilder vertexBuilder = (ExtendedVertexBuilder)vertexConsumer;
+        ExtendedVertexBuilder vertexBuilder = (ExtendedVertexBuilder) vertexConsumer;
         int packedColor = ColorUtil.RGBA.pack(this.rCol, this.gCol, this.bCol, this.alpha);
 
         vertexBuilder.vertex(vector3fs[0].x(), vector3fs[0].y(), vector3fs[0].z(), u1, v1, packedColor, light);

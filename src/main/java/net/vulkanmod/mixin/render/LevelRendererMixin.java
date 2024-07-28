@@ -19,13 +19,17 @@ import java.io.IOException;
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
 
-    @Shadow private @Nullable PostChain entityEffect;
-
-    @Shadow @Final private Minecraft minecraft;
-
-    @Shadow @Nullable private RenderTarget entityTarget;
-
-    @Shadow @Final private static Logger LOGGER;
+    @Shadow
+    @Final
+    private static Logger LOGGER;
+    @Shadow
+    private @Nullable PostChain entityEffect;
+    @Shadow
+    @Final
+    private Minecraft minecraft;
+    @Shadow
+    @Nullable
+    private RenderTarget entityTarget;
 
 //    /**
 //     * @author

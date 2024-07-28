@@ -20,15 +20,14 @@ public class Drawer {
     private static final LongBuffer offsets = MemoryUtil.memAllocLong(1);
     private static final long pBuffers = MemoryUtil.memAddress0(buffers);
     private static final long pOffsets = MemoryUtil.memAddress0(offsets);
-
-    private int framesNum;
-    private VertexBuffer[] vertexBuffers;
     private final AutoIndexBuffer quadsIndexBuffer;
     private final AutoIndexBuffer quadsIntIndexBuffer;
     private final AutoIndexBuffer linesIndexBuffer;
     private final AutoIndexBuffer debugLineStripIndexBuffer;
     private final AutoIndexBuffer triangleFanIndexBuffer;
     private final AutoIndexBuffer triangleStripIndexBuffer;
+    private int framesNum;
+    private VertexBuffer[] vertexBuffers;
     private UniformBuffer[] uniformBuffers;
 
     private int currentFrame;

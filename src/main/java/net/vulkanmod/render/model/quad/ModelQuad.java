@@ -12,10 +12,18 @@ public class ModelQuad implements QuadView {
     TextureAtlasSprite sprite;
 
     private int flags;
-    
+
+    private static int vertexOffset(int vertexIndex) {
+        return vertexIndex * VERTEX_SIZE;
+    }
+
     @Override
     public int getFlags() {
         return flags;
+    }
+
+    public void setFlags(int f) {
+        this.flags = f;
     }
 
     @Override
@@ -81,15 +89,7 @@ public class ModelQuad implements QuadView {
 
     }
 
-    public void setFlags(int f) {
-        this.flags = f;
-    }
-
     public void setSprite(TextureAtlasSprite sprite) {
         this.sprite = sprite;
-    }
-
-    private static int vertexOffset(int vertexIndex) {
-        return vertexIndex * VERTEX_SIZE;
     }
 }

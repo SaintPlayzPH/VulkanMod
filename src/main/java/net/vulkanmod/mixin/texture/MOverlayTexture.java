@@ -16,16 +16,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(OverlayTexture.class)
 public class MOverlayTexture {
 
-    @Shadow @Final private DynamicTexture texture;
+    @Shadow
+    @Final
+    private DynamicTexture texture;
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/DynamicTexture;bind()V"))
     private void overlay(DynamicTexture instance) {
 
-        VTextureSelector.setOverlayTexture(((VAbstractTextureI)this.texture).getVulkanImage());
+        VTextureSelector.setOverlayTexture(((VAbstractTextureI) this.texture).getVulkanImage());
         VTextureSelector.setActiveTexture(1);
     }
 
-//    @Inject(method = "<init>", at = @At(value = "RETURN", target = "Lnet/minecraft/client/texture/NativeImageBackedTexture;bindTexture()V"))
+    //    @Inject(method = "<init>", at = @At(value = "RETURN", target = "Lnet/minecraft/client/texture/NativeImageBackedTexture;bindTexture()V"))
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void overlay(CallbackInfo ci) {
         VTextureSelector.setActiveTexture(0);
@@ -33,7 +35,7 @@ public class MOverlayTexture {
 
     @Inject(method = "setupOverlayColor", at = @At(value = "HEAD"), cancellable = true)
     private void setupOverlay(CallbackInfo ci) {
-        VTextureSelector.setOverlayTexture(((VAbstractTextureI)this.texture).getVulkanImage());
+        VTextureSelector.setOverlayTexture(((VAbstractTextureI) this.texture).getVulkanImage());
         ci.cancel();
     }
 }

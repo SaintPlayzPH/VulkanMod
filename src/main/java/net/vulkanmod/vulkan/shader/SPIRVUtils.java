@@ -26,15 +26,12 @@ import static org.lwjgl.util.shaderc.Shaderc.*;
 public class SPIRVUtils {
     private static final boolean DEBUG = false;
     private static final boolean OPTIMIZATIONS = true;
-
-    private static long compiler;
-    private static long options;
-
     //The dedicated Includer and Releaser Inner Classes used to Initialise #include Support for ShaderC
     private static final ShaderIncluder SHADER_INCLUDER = new ShaderIncluder();
     private static final ShaderReleaser SHADER_RELEASER = new ShaderReleaser();
     private static final long pUserData = 0;
-
+    private static long compiler;
+    private static long options;
     private static ObjectArrayList<String> includePaths;
 
     private static float time = 0.0f;
@@ -46,20 +43,20 @@ public class SPIRVUtils {
     private static void initCompiler() {
         compiler = shaderc_compiler_initialize();
 
-        if(compiler == NULL) {
+        if (compiler == NULL) {
             throw new RuntimeException("Failed to create shader compiler");
         }
 
         options = shaderc_compile_options_initialize();
 
-        if(options == NULL) {
+        if (options == NULL) {
             throw new RuntimeException("Failed to create compiler options");
         }
 
-        if(OPTIMIZATIONS)
+        if (OPTIMIZATIONS)
             shaderc_compile_options_set_optimization_level(options, shaderc_optimization_level_performance);
 
-        if(DEBUG)
+        if (DEBUG)
             shaderc_compile_options_set_generate_debug_info(options);
 
         shaderc_compile_options_set_target_env(options, shaderc_env_version_vulkan_1_2, VK12.VK_API_VERSION_1_2);
@@ -72,7 +69,7 @@ public class SPIRVUtils {
     public static void addIncludePath(String path) {
         URL url = SPIRVUtils.class.getResource(path);
 
-        if(url != null)
+        if (url != null)
             includePaths.add(url.toExternalForm());
     }
 
@@ -91,11 +88,11 @@ public class SPIRVUtils {
 
         long result = shaderc_compile_into_spv(compiler, source, shaderKind.kind, filename, "main", options);
 
-        if(result == NULL) {
+        if (result == NULL) {
             throw new RuntimeException("Failed to compile shader " + filename + " into SPIR-V");
         }
 
-        if(shaderc_result_get_compilation_status(result) != shaderc_compilation_status_success) {
+        if (shaderc_result_get_compilation_status(result) != shaderc_compilation_status_success) {
             throw new RuntimeException("Failed to compile shader " + filename + " into SPIR-V:\n" + shaderc_result_get_error_message(result));
         }
 
@@ -140,13 +137,13 @@ public class SPIRVUtils {
             var requesting = memASCII(requesting_source);
             var requested = memASCII(requested_source);
 
-            try(MemoryStack stack = MemoryStack.stackPush()) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
                 Path path;
 
-                for(String includePath : includePaths) {
+                for (String includePath : includePaths) {
                     path = Paths.get(new URI(String.format("%s%s", includePath, requested)));
 
-                    if(Files.exists(path)) {
+                    if (Files.exists(path)) {
                         byte[] bytes = Files.readAllBytes(path);
 
                         return ShadercIncludeResult.malloc(stack)

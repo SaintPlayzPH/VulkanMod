@@ -33,7 +33,7 @@ public abstract class MipmapGeneratorM {
             NativeImage[] nativeImages2 = new NativeImage[i + 1];
             nativeImages2[0] = nativeImages[0];
 
-            long srcPtr = ((NativeImageAccessor)(Object)nativeImages2[0]).getPixels();
+            long srcPtr = ((NativeImageAccessor) (Object) nativeImages2[0]).getPixels();
             boolean bl = hasTransparentPixel(srcPtr, nativeImages2[0].getWidth(), nativeImages2[0].getHeight());
 
             if (bl) {
@@ -59,7 +59,7 @@ public abstract class MipmapGeneratorM {
 
             }
 
-            for(int j = 1; j <= i; ++j) {
+            for (int j = 1; j <= i; ++j) {
                 if (j < nativeImages.length) {
                     nativeImages2[j] = nativeImages[j];
                 } else {
@@ -68,12 +68,12 @@ public abstract class MipmapGeneratorM {
                     int width = nativeImage2.getWidth();
                     int height = nativeImage2.getHeight();
 
-                    srcPtr = ((NativeImageAccessor)(Object)nativeImage).getPixels();
-                    long dstPtr = ((NativeImageAccessor)(Object)nativeImage2).getPixels();
+                    srcPtr = ((NativeImageAccessor) (Object) nativeImage).getPixels();
+                    long dstPtr = ((NativeImageAccessor) (Object) nativeImage2).getPixels();
                     final int width2 = width * 2;
 
-                    for(int m = 0; m < width; ++m) {
-                        for(int n = 0; n < height; ++n) {
+                    for (int m = 0; m < width; ++m) {
+                        for (int n = 0; n < height; ++n) {
                             int p0 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 0) + ((n * 2 + 0) * width2)) * 4L);
                             int p1 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 1) + ((n * 2 + 0) * width2)) * 4L);
                             int p2 = MemoryUtil.memGetInt(srcPtr + ((m * 2 + 0) + ((n * 2 + 1) * width2)) * 4L);
@@ -93,8 +93,8 @@ public abstract class MipmapGeneratorM {
     }
 
     private static boolean hasTransparentPixel(long ptr, int width, int height) {
-        for(int i = 0; i < width; ++i) {
-            for(int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
                 if (getPixelA(MemoryUtil.memGetInt(ptr + (i + j * width) * 4L)) == 0) {
                     return true;
                 }
@@ -122,8 +122,8 @@ public abstract class MipmapGeneratorM {
         float g = getPow22(j >> m);
         float h = getPow22(k >> m);
         float n = getPow22(l >> m);
-        float o = (float)((double)((float)Math.pow((double)(f + g + h + n) * 0.25, 0.45454545454545453)));
-        return (int)((double)o * 255.0);
+        float o = (float) ((double) ((float) Math.pow((double) (f + g + h + n) * 0.25, 0.45454545454545453)));
+        return (int) ((double) o * 255.0);
     }
 
     private static int getPixelA(int rgba) {
@@ -137,10 +137,10 @@ public abstract class MipmapGeneratorM {
 
         final int[] values = new int[width * height];
         int count = 0;
-        long srcPtr = ((NativeImageAccessor)(Object)nativeImage).getPixels();
+        long srcPtr = ((NativeImageAccessor) (Object) nativeImage).getPixels();
 
-        for(int i = 0; i < width; ++i) {
-            for(int j = 0; j < height; ++j) {
+        for (int i = 0; i < width; ++i) {
+            for (int j = 0; j < height; ++j) {
 //                int value = nativeImage.getPixelRGBA(i, j);
                 int value = MemoryUtil.memGetInt(srcPtr + (i + (long) j * width) * 4L);
                 if (((value >> 24) & 0xFF) > 0) {
@@ -159,7 +159,7 @@ public abstract class MipmapGeneratorM {
             sumB += (values[i] >> 16) & 0xFF;
         }
 
-        if(count == 0)
+        if (count == 0)
             return 0;
 
         sumR /= count;

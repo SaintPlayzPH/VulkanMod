@@ -21,7 +21,7 @@ public class StagingBuffer extends Buffer {
 
     public void copyBuffer(int size, ByteBuffer byteBuffer) {
 
-        if(size > this.bufferSize - this.usedBytes) {
+        if (size > this.bufferSize - this.usedBytes) {
             resizeBuffer((this.bufferSize + size) * 2);
         }
 
@@ -37,7 +37,7 @@ public class StagingBuffer extends Buffer {
     public void align(int alignment) {
         int alignedValue = Util.align(usedBytes, alignment);
 
-        if(alignedValue > this.bufferSize) {
+        if (alignedValue > this.bufferSize) {
             resizeBuffer((this.bufferSize) * 2);
         }
 

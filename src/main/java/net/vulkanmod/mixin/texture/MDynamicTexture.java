@@ -15,9 +15,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(DynamicTexture.class)
 public abstract class MDynamicTexture extends AbstractTexture {
 
-    @Shadow private NativeImage pixels;
+    @Shadow
+    private NativeImage pixels;
 
-    @Shadow public abstract void upload();
+    @Shadow
+    public abstract void upload();
 
     @Redirect(method = "<init>(IIZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/TextureUtil;prepareImage(III)V"))
     private void redirect(int id, int width, int height) {
@@ -55,7 +57,7 @@ public abstract class MDynamicTexture extends AbstractTexture {
     }
 
     private void createTexture() {
-        VAbstractTextureI texture = ((VAbstractTextureI)(this));
+        VAbstractTextureI texture = ((VAbstractTextureI) (this));
 
         VulkanImage vulkanImage = new VulkanImage.Builder(this.pixels.getWidth(), this.pixels.getHeight()).createVulkanImage();
         texture.setVulkanImage(vulkanImage);

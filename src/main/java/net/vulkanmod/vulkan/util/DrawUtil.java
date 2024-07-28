@@ -62,7 +62,7 @@ public class DrawUtil {
 
         Renderer renderer = Renderer.getInstance();
 
-        GraphicsPipeline pipeline = ((ShaderMixed)(shaderInstance)).getPipeline();
+        GraphicsPipeline pipeline = ((ShaderMixed) (shaderInstance)).getPipeline();
         renderer.bindGraphicsPipeline(pipeline);
         renderer.uploadAndBindUBOs(pipeline);
         Renderer.getDrawer().draw(buffer.vertexBuffer(), parameters.mode(), parameters.format(), parameters.vertexCount());

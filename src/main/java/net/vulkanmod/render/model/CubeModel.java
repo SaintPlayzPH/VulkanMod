@@ -9,16 +9,15 @@ import java.util.Set;
 
 public class CubeModel {
 
-    private ModelPart.Polygon[] polygons = new ModelPart.Polygon[6];
     public float minX;
     public float minY;
     public float minZ;
     public float maxX;
     public float maxY;
     public float maxZ;
-
     Vector3f[] vertices;
     Vector3f[] transformed = new Vector3f[8];
+    private ModelPart.Polygon[] polygons = new ModelPart.Polygon[6];
 
     public void setVertices(int i, int j, float f, float g, float h, float k, float l, float m, float n, float o, float p, boolean bl, float q, float r, Set<Direction> set) {
         this.minX = f;
@@ -69,15 +68,15 @@ public class CubeModel {
         ModelPart.Vertex vertex7 = new ModelPart.Vertex(transformed[6], 8.0F, 8.0F);
         ModelPart.Vertex vertex8 = new ModelPart.Vertex(transformed[7], 8.0F, 0.0F);
 
-        float w = (float)i;
-        float x = (float)i + m;
-        float y = (float)i + m + k;
-        float z = (float)i + m + k + k;
-        float aa = (float)i + m + k + m;
-        float ab = (float)i + m + k + m + k;
-        float ac = (float)j;
-        float ad = (float)j + m;
-        float ae = (float)j + m + l;
+        float w = (float) i;
+        float x = (float) i + m;
+        float y = (float) i + m + k;
+        float z = (float) i + m + k + k;
+        float aa = (float) i + m + k + m;
+        float ab = (float) i + m + k + m + k;
+        float ac = (float) j;
+        float ad = (float) j + m;
+        float ae = (float) j + m + l;
         int idx = 0;
         if (set.contains(Direction.DOWN)) {
             this.polygons[idx++] = new ModelPart.Polygon(new ModelPart.Vertex[]{vertex6, vertex5, vertex1, vertex2}, x, ac, y, ad, q, r, bl, Direction.DOWN);
@@ -106,10 +105,12 @@ public class CubeModel {
 
     public void transformVertices(Matrix4f matrix) {
         //Transform original vertices and store them
-        for(int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             this.vertices[i].mulPosition(matrix, this.transformed[i]);
         }
     }
 
-    public ModelPart.Polygon[] getPolygons() { return this.polygons; }
+    public ModelPart.Polygon[] getPolygons() {
+        return this.polygons;
+    }
 }

@@ -13,10 +13,10 @@ public abstract class AlignedStruct {
     protected AlignedStruct(List<Uniform.Info> infoList, int size) {
         this.size = size;
 
-        if(infoList == null)
+        if (infoList == null)
             return;
 
-        for(Uniform.Info info : infoList) {
+        for (Uniform.Info info : infoList) {
 
             Uniform uniform = Uniform.createField(info);
             this.uniforms.add(uniform);
@@ -24,7 +24,7 @@ public abstract class AlignedStruct {
     }
 
     public void update(long ptr) {
-        for(Uniform uniform : this.uniforms) {
+        for (Uniform uniform : this.uniforms) {
             uniform.update(ptr);
         }
     }
@@ -64,7 +64,7 @@ public abstract class AlignedStruct {
         }
 
         public PushConstants buildPushConstant() {
-            if(this.uniformsInfo.isEmpty()) return null;
+            if (this.uniformsInfo.isEmpty()) return null;
             return new PushConstants(this.uniformsInfo, this.currentOffset * 4);
         }
 

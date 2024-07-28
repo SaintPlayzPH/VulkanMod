@@ -19,21 +19,19 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class DefaultMainPass implements MainPass {
 
-    public static DefaultMainPass create() {
-        return new DefaultMainPass();
-    }
-
-    private RenderTarget mainTarget;
     private final Framebuffer mainFramebuffer;
-
+    private RenderTarget mainTarget;
     private RenderPass mainRenderPass;
     private RenderPass auxRenderPass;
-
     DefaultMainPass() {
         this.mainTarget = Minecraft.getInstance().getMainRenderTarget();
         this.mainFramebuffer = Vulkan.getSwapChain();
 
         createRenderPasses();
+    }
+
+    public static DefaultMainPass create() {
+        return new DefaultMainPass();
     }
 
     private void createRenderPasses() {
@@ -73,13 +71,13 @@ public class DefaultMainPass implements MainPass {
     public void end(VkCommandBuffer commandBuffer) {
         Renderer.getInstance().endRenderPass(commandBuffer);
 
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             SwapChain framebuffer = Vulkan.getSwapChain();
             framebuffer.getColorAttachment().transitionImageLayout(stack, commandBuffer, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
         }
 
         int result = vkEndCommandBuffer(commandBuffer);
-        if(result != VK_SUCCESS) {
+        if (result != VK_SUCCESS) {
             throw new RuntimeException("Failed to record command buffer:" + result);
         }
     }
@@ -90,12 +88,12 @@ public class DefaultMainPass implements MainPass {
 
         // Do not rebind if the framebuffer is already bound
         RenderPass boundRenderPass = Renderer.getInstance().getBoundRenderPass();
-        if(boundRenderPass == this.mainRenderPass || boundRenderPass == this.auxRenderPass)
+        if (boundRenderPass == this.mainRenderPass || boundRenderPass == this.auxRenderPass)
             return;
 
         Renderer.getInstance().endRenderPass(commandBuffer);
 
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             swapChain.beginRenderPass(commandBuffer, this.auxRenderPass, stack);
         }
 
@@ -108,7 +106,7 @@ public class DefaultMainPass implements MainPass {
 
         // Check if render pass is using the framebuffer
         RenderPass boundRenderPass = Renderer.getInstance().getBoundRenderPass();
-        if(boundRenderPass == this.mainRenderPass || boundRenderPass == this.auxRenderPass)
+        if (boundRenderPass == this.mainRenderPass || boundRenderPass == this.auxRenderPass)
             Renderer.getInstance().endRenderPass(commandBuffer);
 
         try (MemoryStack stack = MemoryStack.stackPush()) {

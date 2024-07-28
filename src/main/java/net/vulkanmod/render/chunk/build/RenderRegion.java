@@ -42,12 +42,9 @@ public class RenderRegion implements BlockAndTintGetter {
     private final PalettedContainer<BlockState>[] blockDataContainers;
     private final BlockState[] blockData;
     private final DataLayer[][] lightData;
-
-    private TintCache tintCache;
-
     private final Map<BlockPos, BlockEntity> blockEntityMap;
-
     private final Function<BlockPos, BlockState> blockStateGetter;
+    private TintCache tintCache;
 
     RenderRegion(Level level, int x, int y, int z, PalettedContainer<BlockState>[] blockData, DataLayer[][] lightData, Map<BlockPos, BlockEntity> blockEntityMap) {
         this.level = level;
@@ -76,14 +73,14 @@ public class RenderRegion implements BlockAndTintGetter {
     public void loadBlockStates() {
         Arrays.fill(blockData, Blocks.AIR.defaultBlockState());
 
-        for(int x = 0; x <= 2; ++x) {
-            for(int z = 0; z <= 2; ++z) {
-                for(int y = 0; y <= 2; ++y) {
+        for (int x = 0; x <= 2; ++x) {
+            for (int z = 0; z <= 2; ++z) {
+                for (int y = 0; y <= 2; ++y) {
                     final int idx = getSectionIdx(x, y, z);
 
                     PalettedContainer<BlockState> container = blockDataContainers[idx];
 
-                    if(container == null)
+                    if (container == null)
                         continue;
 
                     int absBlockX = (x + minSecX) << 4;
@@ -100,7 +97,7 @@ public class RenderRegion implements BlockAndTintGetter {
 
                     loadSectionBlockStates(container, blockData,
                             tMinX, tMinY, tMinZ, tMaxX, tMaxY, tMaxZ);
-                    
+
                 }
             }
         }
@@ -231,8 +228,7 @@ public class RenderRegion implements BlockAndTintGetter {
         BlockState blockState = null;
         if (y == 60) {
             blockState = Blocks.BARRIER.defaultBlockState();
-        }
-        else if (y == 70) {
+        } else if (y == 70) {
             blockState = DebugLevelSource.getBlockStateFor(x, z);
         }
 

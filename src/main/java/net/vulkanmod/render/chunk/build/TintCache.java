@@ -45,7 +45,7 @@ public class TintCache {
 
         int size = totalWidth * totalWidth;
 
-        if(size != dataSize) {
+        if (size != dataSize) {
             this.dataSize = size;
             for (Layer layer : layers) {
                 layer.allocate(size);
@@ -61,7 +61,7 @@ public class TintCache {
     public int getColor(BlockPos blockPos, ColorResolver colorResolver) {
         int relY = blockPos.getY() & 15;
         Layer layer = layers[relY];
-        if(layer.invalidated)
+        if (layer.invalidated)
             calculateLayer(relY);
 
         int[] values = layer.getValues(colorResolver);
@@ -80,8 +80,8 @@ public class TintCache {
 
         Biome tB = level.getBiome(blockPos.set(minX, absY, minZ)).value();
         boolean mixed = false;
-        for (int absZ = minZ; absZ < maxZ ; absZ++) {
-            for (int absX = minX; absX < maxX ; absX++) {
+        for (int absZ = minZ; absZ < maxZ; absZ++) {
+            for (int absX = minX; absX < maxX; absX++) {
                 blockPos.set(absX, absY, absZ);
                 Biome biome = level.getBiome(blockPos).value();
 
@@ -95,7 +95,7 @@ public class TintCache {
             }
         }
 
-        if(mixed && blendRadius > 0) {
+        if (mixed && blendRadius > 0) {
             BoxBlur.blur(layer.grass, temp, SECTION_WIDTH, blendRadius);
             BoxBlur.blur(layer.foliage, temp, SECTION_WIDTH, blendRadius);
             BoxBlur.blur(layer.water, temp, SECTION_WIDTH, blendRadius);
@@ -123,11 +123,11 @@ public class TintCache {
         }
 
         public int[] getValues(ColorResolver colorResolver) {
-            if(colorResolver == BiomeColors.GRASS_COLOR_RESOLVER)
+            if (colorResolver == BiomeColors.GRASS_COLOR_RESOLVER)
                 return grass;
-            else if(colorResolver == BiomeColors.FOLIAGE_COLOR_RESOLVER)
+            else if (colorResolver == BiomeColors.FOLIAGE_COLOR_RESOLVER)
                 return foliage;
-            else if(colorResolver == BiomeColors.WATER_COLOR_RESOLVER)
+            else if (colorResolver == BiomeColors.WATER_COLOR_RESOLVER)
                 return water;
 
             throw new IllegalArgumentException("Unexpected resolver: " + colorResolver.toString());

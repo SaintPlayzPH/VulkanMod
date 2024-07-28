@@ -16,7 +16,7 @@ public class BoxBlur {
             int r = 0, g = 0, b = 0;
 
             //init accumulator
-            for(int x = 0; x < x0 + 1 + filterRadius; ++x) {
+            for (int x = 0; x < x0 + 1 + filterRadius; ++x) {
                 color = src[getIdx(x, y, totalWidth)];
                 r += unpackR(color);
                 g += unpackG(color);

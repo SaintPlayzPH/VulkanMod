@@ -21,13 +21,8 @@ public abstract class Queue {
     private static VkDevice DEVICE;
 
     private static QueueFamilyIndices queueFamilyIndices;
-    protected CommandPool commandPool;
-
     private final VkQueue queue;
-
-    public synchronized CommandPool.CommandBuffer beginCommands() {
-        return this.commandPool.beginCommands();
-    }
+    protected CommandPool commandPool;
 
     Queue(MemoryStack stack, int familyIndex) {
         this(stack, familyIndex, true);
@@ -40,29 +35,6 @@ public abstract class Queue {
 
         if (initCommandPool)
             this.commandPool = new CommandPool(familyIndex);
-    }
-
-    public synchronized long submitCommands(CommandPool.CommandBuffer commandBuffer) {
-        return this.commandPool.submitCommands(commandBuffer, queue);
-    }
-
-    public VkQueue queue() {
-        return this.queue;
-    }
-
-    public void cleanUp() {
-        if (commandPool != null)
-            commandPool.cleanUp();
-    }
-
-    public void waitIdle() {
-        vkQueueWaitIdle(queue);
-    }
-
-    public enum Family {
-        Graphics,
-        Transfer,
-        Compute
     }
 
     public static QueueFamilyIndices getQueueFamilies() {
@@ -164,6 +136,33 @@ public abstract class Queue {
 
             return indices;
         }
+    }
+
+    public synchronized CommandPool.CommandBuffer beginCommands() {
+        return this.commandPool.beginCommands();
+    }
+
+    public synchronized long submitCommands(CommandPool.CommandBuffer commandBuffer) {
+        return this.commandPool.submitCommands(commandBuffer, queue);
+    }
+
+    public VkQueue queue() {
+        return this.queue;
+    }
+
+    public void cleanUp() {
+        if (commandPool != null)
+            commandPool.cleanUp();
+    }
+
+    public void waitIdle() {
+        vkQueueWaitIdle(queue);
+    }
+
+    public enum Family {
+        Graphics,
+        Transfer,
+        Compute
     }
 
     public static class QueueFamilyIndices {

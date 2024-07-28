@@ -20,7 +20,7 @@ public class VertexBuffer extends Buffer {
         int bufferSize = (int) (vertexSize * vertexCount);
 //        long bufferSize = byteBuffer.limit();
 
-        if(bufferSize > this.bufferSize - this.usedBytes) {
+        if (bufferSize > this.bufferSize - this.usedBytes) {
             resizeBuffer((this.bufferSize + bufferSize) * 2);
         }
 

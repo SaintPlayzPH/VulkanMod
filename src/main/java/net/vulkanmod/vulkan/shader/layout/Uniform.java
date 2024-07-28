@@ -8,41 +8,15 @@ import java.util.function.Supplier;
 
 public class Uniform {
     protected Supplier<MappedBuffer> values;
-
-    Info info;
     protected long offset;
     protected int size;
+    Info info;
 
     Uniform(Info info) {
         this.info = info;
         this.offset = info.offset * 4L;
         this.size = info.size * 4;
         this.setSupplier();
-    }
-
-    void setSupplier() {
-        this.values = switch (info.type) {
-            case "mat4" -> Uniforms.mat4f_uniformMap.get(info.name);
-            case "vec4" -> Uniforms.vec4f_uniformMap.get(info.name);
-            case "vec3" -> Uniforms.vec3f_uniformMap.get(info.name);
-            case "vec2" -> Uniforms.vec2f_uniformMap.get(info.name);
-
-            default -> null;
-        };
-    }
-
-    public void setSupplier(Supplier<MappedBuffer> supplier) {
-        this.values = supplier;
-    }
-
-    public String getName() {
-        return this.info.name;
-    }
-
-    void update(long ptr) {
-        MappedBuffer src = values.get();
-
-        MemoryUtil.memCopy(src.ptr, ptr + this.offset, this.size);
     }
 
     public static Uniform createField(Info info) {
@@ -52,16 +26,6 @@ public class Uniform {
             case "int" -> new Vec1i(info);
             default -> throw new RuntimeException("not admitted type: " + info.type);
         };
-    }
-
-    public int getOffset() {
-        return info.offset;
-    }
-
-    public int getSize() { return info.size; }
-
-    public String toString() {
-        return String.format("%s: %s offset: %d", info.type, info.name, info.offset);
     }
 
     //TODO
@@ -96,6 +60,43 @@ public class Uniform {
         };
     }
 
+    void setSupplier() {
+        this.values = switch (info.type) {
+            case "mat4" -> Uniforms.mat4f_uniformMap.get(info.name);
+            case "vec4" -> Uniforms.vec4f_uniformMap.get(info.name);
+            case "vec3" -> Uniforms.vec3f_uniformMap.get(info.name);
+            case "vec2" -> Uniforms.vec2f_uniformMap.get(info.name);
+
+            default -> null;
+        };
+    }
+
+    public void setSupplier(Supplier<MappedBuffer> supplier) {
+        this.values = supplier;
+    }
+
+    public String getName() {
+        return this.info.name;
+    }
+
+    void update(long ptr) {
+        MappedBuffer src = values.get();
+
+        MemoryUtil.memCopy(src.ptr, ptr + this.offset, this.size);
+    }
+
+    public int getOffset() {
+        return info.offset;
+    }
+
+    public int getSize() {
+        return info.size;
+    }
+
+    public String toString() {
+        return String.format("%s: %s offset: %d", info.type, info.name, info.offset);
+    }
+
     public static class Info {
         final String type;
         final String name;
@@ -110,7 +111,9 @@ public class Uniform {
             this.size = size;
         }
 
-        int getSizeBytes() { return 4 * this.size; }
+        int getSizeBytes() {
+            return 4 * this.size;
+        }
 
         int computeAlignmentOffset(int builderOffset) {
             return this.offset = builderOffset + ((align - (builderOffset % align)) % align);

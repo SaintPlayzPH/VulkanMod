@@ -33,6 +33,13 @@ public class ProfilerOverlay {
     private static String buildStats;
 
     private static int node = -1;
+    Minecraft minecraft;
+    Font font;
+
+    public ProfilerOverlay(Minecraft minecraft) {
+        this.minecraft = minecraft;
+        this.font = minecraft.font;
+    }
 
     public static void createInstance(Minecraft minecraft) {
         INSTANCE = new ProfilerOverlay(minecraft);
@@ -47,14 +54,6 @@ public class ProfilerOverlay {
     public static void onKeyPress(int key) {
 //        int v = key - InputConstants.KEY_0;
 //        node = v >= 0 && v <= 15 ? v-1 : node;
-    }
-
-    Minecraft minecraft;
-    Font font;
-
-    public ProfilerOverlay(Minecraft minecraft) {
-        this.minecraft = minecraft;
-        this.font = minecraft.font;
     }
 
     public void render(PoseStack poseStack) {

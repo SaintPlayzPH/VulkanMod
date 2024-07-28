@@ -26,7 +26,7 @@ public abstract class SpriteUtil {
     }
 
     public static void transitionLayouts(VkCommandBuffer commandBuffer) {
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             transitionedLayouts.forEach(image -> image.readOnlyLayout(stack, commandBuffer));
 
             transitionedLayouts.clear();

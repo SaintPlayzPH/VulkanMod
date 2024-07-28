@@ -83,13 +83,13 @@ public class RangeOptionWidget extends OptionWidget<RangeOption> {
     }
 
     @Override
-    public void setFocused(boolean bl) {
-        this.focused = bl;
+    public boolean isFocused() {
+        return this.focused;
     }
 
     @Override
-    public boolean isFocused() {
-        return this.focused;
+    public void setFocused(boolean bl) {
+        this.focused = bl;
     }
 
     private void setValueFromMouse(double mouseX) {

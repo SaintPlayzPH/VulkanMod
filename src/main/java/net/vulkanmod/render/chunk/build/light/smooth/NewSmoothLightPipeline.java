@@ -25,13 +25,11 @@ public class NewSmoothLightPipeline implements LightPipeline {
      * Face data to allow face self-occlusion computation.
      */
     private final SubBlockAoFace self = new SubBlockAoFace();
-
-    private long cachedPos = Long.MIN_VALUE;
-
     /**
      * A temporary array for storing the intermediary results of weight data for non-aligned face blending.
      */
     private final float[] weights = new float[4];
+    private long cachedPos = Long.MIN_VALUE;
 
     public NewSmoothLightPipeline(LightDataAccess cache) {
         this.lightCache = cache;
@@ -39,6 +37,26 @@ public class NewSmoothLightPipeline implements LightPipeline {
         for (int i = 0; i < this.cachedFaceData.length; i++) {
             this.cachedFaceData[i] = new SubBlockAoFace();
         }
+    }
+
+    /**
+     * Clamps the given float to the range [0.0, 1.0].
+     */
+    private static float clamp(float v) {
+        if (v < 0.0f) {
+            return 0.0f;
+        } else if (v > 1.0f) {
+            return 1.0f;
+        }
+
+        return v;
+    }
+
+    /**
+     * Returns texture coordinates for the light map texture using the given block and sky light values.
+     */
+    private static int packLightMap(float sl, float bl) {
+        return (((int) sl & 0xFF) << 16) | ((int) bl & 0xFF);
     }
 
     @Override
@@ -258,26 +276,6 @@ public class NewSmoothLightPipeline implements LightPipeline {
 
             this.cachedPos = key;
         }
-    }
-
-    /**
-     * Clamps the given float to the range [0.0, 1.0].
-     */
-    private static float clamp(float v) {
-        if (v < 0.0f) {
-            return 0.0f;
-        } else if (v > 1.0f) {
-            return 1.0f;
-        }
-
-        return v;
-    }
-
-    /**
-     * Returns texture coordinates for the light map texture using the given block and sky light values.
-     */
-    private static int packLightMap(float sl, float bl) {
-        return (((int) sl & 0xFF) << 16) | ((int) bl & 0xFF);
     }
 
 }

@@ -16,10 +16,21 @@ public class Profiler {
     private static final float CONVERSION = NANOS_IN_MS;
     private static final float INV_CONVERSION = 1.0f / CONVERSION;
     private static final int SAMPLE_COUNT = 200;
-
-    public static boolean ACTIVE = FORCE_ACTIVE;
-
     private static final Profiler MAIN_PROFILER = new Profiler("Main");
+    public static boolean ACTIVE = FORCE_ACTIVE;
+    private final String name;
+    LongArrayList startTimes = new LongArrayList();
+    ObjectArrayList<Node> nodeStack = new ObjectArrayList<>();
+    ObjectArrayList<Node> nodes = new ObjectArrayList<>();
+    Object2ReferenceOpenHashMap<String, Node> nodeMap = new Object2ReferenceOpenHashMap<>();
+    Node mainNode;
+    Node selectedNode;
+    Node currentNode;
+    ProfilerResults profilerResults = new ProfilerResults();
+    public Profiler(String s) {
+        this.name = s;
+        this.currentNode = this.selectedNode = this.mainNode = new Node(s);
+    }
 
     public static Profiler getMainProfiler() {
         return MAIN_PROFILER;
@@ -29,25 +40,6 @@ public class Profiler {
         if (!FORCE_ACTIVE)
             ACTIVE = b;
 
-    }
-
-    private final String name;
-
-    LongArrayList startTimes = new LongArrayList();
-    ObjectArrayList<Node> nodeStack = new ObjectArrayList<>();
-
-    ObjectArrayList<Node> nodes = new ObjectArrayList<>();
-    Object2ReferenceOpenHashMap<String, Node> nodeMap = new Object2ReferenceOpenHashMap<>();
-
-    Node mainNode;
-    Node selectedNode;
-    Node currentNode;
-
-    ProfilerResults profilerResults = new ProfilerResults();
-
-    public Profiler(String s) {
-        this.name = s;
-        this.currentNode = this.selectedNode = this.mainNode = new Node(s);
     }
 
     public void push(String s) {

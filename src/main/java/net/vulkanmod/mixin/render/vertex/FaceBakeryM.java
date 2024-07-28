@@ -24,21 +24,6 @@ public class FaceBakeryM {
      * @author
      */
     @Overwrite
-    private float[] setupShape(Vector3f vector3f, Vector3f vector3f2) {
-        float[] fs = new float[Direction.values().length];
-        fs[FaceInfo.Constants.MIN_X] = vector3f.x() * d;
-        fs[FaceInfo.Constants.MIN_Y] = vector3f.y() * d;
-        fs[FaceInfo.Constants.MIN_Z] = vector3f.z() * d;
-        fs[FaceInfo.Constants.MAX_X] = vector3f2.x()* d;
-        fs[FaceInfo.Constants.MAX_Y] = vector3f2.y()* d;
-        fs[FaceInfo.Constants.MAX_Z] = vector3f2.z()* d;
-        return fs;
-    }
-
-    /**
-     * @author
-     */
-    @Overwrite
     public static BlockFaceUV recomputeUVs(BlockFaceUV blockFaceUV, Direction direction, Transformation transformation, ResourceLocation resourceLocation) {
         float q;
         float p;
@@ -71,11 +56,26 @@ public class FaceBakeryM {
             p = m;
             q = i;
         }
-        float r = (float)Math.toRadians(blockFaceUV.rotation);
+        float r = (float) Math.toRadians(blockFaceUV.rotation);
         Vector3f vec3f = new Vector3f(Mth.cos(r), Mth.sin(r), 0.0f);
         Matrix3f matrix3f = new Matrix3f(matrix4f);
         vec3f.mul(matrix3f);
-        int s = Math.floorMod(-((int)Math.round(Math.toDegrees(Math.atan2(vec3f.y(), vec3f.x())) / 90.0)) * 90, 360);
+        int s = Math.floorMod(-((int) Math.round(Math.toDegrees(Math.atan2(vec3f.y(), vec3f.x())) / 90.0)) * 90, 360);
         return new BlockFaceUV(new float[]{n, p, o, q}, s);
+    }
+
+    /**
+     * @author
+     */
+    @Overwrite
+    private float[] setupShape(Vector3f vector3f, Vector3f vector3f2) {
+        float[] fs = new float[Direction.values().length];
+        fs[FaceInfo.Constants.MIN_X] = vector3f.x() * d;
+        fs[FaceInfo.Constants.MIN_Y] = vector3f.y() * d;
+        fs[FaceInfo.Constants.MIN_Z] = vector3f.z() * d;
+        fs[FaceInfo.Constants.MAX_X] = vector3f2.x() * d;
+        fs[FaceInfo.Constants.MAX_Y] = vector3f2.y() * d;
+        fs[FaceInfo.Constants.MAX_Z] = vector3f2.z() * d;
+        return fs;
     }
 }

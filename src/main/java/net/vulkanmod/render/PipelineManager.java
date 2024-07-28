@@ -16,14 +16,12 @@ import static net.vulkanmod.vulkan.shader.SPIRVUtils.compileShaderAbsoluteFile;
 public abstract class PipelineManager {
     private static final String shaderPath = SPIRVUtils.class.getResource("/assets/vulkanmod/shaders/").toExternalForm();
     public static VertexFormat TERRAIN_VERTEX_FORMAT;
+    static GraphicsPipeline terrainShaderEarlyZ, terrainShader, fastBlitPipeline;
+    private static Function<TerrainRenderType, GraphicsPipeline> shaderGetter;
 
     public static void setTerrainVertexFormat(VertexFormat format) {
         TERRAIN_VERTEX_FORMAT = format;
     }
-
-    static GraphicsPipeline terrainShaderEarlyZ, terrainShader, fastBlitPipeline;
-
-    private static Function<TerrainRenderType, GraphicsPipeline> shaderGetter;
 
     public static void init() {
         setTerrainVertexFormat(CustomVertexFormat.COMPRESSED_TERRAIN);
@@ -37,12 +35,12 @@ public abstract class PipelineManager {
     }
 
     private static void createBasicPipelines() {
-        terrainShaderEarlyZ = createPipeline("terrain","terrain", "terrain_Z", TERRAIN_VERTEX_FORMAT);
+        terrainShaderEarlyZ = createPipeline("terrain", "terrain", "terrain_Z", TERRAIN_VERTEX_FORMAT);
         terrainShader = createPipeline("terrain", "terrain", "terrain", TERRAIN_VERTEX_FORMAT);
         fastBlitPipeline = createPipeline("blit", "blit", "blit", CustomVertexFormat.NONE);
     }
 
-    private static GraphicsPipeline createPipeline(String baseName, String vertName, String fragName,VertexFormat vertexFormat) {
+    private static GraphicsPipeline createPipeline(String baseName, String vertName, String fragName, VertexFormat vertexFormat) {
         String pathB = String.format("basic/%s/%s", baseName, baseName);
         String pathV = String.format("basic/%s/%s", baseName, vertName);
         String pathF = String.format("basic/%s/%s", baseName, fragName);
@@ -73,7 +71,9 @@ public abstract class PipelineManager {
         return terrainShaderEarlyZ;
     }
 
-    public static GraphicsPipeline getFastBlitPipeline() { return fastBlitPipeline; }
+    public static GraphicsPipeline getFastBlitPipeline() {
+        return fastBlitPipeline;
+    }
 
     public static void destroyPipelines() {
         terrainShaderEarlyZ.cleanUp();

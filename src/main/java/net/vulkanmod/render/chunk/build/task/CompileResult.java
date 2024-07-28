@@ -15,11 +15,9 @@ import java.util.List;
 public class CompileResult {
     public final RenderSection renderSection;
     public final boolean fullUpdate;
-
+    public final EnumMap<TerrainRenderType, UploadBuffer> renderedLayers = new EnumMap<>(TerrainRenderType.class);
     final List<BlockEntity> globalBlockEntities = new ArrayList<>();
     final List<BlockEntity> blockEntities = new ArrayList<>();
-    public final EnumMap<TerrainRenderType, UploadBuffer> renderedLayers = new EnumMap<>(TerrainRenderType.class);
-
     VisibilitySet visibilitySet;
     TerrainBufferBuilder.SortState transparencyState;
     CompiledSection compiledSection;
@@ -32,7 +30,7 @@ public class CompileResult {
     public void updateSection() {
         this.renderSection.updateGlobalBlockEntities(globalBlockEntities);
         this.renderSection.setCompiledSection(compiledSection);
-        this.renderSection.setVisibility(((VisibilitySetExtended)visibilitySet).getVisibility());
+        this.renderSection.setVisibility(((VisibilitySetExtended) visibilitySet).getVisibility());
         this.renderSection.setCompletelyEmpty(compiledSection.isCompletelyEmpty);
         this.renderSection.setContainsBlockEntities(!blockEntities.isEmpty());
     }

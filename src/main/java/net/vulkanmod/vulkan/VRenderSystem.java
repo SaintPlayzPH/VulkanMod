@@ -21,9 +21,7 @@ import java.nio.FloatBuffer;
 
 public abstract class VRenderSystem {
     private static final float DEFAULT_DEPTH_VALUE = 1.0f;
-
-    private static long window;
-
+    private static final float[] depthBias = new float[2];
     public static boolean depthTest = true;
     public static boolean depthMask = true;
     public static int depthFun = 515;
@@ -56,8 +54,7 @@ public abstract class VRenderSystem {
     public static MappedBuffer screenSize = new MappedBuffer(2 * 4);
 
     public static float alphaCutout = 0.0f;
-
-    private static final float[] depthBias = new float[2];
+    private static long window;
 
     public static void initRenderer() {
         RenderSystem.assertInInitPhase();
@@ -108,18 +105,18 @@ public abstract class VRenderSystem {
         else mat.mulLocal(preTransformMatrix, new Matrix4f()).get(projMatrixBuffer);
     }
 
-    public static void calculateMVP() { 
-		new Matrix4f(projectionMatrix.buffer.asFloatBuffer())
-			.mul(new Matrix4f(modelViewMatrix.buffer.asFloatBuffer()))
-			.get(MVP.buffer);
-    }
-
-    public static void setTextureMatrix(Matrix4f mat) {
-        mat.get(TextureMatrix.buffer.asFloatBuffer());
+    public static void calculateMVP() {
+        new Matrix4f(projectionMatrix.buffer.asFloatBuffer())
+                .mul(new Matrix4f(modelViewMatrix.buffer.asFloatBuffer()))
+                .get(MVP.buffer);
     }
 
     public static MappedBuffer getTextureMatrix() {
         return TextureMatrix;
+    }
+
+    public static void setTextureMatrix(Matrix4f mat) {
+        mat.get(TextureMatrix.buffer.asFloatBuffer());
     }
 
     public static MappedBuffer getModelViewMatrix() {
@@ -181,7 +178,7 @@ public abstract class VRenderSystem {
 
     public static void setPrimitiveTopologyGL(final int mode) {
         VRenderSystem.topology = switch (mode) {
-            case GL11.GL_LINES, GL11.GL_LINE_STRIP  -> VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
+            case GL11.GL_LINES, GL11.GL_LINE_STRIP -> VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
             case GL11.GL_TRIANGLE_FAN, GL11.GL_TRIANGLES, GL11.GL_TRIANGLE_STRIP -> VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
             default -> throw new RuntimeException(String.format("Unknown GL primitive topology: %s", mode));
         };

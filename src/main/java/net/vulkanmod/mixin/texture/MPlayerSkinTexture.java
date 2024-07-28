@@ -16,8 +16,8 @@ public class MPlayerSkinTexture {
     @Overwrite
     private void upload(NativeImage image) {
         VulkanImage vulkanImage = new VulkanImage.Builder(image.getWidth(), image.getHeight()).createVulkanImage();
-        ((VAbstractTextureI)this).setVulkanImage(vulkanImage);
-        ((VAbstractTextureI)this).bindTexture();
+        ((VAbstractTextureI) this).setVulkanImage(vulkanImage);
+        ((VAbstractTextureI) this).bindTexture();
         image.upload(0, 0, 0, true);
     }
 }

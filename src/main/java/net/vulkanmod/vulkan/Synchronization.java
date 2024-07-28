@@ -24,6 +24,17 @@ public class Synchronization {
         this.fences = MemoryUtil.memAllocLong(allocSize);
     }
 
+    public static void waitFence(long fence) {
+        VkDevice device = Vulkan.getVkDevice();
+
+        vkWaitForFences(device, fence, true, VUtil.UINT64_MAX);
+    }
+
+    public static boolean checkFenceStatus(long fence) {
+        VkDevice device = Vulkan.getVkDevice();
+        return vkGetFenceStatus(device, fence) == VK_SUCCESS;
+    }
+
     public synchronized void addCommandBuffer(CommandPool.CommandBuffer commandBuffer) {
         this.addFence(commandBuffer.getFence());
         this.commandBuffers.add(commandBuffer);
@@ -52,17 +63,6 @@ public class Synchronization {
 
         fences.limit(ALLOCATION_SIZE);
         idx = 0;
-    }
-
-    public static void waitFence(long fence) {
-        VkDevice device = Vulkan.getVkDevice();
-
-        vkWaitForFences(device, fence, true, VUtil.UINT64_MAX);
-    }
-
-    public static boolean checkFenceStatus(long fence) {
-        VkDevice device = Vulkan.getVkDevice();
-        return vkGetFenceStatus(device, fence) == VK_SUCCESS;
     }
 
 }

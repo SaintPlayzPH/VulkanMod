@@ -12,16 +12,10 @@ public enum SimpleDirection {
     EAST(5, 4, 3, new Vec3i(1, 0, 0));
 
     private static final SimpleDirection[] VALUES = SimpleDirection.values();
-
-    public static SimpleDirection of(Direction direction) {
-        return VALUES[direction.get3DDataValue()];
-    }
-
+    public final byte nx, ny, nz;
     private final int data3d;
     private final int oppositeIndex;
     private final int data2d;
-
-    public final byte nx, ny, nz;
 
     SimpleDirection(int j, int k, int l, Vec3i normal) {
         this.data3d = j;
@@ -31,6 +25,10 @@ public enum SimpleDirection {
         this.nx = (byte) normal.getX();
         this.ny = (byte) normal.getY();
         this.nz = (byte) normal.getZ();
+    }
+
+    public static SimpleDirection of(Direction direction) {
+        return VALUES[direction.get3DDataValue()];
     }
 
     public int get3DDataValue() {

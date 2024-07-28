@@ -7,13 +7,12 @@ import static org.lwjgl.vulkan.VK10.*;
 
 public class ImageDescriptor implements Descriptor {
 
-    private final int descriptorType;
-    private final int binding;
     public final String qualifier;
     public final String name;
     public final int imageIdx;
-
     public final boolean isStorageImage;
+    private final int descriptorType;
+    private final int binding;
     public boolean useSampler;
     public boolean isReadOnlyLayout;
     private int layout;
@@ -50,21 +49,21 @@ public class ImageDescriptor implements Descriptor {
         return VK_SHADER_STAGE_ALL_GRAPHICS | VK_SHADER_STAGE_COMPUTE_BIT;
     }
 
+    public int getLayout() {
+        return layout;
+    }
+
     public void setLayout(int layout) {
         this.layout = layout;
         this.isReadOnlyLayout = layout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
     }
 
-    public int getLayout() {
-        return layout;
+    public int getMipLevel() {
+        return mipLevel;
     }
 
     public void setMipLevel(int mipLevel) {
         this.mipLevel = mipLevel;
-    }
-
-    public int getMipLevel() {
-        return mipLevel;
     }
 
     public VulkanImage getImage() {
@@ -74,7 +73,7 @@ public class ImageDescriptor implements Descriptor {
     public long getImageView(VulkanImage image) {
         long view;
 
-        if(mipLevel == -1)
+        if (mipLevel == -1)
             view = image.getImageView();
         else
             view = image.getLevelImageView(mipLevel);

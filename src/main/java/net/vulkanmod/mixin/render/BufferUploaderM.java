@@ -20,7 +20,8 @@ public class BufferUploaderM {
      * @author
      */
     @Overwrite
-    public static void reset() {}
+    public static void reset() {
+    }
 
     /**
      * @author
@@ -46,7 +47,7 @@ public class BufferUploaderM {
             // TODO it would be faster to allocate a buffer from stack and set all values
             shaderInstance.apply();
 
-            GraphicsPipeline pipeline = ((ShaderMixed)(shaderInstance)).getPipeline();
+            GraphicsPipeline pipeline = ((ShaderMixed) (shaderInstance)).getPipeline();
             VRenderSystem.setPrimitiveTopologyGL(parameters.mode().asGLMode);
             renderer.bindGraphicsPipeline(pipeline);
             renderer.uploadAndBindUBOs(pipeline);

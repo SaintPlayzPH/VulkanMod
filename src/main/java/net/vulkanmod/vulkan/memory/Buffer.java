@@ -24,7 +24,7 @@ public abstract class Buffer {
     protected void createBuffer(int bufferSize) {
         this.type.createBuffer(this, bufferSize);
 
-        if(this.type.mappable()) {
+        if (this.type.mappable()) {
             this.data = MemoryManager.getInstance().Map(this.allocation);
         }
     }
@@ -33,25 +33,45 @@ public abstract class Buffer {
         MemoryManager.getInstance().addToFreeable(this);
     }
 
-    public void reset() { usedBytes = 0; }
+    public void reset() {
+        usedBytes = 0;
+    }
 
-    public long getAllocation() { return allocation; }
+    public long getAllocation() {
+        return allocation;
+    }
 
-    public long getUsedBytes() { return usedBytes; }
+    protected void setAllocation(long allocation) {
+        this.allocation = allocation;
+    }
 
-    public long getOffset() { return offset; }
+    public long getUsedBytes() {
+        return usedBytes;
+    }
 
-    public long getId() { return id; }
+    public long getOffset() {
+        return offset;
+    }
 
-    public int getBufferSize() { return bufferSize; }
+    public long getId() {
+        return id;
+    }
 
-    protected void setBufferSize(int size) { this.bufferSize = size; }
+    protected void setId(long id) {
+        this.id = id;
+    }
 
-    protected void setId(long id) { this.id = id; }
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
-    protected void setAllocation(long allocation) {this.allocation = allocation; }
+    protected void setBufferSize(int size) {
+        this.bufferSize = size;
+    }
 
-    public BufferInfo getBufferInfo() { return new BufferInfo(this.id, this.allocation, this.bufferSize, this.type.getType()); }
+    public BufferInfo getBufferInfo() {
+        return new BufferInfo(this.id, this.allocation, this.bufferSize, this.type.getType());
+    }
 
     public record BufferInfo(long id, long allocation, long bufferSize, MemoryType.Type type) {
 

@@ -5,14 +5,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.vulkanmod.render.vertex.TerrainBufferBuilder;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 public class CompiledSection {
     public static final CompiledSection UNCOMPILED = new CompiledSection();
-
-    boolean isCompletelyEmpty = false;
     final List<BlockEntity> blockEntities = Lists.newArrayList();
-    @Nullable TerrainBufferBuilder.SortState transparencyState;
+    boolean isCompletelyEmpty = false;
+    @Nullable
+    TerrainBufferBuilder.SortState transparencyState;
 
     public boolean hasTransparencyState() {
         return this.transparencyState != null;

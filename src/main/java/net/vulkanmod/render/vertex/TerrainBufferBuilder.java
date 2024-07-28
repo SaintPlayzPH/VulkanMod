@@ -16,26 +16,20 @@ import java.nio.ByteBuffer;
 
 public class TerrainBufferBuilder {
     private static final Logger LOGGER = Initializer.LOGGER;
-
-    private ByteBuffer buffer;
+    private final VertexFormat format;
     protected long bufferPtr;
     protected int nextElementByte;
+    protected VertexBuilder vertexBuilder;
+    private ByteBuffer buffer;
     private int vertices;
-
     private int renderedBufferCount;
     private int renderedBufferPointer;
-
-    private final VertexFormat format;
-
     private boolean building;
-
     private Vector3f[] sortingPoints;
     private float sortX = Float.NaN;
     private float sortY = Float.NaN;
     private float sortZ = Float.NaN;
     private boolean indexOnly;
-
-    protected VertexBuilder vertexBuilder;
 
     public TerrainBufferBuilder(int size) {
         this.buffer = MemoryTracker.create(size * 6);
@@ -43,6 +37,13 @@ public class TerrainBufferBuilder {
 
         this.format = PipelineManager.TERRAIN_VERTEX_FORMAT;
         this.vertexBuilder = PipelineManager.TERRAIN_VERTEX_FORMAT == CustomVertexFormat.COMPRESSED_TERRAIN ? new CompressedVertexBuilder() : new DefaultVertexBuilder();
+    }
+
+    private static int getIndexSize(VertexFormat.IndexType indexType) {
+        return switch (indexType) {
+            case SHORT -> 2;
+            case INT -> 4;
+        };
     }
 
     public void ensureCapacity() {
@@ -178,13 +179,6 @@ public class TerrainBufferBuilder {
         }
     }
 
-    private static int getIndexSize(VertexFormat.IndexType indexType) {
-        return switch (indexType) {
-            case SHORT -> 2;
-            case INT -> 4;
-        };
-    }
-
     public boolean isCurrentBatchEmpty() {
         return this.vertices == 0;
     }
@@ -289,6 +283,12 @@ public class TerrainBufferBuilder {
         return this.bufferPtr + this.nextElementByte;
     }
 
+    public interface VertexBuilder {
+        void vertex(long ptr, float x, float y, float z, int color, float u, float v, int light, int packedNormal);
+
+        int getStride();
+    }
+
     public static class SortState {
         final VertexFormat.Mode mode;
         final int vertices;
@@ -305,46 +305,6 @@ public class TerrainBufferBuilder {
             this.sortX = f;
             this.sortY = g;
             this.sortZ = h;
-        }
-    }
-
-    public class RenderedBuffer {
-        private final int pointer;
-        private final DrawState drawState;
-        private boolean released;
-
-        RenderedBuffer(int pointer, DrawState drawState) {
-            this.pointer = pointer;
-            this.drawState = drawState;
-        }
-
-        public ByteBuffer vertexBuffer() {
-            int start = this.pointer + this.drawState.vertexBufferStart();
-            int end = this.pointer + this.drawState.vertexBufferEnd();
-            return BufferUtil.bufferSlice(TerrainBufferBuilder.this.buffer, start, end);
-        }
-
-        public ByteBuffer indexBuffer() {
-            int start = this.pointer + this.drawState.indexBufferStart();
-            int end = this.pointer + this.drawState.indexBufferEnd();
-            return BufferUtil.bufferSlice(TerrainBufferBuilder.this.buffer, start, end);
-        }
-
-        public DrawState drawState() {
-            return this.drawState;
-        }
-
-        public boolean isEmpty() {
-            return this.drawState.vertexCount == 0;
-        }
-
-        public void release() {
-            if (this.released) {
-                throw new IllegalStateException("Buffer has already been released!");
-            } else {
-                TerrainBufferBuilder.this.releaseRenderedBuffer();
-                this.released = true;
-            }
         }
     }
 
@@ -400,12 +360,6 @@ public class TerrainBufferBuilder {
         }
     }
 
-    public interface VertexBuilder {
-        void vertex(long ptr, float x, float y, float z, int color, float u, float v, int light, int packedNormal);
-
-        int getStride();
-    }
-
     static class DefaultVertexBuilder implements VertexBuilder {
         private static final int VERTEX_SIZE = 32;
 
@@ -432,13 +386,11 @@ public class TerrainBufferBuilder {
     }
 
     static class CompressedVertexBuilder implements VertexBuilder {
-        private static final int VERTEX_SIZE = 20;
-
         public static final float POS_CONV_MUL = 2048.0f;
         public static final float POS_OFFSET = -4.0f;
         public static final float POS_OFFSET_CONV = POS_OFFSET * POS_CONV_MUL;
-
         public static final float UV_CONV_MUL = 32768.0f;
+        private static final int VERTEX_SIZE = 20;
 
         public void vertex(long ptr, float x, float y, float z, int color, float u, float v, int light, int packedNormal) {
             final short sX = (short) (x * POS_CONV_MUL + POS_OFFSET_CONV);
@@ -461,6 +413,46 @@ public class TerrainBufferBuilder {
         @Override
         public int getStride() {
             return VERTEX_SIZE;
+        }
+    }
+
+    public class RenderedBuffer {
+        private final int pointer;
+        private final DrawState drawState;
+        private boolean released;
+
+        RenderedBuffer(int pointer, DrawState drawState) {
+            this.pointer = pointer;
+            this.drawState = drawState;
+        }
+
+        public ByteBuffer vertexBuffer() {
+            int start = this.pointer + this.drawState.vertexBufferStart();
+            int end = this.pointer + this.drawState.vertexBufferEnd();
+            return BufferUtil.bufferSlice(TerrainBufferBuilder.this.buffer, start, end);
+        }
+
+        public ByteBuffer indexBuffer() {
+            int start = this.pointer + this.drawState.indexBufferStart();
+            int end = this.pointer + this.drawState.indexBufferEnd();
+            return BufferUtil.bufferSlice(TerrainBufferBuilder.this.buffer, start, end);
+        }
+
+        public DrawState drawState() {
+            return this.drawState;
+        }
+
+        public boolean isEmpty() {
+            return this.drawState.vertexCount == 0;
+        }
+
+        public void release() {
+            if (this.released) {
+                throw new IllegalStateException("Buffer has already been released!");
+            } else {
+                TerrainBufferBuilder.this.releaseRenderedBuffer();
+                this.released = true;
+            }
         }
     }
 }

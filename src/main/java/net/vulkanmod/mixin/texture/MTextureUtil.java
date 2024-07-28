@@ -31,8 +31,8 @@ public class MTextureUtil {
         GlTexture glTexture = GlTexture.getBoundTexture();
         VulkanImage image = glTexture.getVulkanImage();
 
-        if(image == null || image.mipLevels != mipLevels || image.width != width || image.height != height) {
-            if(image != null)
+        if (image == null || image.mipLevels != mipLevels || image.width != width || image.height != height) {
+            if (image != null)
                 image.free();
 
             image = new VulkanImage.Builder(width, height)

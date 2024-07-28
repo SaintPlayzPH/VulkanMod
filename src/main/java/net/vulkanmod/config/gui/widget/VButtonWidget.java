@@ -47,15 +47,15 @@ public class VButtonWidget extends VAbstractWidget {
 
         RenderSystem.enableBlend();
 
-        if(this.selected) {
+        if (this.selected) {
 //            color = ColorUtil.ARGB.pack(1.0f, 1.0f, 1.0f, 1.0f);
             color = ColorUtil.ARGB.pack(0.3f, 0.0f, 0.0f, 1.0f);
 //            GuiRenderer.fillBox(this.x, this.y + this.height - 1, this.width, 1,  color);
-            GuiRenderer.fillBox(this.x, this.y, 1.5f, this.height,  color);
+            GuiRenderer.fillBox(this.x, this.y, 1.5f, this.height, color);
 
 //            color = ColorUtil.ARGB.pack(0.5f, 0.5f, 0.5f, 0.2f);
             color = ColorUtil.ARGB.pack(0.3f, 0.0f, 0.0f, 0.2f);
-            GuiRenderer.fillBox(this.x, this.y, this.width, this.height,  color);
+            GuiRenderer.fillBox(this.x, this.y, this.width, this.height, color);
         }
     }
 

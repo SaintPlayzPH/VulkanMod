@@ -15,7 +15,7 @@ public class MFontTexture {
     private void redirect(NativeImage.InternalGlFormat internalFormat, int id, int width, int height) {
         //this.vulkanImage = new VulkanImage(1, 256, 256, 4, false, false);
         VulkanImage image = new VulkanImage.Builder(width, height).setFormat(internalFormat).createVulkanImage();
-        ((VAbstractTextureI)(this)).setVulkanImage(image);
+        ((VAbstractTextureI) (this)).setVulkanImage(image);
         //((VAbstractTextureI)(this)).bind();
     }
 }

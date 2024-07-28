@@ -18,6 +18,22 @@ public class PipelineState {
     public static final PipelineState DEFAULT = new PipelineState(getAssemblyRasterState(), getBlendState(), getDepthState(), getLogicOpState(), VRenderSystem.getColorMask(), null);
 
     public static PipelineState currentState = DEFAULT;
+    final RenderPass renderPass;
+    int assemblyRasterState;
+    int blendState_i;
+    int depthState_i;
+    int colorMask_i;
+    int logicOp_i;
+
+    public PipelineState(int assemblyRasterState, int blendState, int depthState, int logicOp, int colorMask, RenderPass renderPass) {
+        this.renderPass = renderPass;
+
+        this.assemblyRasterState = assemblyRasterState;
+        this.blendState_i = blendState;
+        this.depthState_i = depthState;
+        this.colorMask_i = colorMask;
+        this.logicOp_i = logicOp;
+    }
 
     public static PipelineState getCurrentPipelineState(RenderPass renderPass) {
         int assemblyRasterState = getAssemblyRasterState();
@@ -26,7 +42,7 @@ public class PipelineState {
         int depthState = getDepthState();
         int logicOp = getLogicOpState();
 
-        if(currentState.checkEquals(assemblyRasterState, blendState, depthState, logicOp, currentColorMask, renderPass))
+        if (currentState.checkEquals(assemblyRasterState, blendState, depthState, logicOp, currentColorMask, renderPass))
             return currentState;
         else
             return currentState = new PipelineState(assemblyRasterState, blendState, depthState, logicOp, currentColorMask, renderPass);
@@ -61,22 +77,9 @@ public class PipelineState {
         return logicOpState;
     }
 
-    final RenderPass renderPass;
-
-    int assemblyRasterState;
-    int blendState_i;
-    int depthState_i;
-    int colorMask_i;
-    int logicOp_i;
-
-    public PipelineState(int assemblyRasterState, int blendState, int depthState, int logicOp, int colorMask, RenderPass renderPass) {
-        this.renderPass = renderPass;
-
-        this.assemblyRasterState = assemblyRasterState;
-        this.blendState_i = blendState;
-        this.depthState_i = depthState;
-        this.colorMask_i = colorMask;
-        this.logicOp_i = logicOp;
+    public static BlendInfo defaultBlendInfo() {
+        return new BlendInfo(true, VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+                VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD);
     }
 
     private boolean checkEquals(int assemblyRasterState, int blendState, int depthState, int logicOp, int colorMask, RenderPass renderPass) {
@@ -105,11 +108,6 @@ public class PipelineState {
         return Objects.hash(blendState_i, depthState_i, logicOp_i, assemblyRasterState, colorMask_i, renderPass);
     }
 
-    public static BlendInfo defaultBlendInfo() {
-        return new BlendInfo(true, VK_BLEND_FACTOR_SRC_ALPHA, VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
-                VK_BLEND_FACTOR_ONE, VK_BLEND_FACTOR_ZERO, VK_BLEND_OP_ADD);
-    }
-
     public static class BlendInfo {
         public boolean enabled;
         public int srcRgbFactor;
@@ -125,45 +123,6 @@ public class PipelineState {
             this.srcAlphaFactor = srcAlphaFactor;
             this.dstAlphaFactor = dstAlphaFactor;
             this.blendOp = blendOp;
-        }
-
-        public void setBlendFunction(GlStateManager.SourceFactor sourceFactor, GlStateManager.DestFactor destFactor) {
-            this.srcRgbFactor = glToVulkanBlendFactor(sourceFactor.value);
-            this.srcAlphaFactor = glToVulkanBlendFactor(sourceFactor.value);
-            this.dstRgbFactor = glToVulkanBlendFactor(destFactor.value);
-            this.dstAlphaFactor = glToVulkanBlendFactor(destFactor.value);
-        }
-
-        public void setBlendFuncSeparate(GlStateManager.SourceFactor srcRgb, GlStateManager.DestFactor dstRgb, GlStateManager.SourceFactor srcAlpha, GlStateManager.DestFactor dstAlpha) {
-            this.srcRgbFactor = glToVulkanBlendFactor(srcRgb.value);
-            this.srcAlphaFactor = glToVulkanBlendFactor(srcAlpha.value);
-            this.dstRgbFactor = glToVulkanBlendFactor(dstRgb.value);
-            this.dstAlphaFactor = glToVulkanBlendFactor(dstAlpha.value);
-        }
-
-        /* gl to Vulkan conversion */
-        public void setBlendFunction(int sourceFactor, int destFactor) {
-            this.srcRgbFactor = glToVulkanBlendFactor(sourceFactor);
-            this.srcAlphaFactor = glToVulkanBlendFactor(sourceFactor);
-            this.dstRgbFactor = glToVulkanBlendFactor(destFactor);
-            this.dstAlphaFactor = glToVulkanBlendFactor(destFactor);
-        }
-
-        /* gl to Vulkan conversion */
-        public void setBlendFuncSeparate(int srcRgb, int dstRgb, int srcAlpha, int dstAlpha) {
-            this.srcRgbFactor = glToVulkanBlendFactor(srcRgb);
-            this.srcAlphaFactor = glToVulkanBlendFactor(srcAlpha);
-            this.dstRgbFactor = glToVulkanBlendFactor(dstRgb);
-            this.dstAlphaFactor = glToVulkanBlendFactor(dstAlpha);
-        }
-
-        public void setBlendOp(int i) {
-            this.blendOp = glToVulkanBlendOp(i);
-        }
-
-
-        public int createBlendState() {
-            return BlendState.getState(this);
         }
 
         private static int glToVulkanBlendOp(int value) {
@@ -213,6 +172,44 @@ public class PipelineState {
 //                        SRC_COLOR(768),
 //                        ZERO(0);
             };
+        }
+
+        public void setBlendFunction(GlStateManager.SourceFactor sourceFactor, GlStateManager.DestFactor destFactor) {
+            this.srcRgbFactor = glToVulkanBlendFactor(sourceFactor.value);
+            this.srcAlphaFactor = glToVulkanBlendFactor(sourceFactor.value);
+            this.dstRgbFactor = glToVulkanBlendFactor(destFactor.value);
+            this.dstAlphaFactor = glToVulkanBlendFactor(destFactor.value);
+        }
+
+        public void setBlendFuncSeparate(GlStateManager.SourceFactor srcRgb, GlStateManager.DestFactor dstRgb, GlStateManager.SourceFactor srcAlpha, GlStateManager.DestFactor dstAlpha) {
+            this.srcRgbFactor = glToVulkanBlendFactor(srcRgb.value);
+            this.srcAlphaFactor = glToVulkanBlendFactor(srcAlpha.value);
+            this.dstRgbFactor = glToVulkanBlendFactor(dstRgb.value);
+            this.dstAlphaFactor = glToVulkanBlendFactor(dstAlpha.value);
+        }
+
+        /* gl to Vulkan conversion */
+        public void setBlendFunction(int sourceFactor, int destFactor) {
+            this.srcRgbFactor = glToVulkanBlendFactor(sourceFactor);
+            this.srcAlphaFactor = glToVulkanBlendFactor(sourceFactor);
+            this.dstRgbFactor = glToVulkanBlendFactor(destFactor);
+            this.dstAlphaFactor = glToVulkanBlendFactor(destFactor);
+        }
+
+        /* gl to Vulkan conversion */
+        public void setBlendFuncSeparate(int srcRgb, int dstRgb, int srcAlpha, int dstAlpha) {
+            this.srcRgbFactor = glToVulkanBlendFactor(srcRgb);
+            this.srcAlphaFactor = glToVulkanBlendFactor(srcAlpha);
+            this.dstRgbFactor = glToVulkanBlendFactor(dstRgb);
+            this.dstAlphaFactor = glToVulkanBlendFactor(dstAlpha);
+        }
+
+        public void setBlendOp(int i) {
+            this.blendOp = glToVulkanBlendOp(i);
+        }
+
+        public int createBlendState() {
+            return BlendState.getState(this);
         }
     }
 

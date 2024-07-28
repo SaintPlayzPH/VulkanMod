@@ -11,13 +11,17 @@ public interface MainPass {
 
     void end(VkCommandBuffer commandBuffer);
 
-    default void mainTargetBindWrite() {}
+    default void mainTargetBindWrite() {
+    }
 
-    default void mainTargetUnbindWrite() {}
+    default void mainTargetUnbindWrite() {
+    }
 
-    default void rebindMainTarget() {}
+    default void rebindMainTarget() {
+    }
 
-    default void bindAsTexture() {}
+    default void bindAsTexture() {
+    }
 
     default int getColorAttachmentGlId() {
         return -1;

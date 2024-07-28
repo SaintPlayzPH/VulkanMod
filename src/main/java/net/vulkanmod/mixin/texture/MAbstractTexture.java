@@ -14,13 +14,20 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractTexture.class)
 public abstract class MAbstractTexture implements VAbstractTextureI {
-    @Shadow protected boolean blur;
-    @Shadow protected boolean mipmap;
-    @Shadow protected int id;
-
-    @Shadow public abstract int getId();
-
+    @Shadow
+    protected boolean blur;
+    @Shadow
+    protected boolean mipmap;
+    @Shadow
+    protected int id;
     protected VulkanImage vulkanImage;
+
+    @Shadow
+    public abstract int getId();
+
+    public void setId(int i) {
+        this.id = i;
+    }
 
     /**
      * @author
@@ -45,10 +52,6 @@ public abstract class MAbstractTexture implements VAbstractTextureI {
         }
 
         TextureUtil.releaseTextureId(this.id);
-    }
-
-    public void setId(int i) {
-        this.id = i;
     }
 
     /**

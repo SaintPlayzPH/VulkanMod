@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(VertexConsumer.class)
 public interface VertexConsumerM {
 
-    @Shadow void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ);
+    @Shadow
+    void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ);
 
     /**
      * @author

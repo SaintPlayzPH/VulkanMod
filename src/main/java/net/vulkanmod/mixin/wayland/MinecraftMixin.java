@@ -20,19 +20,23 @@ import java.io.IOException;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-    @Shadow @Final private Window window;
-    @Shadow @Final public Options options;
-
-    @Shadow @Final private VanillaPackResources vanillaPackResources;
+    @Shadow
+    @Final
+    public Options options;
+    @Shadow
+    @Final
+    private Window window;
+    @Shadow
+    @Final
+    private VanillaPackResources vanillaPackResources;
 
     /**
      * @author
      * @reason Only KWin supports setting the Icon on Wayland AFAIK
      */
-    @Redirect(method="<init>", at=@At(value="INVOKE", target="Lcom/mojang/blaze3d/platform/Window;setIcon(Lnet/minecraft/server/packs/PackResources;Lcom/mojang/blaze3d/platform/IconSet;)V"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/Window;setIcon(Lnet/minecraft/server/packs/PackResources;Lcom/mojang/blaze3d/platform/IconSet;)V"))
     private void bypassWaylandIcon(Window instance, PackResources packResources, IconSet iconSet) throws IOException {
-        if(!Platform.isWayLand())
-        {
+        if (!Platform.isWayLand()) {
             this.window.setIcon(this.vanillaPackResources, SharedConstants.getCurrentVersion().isStable() ? IconSet.RELEASE : IconSet.SNAPSHOT);
         }
     }

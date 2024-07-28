@@ -11,7 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(VoxelShape.class)
 public class VoxelShapeMixin implements VoxelShapeExtended {
-    @Shadow @Final protected DiscreteVoxelShape shape;
+    @Shadow
+    @Final
+    protected DiscreteVoxelShape shape;
 
     int co;
 
@@ -22,8 +24,8 @@ public class VoxelShapeMixin implements VoxelShapeExtended {
 
         // TODO: lithium subclasses
         // lithium is using its own classes for simple cube shapes
-        VoxelShape shape = (VoxelShape)((Object)this);
-        if(!(shape instanceof CubeVoxelShape) || disShape == null) {
+        VoxelShape shape = (VoxelShape) ((Object) this);
+        if (!(shape instanceof CubeVoxelShape) || disShape == null) {
             this.co = 0;
             return;
         }

@@ -22,21 +22,36 @@ import java.util.function.IntSupplier;
 @Mixin(PostPass.class)
 public class PostPassM {
 
-    @Shadow @Final public RenderTarget inTarget;
+    @Shadow
+    @Final
+    public RenderTarget inTarget;
 
-    @Shadow @Final public RenderTarget outTarget;
+    @Shadow
+    @Final
+    public RenderTarget outTarget;
 
-    @Shadow @Final private EffectInstance effect;
+    @Shadow
+    @Final
+    private EffectInstance effect;
 
-    @Shadow @Final private List<IntSupplier> auxAssets;
+    @Shadow
+    @Final
+    private List<IntSupplier> auxAssets;
 
-    @Shadow @Final private List<String> auxNames;
+    @Shadow
+    @Final
+    private List<String> auxNames;
 
-    @Shadow @Final private List<Integer> auxWidths;
+    @Shadow
+    @Final
+    private List<Integer> auxWidths;
 
-    @Shadow @Final private List<Integer> auxHeights;
+    @Shadow
+    @Final
+    private List<Integer> auxHeights;
 
-    @Shadow private Matrix4f shaderOrthoMatrix;
+    @Shadow
+    private Matrix4f shaderOrthoMatrix;
 
     /**
      * @author
@@ -45,27 +60,27 @@ public class PostPassM {
     @Overwrite
     public void process(float f) {
         this.inTarget.unbindWrite();
-        float g = (float)this.outTarget.width;
-        float h = (float)this.outTarget.height;
-        RenderSystem.viewport(0, 0, (int)g, (int)h);
+        float g = (float) this.outTarget.width;
+        float h = (float) this.outTarget.height;
+        RenderSystem.viewport(0, 0, (int) g, (int) h);
 
         Objects.requireNonNull(this.inTarget);
         this.effect.setSampler("DiffuseSampler", this.inTarget::getColorTextureId);
 
-        if(this.inTarget instanceof MainTarget)
+        if (this.inTarget instanceof MainTarget)
             this.inTarget.bindRead();
 
-        for(int i = 0; i < this.auxAssets.size(); ++i) {
+        for (int i = 0; i < this.auxAssets.size(); ++i) {
             this.effect.setSampler(this.auxNames.get(i), this.auxAssets.get(i));
             this.effect.safeGetUniform("AuxSize" + i).set((float) this.auxWidths.get(i), (float) this.auxHeights.get(i));
         }
 
         this.effect.safeGetUniform("ProjMat").set(this.shaderOrthoMatrix);
-        this.effect.safeGetUniform("InSize").set((float)this.inTarget.width, (float)this.inTarget.height);
+        this.effect.safeGetUniform("InSize").set((float) this.inTarget.width, (float) this.inTarget.height);
         this.effect.safeGetUniform("OutSize").set(g, h);
         this.effect.safeGetUniform("Time").set(f);
         Minecraft minecraft = Minecraft.getInstance();
-        this.effect.safeGetUniform("ScreenSize").set((float)minecraft.getWindow().getWidth(), (float)minecraft.getWindow().getHeight());
+        this.effect.safeGetUniform("ScreenSize").set((float) minecraft.getWindow().getWidth(), (float) minecraft.getWindow().getHeight());
 
         this.outTarget.clear(Minecraft.ON_OSX);
         this.outTarget.bindWrite(false);

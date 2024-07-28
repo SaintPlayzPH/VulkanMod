@@ -17,10 +17,20 @@ import static net.vulkanmod.render.model.quad.ModelQuad.VERTEX_SIZE;
 @Mixin(BakedQuad.class)
 public class BakedQuadM implements QuadView {
 
-    @Shadow @Final protected int[] vertices;
-    @Shadow @Final protected Direction direction;
-    @Shadow @Final protected int tintIndex;
+    @Shadow
+    @Final
+    protected int[] vertices;
+    @Shadow
+    @Final
+    protected Direction direction;
+    @Shadow
+    @Final
+    protected int tintIndex;
     private int flags;
+
+    private static int vertexOffset(int vertexIndex) {
+        return vertexIndex * VERTEX_SIZE;
+    }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(int[] vertices, int tintIndex, Direction direction, TextureAtlasSprite textureAtlasSprite, boolean shade, CallbackInfo ci) {
@@ -75,9 +85,5 @@ public class BakedQuadM implements QuadView {
     @Override
     public boolean isTinted() {
         return this.tintIndex != -1;
-    }
-
-    private static int vertexOffset(int vertexIndex) {
-        return vertexIndex * VERTEX_SIZE;
     }
 }

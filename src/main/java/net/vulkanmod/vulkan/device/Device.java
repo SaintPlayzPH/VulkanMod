@@ -19,21 +19,18 @@ import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
 import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
 
 public class Device {
-    final VkPhysicalDevice physicalDevice;
-    final VkPhysicalDeviceProperties properties;
-
-    private final int vendorId;
     public final String vendorIdString;
     public final String deviceName;
     public final String driverVersion;
     public final String vkVersion;
-
     public final VkPhysicalDeviceFeatures2 availableFeatures;
     public final VkPhysicalDeviceVulkan11Features availableFeatures11;
+    final VkPhysicalDevice physicalDevice;
+    final VkPhysicalDeviceProperties properties;
+    private final int vendorId;
 
 //    public final VkPhysicalDeviceVulkan13Features availableFeatures13;
 //    public final boolean vulkan13Support;
-
     private boolean drawIndirectSupported;
 
     public Device(VkPhysicalDevice device) {

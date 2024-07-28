@@ -41,14 +41,14 @@ public class EntityRendererM<T extends Entity> {
 
     @Redirect(method = "shouldRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/culling/Frustum;isVisible(Lnet/minecraft/world/phys/AABB;)Z"))
     private boolean isVisible(Frustum frustum, AABB aABB) {
-        if(Initializer.CONFIG.entityCulling) {
+        if (Initializer.CONFIG.entityCulling) {
             WorldRenderer worldRenderer = WorldRenderer.getInstance();
 
             Vec3 pos = aABB.getCenter();
 
             RenderSection section = worldRenderer.getSectionGrid().getSectionAtBlockPos((int) pos.x(), (int) pos.y(), (int) pos.z());
 
-            if(section == null)
+            if (section == null)
                 return frustum.isVisible(aABB);
 
             return worldRenderer.getLastFrame() == section.getLastFrame();

@@ -15,11 +15,10 @@ import java.util.List;
 public class SectionGrid {
 
     protected final Level level;
+    final ChunkAreaManager chunkAreaManager;
+    public RenderSection[] sections;
     protected int gridHeight;
     protected int gridWidth;
-    public RenderSection[] sections;
-    final ChunkAreaManager chunkAreaManager;
-
     private int prevSecX;
     private int prevSecZ;
 

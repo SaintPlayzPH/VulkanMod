@@ -17,8 +17,13 @@ import static org.lwjgl.vulkan.VK12.VK_SAMPLER_REDUCTION_MODE_MAX;
 import static org.lwjgl.vulkan.VK12.VK_SAMPLER_REDUCTION_MODE_MIN;
 
 public abstract class SamplerManager {
+    public static final byte LINEAR_FILTERING_BIT = 0b1;
+    public static final byte CLAMP_BIT = 0b10;
+    public static final byte USE_MIPMAPS_BIT = 0b100;
+    public static final byte MIPMAP_LINEAR_FILTERING_BIT = 0b1000;
+    public static final byte REDUCTION_MIN_BIT = 0b10000;
+    public static final byte REDUCTION_MAX_BIT = 0b100000;
     static final float MIP_BIAS = -0.5f;
-
     static final Short2LongMap SAMPLERS = new Short2LongOpenHashMap();
 
     public static long getTextureSampler(byte maxLod, byte flags) {
@@ -106,11 +111,4 @@ public abstract class SamplerManager {
             vkDestroySampler(DeviceManager.vkDevice, id, null);
         }
     }
-
-    public static final byte LINEAR_FILTERING_BIT = 0b1;
-    public static final byte CLAMP_BIT = 0b10;
-    public static final byte USE_MIPMAPS_BIT = 0b100;
-    public static final byte MIPMAP_LINEAR_FILTERING_BIT = 0b1000;
-    public static final byte REDUCTION_MIN_BIT = 0b10000;
-    public static final byte REDUCTION_MAX_BIT = 0b100000;
 }

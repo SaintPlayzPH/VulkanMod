@@ -12,30 +12,30 @@ import net.vulkanmod.render.model.quad.ModelQuadFlags;
 
 /**
  * Re-adapted Sodium's smooth light pipeline
- *
+ * <p>
  * A light pipeline which produces smooth interpolated lighting and ambient occlusion for model quads. This
  * implementation makes a number of improvements over vanilla's own "smooth lighting" option. In no particular order:
- *
+ * <p>
  * - Corner blocks are now selected from the correct set of neighbors above block faces (fixes MC-148689 and MC-12558)
  * - Shading issues caused by anisotropy are fixed by re-orientating quads to a consistent ordering (fixes MC-138211)
  * - Inset block faces are correctly shaded by their neighbors, fixing a number of problems with non-full blocks such as
- *   grass paths (fixes MC-11783 and MC-108621)
+ * grass paths (fixes MC-11783 and MC-108621)
  * - Blocks next to emissive blocks are too bright (MC-260989)
  * - Synchronization issues between the main render thread's light engine and chunk build worker threads are corrected
- *   by copying light data alongside block states, fixing a number of inconsistencies in baked chunks (no open issue)
- *
+ * by copying light data alongside block states, fixing a number of inconsistencies in baked chunks (no open issue)
+ * <p>
  * This implementation also includes a significant number of optimizations:
- *
+ * <p>
  * - Computed light data for a given block face is cached and re-used again when multiple quads exist for a given
- *   facing, making complex block models less expensive to render
+ * facing, making complex block models less expensive to render
  * - The light data cache encodes as much information as possible into integer words to improve cache locality and
- *   to eliminate the multiple array lookups that would otherwise be needed, significantly speeding up this section
+ * to eliminate the multiple array lookups that would otherwise be needed, significantly speeding up this section
  * - Block faces aligned to the block grid use a fast-path for mapping corner light values to vertices without expensive
- *   interpolation or blending, speeding up most block renders
+ * interpolation or blending, speeding up most block renders
  * - Some critical code paths have been re-written to hit the JVM's happy path, allowing it to perform auto-vectorization
- *   of the blend functions
+ * of the blend functions
  * - Information about a given model quad is cached to enable the light pipeline to make certain assumptions and skip
- *   unnecessary computation
+ * unnecessary computation
  */
 public class SmoothLightPipeline implements LightPipeline {
     /**
@@ -47,16 +47,14 @@ public class SmoothLightPipeline implements LightPipeline {
      * The cached face data for each side of a block, both inner and outer.
      */
     private final AoFaceData[] cachedFaceData = new AoFaceData[6 * 2];
-
-    /**
-     * The position at which the cached face data was taken at.
-     */
-    private long cachedPos = Long.MIN_VALUE;
-
     /**
      * A temporary array for storing the intermediary results of weight data for non-aligned face blending.
      */
     private final float[] weights = new float[4];
+    /**
+     * The position at which the cached face data was taken at.
+     */
+    private long cachedPos = Long.MIN_VALUE;
 
     public SmoothLightPipeline(LightDataAccess cache) {
         this.lightCache = cache;
@@ -64,6 +62,20 @@ public class SmoothLightPipeline implements LightPipeline {
         for (int i = 0; i < this.cachedFaceData.length; i++) {
             this.cachedFaceData[i] = new AoFaceData();
         }
+    }
+
+    private static float clamp(float v) {
+        if (v < 0.0f) {
+            return 0.0f;
+        } else if (v > 1.0f) {
+            return 1.0f;
+        }
+
+        return v;
+    }
+
+    private static int packLightMap(float sl, float bl) {
+        return (((int) sl & 0xFF) << 16) | ((int) bl & 0xFF);
     }
 
     @Override
@@ -246,20 +258,6 @@ public class SmoothLightPipeline implements LightPipeline {
 
             this.cachedPos = key;
         }
-    }
-
-    private static float clamp(float v) {
-        if (v < 0.0f) {
-            return 0.0f;
-        } else if (v > 1.0f) {
-            return 1.0f;
-        }
-
-        return v;
-    }
-
-    private static int packLightMap(float sl, float bl) {
-        return (((int) sl & 0xFF) << 16) | ((int) bl & 0xFF);
     }
 
 }
