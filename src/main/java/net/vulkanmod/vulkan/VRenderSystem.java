@@ -101,14 +101,17 @@ public abstract class VRenderSystem {
     }
 
     public static void applyProjectionMatrix(Matrix4f mat) {
-        mat.get(projectionMatrix.buffer.asFloatBuffer());
+        Matrix4f preTransformMatrix = Vulkan.getPretransformMatrix();
+        FloatBuffer projMatrixBuffer = projectionMatrix.buffer.asFloatBuffer();
+
+        if ((preTransformMatrix.properties() & Matrix4f.PROPERTY_IDENTITY) != 0) mat.get(projMatrixBuffer);
+        else mat.mulLocal(preTransformMatrix, new Matrix4f()).get(projMatrixBuffer);
     }
 
-    public static void calculateMVP() {
-        org.joml.Matrix4f MV = new org.joml.Matrix4f(modelViewMatrix.buffer.asFloatBuffer());
-        org.joml.Matrix4f P = new org.joml.Matrix4f(projectionMatrix.buffer.asFloatBuffer());
-
-        P.mul(MV).get(MVP.buffer);
+    public static void calculateMVP() { 
+		new Matrix4f(projectionMatrix.buffer.asFloatBuffer())
+			.mul(new Matrix4f(modelViewMatrix.buffer.asFloatBuffer()))
+			.get(MVP.buffer);
     }
 
     public static void setTextureMatrix(Matrix4f mat) {
