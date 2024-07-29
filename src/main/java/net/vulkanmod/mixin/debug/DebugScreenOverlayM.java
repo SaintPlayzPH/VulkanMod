@@ -53,19 +53,18 @@ public abstract class DebugScreenOverlayM {
         strings.add(fastFormat("Mem: {}% {}/{}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
         strings.add(fastFormat("Allocated: {}% {}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
         strings.add(fastFormat("Off-heap: {}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
+        strings.add(fastFormat("Native Memory: {}MB", MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("");
-        strings.add("VulkanMod v" + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
         strings.add("");
-        strings.add("GPU Properties:");
+        strings.add("VulkanMod v" + getVersion());
+        strings.add("");
+        strings.add("Device GPU Info:");
         strings.add("Name: " + device.deviceName);
         strings.add("Driver: " + device.driverName);
         strings.add("Driver Version: " + device.driverVersion);
         strings.add("Vulkan Version: " + device.vkVersion);
-        strings.add("");
-        strings.add(fastFormat("GPUMemory: {}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
-        strings.add(fastFormat("NativeMemory: {}MB", MemoryManager.getInstance().getNativeMemoryMB()));
-        strings.add("");
+        strings.add(fastFormat("GPU Memory: {}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
         strings.add("");
 
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
