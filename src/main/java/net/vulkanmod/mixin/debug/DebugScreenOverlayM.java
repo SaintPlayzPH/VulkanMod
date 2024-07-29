@@ -19,19 +19,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.helpers.MessageFormatter;
+
 import static net.vulkanmod.Initializer.getVersion;
 
 @Mixin(DebugScreenOverlay.class)
 public abstract class DebugScreenOverlayM {
-
+    
     @Shadow
     @Final
     private Minecraft minecraft;
-
-    @Shadow
-    private static long bytesToMegabytes(long bytes) {
-        return 0;
-    }
 
     @Shadow
     @Final
@@ -46,18 +43,16 @@ public abstract class DebugScreenOverlayM {
     @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;"))
     private ArrayList<String> redirectList(Object[] elements) {
         ArrayList<String> strings = new ArrayList<>();
-
+        Device device = Vulkan.getDevice();
+        
         long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
-        long freeMemory = Runtime.getRuntime().freeMemory();
-        long usedMemory = totalMemory - freeMemory;
+        long usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
 
-        Device device = Vulkan.getDevice();
-
-        strings.add("Java: %s %dbit".formatted(System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
-        strings.add("Mem: % 2d%% %03d/%03dMB".formatted(usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
-        strings.add("Allocated: % 2d%% %03dMB".formatted(totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
-        strings.add("Off-heap: " + getOffHeapMemory() + "MB");
+        strings.add(format("Java: {0} {1}-bit", System.getProperty("java.version"), this.minecraft.is64Bit() ? "64" : "32"));
+        strings.add(format("Mem: {0}% {1}/{2}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
+        strings.add(format("Allocated: {0}% {1}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
+        strings.add(format("Off-heap: {0}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
         strings.add("");
         strings.add("VulkanMod v" + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
@@ -66,20 +61,31 @@ public abstract class DebugScreenOverlayM {
         strings.add("Name: " + device.deviceName);
         strings.add("Driver: " + device.driverName);
         strings.add("Driver Version:" + device.driverVersion);
-        strings.add("Vulkan Version:" device.vkVersion);
+        strings.add("Vulkan Version:" + device.vkVersion);
         strings.add("");
-        strings.add("NativeMemory: %dMB".formatted(MemoryManager.getInstance().getNativeMemoryMB()));
-        strings.add("DeviceMemory: %dMB".formatted(MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
+        strings.add(format("GPUMemory: {0}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
+        strings.add(format("NativeMemory: {0}MB", MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("");
         strings.add("");
 
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
-
         return strings;
     }
 
-    private long getOffHeapMemory() {
-        return bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed());
+    /** Converts bytes to MiB using bitwise operations
+     * @param bytes
+     * @return bytes in MiB
+     * 
+     * @reason Division begone!
+     * @author ChatGPT
+     */
+    @Overwrite
+    private static long bytesToMegabytes(long bytes) {
+        return bytes >> 20;
+    }
+
+    private final String format(String format, Object... args) {
+        return MessageFormatter.arrayFormat(format, args).getMessage();
     }
 
 //    /**
