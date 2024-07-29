@@ -37,10 +37,10 @@ public class Device {
         properties = VkPhysicalDeviceProperties.malloc();
         vkGetPhysicalDeviceProperties(physicalDevice, properties);
 
-        VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc(stack);
+        VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc();
         properties2.sType$Default();
 
-        VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+        VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc();
         driverProperties.sType$Default();
         properties2.pNext(driverProperties);
 
