@@ -49,7 +49,7 @@ public class Device {
         this.vendorId = properties.vendorID();
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
-        this.driverName = driverProperties.driverNameString();
+        this.driverName = driverProperties.driverInfoString();
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkVersion = decDefVersion(properties.apiVersion());
 
