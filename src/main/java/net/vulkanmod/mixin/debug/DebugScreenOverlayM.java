@@ -8,8 +8,10 @@ import net.vulkanmod.vulkan.SystemInfo;
 import net.vulkanmod.vulkan.Vulkan;
 import net.vulkanmod.vulkan.device.Device;
 import net.vulkanmod.vulkan.memory.MemoryManager;
+import org.slf4j.helpers.MessageFormatter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -23,15 +25,10 @@ import static net.vulkanmod.Initializer.getVersion;
 
 @Mixin(DebugScreenOverlay.class)
 public abstract class DebugScreenOverlayM {
-
+    
     @Shadow
     @Final
     private Minecraft minecraft;
-
-    @Shadow
-    private static long bytesToMegabytes(long bytes) {
-        return 0;
-    }
 
     @Shadow
     @Final
@@ -46,36 +43,49 @@ public abstract class DebugScreenOverlayM {
     @Redirect(method = "getSystemInformation", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;"))
     private ArrayList<String> redirectList(Object[] elements) {
         ArrayList<String> strings = new ArrayList<>();
-
+        Device device = Vulkan.getDevice();
+        
         long maxMemory = Runtime.getRuntime().maxMemory();
         long totalMemory = Runtime.getRuntime().totalMemory();
-        long freeMemory = Runtime.getRuntime().freeMemory();
-        long usedMemory = totalMemory - freeMemory;
+        long usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
 
-        Device device = Vulkan.getDevice();
-
-        strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
-        strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
-        strings.add(String.format("Allocated: % 2d%% %03dMB", totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
-        strings.add(String.format("Off-heap: " + getOffHeapMemory() + "MB"));
-        strings.add("NativeMemory: %dMB".formatted(MemoryManager.getInstance().getNativeMemoryMB()));
-        strings.add("DeviceMemory: %dMB".formatted(MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
+        strings.add(fastFormat("Java: {} {}-bit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
+        strings.add(fastFormat("Mem: {}% {}/{}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
+        strings.add(fastFormat("Allocated: {}% {}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
+        strings.add(fastFormat("Off-heap: {}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
         strings.add("");
-        strings.add("VulkanMod " + getVersion());
+        strings.add("VulkanMod v" + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
-        strings.add("GPU: " + device.deviceName);
-        strings.add("Driver: " + device.driverVersion);
-        strings.add("Vulkan: " + device.vkVersion);
+        strings.add("");
+        strings.add("GPU Properties:");
+        strings.add("Name: " + device.deviceName);
+        strings.add("Driver: " + device.driverName);
+        strings.add("Driver Version: " + device.driverVersion);
+        strings.add("Vulkan Version: " + device.vkVersion);
+        strings.add("");
+        strings.add(fastFormat("GPUMemory: {}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
+        strings.add(fastFormat("NativeMemory: {}MB", MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("");
         strings.add("");
 
         Collections.addAll(strings, WorldRenderer.getInstance().getChunkAreaManager().getStats());
-
         return strings;
     }
 
-    private long getOffHeapMemory() {
-        return bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed());
+    /** Converts bytes to MiB using bitwise operations
+     * @param bytes
+     * @return bytes in MiB
+     * 
+     * @reason Division begone!
+     * @author ChatGPT
+     */
+    @Overwrite
+    private static long bytesToMegabytes(long bytes) {
+        return bytes >> 20;
+    }
+
+    private final String fastFormat(String format, Object... args) {
+        return MessageFormatter.arrayFormat(format, args).getMessage();
     }
 
 //    /**
