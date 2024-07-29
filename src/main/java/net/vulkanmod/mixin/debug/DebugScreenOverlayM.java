@@ -54,18 +54,22 @@ public abstract class DebugScreenOverlayM {
 
         Device device = Vulkan.getDevice();
 
-        strings.add(String.format("Java: %s %dbit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
-        strings.add(String.format("Mem: % 2d%% %03d/%03dMB", usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
-        strings.add(String.format("Allocated: % 2d%% %03dMB", totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
-        strings.add(String.format("Off-heap: " + getOffHeapMemory() + "MB"));
+        strings.add("Java: %s %dbit".formatted(System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
+        strings.add("Mem: % 2d%% %03d/%03dMB".formatted(usedMemory * 100L / maxMemory, bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
+        strings.add("Allocated: % 2d%% %03dMB".formatted(totalMemory * 100L / maxMemory, bytesToMegabytes(totalMemory)));
+        strings.add("Off-heap: " + getOffHeapMemory() + "MB");
+        strings.add("");
+        strings.add("VulkanMod v" + getVersion());
+        strings.add("CPU: " + SystemInfo.cpuInfo);
+        strings.add("");
+        strings.add("GPU Properties:");
+        strings.add("Name: " + device.deviceName);
+        strings.add("Driver: " + device.driverName);
+        strings.add("Driver Version:" + device.driverVersion);
+        strings.add("Vulkan Version:" device.vkVersion);
+        strings.add("");
         strings.add("NativeMemory: %dMB".formatted(MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("DeviceMemory: %dMB".formatted(MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
-        strings.add("");
-        strings.add("VulkanMod " + getVersion());
-        strings.add("CPU: " + SystemInfo.cpuInfo);
-        strings.add("GPU: " + device.deviceName);
-        strings.add("Driver: " + device.driverVersion);
-        strings.add("Vulkan: " + device.vkVersion);
         strings.add("");
         strings.add("");
 

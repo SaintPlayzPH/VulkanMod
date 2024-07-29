@@ -1,11 +1,7 @@
 package net.vulkanmod.vulkan.device;
 
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.*;
-import oshi.SystemInfo;
-import oshi.hardware.CentralProcessor;
-
 import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +10,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM_WIN32;
 import static org.lwjgl.glfw.GLFW.glfwGetPlatform;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.vulkan.VK10.*;
-import static org.lwjgl.vulkan.VK11.vkEnumerateInstanceVersion;
-import static org.lwjgl.vulkan.VK11.vkGetPhysicalDeviceFeatures2;
+import static org.lwjgl.vulkan.VK11.*;
 
 public class Device {
     final VkPhysicalDevice physicalDevice;
@@ -25,6 +19,7 @@ public class Device {
     private final int vendorId;
     public final String vendorIdString;
     public final String deviceName;
+    public final String driverName;
     public final String driverVersion;
     public final String vkVersion;
 
@@ -42,9 +37,19 @@ public class Device {
         properties = VkPhysicalDeviceProperties.malloc();
         vkGetPhysicalDeviceProperties(physicalDevice, properties);
 
+        VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc(stack);
+        properties2.sType$Default();
+
+        VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+        driverProperties.sType$Default();
+        properties2.pNext(driverProperties);
+
+        vkGetPhysicalDeviceProperties2(physicalDevice, properties2);
+
         this.vendorId = properties.vendorID();
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
+        this.driverName = driverProperties.driverNameString();
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkVersion = decDefVersion(properties.apiVersion());
 
