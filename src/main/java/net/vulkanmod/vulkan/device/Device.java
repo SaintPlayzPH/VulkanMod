@@ -37,19 +37,22 @@ public class Device {
         properties = VkPhysicalDeviceProperties.malloc();
         vkGetPhysicalDeviceProperties(physicalDevice, properties);
 
-        VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc();
+        try (MemoryStack stack = stackPush()) {
+        VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc(stack);
         properties2.sType$Default();
 
-        VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc();
+        VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
         driverProperties.sType$Default();
         properties2.pNext(driverProperties);
 
         vkGetPhysicalDeviceProperties2(physicalDevice, properties2);
 
+        this.driverName = driverProperties.driverInfoString();
+        }
+
         this.vendorId = properties.vendorID();
         this.vendorIdString = decodeVendor(properties.vendorID());
         this.deviceName = properties.deviceNameString();
-        this.driverName = driverProperties.driverInfoString();
         this.driverVersion = decodeDvrVersion(properties.driverVersion(), properties.vendorID());
         this.vkVersion = decDefVersion(properties.apiVersion());
 
