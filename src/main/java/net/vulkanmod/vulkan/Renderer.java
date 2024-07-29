@@ -386,6 +386,7 @@ public class Renderer {
 
         WorldRenderer.getInstance().uploadSections();
         UploadManager.INSTANCE.submitUploads();
+        UploadManager.INSTANCE.syncUploads();
     }
 
     public void addUsedPipeline(Pipeline pipeline) {
@@ -437,6 +438,7 @@ public class Renderer {
 
         if (framesNum != newFramesNum) {
             UploadManager.INSTANCE.submitUploads();
+            UploadManager.INSTANCE.syncUploads();
 
             framesNum = newFramesNum;
             MemoryManager.createInstance(newFramesNum);
