@@ -38,16 +38,16 @@ public class Device {
         vkGetPhysicalDeviceProperties(physicalDevice, properties);
 
         try (MemoryStack stack = stackPush()) {
-        VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc(stack);
-        properties2.sType$Default();
+            VkPhysicalDeviceProperties2 properties2 = VkPhysicalDeviceProperties2.malloc(stack);
+            properties2.sType$Default();
 
-        VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
-        driverProperties.sType$Default();
-        properties2.pNext(driverProperties);
+            VkPhysicalDeviceDriverProperties driverProperties = VkPhysicalDeviceDriverProperties.malloc(stack);
+            driverProperties.sType$Default();
+            properties2.pNext(driverProperties);
 
-        vkGetPhysicalDeviceProperties2(physicalDevice, properties2);
+            vkGetPhysicalDeviceProperties2(physicalDevice, properties2);
 
-        this.driverName = driverProperties.driverInfoString();
+            this.driverName = driverProperties.driverInfoString();
         }
 
         this.vendorId = properties.vendorID();
