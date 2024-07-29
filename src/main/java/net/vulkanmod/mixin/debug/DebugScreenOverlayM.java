@@ -49,10 +49,10 @@ public abstract class DebugScreenOverlayM {
         long totalMemory = Runtime.getRuntime().totalMemory();
         long usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
 
-        strings.add(format("Java: {0} {1}-bit", System.getProperty("java.version"), this.minecraft.is64Bit() ? "64" : "32"));
-        strings.add(format("Mem: {0}% {1}/{2}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
-        strings.add(format("Allocated: {0}% {1}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
-        strings.add(format("Off-heap: {0}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
+        strings.add(fastFormat("Java: {0} {1}-bit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
+        strings.add(fastFormat("Mem: {0}% {1}/{2}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
+        strings.add(fastFormat("Allocated: {0}% {1}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
+        strings.add(fastFormat("Off-heap: {0}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
         strings.add("");
         strings.add("VulkanMod v" + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
@@ -63,8 +63,8 @@ public abstract class DebugScreenOverlayM {
         strings.add("Driver Version:" + device.driverVersion);
         strings.add("Vulkan Version:" + device.vkVersion);
         strings.add("");
-        strings.add(format("GPUMemory: {0}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
-        strings.add(format("NativeMemory: {0}MB", MemoryManager.getInstance().getNativeMemoryMB()));
+        strings.add(fastFormat("GPUMemory: {0}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
+        strings.add(fastFormat("NativeMemory: {0}MB", MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("");
         strings.add("");
 
@@ -84,7 +84,7 @@ public abstract class DebugScreenOverlayM {
         return bytes >> 20;
     }
 
-    private final String format(String format, Object... args) {
+    private final String fastFormat(String format, Object... args) {
         return MessageFormatter.arrayFormat(format, args).getMessage();
     }
 
