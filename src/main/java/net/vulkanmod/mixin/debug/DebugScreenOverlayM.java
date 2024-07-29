@@ -49,10 +49,10 @@ public abstract class DebugScreenOverlayM {
         long totalMemory = Runtime.getRuntime().totalMemory();
         long usedMemory = totalMemory - Runtime.getRuntime().freeMemory();
 
-        strings.add(fastFormat("Java: {0} {1}-bit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
-        strings.add(fastFormat("Mem: {0}% {1}/{2}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
-        strings.add(fastFormat("Allocated: {0}% {1}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
-        strings.add(fastFormat("Off-heap: {0}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
+        strings.add(fastFormat("Java: {} {}-bit", System.getProperty("java.version"), this.minecraft.is64Bit() ? 64 : 32));
+        strings.add(fastFormat("Mem: {}% {}/{}MB", (usedMemory * 100L / maxMemory), bytesToMegabytes(usedMemory), bytesToMegabytes(maxMemory)));
+        strings.add(fastFormat("Allocated: {}% {}MB", (totalMemory * 100L / maxMemory), bytesToMegabytes(totalMemory)));
+        strings.add(fastFormat("Off-heap: {}MB", bytesToMegabytes(ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getUsed())));
         strings.add("");
         strings.add("VulkanMod v" + getVersion());
         strings.add("CPU: " + SystemInfo.cpuInfo);
@@ -60,11 +60,11 @@ public abstract class DebugScreenOverlayM {
         strings.add("GPU Properties:");
         strings.add("Name: " + device.deviceName);
         strings.add("Driver: " + device.driverName);
-        strings.add("Driver Version:" + device.driverVersion);
-        strings.add("Vulkan Version:" + device.vkVersion);
+        strings.add("Driver Version: " + device.driverVersion);
+        strings.add("Vulkan Version: " + device.vkVersion);
         strings.add("");
-        strings.add(fastFormat("GPUMemory: {0}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
-        strings.add(fastFormat("NativeMemory: {0}MB", MemoryManager.getInstance().getNativeMemoryMB()));
+        strings.add(fastFormat("GPUMemory: {}MB", MemoryManager.getInstance().getAllocatedDeviceMemoryMB()));
+        strings.add(fastFormat("NativeMemory: {}MB", MemoryManager.getInstance().getNativeMemoryMB()));
         strings.add("");
         strings.add("");
 
