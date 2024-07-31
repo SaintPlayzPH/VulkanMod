@@ -32,8 +32,10 @@ public class UploadManager {
             return;
 
         this.queue.submitCommands(this.commandBuffer);
-
         Synchronization.INSTANCE.addCommandBuffer(this.commandBuffer);
+
+        // Wait for the queue to complete execution
+        Synchronization.INSTANCE.waitFences();
 
         this.commandBuffer = null;
     }
@@ -47,6 +49,24 @@ public class UploadManager {
         stagingBuffer.copyBuffer((int) bufferSize, src);
 
         TransferQueue.uploadBufferCmd(commandBuffer, stagingBuffer.getId(), stagingBuffer.getOffset(), buffer.getId(), dstOffset, bufferSize);
+
+        // Ensure memory barriers if necessary
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            VkBufferMemoryBarrier.Buffer bufferMemoryBarriers = VkBufferMemoryBarrier.calloc(1, stack);
+            VkBufferMemoryBarrier bufferMemoryBarrier = bufferMemoryBarriers.get(0);
+            bufferMemoryBarrier.sType$Default();
+            bufferMemoryBarrier.buffer(buffer.getId());
+            bufferMemoryBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
+            bufferMemoryBarrier.dstAccessMask(VK_ACCESS_SHADER_READ_BIT);
+            bufferMemoryBarrier.size(bufferSize);
+
+            vkCmdPipelineBarrier(commandBuffer,
+                    VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                    0,
+                    null,
+                    bufferMemoryBarriers,
+                    null);
+        }
     }
 
     public void copyBuffer(Buffer src, Buffer dst) {
@@ -59,21 +79,28 @@ public class UploadManager {
         VkCommandBuffer commandBuffer = this.commandBuffer.getHandle();
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            VkMemoryBarrier.Buffer barrier = VkMemoryBarrier.calloc(1, stack);
-            barrier.sType$Default();
+            VkBufferMemoryBarrier.Buffer bufferMemoryBarriers = VkBufferMemoryBarrier.calloc(2, stack);
 
-            VkBufferMemoryBarrier.Buffer bufferMemoryBarriers = VkBufferMemoryBarrier.calloc(1, stack);
-            VkBufferMemoryBarrier bufferMemoryBarrier = bufferMemoryBarriers.get(0);
-            bufferMemoryBarrier.sType$Default();
-            bufferMemoryBarrier.buffer(src.getId());
-            bufferMemoryBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
-            bufferMemoryBarrier.dstAccessMask(VK_ACCESS_TRANSFER_READ_BIT);
-            bufferMemoryBarrier.size(VK_WHOLE_SIZE);
+            VkBufferMemoryBarrier srcBarrier = bufferMemoryBarriers.get(0);
+            srcBarrier.sType$Default();
+            srcBarrier.buffer(src.getId());
+            srcBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
+            srcBarrier.dstAccessMask(VK_ACCESS_TRANSFER_READ_BIT);
+            srcBarrier.offset(srcOffset);
+            srcBarrier.size(size);
+
+            VkBufferMemoryBarrier dstBarrier = bufferMemoryBarriers.get(1);
+            dstBarrier.sType$Default();
+            dstBarrier.buffer(dst.getId());
+            dstBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
+            dstBarrier.dstAccessMask(VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT);
+            dstBarrier.offset(dstOffset);
+            dstBarrier.size(size);
 
             vkCmdPipelineBarrier(commandBuffer,
                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT,
                     0,
-                    barrier,
+                    null,
                     bufferMemoryBarriers,
                     null);
         }
@@ -88,8 +115,8 @@ public class UploadManager {
     }
 
     private void beginCommands() {
-        if (this.commandBuffer == null)
+        if (this.commandBuffer == null) {
             this.commandBuffer = queue.beginCommands();
+        }
     }
-
 }
