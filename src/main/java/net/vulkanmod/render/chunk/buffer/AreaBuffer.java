@@ -84,7 +84,7 @@ public class AreaBuffer {
         segment.drawParameters = drawParameters;
 
         Buffer dst = this.buffer;
-        UploadManager.INSTANCE.recordUpload(dst, segment.offset, size, byteBuffer);
+        UploadManager.INSTANCE.recordUpload(dst.getId(), segment.offset, size, byteBuffer);
 
         this.used += size;
 
