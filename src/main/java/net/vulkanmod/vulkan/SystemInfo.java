@@ -1,7 +1,6 @@
 package net.vulkanmod.vulkan;
 
 import oshi.hardware.CentralProcessor;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,10 +19,10 @@ public class SystemInfo {
                 .reduce((f, s) -> f.startsWith("H") ? f : s)
                 .map(line -> {
                     String value = line.split(":")[1].trim();
-                    return line.startsWith("H") ? value.split("/")[0] + " (SoC)" : value;
-                }).orElse("Unknown SoC");
+                    return line.startsWith("H") ? value + " (SoC)" : value;
+                }).orElse("Unknown CPU");
         } catch (IOException e) {
-            return "Unknown SoC";
+            return "Unknown CPU";
         }
     }
 
@@ -31,7 +30,12 @@ public class SystemInfo {
         try {
             return new oshi.SystemInfo().getHardware().getProcessor().getProcessorIdentifier().getName().replaceAll("\\s+", " ");
         } catch (Exception e) {
-            return "Unknown CPU";
+            return getProcessorNameForAndroid();
+            // used getProcessorNameForAndroid()
+            // since others use other version of pojav (e.g., Pojav Zenith, Vera-Firefly)
+            // which isRunningOnAndroid() can't detect if the user is running on pojav
+            // which leads to getProcessorNameForDesktop() instead
+            // this catch exception seems to only effective for 1.21
         }
     }
 
