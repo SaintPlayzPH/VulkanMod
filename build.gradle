@@ -12,6 +12,7 @@ group = project.maven_group
 project.ext.lwjglVersion = "3.3.3"
 project.ext.jomlVersion = "1.10.4"
 project.ext.linuxNatives = "natives-linux"
+project.ext.linuxArmNatives = "natives-linux-arm64"
 
 repositories {
 	// Add repositories to retrieve artifacts from in here.
@@ -49,6 +50,8 @@ dependencies {
 	
 	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxNatives"))
 	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-vma:$lwjglVersion:$linuxArmNatives"))
+	include(runtimeOnly("org.lwjgl:lwjgl-shaderc:$lwjglVersion:$linuxArmNatives"))
 }
 
 processResources {
