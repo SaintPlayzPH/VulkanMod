@@ -80,11 +80,9 @@ public abstract class Queue {
     }
 
     public static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device) {
-
         QueueFamilyIndices indices = new QueueFamilyIndices();
 
         try (MemoryStack stack = stackPush()) {
-
             IntBuffer queueFamilyCount = stack.ints(0);
             vkGetPhysicalDeviceQueueFamilyProperties(device, queueFamilyCount, null);
             VkQueueFamilyProperties.Buffer queueFamilies = VkQueueFamilyProperties.mallocStack(queueFamilyCount.get(0), stack);
@@ -92,54 +90,74 @@ public abstract class Queue {
 
             IntBuffer presentSupport = stack.ints(VK_FALSE);
 
-            for (int i = 0; i < queueFamilies.capacity(); i++) {
-                int queueFlags = queueFamilies.get(i).queueFlags();
+            for (int g = 0; g < queueFamilies.capacity(); g++) {
+                int queueFlags = queueFamilies.get(g).queueFlags();
 
                 if ((queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0) {
-                    indices.graphicsFamily = i;
+                    indices.graphicsFamily = g;
                     graphicsSupported = true;
 
-                    vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
+                    vkGetPhysicalDeviceSurfaceSupportKHR(device, g, Vulkan.getSurface(), presentSupport);
                     if (presentSupport.get(0) == VK_TRUE) {
-                        indices.presentFamily = i;
+                        indices.presentFamily = g;
                     }
                 }
+            }
+
+            for (int c = 0; c < queueFamilies.capacity(); c++) {
+                int queueFlags = queueFamilies.get(c).queueFlags();
 
                 if ((queueFlags & VK_QUEUE_COMPUTE_BIT) != 0 && indices.computeFamily == VK_QUEUE_FAMILY_IGNORED) {
-                    indices.computeFamily = i;
+                    indices.computeFamily = c;
                 }
+            }
+
+            for (int t = 0; t < queueFamilies.capacity(); t++) {
+                int queueFlags = queueFamilies.get(t).queueFlags();
 
                 if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0 &&
                     (queueFlags & (VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT)) == 0 &&
                     indices.transferFamily == VK_QUEUE_FAMILY_IGNORED) {
-                    indices.transferFamily = i;
+                    indices.transferFamily = t;
                 }
+            }
 
-                if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED) {
-                    vkGetPhysicalDeviceSurfaceSupportKHR(device, i, Vulkan.getSurface(), presentSupport);
+            if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED) {
+                for (int p = 0; p < queueFamilies.capacity(); p++) {
+                    vkGetPhysicalDeviceSurfaceSupportKHR(device, p, Vulkan.getSurface(), presentSupport);
                     if (presentSupport.get(0) == VK_TRUE) {
-                        indices.presentFamily = i;
+                        indices.presentFamily = p;
+                        break;
                     }
                 }
+            }
 
-                if (indices.isComplete())
-                    break;
+            if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED) {
+                for (int t = 0; t < queueFamilies.capacity(); t++) {
+                    int queueFlags = queueFamilies.get(t).queueFlags();
+                    if ((queueFlags & VK_QUEUE_TRANSFER_BIT) != 0) {
+                        indices.transferFamily = t;
+                        break;
+                    }
+                }
             }
 
             if (indices.presentFamily == VK_QUEUE_FAMILY_IGNORED) {
                 presentFallback = true;
                 indices.presentFamily = indices.computeFamily != VK_QUEUE_FAMILY_IGNORED ? indices.computeFamily : indices.graphicsFamily;
-                Initializer.LOGGER.warn("Using compute or graphics queue as present fallback");
+                Initializer.LOGGER.warn("Using fallback for present queue");
             }
 
             if (indices.transferFamily == VK_QUEUE_FAMILY_IGNORED) {
                 transferFallback = true;
                 indices.transferFamily = indices.computeFamily != VK_QUEUE_FAMILY_IGNORED ? indices.computeFamily : indices.graphicsFamily;
+                Initializer.LOGGER.warn("Using fallback for transfer queue");
             }
 
             if (indices.computeFamily == VK_QUEUE_FAMILY_IGNORED) {
                 computeFallback = true;
                 indices.computeFamily = indices.graphicsFamily;
+                Initializer.LOGGER.warn("Using fallback for compute queue");
             }
 
             if (indices.graphicsFamily == VK_QUEUE_FAMILY_IGNORED)
