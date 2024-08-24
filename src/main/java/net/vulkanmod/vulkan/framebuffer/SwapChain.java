@@ -29,6 +29,7 @@ import static org.lwjgl.vulkan.KHRSwapchain.*;
 import static org.lwjgl.vulkan.VK10.*;
 
 public class SwapChain extends Framebuffer {
+    // Necessary until tearing-control-unstable-v1 is fully implemented on all GPU Drivers for Wayland
     private static final int defUncappedMode = checkPresentMode(VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_MAILBOX_KHR);
 
     private final Long2ReferenceOpenHashMap<long[]> FBO_map = new Long2ReferenceOpenHashMap<>();
@@ -52,24 +53,17 @@ public class SwapChain extends Framebuffer {
     }
 
     public void recreate() {
-        if (this.swapChainId == VK_NULL_HANDLE || needsRecreation()) {
-            if (this.depthAttachment != null) {
-                this.depthAttachment.free();
-                this.depthAttachment = null;
-            }
-
-            if (!DYNAMIC_RENDERING) {
-                this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffer(getVkDevice(), id, null)));
-                this.FBO_map.clear();
-            }
-
-            createSwapChain();
+        if (this.depthAttachment != null) {
+            this.depthAttachment.free();
+            this.depthAttachment = null;
         }
-    }
 
-    private boolean needsRecreation() {
-        // Implement logic to check if the swap chain needs to be recreated, e.g., based on surface size or format changes
-        return false; // Placeholder
+        if (!DYNAMIC_RENDERING) {
+            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffer(getVkDevice(), id, null)));
+            this.FBO_map.clear();
+        }
+
+        createSwapChain();
     }
 
     private void createSwapChain() {
@@ -101,6 +95,7 @@ public class SwapChain extends Framebuffer {
             createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
             createInfo.surface(Vulkan.getSurface());
 
+            // Image settings
             this.format = surfaceFormat.format();
             this.extent2D = VkExtent2D.create().set(extent);
 
@@ -120,13 +115,11 @@ public class SwapChain extends Framebuffer {
                 createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
             }
 
-            // Set preTransform
             int preTransform;
-            VkSurfaceCapabilitiesKHR capabilities = surfaceProperties.capabilities;
-            if ((capabilities.supportedTransforms() & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) != 0) {
+            if ((surfaceProperties.capabilities.supportedTransforms() & VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR) != 0) {
                 preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
             } else {
-                preTransform = capabilities.currentTransform();
+                preTransform = surfaceProperties.capabilities.currentTransform();
             }
             createInfo.preTransform(preTransform);
 
@@ -142,7 +135,6 @@ public class SwapChain extends Framebuffer {
             Vulkan.checkResult(result, "Failed to create swap chain");
 
             if (this.swapChainId != VK_NULL_HANDLE) {
-                Initializer.LOGGER.info("Destroying old swap chain and images.");
                 this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
                 vkDestroySwapchainKHR(device, this.swapChainId, null);
             }
@@ -226,148 +218,117 @@ public class SwapChain extends Framebuffer {
     public void beginRenderPass(VkCommandBuffer commandBuffer, RenderPass renderPass, MemoryStack stack) {
         if (!DYNAMIC_RENDERING) {
             long[] framebufferId = this.FBO_map.computeIfAbsent(renderPass.id, renderPass1 -> createFramebuffers(renderPass));
-            renderPass.beginRenderPass(commandBuffer, framebufferId[Renderer.getCurrentImage()], stack);
-        } else {
-            renderPass.beginDynamicRendering(commandBuffer, stack);
+            renderPass.beginRenderPass(commandBuffer, framebufferId[Renderer.getCurrentImageIndex()], this.width, this.height, stack);
         }
-
-        Renderer.getInstance().setBoundRenderPass(renderPass);
-        Renderer.getInstance().setBoundFramebuffer(this);
     }
 
-    public void cleanUp() {
-        VkDevice device = Vulkan.getVkDevice();
-
-        if (!DYNAMIC_RENDERING) {
-            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffer(device, id, null)));
-            this.FBO_map.clear();
-        }
-
-        if (this.swapChainId != VK_NULL_HANDLE) {
-            vkDestroySwapchainKHR(device, this.swapChainId, null);
-            this.swapChainImages.forEach(image -> vkDestroyImageView(device, image.getImageView(), null));
-        }
+    public void cleanup() {
+        vkDeviceWaitIdle(vkDevice);
 
         if (this.depthAttachment != null) {
             this.depthAttachment.free();
+            this.depthAttachment = null;
+        }
+
+        if (this.swapChainId != VK_NULL_HANDLE) {
+            for (VulkanImage image : this.swapChainImages) {
+                vkDestroyImageView(vkDevice, image.getImageView(), null);
+            }
+            vkDestroySwapchainKHR(vkDevice, this.swapChainId, null);
+            this.swapChainId = VK_NULL_HANDLE;
+        }
+
+        if (!DYNAMIC_RENDERING) {
+            this.FBO_map.forEach((pass, framebuffers) -> Arrays.stream(framebuffers).forEach(id -> vkDestroyFramebuffer(getVkDevice(), id, null)));
+            this.FBO_map.clear();
         }
     }
 
-    public long getId() {
-        return this.swapChainId;
+    public void resize() {
+        recreate();
     }
 
-    public List<VulkanImage> getImages() {
-        return this.swapChainImages;
-    }
-
-    public long getImageId(int i) {
-        return this.swapChainImages.get(i).getId();
-    }
-
-    public VkExtent2D getExtent() {
-        return this.extent2D;
-    }
-
-    public VulkanImage getColorAttachment() {
-        return this.swapChainImages.get(Renderer.getCurrentImage());
-    }
-
-    public long getImageView(int i) {
-        return this.swapChainImages.get(i).getImageView();
-    }
-
-    private VkSurfaceFormatKHR getFormat(VkSurfaceFormatKHR.Buffer availableFormats) {
-        List<VkSurfaceFormatKHR> list = availableFormats.stream().toList();
-        VkSurfaceFormatKHR format = list.get(0);
-
-        for (VkSurfaceFormatKHR availableFormat : list) {
-            if (availableFormat.format() == VK_FORMAT_R8G8B8A8_UNORM &&
-                availableFormat.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-                return availableFormat;
-            }
-            if (availableFormat.format() == VK_FORMAT_B8G8R8A8_UNORM &&
-                availableFormat.colorSpace() == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-                format = availableFormat;
+    public static VkSurfaceFormatKHR getFormat(VkSurfaceFormatKHR.Buffer formats) {
+        for (int i = 0; i < formats.capacity(); i++) {
+            if (formats.get(i).format() == VK_FORMAT_B8G8R8A8_SRGB || formats.get(i).format() == VK_FORMAT_R8G8B8A8_SRGB) {
+                return formats.get(i);
             }
         }
 
-        if (format.format() == VK_FORMAT_B8G8R8A8_UNORM) {
-            isBGRAformat = true;
-        }
-        return format;
+        return formats.get(0);
     }
 
-    private int getPresentMode(IntBuffer availablePresentModes) {
-        int requestedMode = vsync ? VK_PRESENT_MODE_FIFO_KHR : defUncappedMode;
-
-        if (requestedMode == VK_PRESENT_MODE_FIFO_KHR) {
-            return VK_PRESENT_MODE_FIFO_KHR;
-        }
-
-        for (int i = 0; i < availablePresentModes.capacity(); i++) {
-            if (availablePresentModes.get(i) == requestedMode) {
-                return requestedMode;
+    public static int getPresentMode(IntBuffer presentModes) {
+        for (int i = 0; i < presentModes.capacity(); i++) {
+            if (presentModes.get(i) == VK_PRESENT_MODE_MAILBOX_KHR) {
+                return VK_PRESENT_MODE_MAILBOX_KHR;
+            } else if (presentModes.get(i) == VK_PRESENT_MODE_FIFO_KHR) {
+                return VK_PRESENT_MODE_FIFO_KHR;
             }
         }
 
-        Initializer.LOGGER.warn("Requested mode not supported: " + getDisplayModeString(requestedMode) + ": using VSync");
-        return VK_PRESENT_MODE_FIFO_KHR;
+        return presentModes.get(0);
     }
 
-    private String getDisplayModeString(int requestedMode) {
-        return switch (requestedMode) {
-            case VK_PRESENT_MODE_IMMEDIATE_KHR -> "Immediate";
-            case VK_PRESENT_MODE_MAILBOX_KHR -> "Mailbox (FastSync)";
-            case VK_PRESENT_MODE_FIFO_RELAXED_KHR -> "FIFO Relaxed (Adaptive VSync)";
-            default -> "FIFO (VSync)";
-        };
+    private static int checkPresentMode(int... modes) {
+        try (MemoryStack stack = stackGet()) {
+            VkPhysicalDevice physicalDevice = Vulkan.getVkPhysicalDevice();
+            VkSurfaceKHR surface = Vulkan.getSurface();
+            VkSurfaceCapabilitiesKHR capabilities = VkSurfaceCapabilitiesKHR.mallocStack(stack);
+            vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, capabilities);
+
+            IntBuffer pPresentModeCount = stack.mallocInt(1);
+            vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, null);
+
+            IntBuffer presentModes = stack.mallocInt(pPresentModeCount.get(0));
+            vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, pPresentModeCount, presentModes);
+
+            for (int mode : modes) {
+                for (int i = 0; i < presentModes.capacity(); i++) {
+                    if (presentModes.get(i) == mode) {
+                        return mode;
+                    }
+                }
+            }
+
+            return presentModes.get(0);
+        }
     }
 
     private static VkExtent2D getExtent(VkSurfaceCapabilitiesKHR capabilities) {
         if (capabilities.currentExtent().width() != UINT32_MAX) {
             return capabilities.currentExtent();
+        } else {
+            try (MemoryStack stack = stackGet()) {
+                IntBuffer width = stack.mallocInt(1);
+                IntBuffer height = stack.mallocInt(1);
+
+                // Assuming that this method would be replaced with the appropriate Android method
+                // to get the dimensions of the window on Android.
+                glfwGetFramebufferSize(Vulkan.getSurface(), width, height);
+
+                VkExtent2D actualExtent = VkExtent2D.mallocStack(stack);
+                actualExtent.width(MathUtil.clamp(width.get(0), capabilities.minImageExtent().width(), capabilities.maxImageExtent().width()));
+                actualExtent.height(MathUtil.clamp(height.get(0), capabilities.minImageExtent().height(), capabilities.maxImageExtent().height()));
+
+                return actualExtent;
+            }
         }
-
-        IntBuffer width = stackGet().ints(0);
-        IntBuffer height = stackGet().ints(0);
-
-        glfwGetFramebufferSize(window, width, height);
-
-        VkExtent2D actualExtent = VkExtent2D.mallocStack().set(width.get(0), height.get(0));
-
-        VkExtent2D minExtent = capabilities.minImageExtent();
-        VkExtent2D maxExtent = capabilities.maxImageExtent();
-
-        actualExtent.width(MathUtil.clamp(minExtent.width(), maxExtent.width(), actualExtent.width()));
-        actualExtent.height(MathUtil.clamp(minExtent.height(), maxExtent.height(), actualExtent.height()));
-
-        return actualExtent;
     }
 
-    private static int checkPresentMode(int... requestedModes) {
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            var presentModes = DeviceManager.querySurfaceProperties(vkDevice.getPhysicalDevice(), stack).presentModes;
-            for (int requestedMode : requestedModes) {
-                for (int i = 0; i < presentModes.capacity(); i++) {
-                    if (presentModes.get(i) == requestedMode) {
-                        return requestedMode;
-                    }
-                }
-            }
-            return VK_PRESENT_MODE_FIFO_KHR; // Fallback if none of the requested modes are supported
-        }
+    public List<VulkanImage> getSwapChainImages() {
+        return swapChainImages;
+    }
+
+    public long getSwapChainId() {
+        return swapChainId;
     }
 
     public boolean isVsync() {
-        return this.vsync;
+        return vsync;
     }
 
     public void setVsync(boolean vsync) {
         this.vsync = vsync;
-    }
-
-    public int getImagesNum() {
-        return this.swapChainImages.size();
     }
 }
