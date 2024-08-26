@@ -81,7 +81,7 @@ public class Device {
     }
 
     private static void checkVulkanVersion() {
-        throw new RuntimeException("Vulkan 1.2 or higher is required and your device has older VulkanMod version. Go and get a better device!");
+        throw new RuntimeException("Vulkan 1.2 or higher is required and your device has older Vulkan version. Go and get a better device!");
     }
 
     private static String decodeVendor(int i) {
