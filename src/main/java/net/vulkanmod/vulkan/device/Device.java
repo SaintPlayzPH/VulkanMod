@@ -57,7 +57,7 @@ public class Device {
         this.vkVersion = decDefVersion(properties.apiVersion());
 
         // Check Vulkan version
-        checkVulkanVersion(this.vkVersion);
+        checkVulkanVersion();
 
         this.availableFeatures = VkPhysicalDeviceFeatures2.calloc();
         this.availableFeatures.sType$Default();
@@ -80,14 +80,8 @@ public class Device {
 
     }
 
-    private static void checkVulkanVersion(String vkVersion) {
-        String[] versionParts = vkVersion.split("\\.");
-        int major = Integer.parseInt(versionParts[0]);
-        int minor = Integer.parseInt(versionParts[1]);
-
-        if (major < 1 || (major == 1 && minor < 1)) {
-            throw new RuntimeException("Vulkan 1.1.0 or higher is required. Detected version: " + vkVersion);
-        }
+    private static void checkVulkanVersion() {
+        throw new RuntimeException("Vulkan 1.2 or higher is required. Detected version: " + vkVersion + ". Go and get A PC dummy!");
     }
 
     private static String decodeVendor(int i) {
