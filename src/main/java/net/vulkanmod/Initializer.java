@@ -26,10 +26,10 @@ public class Initializer implements ClientModInitializer {
 				.getVersion().getFriendlyString();
 
 		LOGGER.info("== VulkanMod ==");
-		LOGGER.info("⚒️ Patched by: ShadowMC69");
+		LOGGER.info("⚒️ Patched by: ShadowMC69 🎮");
 		LOGGER.warn("⚠️ If you downloaded this from YouTubers/TikTokers, delete this file immediately as this may contain malware 99% ⚠️");
 		LOGGER.warn("⚠️ You're on your own if you don't believe and we'll not help you in case of bugs/crashes! ⚠️");
-		LOGGER.warn("⚠️ I only help those people who downloaded it on his official Discord (no free invite link) ⚠️");
+		LOGGER.warn("⚠️ He only help those people who downloaded it on his official Discord (no free invite link) ⚠️");
 		LOGGER.info("🎮 Game is launching..... 🎮");
 		Platform.init();
 		VideoModeManager.init();
